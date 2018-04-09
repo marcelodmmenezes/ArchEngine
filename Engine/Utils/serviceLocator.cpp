@@ -1,5 +1,5 @@
 /*============================================================================*
- * Arch Engine - "Core/serviceLocator.hpp"                                    *
+ * Arch Engine - "Utils/serviceLocator.hpp"                                    *
  *                                                                            *
  * Service Locator - (Dependency injection)                                   *
  *                                                                            *
@@ -12,7 +12,7 @@
 #include "serviceLocator.hpp"
 
 
-namespace Core {
+namespace Utils {
 	// Static variables
 	std::shared_ptr<Logger<ConsoleLogPolicy>>
 		ServiceLocator::m_console_logger = nullptr;

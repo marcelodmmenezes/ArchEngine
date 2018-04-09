@@ -1,5 +1,5 @@
 /*============================================================================*
- * Arch Engine - "Core/logger.hpp"                                            *
+ * Arch Engine - "Utils/logger.hpp"                                            *
  *                                                                            *
  * Simple, lightweight, line-level thread safe logging system. The system is  *
  * more concerned about modularity than cache coherence, once logging should  *
@@ -11,8 +11,8 @@
  *============================================================================*/
 
 
-#ifndef CORE_LOGGER_HPP
-#define CORE_LOGGER_HPP
+#ifndef UTILS_LOGGER_HPP
+#define UTILS_LOGGER_HPP
 
 
 #include <atomic>
@@ -29,7 +29,7 @@
 #include <vector>
 
 
-namespace Core {
+namespace Utils {
 
 	// The Logger class verbosity is based upon its LogLevel type.
 	// The LogLevel enum names are self explanatory.
@@ -79,18 +79,23 @@ namespace Core {
 		}
 
 		bool openOutputStream(const std::string& path) override {
-			m_output_stream.open(path.c_str(),
-				std::ios_base::binary | std::ios_base::out);
+			m_output_stream.open(path.c_str(), std::ios_base::binary |
+				std::ios_base::out | std::ios_base::app);
 
 			if (!m_output_stream.is_open())
 				return false;
 
+			m_output_stream << "-----------------------------------------------\
+----------------- STARTED LOGGING\n";
 			return true;
 		}
 
 		void closeOutputStream() override  {
-			if (m_output_stream.is_open())
+			if (m_output_stream.is_open()) {
+				m_output_stream << "-------------------------------------------\
+----------------------- ENDED LOGGING\n" << std::endl;
 				m_output_stream.close();
+			}
 		}
 		
 		void write(const std::string& msg) override {
@@ -110,8 +115,10 @@ namespace Core {
 	// the data by multiple threads.
 	template <typename LogPolicy>
 	void loggingDaemon(Logger<LogPolicy>* logger) {
+logger->m_policy.write(logger->m_thread_names[std::this_thread::get_id()] + "1 ");
 		std::unique_lock<std::timed_mutex>
 			lock(logger->m_write_mutex, std::defer_lock);
+logger->m_policy.write(logger->m_thread_names[std::this_thread::get_id()] + "2 ");
 
 		do {
 			std::this_thread::sleep_for(std::chrono::milliseconds { 50 });
@@ -129,6 +136,7 @@ namespace Core {
 		}
 		while(logger->m_is_still_running.test_and_set() ||
 			logger->m_log_buffer.size());
+logger->m_policy.write(logger->m_thread_names[std::this_thread::get_id()] + "3 ");
 	}
 
 	template<typename LogPolicy>
@@ -176,9 +184,10 @@ namespace Core {
 	Logger<LogPolicy>::~Logger() {
 #ifndef NDEBUG
 		// Log closing message
-		log<LOG_INFO>("Closing Logging System.");
+		log<LOG_INFO>("Shutting down Logging Systems");
 #endif	// NDEBUG
 
+		// Stop the daemon thread
 		m_is_still_running.clear();
 		m_daemon.join();
 
@@ -207,9 +216,11 @@ namespace Core {
 			log_stream << "\n";
 
 		// Writes line number and date/time
-		std::time_t date_time = std::chrono::system_clock::to_time_t(
+		auto now = std::chrono::system_clock::to_time_t(
 			std::chrono::system_clock::now());
-		log_stream << m_log_line_number++ << std::ctime(&date_time) << "\t";
+
+		log_stream << m_log_line_number++ << ": "
+			<< std::ctime(&now) << "\t";
 
 		// Writes log level
 		switch (level) {
@@ -246,4 +257,4 @@ namespace Core {
 }
 
 
-#endif	// CORE_LOGGER_HPP
+#endif	// UTILS_LOGGER_HPP

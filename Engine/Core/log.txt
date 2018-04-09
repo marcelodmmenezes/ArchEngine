@@ -1,2 +1,0 @@
-0Mon Apr  9 16:37:39 2018
-	<INFO>: mainThread:	Closing Logging System.

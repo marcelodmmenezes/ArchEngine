@@ -1,5 +1,5 @@
 /*============================================================================*
- * Arch Engine - "Core/serviceLocator.hpp"                                    *
+ * Arch Engine - "Utils/serviceLocator.hpp"                                    *
  *                                                                            *
  * Service Locator - (Dependency injection)                                   *
  *                                                                            *
@@ -9,8 +9,8 @@
  *============================================================================*/
 
 
-#ifndef CORE_SERVICE_LOCATOR_HPP
-#define CORE_SERVICE_LOCATOR_HPP
+#ifndef UTILS_SERVICE_LOCATOR_HPP
+#define UTILS_SERVICE_LOCATOR_HPP
 
 
 #include "logger.hpp"
@@ -18,7 +18,7 @@
 #include <memory>
 
 
-namespace Core {
+namespace Utils {
 	// This class "provides global access to a service
 	// without coupling the user to the concrete class
 	// that implements it" (Robert Nystrom - Game Programming Patterns).
@@ -42,4 +42,4 @@ namespace Core {
 }
 
 
-#endif	// CORE_SERVICE_LOCATOR_HPP
+#endif	// UTILS_SERVICE_LOCATOR_HPP

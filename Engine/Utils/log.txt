@@ -1,0 +1,138 @@
+---------------------------------------------------------------- STARTED LOGGING
+1 
+2 
+0: Mon Apr  9 17:51:42 2018
+	<INFO>: mainThread:	Logging Systems online...
+
+1: Mon Apr  9 17:51:42 2018
+	<INFO>: t1:	Test
+
+2: Mon Apr  9 17:51:42 2018
+	<INFO>: t2:	Test
+
+3: Mon Apr  9 17:51:42 2018
+	<INFO>: mainThread:	Test
+
+4: Mon Apr  9 17:51:42 2018
+	<INFO>: t3:	Test
+
+5: Mon Apr  9 17:51:42 2018
+	<INFO>: mainThread:	Shutting down Logging Systems
+3 
+------------------------------------------------------------------ ENDED LOGGING
+
+---------------------------------------------------------------- STARTED LOGGING
+1 
+2 
+0: Mon Apr  9 17:51:47 2018
+	<INFO>: mainThread:	Logging Systems online...
+
+1: Mon Apr  9 17:51:47 2018
+	<INFO>: t1:	Test
+
+2: Mon Apr  9 17:51:47 2018
+	<INFO>: mainThread:	Test
+
+3: Mon Apr  9 17:51:47 2018
+	<INFO>: t2:	Test
+
+4: Mon Apr  9 17:51:47 2018
+	<INFO>: t3:	Test
+
+5: Mon Apr  9 17:51:47 2018
+	<INFO>: mainThread:	Shutting down Logging Systems
+3 
+------------------------------------------------------------------ ENDED LOGGING
+
+---------------------------------------------------------------- STARTED LOGGING
+1 
+2 
+0: Mon Apr  9 17:51:47 2018
+	<INFO>: mainThread:	Logging Systems online...
+
+1: Mon Apr  9 17:51:47 2018
+	<INFO>: t1:	Test
+
+2: Mon Apr  9 17:51:47 2018
+	<INFO>: mainThread:	Test
+
+3: Mon Apr  9 17:51:47 2018
+	<INFO>: t2:	Test
+
+4: Mon Apr  9 17:51:47 2018
+	<INFO>: t3:	Test
+
+5: Mon Apr  9 17:51:47 2018
+	<INFO>: mainThread:	Shutting down Logging Systems
+3 
+------------------------------------------------------------------ ENDED LOGGING
+
+---------------------------------------------------------------- STARTED LOGGING
+1 
+2 
+0: Mon Apr  9 17:51:52 2018
+	<INFO>: mainThread:	Logging Systems online...
+
+1: Mon Apr  9 17:51:52 2018
+	<INFO>: t1:	Test
+
+2: Mon Apr  9 17:51:52 2018
+	<INFO>: mainThread:	Test
+
+3: Mon Apr  9 17:51:52 2018
+	<INFO>: t2:	Test
+
+4: Mon Apr  9 17:51:52 2018
+	<INFO>: t3:	Test
+
+5: Mon Apr  9 17:51:52 2018
+	<INFO>: mainThread:	Shutting down Logging Systems
+3 
+------------------------------------------------------------------ ENDED LOGGING
+
+---------------------------------------------------------------- STARTED LOGGING
+1 
+2 
+0: Mon Apr  9 17:51:54 2018
+	<INFO>: mainThread:	Logging Systems online...
+
+1: Mon Apr  9 17:51:54 2018
+	<INFO>: t1:	Test
+
+2: Mon Apr  9 17:51:54 2018
+	<INFO>: mainThread:	Test
+
+3: Mon Apr  9 17:51:54 2018
+	<INFO>: t2:	Test
+
+4: Mon Apr  9 17:51:54 2018
+	<INFO>: t3:	Test
+
+5: Mon Apr  9 17:51:54 2018
+	<INFO>: mainThread:	Shutting down Logging Systems
+3 
+------------------------------------------------------------------ ENDED LOGGING
+
+---------------------------------------------------------------- STARTED LOGGING
+1 
+2 
+0: Mon Apr  9 17:51:55 2018
+	<INFO>: mainThread:	Logging Systems online...
+
+1: Mon Apr  9 17:51:55 2018
+	<INFO>: mainThread:	Test
+
+2: Mon Apr  9 17:51:55 2018
+	<INFO>: t1:	Test
+
+3: Mon Apr  9 17:51:55 2018
+	<INFO>: t3:	Test
+
+4: Mon Apr  9 17:51:55 2018
+	<INFO>: t2:	Test
+
+5: Mon Apr  9 17:51:55 2018
+	<INFO>: mainThread:	Shutting down Logging Systems
+3 
+------------------------------------------------------------------ ENDED LOGGING
+
