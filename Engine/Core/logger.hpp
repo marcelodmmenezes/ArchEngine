@@ -7,15 +7,13 @@
  *                                                                            *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                      *
  * Created: 08/04/2018                                                        *
- * Last Modified: 08/04/2018                                                  *
+ * Last Modified: 09/04/2018                                                  *
  *============================================================================*/
 
 
 #ifndef CORE_LOGGER_HPP
 #define CORE_LOGGER_HPP
 
-
-#include "serviceLocator.hpp"
 
 #include <atomic>
 #include <chrono>
@@ -105,6 +103,34 @@ namespace Core {
 
 
 	//------------------------------------------------------------------- Logger
+	template<typename LogPolicy> class Logger;
+
+	// The logging service runs on the background through this daemon.
+	// It uses a unique_lock with timed_mutex to avoid simultaneous access to
+	// the data by multiple threads.
+	template <typename LogPolicy>
+	void loggingDaemon(Logger<LogPolicy>* logger) {
+		std::unique_lock<std::timed_mutex>
+			lock(logger->m_write_mutex, std::defer_lock);
+
+		do {
+			std::this_thread::sleep_for(std::chrono::milliseconds { 50 });
+
+			if (logger->m_log_buffer.size()) {
+				if (!lock.try_lock_for(std::chrono::milliseconds { 50 }))
+					continue;
+
+				for (auto &it : logger->m_log_buffer)
+					logger->m_policy.write(it);
+
+				logger->m_log_buffer.clear();
+				lock.unlock();
+			}
+		}
+		while(logger->m_is_still_running.test_and_set() ||
+			logger->m_log_buffer.size());
+	}
+
 	template<typename LogPolicy>
 	class Logger {
 	public:
@@ -114,10 +140,10 @@ namespace Core {
 		void setThreadName(const std::string& name);
 
 		template<LogLevel level>
-		void log(std::stringstream stream);
+		void log(const std::stringstream& stream);
 
 		template<LogLevel level>
-		void log(std::string msg);
+		void log(const std::string& msg);
 
 		template<typename Policy>
 		friend void loggingDaemon(Logger<Policy>* logger);
@@ -150,8 +176,7 @@ namespace Core {
 	Logger<LogPolicy>::~Logger() {
 #ifndef NDEBUG
 		// Log closing message
-		ServiceLocator::getConsoleLogger()->log<LOG_INFO>(
-			"Closing Logging System.");
+		log<LOG_INFO>("Closing Logging System.");
 #endif	// NDEBUG
 
 		m_is_still_running.clear();
@@ -164,17 +189,17 @@ namespace Core {
 		m_log_buffer.clear();
 		m_log_buffer.shrink_to_fit();
 
-		m_policy.closeOutputstream();
+		m_policy.closeOutputStream();
 	}
 
 	template<typename LogPolicy>
 	void Logger<LogPolicy>::setThreadName(const std::string& name) {
-		m_thread_names[std::this_thread::getId()] = name;
+		m_thread_names[std::this_thread::get_id()] = name;
 	}
 
 	template<typename LogPolicy>
 	template<LogLevel level>
-	void Logger<LogPolicy>::log(std::stringstream stream) {
+	void Logger<LogPolicy>::log(const std::stringstream& stream) {
 		std::stringstream log_stream;		
 
 		// If file is not empty start writing in a new line
@@ -182,8 +207,9 @@ namespace Core {
 			log_stream << "\n";
 
 		// Writes line number and date/time
-		log_stream << m_log_line_number++ <<
-			std::chrono::system_clock::now() << "\t";
+		std::time_t date_time = std::chrono::system_clock::to_time_t(
+			std::chrono::system_clock::now());
+		log_stream << m_log_line_number++ << std::ctime(&date_time) << "\t";
 
 		// Writes log level
 		switch (level) {
@@ -202,7 +228,7 @@ namespace Core {
 		}
 
 		// Writes thread name
-		log_stream << m_thread_names[std::this_thread::getId()] << ":\t";
+		log_stream << m_thread_names[std::this_thread::get_id()] << ":\t";
 
 		// Writes the message
 		log_stream << stream.str();
@@ -212,36 +238,10 @@ namespace Core {
 
 	template<typename LogPolicy>
 	template<LogLevel level>
-	void Logger<LogPolicy>::log(std::string msg) {
+	void Logger<LogPolicy>::log(const std::string& msg) {
 		std::stringstream stream;
 		stream << msg.c_str();
 		log<level>(stream);
-	}
-
-	// The logging service runs on the background through this daemon.
-	// It uses a unique_lock with timed_mutex to avoid simultaneous access to
-	// the data by multiple threads.
-	template <typename LogPolicy>
-	void loggingDaemon(Logger<LogPolicy>* logger) {
-		std::unique_lock<std::timed_mutex>
-			lock(logger->m_write_mutex, std::defer_lock);
-
-		do {
-			std::this_thread::sleep_for(std::chrono::milliseconds { 50 });
-
-			if (logger->m_log_buffer.size()) {
-				if (!lock.try_lock_for(std::chrono::milliseconds { 50 }))
-					continue;
-
-				for (auto &it : logger->m_log_buffer)
-					logger->policy.write(it);
-
-				logger->m_log_buffer.clear();
-				lock.unlock();
-			}
-		}
-		while(logger->m_is_still_running.test_and_set() ||
-			logger->m_log_buffer.size());
 	}
 }
 

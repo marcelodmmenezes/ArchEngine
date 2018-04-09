@@ -5,7 +5,7 @@
  *                                                                            *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                      *
  * Created: 08/04/2018                                                        *
- * Last Modified: 08/04/2018                                                  *
+ * Last Modified: 09/04/2018                                                  *
  *============================================================================*/
 
 
@@ -19,12 +19,6 @@
 
 
 namespace Core {
-	class ConsoleLogPolicy;
-	class FileLogPolicy;
-	
-	template<typename LogPolicy>
-	class Logger;
-
 	// This class "provides global access to a service
 	// without coupling the user to the concrete class
 	// that implements it" (Robert Nystrom - Game Programming Patterns).
