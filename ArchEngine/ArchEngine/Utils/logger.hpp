@@ -244,7 +244,10 @@ namespace Utils {
 
 		// Writes the message
 		log_stream << stream.str();
+
+		m_write_mutex.lock();
 		m_log_buffer.push_back(log_stream.str());
+		m_write_mutex.unlock();
 	}
 
 	template<typename LogPolicy>
