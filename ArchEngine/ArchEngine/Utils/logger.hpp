@@ -115,27 +115,18 @@ namespace Utils {
 	// the data by multiple threads.
 	template <typename LogPolicy>
 	void loggingDaemon(Logger<LogPolicy>* logger) {
-logger->m_policy.write(logger->m_thread_names[std::this_thread::get_id()] + "1 ");
-		std::unique_lock<std::timed_mutex>
-			lock(logger->m_write_mutex, std::defer_lock);
-logger->m_policy.write(logger->m_thread_names[std::this_thread::get_id()] + "2 ");
-
 		do {
-			std::this_thread::sleep_for(std::chrono::milliseconds{ 50 });
-
 			if (logger->m_log_buffer.size()) {
-				if (!lock.try_lock_for(std::chrono::milliseconds{ 50 }))
-					continue;
-
+				logger->m_write_mutex.lock();
 				for (auto &it : logger->m_log_buffer)
 					logger->m_policy.write(it);
 
 				logger->m_log_buffer.clear();
-				lock.unlock();
+				logger->m_write_mutex.unlock();
 			}
-		} while (logger->m_is_still_running.test_and_set() ||
+		}
+		while (logger->m_is_still_running.test_and_set() ||
 			logger->m_log_buffer.size());
-logger->m_policy.write(logger->m_thread_names[std::this_thread::get_id()] + "3 ");
 	}
 
 	template<typename LogPolicy>
@@ -163,7 +154,7 @@ logger->m_policy.write(logger->m_thread_names[std::this_thread::get_id()] + "3 "
 
 		// Concurrency stuff
 		std::map<std::thread::id, std::string> m_thread_names;
-		std::timed_mutex m_write_mutex;
+		std::mutex m_write_mutex;
 		std::thread m_daemon;
 		std::atomic_flag m_is_still_running{ ATOMIC_FLAG_INIT };
 	};
@@ -216,7 +207,7 @@ logger->m_policy.write(logger->m_thread_names[std::this_thread::get_id()] + "3 "
 
 		// Writes line number and date/time
 		time_t time;
-		std::tm bt{};
+		std::tm bt;
 		char buffer[100];
 
 		std::time(&time);
@@ -253,7 +244,6 @@ logger->m_policy.write(logger->m_thread_names[std::this_thread::get_id()] + "3 "
 
 		// Writes the message
 		log_stream << stream.str();
-		std::lock_guard<std::timed_mutex> lock(m_write_mutex);
 		m_log_buffer.push_back(log_stream.str());
 	}
 
