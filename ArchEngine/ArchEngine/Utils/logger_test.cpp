@@ -1,3 +1,15 @@
+/*============================================================================*
+* Arch Engine - "Utils/logger_tester.cpp"                                    *
+*                                                                            *
+* This is a tester file. It's purpose is to test some functionalities, thus  *
+* should be removed from releases.                                           *
+*                                                                            *
+* Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                      *
+* Created: 09/04/2018                                                        *
+* Last Modified: 09/04/2018                                                  *
+*============================================================================*/
+
+
 #include "logger.hpp"
 #include "serviceLocator.hpp"
 
@@ -21,11 +33,9 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	std::thread t1(logDaemon, "t1");
-	std::thread t2(logDaemon, "t2");
-	std::thread t3(logDaemon, "t3");
-
-	logDaemon("mainThread");
+	std::thread t1(logDaemon, std::string("t1"));
+	std::thread t2(logDaemon, std::string("t2"));
+	std::thread t3(logDaemon, std::string("t3"));
 
 	t1.join();
 	t2.join();
@@ -56,11 +66,21 @@ void startLoggingService() {
 }
 
 void logDaemon(const std::string& thread_name) {
+	/*
 	auto console_logger = ServiceLocator::getConsoleLogger();
 	console_logger->setThreadName(thread_name);
 	console_logger->log<LOG_INFO>("Test");
+	*/
 
-	auto file_logger = ServiceLocator::getFileLogger();
-	file_logger->setThreadName(thread_name);
-	file_logger->log<LOG_INFO>("Test");
+	for (int i = 0; i < 4000; i++) {
+		auto file_logger = ServiceLocator::getFileLogger();
+		file_logger->setThreadName(thread_name + "_" + std::to_string(i));
+		
+		if (thread_name == "t1")
+			file_logger->log<LOG_WARNING>("Warning message");
+		else if (thread_name == "t2")
+			file_logger->log<LOG_ERROR>("FATAL ERROR");
+		else
+			file_logger->log<LOG_DEBUG>("Han shot first");
+	}
 }

@@ -118,6 +118,7 @@ namespace Utils {
 		do {
 			if (logger->m_log_buffer.size()) {
 				logger->m_write_mutex.lock();
+
 				for (auto &it : logger->m_log_buffer)
 					logger->m_policy.write(it);
 
@@ -150,10 +151,10 @@ namespace Utils {
 		// Logging stuff
 		LogPolicy m_policy;
 		unsigned m_log_line_number;
+		std::map<std::thread::id, std::string> m_thread_names;
 		std::vector<std::string> m_log_buffer;
 
 		// Concurrency stuff
-		std::map<std::thread::id, std::string> m_thread_names;
 		std::mutex m_write_mutex;
 		std::thread m_daemon;
 		std::atomic_flag m_is_still_running{ ATOMIC_FLAG_INIT };
@@ -201,10 +202,6 @@ namespace Utils {
 	void Logger<LogPolicy>::log(const std::stringstream& stream) {
 		std::stringstream log_stream;
 
-		// If file is not empty start writing in a new line
-		if (m_log_line_number != 0u)
-			log_stream << "\n";
-
 		// Writes line number and date/time
 		time_t time;
 		std::tm bt;
@@ -221,7 +218,9 @@ namespace Utils {
 		std::strftime(buffer, 100, "%d/%m/%Y - %T", &bt);
 #endif
 
-		log_stream << m_log_line_number++ << ": " << buffer << "\t";
+		m_write_mutex.lock();
+
+		log_stream << m_log_line_number++ << ": " << buffer << "    ";
 
 		// Writes log level
 		switch (level) {
@@ -240,13 +239,13 @@ namespace Utils {
 		}
 
 		// Writes thread name
-		log_stream << m_thread_names[std::this_thread::get_id()] << ":\t";
+		log_stream << m_thread_names[std::this_thread::get_id()] << ":    ";
 
 		// Writes the message
 		log_stream << stream.str();
 
-		m_write_mutex.lock();
 		m_log_buffer.push_back(log_stream.str());
+
 		m_write_mutex.unlock();
 	}
 
