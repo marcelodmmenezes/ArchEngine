@@ -33,9 +33,9 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	std::thread t1(logDaemon, std::string("t1"));
-	std::thread t2(logDaemon, std::string("t2"));
-	std::thread t3(logDaemon, std::string("t3"));
+	std::thread t1(logDaemon, "t1");
+	std::thread t2(logDaemon, "t2");
+	std::thread t3(logDaemon, "t3");
 
 	t1.join();
 	t2.join();
