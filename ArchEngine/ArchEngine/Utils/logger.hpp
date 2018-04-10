@@ -1,14 +1,14 @@
-/*============================================================================*
- * Arch Engine - "Utils/logger.hpp"                                            *
- *                                                                            *
- * Simple, lightweight, line-level thread safe logging system. The system is  *
- * more concerned about modularity than cache coherence, once logging should  *
- * be almost completely deactivated in Arch Engine's release version.         *
- *                                                                            *
- * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                      *
- * Created: 08/04/2018                                                        *
- * Last Modified: 09/04/2018                                                  *
- *============================================================================*/
+/*===========================================================================*
+ * Arch Engine - "Utils/logger.hpp"                                          *
+ *                                                                           *
+ * Simple, lightweight, line-level thread safe logging system. The system is *
+ * more concerned about modularity than cache coherence, once logging should *
+ * be almost completely deactivated in Arch Engine's release version.        *
+ *                                                                           *
+ * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
+ * Created: 08/04/2018                                                       *
+ * Last Modified: 10/04/2018                                                 *
+ *===========================================================================*/
 
 
 #ifndef UTILS_LOGGER_HPP
@@ -85,15 +85,27 @@ namespace Utils {
 			if (!m_output_stream.is_open())
 				return false;
 
+#if defined(__unix__)
 			m_output_stream << "-----------------------------------------------\
 ----------------- STARTED LOGGING\n";
+#elif defined(_MSC_VER)
+			m_output_stream << "-----------------------------------------------\
+----------------- STARTED LOGGING\r\n";
+#endif
+
 			return true;
 		}
 
 		void closeOutputStream() override {
 			if (m_output_stream.is_open()) {
+#if defined(__unix__)
 				m_output_stream << "-------------------------------------------\
 ----------------------- ENDED LOGGING\n" << std::endl;
+#elif defined(_MSC_VER)
+				m_output_stream << "-------------------------------------------\
+----------------------- ENDED LOGGING\r\n" << std::endl;
+#endif
+
 				m_output_stream.close();
 			}
 		}
@@ -167,8 +179,15 @@ namespace Utils {
 			m_is_still_running.test_and_set();
 			m_daemon = std::move(std::thread{ loggingDaemon<LogPolicy>, this });
 		}
-		else throw std::runtime_error("Unable to open the file " +
-			path + " for logging\n");
+		else {
+#if defined(__unix__)
+			throw std::runtime_error("Unable to open the file "
+				+ path + " for logging\n");
+#elif defined(_MSC_VER)
+			throw std::runtime_error("Unable to open the file "
+				+ path + " for logging\r\n");
+#endif
+		}
 	}
 
 	template<typename LogPolicy>

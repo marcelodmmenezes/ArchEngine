@@ -1,13 +1,13 @@
-/*============================================================================*
-* Arch Engine - "Utils/logger_tester.cpp"                                    *
-*                                                                            *
-* This is a tester file. It's purpose is to test some functionalities, thus  *
-* should be removed from releases.                                           *
-*                                                                            *
-* Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                      *
-* Created: 09/04/2018                                                        *
-* Last Modified: 09/04/2018                                                  *
-*============================================================================*/
+/*===========================================================================*
+ * Arch Engine - "Utils/logger_tester.cpp"                                   *
+ *                                                                           *
+ * This is a tester file. It's purpose is to test some functionalities, thus *
+ * should be removed from releases.                                          *
+ *                                                                           *
+ * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
+ * Created: 09/04/2018                                                       *
+ * Last Modified: 10/04/2018                                                 *
+ *===========================================================================*/
 
 
 #include "logger.hpp"

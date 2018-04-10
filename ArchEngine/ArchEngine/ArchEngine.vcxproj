@@ -69,7 +69,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)VSOutput\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)VSOutput\Intermediate\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)VSOutput\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)VSOutput\Intermediate\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -115,10 +122,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Core\window.hpp" />
     <ClInclude Include="Utils\logger.hpp" />
     <ClInclude Include="Utils\serviceLocator.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Core\window.cpp" />
     <ClCompile Include="Utils\logger_test.cpp" />
     <ClCompile Include="Utils\serviceLocator.cpp" />
   </ItemGroup>
