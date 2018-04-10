@@ -8,7 +8,6 @@
 *.sln.docstates
 
 # My files and folders
-INF216Sniper/res/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
