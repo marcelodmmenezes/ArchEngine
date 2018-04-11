@@ -125,8 +125,7 @@ namespace Utils {
 	template<typename LogPolicy> class Logger;
 
 	// The logging service runs on the background through this daemon.
-	// It uses a unique_lock with timed_mutex to avoid simultaneous access to
-	// the data by multiple threads.
+	// It uses a std::mutex for the critical region
 	template <typename LogPolicy>
 	void loggingDaemon(Logger<LogPolicy>* logger) {
 		do {
@@ -230,7 +229,7 @@ namespace Utils {
 
 		std::time(&time);
 
-		// localtime is thread-unsafe, both unix and windows have alternatives
+		// localtime is unsafe, both unix and windows have alternatives
 #if defined(__unix__)
 		localtime_r(&time, &bt);
 		std::strftime(buffer, 100, "%d/%m/%Y - %T", &bt);

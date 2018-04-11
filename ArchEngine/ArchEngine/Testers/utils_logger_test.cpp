@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Utils/logger_tester.cpp"                                   *
+ * Arch Engine - "Testers/utils_logger_test.cpp"                             *
  *                                                                           *
  * This is a tester file. It's purpose is to test some functionalities, thus *
  * should be removed from releases.                                          *

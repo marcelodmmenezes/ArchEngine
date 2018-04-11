@@ -19,19 +19,19 @@ using namespace Utils;
 
 namespace Core {
 	Window::Window() {
-#ifndef ARCH_ENGINE_SUPRESS_INFO_LOGGING
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			m_title + " window instantiated");
-#endif
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 	}
 
 	Window::~Window() {
 		assert(m_safe_to_destroy);
 
-#ifndef ARCH_ENGINE_SUPRESS_INFO_LOGGING
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			m_title + " window destroyed");
-#endif
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 	}
 
 	bool Window::create(
@@ -64,7 +64,6 @@ namespace Core {
 		m_safe_to_destroy = true;
 	}
 
-	// Window functionalities toggle
 	void Window::setVSync(bool state) {
 	}
 
@@ -74,7 +73,6 @@ namespace Core {
 	void Window::fullscreen(bool state) {
 	}
 
-	// Getters
 	std::string Window::getTitle() const {
 		return m_title;
 	}
@@ -95,7 +93,6 @@ namespace Core {
 		return m_multisample_n_samples;
 	}
 
-	// Read-only attributes, set once per window
 	unsigned Window::getRSize() const {
 		return m_r_size;
 	}
@@ -120,7 +117,6 @@ namespace Core {
 		return m_stencil_size;
 	}
 
-	// Window state
 	bool Window::isVSyncOn() const {
 		return m_vsync;
 	}
