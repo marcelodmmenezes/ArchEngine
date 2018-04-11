@@ -18,6 +18,12 @@
 #include "engineMacros.hpp"
 #include "../Utils/serviceLocator.hpp"
 
+#if defined(__unix__)
+#include <SDL2/SDL.h>
+#elif defined(_MSC_VER)
+#include <SDL.h>
+#endif
+
 #include <cassert>
 #include <string>
 
@@ -25,19 +31,21 @@
 namespace Core {
 	class Window {
 	public:
-		Window();
+		Window(bool vsync, bool anti_aliasing, bool fullscreen);
 		~Window();
 
 		// Memory related stuff is initialized and destroyed mannualy (and not
 		// on the constructor/destructor), due to the fact that if we have
 		// multiple windows inside a container the destructor might invalidate
 		// some OpenGL context stuff, which is difficult to see.
-		// The class has a flag (m_safe_to_destroy) to ensure, through
-		// assertion, that the user will remember to call the methods.
-		bool create(
+		// The class has a flag (m_state) to ensure, through assertion, that
+		// the user will remember to call the methods.
+		bool initialize(
 			const std::string& title,
-			unsigned width = 800u,
-			unsigned height = 600u,
+			int pos_x = SDL_WINDOWPOS_CENTERED,
+			int pos_y = SDL_WINDOWPOS_CENTERED,
+			int width = 800,
+			int height = 600,
 			unsigned r_size = 8u,
 			unsigned g_size = 8u,
 			unsigned b_size = 8u,
@@ -45,19 +53,26 @@ namespace Core {
 			unsigned depth_size = 8u,
 			unsigned stencil_size = 8u,
 			unsigned ms_n_buffers = 1u,
-			unsigned ms_n_samples = 4u);
+			unsigned ms_n_samples = 4u,
+			unsigned sdl_flags = SDL_WINDOW_OPENGL,
+			unsigned context_major_version = 3,
+			unsigned context_minor_version = 3);
 
+		void update();
 		void destroy();
 
-		// Window functionalities toggle
+		void setPosition(int x, int y);
+
 		void setVSync(bool state);
-		void antiAliasing(bool state);
+		void antiAliasing(unsigned n_samples);
 		void fullscreen(bool state);
 
 		// Getters
 		std::string getTitle() const;
-		unsigned getWidth() const;
-		unsigned getHeight() const;
+		int getWidth() const;
+		int getHeight() const;
+
+		void getPosition(int* x, int* y) const;
 
 		unsigned getMultisampleNBuffers() const;
 		unsigned getMultisampleNSamples() const;
@@ -71,17 +86,33 @@ namespace Core {
 		unsigned getDepthSize() const;
 		unsigned getStencilSize() const;
 
+		// Setters
+		void setSize(int width, int height);
+		void setWidth(int width);
+		void setHeight(int height);
+
 		// Window state
 		bool isVSyncOn() const;
 		bool isAntiAliasingOn() const;
 		bool isFullscreen() const;
 
 	private:
+		enum WindowState {
+			CONSTRUCTED,
+			INITIALIZED,
+			SAFE_TO_DESTROY
+		};
+
+		// Flag to ensure resources have been freed
+		WindowState m_state;
+
 		// Window definition
 		std::string m_title;
-		unsigned m_width;
-		unsigned m_height;
-
+		int m_pos_x;
+		int m_pos_y;
+		int m_width;
+		int m_height;
+		
 		// Anti-Aliasing attributes (ms stands for multisample)
 		unsigned m_ms_n_buffers;
 		unsigned m_ms_n_samples;
@@ -98,11 +129,12 @@ namespace Core {
 
 		// Functionality flags
 		bool m_vsync;
-		bool m_anti_aliasing;
+		unsigned m_anti_aliasing;
 		bool m_fullscreen;
 
-		// Flag to ensure resources have been freed
-		bool m_safe_to_destroy;
+		// SDL variables
+		SDL_Window* m_window;
+		SDL_GLContext m_gl_context;
 	};
 }
 

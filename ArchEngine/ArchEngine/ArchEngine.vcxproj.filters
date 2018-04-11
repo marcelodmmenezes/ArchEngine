@@ -32,7 +32,10 @@
     <ClCompile Include="Core\window.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Testers\logger_test.cpp">
+    <ClCompile Include="Testers\utils_logger_test.cpp">
+      <Filter>Testers</Filter>
+    </ClCompile>
+    <ClCompile Include="Testers\core_window_test.cpp">
       <Filter>Testers</Filter>
     </ClCompile>
   </ItemGroup>

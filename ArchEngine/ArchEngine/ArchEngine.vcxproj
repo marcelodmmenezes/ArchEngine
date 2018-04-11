@@ -129,7 +129,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\window.cpp" />
-    <ClCompile Include="Testers\logger_test.cpp" />
+    <ClCompile Include="Testers\core_window_test.cpp" />
+    <ClCompile Include="Testers\utils_logger_test.cpp" />
     <ClCompile Include="Utils\serviceLocator.cpp" />
   </ItemGroup>
   <ItemGroup>

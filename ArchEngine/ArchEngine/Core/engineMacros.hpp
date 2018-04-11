@@ -9,6 +9,9 @@
  *===========================================================================*/
 
 
+// Assertion macros
+// #define ARCH_ENGINE_REMOVE_ASSERTIONS
+
 // Logging macros - names self explanatory
 // #define ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 // #define ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
