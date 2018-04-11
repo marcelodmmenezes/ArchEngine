@@ -70,12 +70,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)VSOutput\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)VSOutput\Intermediate\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)MSVCOutput\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)MSVCOutput\Intermediate\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)VSOutput\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)VSOutput\Intermediate\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)MSVCOutput\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)MSVCOutput\Intermediate\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -128,7 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\window.cpp" />
-    <ClCompile Include="Utils\logger_test.cpp" />
+    <ClCompile Include="Debug\logger_test.cpp" />
     <ClCompile Include="Utils\serviceLocator.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

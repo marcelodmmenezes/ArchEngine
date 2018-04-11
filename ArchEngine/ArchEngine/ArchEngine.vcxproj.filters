@@ -29,7 +29,7 @@
     <ClCompile Include="Core\window.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\logger_test.cpp">
+    <ClCompile Include="Debug\logger_test.cpp">
       <Filter>Debug</Filter>
     </ClCompile>
   </ItemGroup>
