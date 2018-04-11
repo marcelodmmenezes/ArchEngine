@@ -55,8 +55,8 @@ namespace Core {
 		m_a_size = a_size;
 		m_depth_size = depth_size;
 		m_stencil_size = stencil_size;
-		m_multisample_n_buffers = ms_n_buffers;
-		m_multisample_n_samples = ms_n_samples;
+		m_ms_n_buffers = ms_n_buffers;
+		m_ms_n_samples = ms_n_samples;
 		m_safe_to_destroy = false;
 	}
 
@@ -65,67 +65,35 @@ namespace Core {
 	}
 
 	void Window::setVSync(bool state) {
+		m_vsync = state;
 	}
 
 	void Window::antiAliasing(bool state) {
+		m_anti_aliasing = state;
 	}
 
 	void Window::fullscreen(bool state) {
+		m_fullscreen = state;
 	}
 
-	std::string Window::getTitle() const {
-		return m_title;
-	}
+	//----------------------------------------------------------------- Getters
+	std::string Window::getTitle() const { return m_title; }
+	unsigned Window::getWidth() const { return m_width; }
+	unsigned Window::getHeight() const { return m_height; }
 
-	unsigned Window::getWidth() const {
-		return m_width;
-	}
+	unsigned Window::getMultisampleNBuffers() const { return m_ms_n_buffers; }
+	unsigned Window::getMultisampleNSamples() const { return m_ms_n_samples; }
 
-	unsigned Window::getHeight() const {
-		return m_height;
-	}
+	unsigned Window::getRSize() const { return m_r_size; }
+	unsigned Window::getGSize() const { return m_g_size; }
+	unsigned Window::getBSize() const { return m_b_size; }
+	unsigned Window::getASize() const { return m_a_size; }
 
-	unsigned Window::getMultisampleNBuffers() const {
-		return m_multisample_n_buffers;
-	}
+	unsigned Window::getDepthSize() const { return m_depth_size; }
+	unsigned Window::getStencilSize() const { return m_stencil_size; }
 
-	unsigned Window::getMultisampleNSamples() const {
-		return m_multisample_n_samples;
-	}
-
-	unsigned Window::getRSize() const {
-		return m_r_size;
-	}
-
-	unsigned Window::getGSize() const {
-		return m_g_size;
-	}
-	
-	unsigned Window::getBSize() const {
-		return m_b_size;
-	}
-	
-	unsigned Window::getASize() const {
-		return m_a_size;
-	}
-
-	unsigned Window::getDepthSize() const {
-		return m_depth_size;
-	}
-	
-	unsigned Window::getStencilSize() const {
-		return m_stencil_size;
-	}
-
-	bool Window::isVSyncOn() const {
-		return m_vsync;
-	}
-	
-	bool Window::isAntiAliasingOn() const {
-		return m_anti_aliasing;
-	}
-	
-	bool Window::isFullscreen() const {
-		return m_fullscreen;
-	}
+	bool Window::isVSyncOn() const { return m_vsync; }
+	bool Window::isAntiAliasingOn() const { return m_anti_aliasing; }
+	bool Window::isFullscreen() const { return m_fullscreen; }
+	//-----------------------------------------------------------------------//
 }

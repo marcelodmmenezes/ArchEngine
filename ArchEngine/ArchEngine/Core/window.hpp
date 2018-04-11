@@ -82,9 +82,9 @@ namespace Core {
 		unsigned m_width;
 		unsigned m_height;
 
-		// Anti-Aliasing attributes
-		unsigned m_multisample_n_buffers;
-		unsigned m_multisample_n_samples;
+		// Anti-Aliasing attributes (ms stands for multisample)
+		unsigned m_ms_n_buffers;
+		unsigned m_ms_n_samples;
 
 		// Number of bits of window color components
 		unsigned m_r_size;
