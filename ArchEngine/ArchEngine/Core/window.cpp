@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 10/04/2018                                                 *
+ * Last Modified: 11/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -108,6 +108,7 @@ namespace Core {
 			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
 				"Failed to initialize " + m_title);
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			return false;
 		}
 
 		m_gl_context = SDL_GL_CreateContext(m_window);
@@ -118,6 +119,8 @@ namespace Core {
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			m_title + " window initialized");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+		return true;
 	}
 
 	void Window::update() {

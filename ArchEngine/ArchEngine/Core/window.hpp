@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 10/04/2018                                                 *
+ * Last Modified: 11/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -86,15 +86,15 @@ namespace Core {
 		unsigned getDepthSize() const;
 		unsigned getStencilSize() const;
 
-		// Setters
-		void setSize(int width, int height);
-		void setWidth(int width);
-		void setHeight(int height);
-
 		// Window state
 		bool isVSyncOn() const;
 		bool isAntiAliasingOn() const;
 		bool isFullscreen() const;
+
+		// Setters
+		void setSize(int width, int height);
+		void setWidth(int width);
+		void setHeight(int height);
 
 	private:
 		enum WindowState {
