@@ -15,6 +15,8 @@
 #define UTILS_LOGGER_HPP
 
 
+#include "../Core/engineMacros.hpp"
+
 #include <atomic>
 #include <chrono>
 #include <ctime>
@@ -192,10 +194,10 @@ namespace Utils {
 
 	template<typename LogPolicy>
 	Logger<LogPolicy>::~Logger() {
-#ifndef NDEBUG
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 		// Log closing message
 		log<LOG_INFO>("Shutting down Logging Systems");
-#endif	// NDEBUG
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
 		// Stop the daemon thread
 		m_is_still_running.clear();

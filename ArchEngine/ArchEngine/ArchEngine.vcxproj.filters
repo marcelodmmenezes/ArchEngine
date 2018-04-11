@@ -21,6 +21,9 @@
     <ClInclude Include="Core\window.hpp">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\engineMacros.hpp">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
