@@ -129,7 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\window.cpp" />
-    <ClCompile Include="Debug\logger_test.cpp" />
+    <ClCompile Include="Testers\logger_test.cpp" />
     <ClCompile Include="Utils\serviceLocator.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

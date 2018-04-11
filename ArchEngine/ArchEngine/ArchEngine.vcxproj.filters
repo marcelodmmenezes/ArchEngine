@@ -7,7 +7,7 @@
     <Filter Include="Core">
       <UniqueIdentifier>{15312796-8d3f-4d36-956e-d4ddb2b2fbd1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Debug">
+    <Filter Include="Testers">
       <UniqueIdentifier>{ce2e013a-8443-412b-8471-c36fc3870cb5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -32,8 +32,8 @@
     <ClCompile Include="Core\window.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Debug\logger_test.cpp">
-      <Filter>Debug</Filter>
+    <ClCompile Include="Testers\logger_test.cpp">
+      <Filter>Testers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
