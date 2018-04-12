@@ -29,7 +29,7 @@ using namespace Utils;
 
 
 //--- Time control
-std::chrono::time_point<std::chrono::steady_clock> g_start, g_end;
+std::chrono::time_point<std::chrono::high_resolution_clock> g_start, g_end;
 
 //-- Logger controls to avoid writing same stuff over and over again
 bool g_second_test_session_logs[] = {
