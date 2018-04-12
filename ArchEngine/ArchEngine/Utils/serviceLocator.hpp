@@ -1,12 +1,12 @@
-/*============================================================================*
- * Arch Engine - "Utils/serviceLocator.hpp"                                    *
- *                                                                            *
- * Service Locator - (Dependency injection)                                   *
- *                                                                            *
- * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                      *
- * Created: 08/04/2018                                                        *
- * Last Modified: 09/04/2018                                                  *
- *============================================================================*/
+/*===========================================================================*
+ * Arch Engine - "Utils/serviceLocator.hpp"                                  *
+ *                                                                           *
+ * Service Locator - (Dependency injection)                                  *
+ *                                                                           *
+ * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
+ * Created: 08/04/2018                                                       *
+ * Last Modified: 10/04/2018                                                 *
+ *===========================================================================*/
 
 
 #ifndef UTILS_SERVICE_LOCATOR_HPP

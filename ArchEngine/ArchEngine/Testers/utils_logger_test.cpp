@@ -1,17 +1,18 @@
-/*============================================================================*
-* Arch Engine - "Utils/logger_tester.cpp"                                    *
-*                                                                            *
-* This is a tester file. It's purpose is to test some functionalities, thus  *
-* should be removed from releases.                                           *
-*                                                                            *
-* Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                      *
-* Created: 09/04/2018                                                        *
-* Last Modified: 09/04/2018                                                  *
-*============================================================================*/
+/*===========================================================================*
+ * Arch Engine - "Testers/utils_logger_test.cpp"                             *
+ *                                                                           *
+ * This is a tester file. It's purpose is to test some functionalities, thus *
+ * should be removed from releases.                                          *
+ * Expect some hard coded, bizarre stuff. You've been warned ;)              *
+ *                                                                           *
+ * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
+ * Created: 09/04/2018                                                       *
+ * Last Modified: 11/04/2018                                                 *
+ *===========================================================================*/
 
-
-#include "logger.hpp"
-#include "serviceLocator.hpp"
+/*
+#include "../Utils/logger.hpp"
+#include "../Utils/serviceLocator.hpp"
 
 #include <cstdlib>
 #include <memory>
@@ -46,7 +47,7 @@ int main(int argc, char* argv[]) {
 
 void startLoggingService() {
 	std::shared_ptr<Logger<ConsoleLogPolicy>>
-		console_logger(new Logger<ConsoleLogPolicy>("log.txt"));
+		console_logger(new Logger<ConsoleLogPolicy>(""));
 
 	std::shared_ptr<Logger<FileLogPolicy>>
 		file_logger(new Logger<FileLogPolicy>("log.txt"));
@@ -57,12 +58,10 @@ void startLoggingService() {
 	ServiceLocator::provideConsoleLogger(console_logger);
 	ServiceLocator::provideFileLogger(file_logger);
 
-#ifndef NDEBUG
 	ServiceLocator::getConsoleLogger()->log<LOG_INFO>(
 		"Logging Systems online...");
 	ServiceLocator::getFileLogger()->log<LOG_INFO>(
 		"Logging Systems online...");
-#endif
 }
 
 void logDaemon(const std::string& thread_name) {
@@ -71,7 +70,7 @@ void logDaemon(const std::string& thread_name) {
 	console_logger->setThreadName(thread_name);
 	console_logger->log<LOG_INFO>("Test");
 	*/
-
+/*
 	for (int i = 0; i < 4000; i++) {
 		auto file_logger = ServiceLocator::getFileLogger();
 		file_logger->setThreadName(thread_name + "_" + std::to_string(i));
@@ -84,3 +83,4 @@ void logDaemon(const std::string& thread_name) {
 			file_logger->log<LOG_DEBUG>("Han shot first");
 	}
 }
+*/

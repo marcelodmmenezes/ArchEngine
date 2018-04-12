@@ -4,6 +4,12 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{9117c3f6-9f05-472a-9f56-e690977c6f54}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{15312796-8d3f-4d36-956e-d4ddb2b2fbd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Testers">
+      <UniqueIdentifier>{ce2e013a-8443-412b-8471-c36fc3870cb5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils\logger.hpp">
@@ -12,13 +18,28 @@
     <ClInclude Include="Utils\serviceLocator.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Core\window.hpp">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\engineMacros.hpp">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Utils\logger_test.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
     <ClCompile Include="Utils\serviceLocator.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Core\window.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Testers\utils_logger_test.cpp">
+      <Filter>Testers</Filter>
+    </ClCompile>
+    <ClCompile Include="Testers\core_window_test.cpp">
+      <Filter>Testers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
