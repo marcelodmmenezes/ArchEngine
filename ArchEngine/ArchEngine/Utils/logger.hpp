@@ -4,10 +4,11 @@
  * Simple, lightweight, line-level thread safe logging system. The system is *
  * more concerned about modularity than cache coherence, once logging should *
  * be almost completely deactivated in Arch Engine's release version.        *
+ * Based in https://bell0bytes.eu/thread-safe-logger/                        *
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 08/04/2018                                                       *
- * Last Modified: 10/04/2018                                                 *
+ * Last Modified: 12/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -32,7 +33,6 @@
 
 
 namespace Utils {
-
 	// The Logger class verbosity is based upon its LogLevel type.
 	// The LogLevel enum names are self explanatory.
 	enum LogLevel {
@@ -43,7 +43,7 @@ namespace Utils {
 	};
 
 
-	//------------------------------------------------------------- Log Policies
+	//------------------------------------------------------------ Log Policies
 	// A LogPolicy is used by the Logger to define where the log
 	// output should be directed to.
 	class LogPolicyInterface {
@@ -88,26 +88,24 @@ namespace Utils {
 				return false;
 
 #if defined(__unix__)
-			m_output_stream << "-----------------------------------------------\
------------------ STARTED LOGGING\n";
+			m_output_stream << "----------------------------------------------\
+------------------ STARTED LOGGING\n";
 #elif defined(_MSC_VER)
-			m_output_stream << "-----------------------------------------------\
------------------ STARTED LOGGING\r\n";
+			m_output_stream << "----------------------------------------------\
+------------------ STARTED LOGGING\r\n";
 #endif
-
 			return true;
 		}
 
 		void closeOutputStream() override {
 			if (m_output_stream.is_open()) {
 #if defined(__unix__)
-				m_output_stream << "-------------------------------------------\
------------------------ ENDED LOGGING\n" << std::endl;
+				m_output_stream << "------------------------------------------\
+------------------------ ENDED LOGGING\n" << std::endl;
 #elif defined(_MSC_VER)
-				m_output_stream << "-------------------------------------------\
------------------------ ENDED LOGGING\r\n" << std::endl;
+				m_output_stream << "------------------------------------------\
+------------------------ ENDED LOGGING\r\n" << std::endl;
 #endif
-
 				m_output_stream.close();
 			}
 		}
@@ -121,7 +119,7 @@ namespace Utils {
 	};
 
 
-	//------------------------------------------------------------------- Logger
+	//------------------------------------------------------------------ Logger
 	template<typename LogPolicy> class Logger;
 
 	// The logging service runs on the background through this daemon.
@@ -175,10 +173,13 @@ namespace Utils {
 
 
 	template<typename LogPolicy>
-	Logger<LogPolicy>::Logger(const std::string& path) : m_log_line_number(0u) {
+	Logger<LogPolicy>::Logger(const std::string& path) :
+		m_log_line_number(0u) {
 		if (m_policy.openOutputStream(path)) {
 			m_is_still_running.test_and_set();
-			m_daemon = std::move(std::thread{ loggingDaemon<LogPolicy>, this });
+			m_daemon = std::move(std::thread{
+				loggingDaemon<LogPolicy>, this
+			});
 		}
 		else {
 #if defined(__unix__)
