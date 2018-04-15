@@ -10,6 +10,9 @@
     <Filter Include="Testers">
       <UniqueIdentifier>{ce2e013a-8443-412b-8471-c36fc3870cb5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Script">
+      <UniqueIdentifier>{88469830-e234-4858-a929-f57635e0bd90}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils\logger.hpp">
