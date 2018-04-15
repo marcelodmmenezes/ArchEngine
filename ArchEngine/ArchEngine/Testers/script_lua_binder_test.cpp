@@ -11,6 +11,11 @@
  *===========================================================================*/
 
 
+#include "../Core/engineMacros.hpp"
+ 
+ // Check if this tester is active
+#if defined(ARCH_ENGINE_SCRIPT_LUA_BINDER_TEST)
+
 #include "../Utils/serviceLocator.hpp"
 #include "../Script/luaBinder.hpp"
 
@@ -18,3 +23,6 @@
 int main() {
 	
 }
+
+
+#endif	// ARCH_ENGINE_SCRIPT_LUA_BINDER_TEST

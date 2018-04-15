@@ -17,13 +17,19 @@
 #include "../Utils/serviceLocator.hpp"
 
 extern "C" {
-#if defined(__unix__)
-#elif defined(_MSC_VER)
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
-#endif
 }
+
+
+class LuaBinder {
+public:
+	LuaBinder(lua_State* L);
+
+
+private:
+};
 
 
 #endif	// SCRIPT_LUA_BINDER_HPP

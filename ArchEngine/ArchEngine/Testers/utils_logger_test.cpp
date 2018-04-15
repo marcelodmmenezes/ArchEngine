@@ -7,10 +7,15 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 09/04/2018                                                       *
- * Last Modified: 11/04/2018                                                 *
+ * Last Modified: 15/04/2018                                                 *
  *===========================================================================*/
 
-/*
+
+#include "../Core/engineMacros.hpp"
+
+// Check if this tester is active
+#if defined(ARCH_ENGINE_UTILS_LOGGER_TEST)
+
 #include "../Utils/logger.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -70,7 +75,7 @@ void logDaemon(const std::string& thread_name) {
 	console_logger->setThreadName(thread_name);
 	console_logger->log<LOG_INFO>("Test");
 	*/
-/*
+
 	for (int i = 0; i < 4000; i++) {
 		auto file_logger = ServiceLocator::getFileLogger();
 		file_logger->setThreadName(thread_name + "_" + std::to_string(i));
@@ -83,4 +88,5 @@ void logDaemon(const std::string& thread_name) {
 			file_logger->log<LOG_DEBUG>("Han shot first");
 	}
 }
-*/
+
+#endif	// ARCH_ENGINE_UTILS_LOGGER_TEST

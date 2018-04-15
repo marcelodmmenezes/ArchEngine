@@ -130,7 +130,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\window.cpp" />
+    <ClCompile Include="Script\luaBinder.cpp" />
     <ClCompile Include="Testers\core_window_test.cpp" />
+    <ClCompile Include="Testers\script_lua_binder_test.cpp" />
     <ClCompile Include="Testers\utils_logger_test.cpp" />
     <ClCompile Include="Utils\serviceLocator.cpp" />
   </ItemGroup>

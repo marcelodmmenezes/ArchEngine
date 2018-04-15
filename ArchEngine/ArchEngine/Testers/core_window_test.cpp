@@ -12,6 +12,10 @@
 
 
 #include "../Core/engineMacros.hpp"
+
+ // Check if this tester is active
+#if defined(ARCH_ENGINE_CORE_WINDOW_TEST)
+
 #include "../Core/window.hpp"
 
 #include "../Utils/logger.hpp"
@@ -256,3 +260,6 @@ void fourthWindowTest() {
 	t1.join();
 	t2.join();
 }
+
+
+#endif	// ARCH_ENGINE_CORE_WINDOW_TEST
