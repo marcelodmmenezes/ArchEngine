@@ -124,6 +124,7 @@
   <ItemGroup>
     <ClInclude Include="Core\engineMacros.hpp" />
     <ClInclude Include="Core\window.hpp" />
+    <ClInclude Include="Script\luaBinder.hpp" />
     <ClInclude Include="Utils\logger.hpp" />
     <ClInclude Include="Utils\serviceLocator.hpp" />
   </ItemGroup>
