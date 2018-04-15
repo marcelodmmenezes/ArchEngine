@@ -31,24 +31,26 @@ using namespace Utils;
 void startLoggingService();
 void logDaemon(const std::string& thread_name);
 
+
 int main(int argc, char* argv[]) {
 	try {
-		startLoggingService(); 
+		startLoggingService();
+
+		std::thread t1(logDaemon, "t1");
+		std::thread t2(logDaemon, "t2");
+		std::thread t3(logDaemon, "t3");
+
+		t1.join();
+		t2.join();
+		t3.join();
 	}
-	catch (std::runtime_error) {
+	catch (...) {
 		return EXIT_FAILURE;
 	}
 
-	std::thread t1(logDaemon, "t1");
-	std::thread t2(logDaemon, "t2");
-	std::thread t3(logDaemon, "t3");
-
-	t1.join();
-	t2.join();
-	t3.join();
-
 	return EXIT_SUCCESS;
 }
+
 
 void startLoggingService() {
 	std::shared_ptr<Logger<ConsoleLogPolicy>>

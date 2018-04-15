@@ -16,16 +16,18 @@
 #include "../Core/engineMacros.hpp"
 #include "../Utils/serviceLocator.hpp"
 
-extern "C" {
-#include <lua.h>
+#include <lua.hpp>
 #include <lauxlib.h>
 #include <lualib.h>
-}
+
+#include <string>
 
 
 class LuaBinder {
 public:
 	LuaBinder(lua_State* L);
+
+
 
 
 private:

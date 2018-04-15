@@ -51,46 +51,50 @@ void fourthWindowTest(); // Tests multiple thread windows
 int main(int argc, char* argv[]) {
 	try {
 		startLoggingService(); 
+
+		ServiceLocator::getFileLogger()->log<LOG_INFO>("Started tests");
+
+		ServiceLocator::getFileLogger()->log<LOG_INFO>("Testing window \
+creation and destruction");
+		firstWindowTest();
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Finished first test\n\
+----------------------------------------------------------------------------");
+
+		// Waits one second to next test
+		std::this_thread::sleep_for(std::chrono::duration<int>(1));
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Testing window settings");
+		secondWindowTest();
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Finished second test\n\
+----------------------------------------------------------------------------");
+
+		// Waits one second to next test
+		std::this_thread::sleep_for(std::chrono::duration<int>(1));
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Testing multiple windows");
+		thirdWindowTest();
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Finished third test\n\
+----------------------------------------------------------------------------");
+
+		// Waits one second to next test
+		std::this_thread::sleep_for(std::chrono::duration<int>(1));
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Testing multiple windows");
+		fourthWindowTest();
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Finished third test\n\
+----------------------------------------------------------------------------");
+
+		ServiceLocator::getFileLogger()->log<LOG_INFO>("Finished tests");
+
+		std::this_thread::sleep_for(std::chrono::duration<int>(2));
 	}
 	catch (...) {
 		return EXIT_FAILURE;
 	}
-
-	ServiceLocator::getFileLogger()->log<LOG_INFO>("Started tests");
-
-	ServiceLocator::getFileLogger()->log<LOG_INFO>("Testing window creation\
-and destruction");
-	firstWindowTest();
-	ServiceLocator::getFileLogger()->log<LOG_INFO>("Finished first test\n\
-----------------------------------------------------------------------------");
-
-	// Waits one second to next test
-	std::this_thread::sleep_for(std::chrono::duration<int>(1));
-	ServiceLocator::getFileLogger()->log<LOG_INFO>(
-		"Testing window settings");
-	secondWindowTest();
-	ServiceLocator::getFileLogger()->log<LOG_INFO>("Finished second test\n\
-----------------------------------------------------------------------------");
-
-	// Waits one second to next test
-	std::this_thread::sleep_for(std::chrono::duration<int>(1));
-	ServiceLocator::getFileLogger()->log<LOG_INFO>(
-		"Testing multiple windows");
-	thirdWindowTest();
-	ServiceLocator::getFileLogger()->log<LOG_INFO>("Finished third test\n\
-----------------------------------------------------------------------------");
-
-	// Waits one second to next test
-	std::this_thread::sleep_for(std::chrono::duration<int>(1));
-	ServiceLocator::getFileLogger()->log<LOG_INFO>(
-		"Testing multiple windows");
-	fourthWindowTest();
-	ServiceLocator::getFileLogger()->log<LOG_INFO>("Finished third test\n\
-----------------------------------------------------------------------------");
-
-	ServiceLocator::getFileLogger()->log<LOG_INFO>("Finished tests");
-
-	std::this_thread::sleep_for(std::chrono::duration<int>(2));
 
 	return EXIT_SUCCESS;
 }
