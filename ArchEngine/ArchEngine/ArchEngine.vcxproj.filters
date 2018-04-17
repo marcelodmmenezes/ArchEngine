@@ -27,7 +27,7 @@
     <ClInclude Include="Core\engineMacros.hpp">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Script\luaBinder.hpp">
+    <ClInclude Include="Script\luaScript.hpp">
       <Filter>Script</Filter>
     </ClInclude>
   </ItemGroup>
@@ -44,11 +44,11 @@
     <ClCompile Include="Testers\core_window_test.cpp">
       <Filter>Testers</Filter>
     </ClCompile>
-    <ClCompile Include="Testers\script_lua_binder_test.cpp">
-      <Filter>Testers</Filter>
-    </ClCompile>
-    <ClCompile Include="Script\luaBinder.cpp">
+    <ClCompile Include="Script\luaScript.cpp">
       <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Testers\script_lua_script_test.cpp">
+      <Filter>Testers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

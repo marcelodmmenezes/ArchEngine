@@ -124,15 +124,15 @@
   <ItemGroup>
     <ClInclude Include="Core\engineMacros.hpp" />
     <ClInclude Include="Core\window.hpp" />
-    <ClInclude Include="Script\luaBinder.hpp" />
+    <ClInclude Include="Script\luaScript.hpp" />
     <ClInclude Include="Utils\logger.hpp" />
     <ClInclude Include="Utils\serviceLocator.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\window.cpp" />
-    <ClCompile Include="Script\luaBinder.cpp" />
+    <ClCompile Include="Script\luaScript.cpp" />
     <ClCompile Include="Testers\core_window_test.cpp" />
-    <ClCompile Include="Testers\script_lua_binder_test.cpp" />
+    <ClCompile Include="Testers\script_lua_script_test.cpp" />
     <ClCompile Include="Testers\utils_logger_test.cpp" />
     <ClCompile Include="Utils\serviceLocator.cpp" />
   </ItemGroup>

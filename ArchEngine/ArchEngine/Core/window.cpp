@@ -3,11 +3,11 @@
  *                                                                           *
  * This class defines the attributes of the game window.                     *
  * Using SDL2 library for Operating System abstraction.                      *
- * (https://www.libsdl.org/download-2.0.php).                                *
+ * - (https://www.libsdl.org/index.php).                                     *
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 11/04/2018                                                 *
+ * Last Modified: 16/04/2018                                                 *
  *===========================================================================*/
 
 

@@ -4,11 +4,12 @@
  * Simple, lightweight, line-level thread safe logging system. The system is *
  * more concerned about modularity than cache coherence, once logging should *
  * be almost completely deactivated in Arch Engine's release version.        *
- * Based in https://bell0bytes.eu/thread-safe-logger/                        *
+ * Based in:                                                                 *
+ * - (https://bell0bytes.eu/thread-safe-logger/)                             *
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 08/04/2018                                                       *
- * Last Modified: 12/04/2018                                                 *
+ * Last Modified: 16/04/2018                                                 *
  *===========================================================================*/
 
 

@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Testers/script_lua_binder_test.cpp"                        *
+ * Arch Engine - "Testers/script_lua_script_test.cpp"                        *
  *                                                                           *
  * This is a tester file. It's purpose is to test some functionalities, thus *
  * should be removed from releases.                                          *
@@ -14,10 +14,10 @@
 #include "../Core/engineMacros.hpp"
  
  // Check if this tester is active
-#if defined(ARCH_ENGINE_SCRIPT_LUA_BINDER_TEST)
+#if defined(ARCH_ENGINE_SCRIPT_LUA_SCRIPT_TEST)
 
 #include "../Utils/serviceLocator.hpp"
-#include "../Script/luaBinder.hpp"
+#include "../Script/luaScript.hpp"
 
 
 using namespace Utils;
@@ -58,4 +58,4 @@ void startLoggingService() {
 }
 
 
-#endif	// ARCH_ENGINE_SCRIPT_LUA_BINDER_TEST
+#endif	// ARCH_ENGINE_SCRIPT_LUA_SCRIPT_TEST
