@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 11/04/2018                                                       *
- * Last Modified: 11/04/2018                                                 *
+ * Last Modified: 16/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -54,8 +54,8 @@ int main(int argc, char* argv[]) {
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>("Started tests");
 
-		ServiceLocator::getFileLogger()->log<LOG_INFO>("Testing window \
-creation and destruction");
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Testing window creation and destruction");
 		firstWindowTest();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished first test\n\

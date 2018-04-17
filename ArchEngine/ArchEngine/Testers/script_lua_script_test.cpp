@@ -37,11 +37,18 @@ int main(int argc, char* argv[]) {
 		startLoggingService();
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
-			"Starting first test");
+			"Starting tests");
 
-		ServiceLocator::getFileLogger()->log<LOG_INFO>("Testing LuaScript \
-basic functionalities");
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Testing LuaScript basic functionalities");
 		test1();
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Finished first test\n\
+----------------------------------------------------------------------------");
+
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Testing shared lua_States");
+		test2();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished first test\n\
 ----------------------------------------------------------------------------");
@@ -59,7 +66,8 @@ void test1() {
 	luaL_openlibs(lua);
 
 	LuaScript script;
-	script.initialize(lua, "../../ArchEngine/Testers/script_lua_script_test1.lua");
+	script.initialize(lua,
+		"../../ArchEngine/Testers/script_lua_script_test1.lua");
 
 	float x = script.get<float>(lua, "player.pos.x");
 	float y = script.get<float>(lua, "player.pos.y");
@@ -80,7 +88,47 @@ void test1() {
 	lua_close(lua);
 }
 
-void test2() {}
+void test2() {
+	lua_State* lua = luaL_newstate();
+	luaL_openlibs(lua);
+
+	LuaScript player_script, enemy_script;
+	player_script.initialize(lua,
+		"../../ArchEngine/Testers/script_lua_script_test1.lua");
+	enemy_script.initialize(lua,
+		"../../ArchEngine/Testers/script_lua_script_test2.lua");
+
+	float p_x = player_script.get<float>(lua, "player.pos.x");
+	float p_y = player_script.get<float>(lua, "player.pos.y");
+
+	float e_x = enemy_script.get<float>(lua, "enemy.pos.x");
+	float e_y = enemy_script.get<float>(lua, "enemy.pos.y");
+
+	std::string p_file_name = player_script.get<std::string>(lua,
+		"player.file_name");
+
+	std::string e_file_name = enemy_script.get<std::string>(lua,
+		"enemy.file_name");
+
+	int p_hp = player_script.get<int>(lua, "player.health_points");
+
+	int e_hp = enemy_script.get<int>(lua, "enemy.health_points");
+
+	std::stringstream ss;
+	ss << "\n\nPlayer position: (" << p_x << ", " << p_y << ")\n";
+	ss << "Player file name: " << p_file_name << "\n";
+	ss << "Player health points: " << p_hp << "\n\n";
+	ss << "\n\nEnemy position: (" << e_x << ", " << e_y << ")\n";
+	ss << "Enemy file name: " << e_file_name << "\n";
+	ss << "Enemy health points: " << e_hp << "\n\n";
+
+	ServiceLocator::getFileLogger()->log<LOG_INFO>(ss);
+
+	player_script.destroy();
+	enemy_script.destroy();
+
+	lua_close(lua);
+}
 
 void startLoggingService() {
 	std::shared_ptr<Logger<ConsoleLogPolicy>>
