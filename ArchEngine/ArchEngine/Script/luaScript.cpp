@@ -3,9 +3,9 @@
 *                                                                           *
 * Class responsible for communication between the engine and Lua Scripts.   *
 * Based in:                                                                 *
+* - (https://eliasdaler.wordpress.com/2013/10/11/lua_cpp_binder/)           *
 * - Roberto Ierusalimschy's Programming in Lua, 4th edition                 *
 * - Game Programming Gems 6                                                 *
-* - (https://eliasdaler.wordpress.com/2013/10/11/lua_cpp_binder/)           *
 *                                                                           *
 * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
 * Created: 15/04/2018                                                       *
@@ -41,11 +41,12 @@ namespace Script {
 	void LuaScript::initialize(lua_State* lua, const std::string& path) {
 		m_path = path;
 
-		if (luaL_loadfile(lua, path.c_str()) || lua_pcall(lua, 0, 0, 0)) {
+		if (luaL_loadfile(lua, m_path.c_str()) || lua_pcall(lua, 0, 0, 0)) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
-				"Failed to load(" + path + ")");
+				"Failed to load(" + m_path + "): " + lua_tostring(lua, -1));
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			clearStack(lua);
 		}
 		else
 			m_state = INITIALIZED;
@@ -66,6 +67,48 @@ namespace Script {
 
 	void LuaScript::clearStack(lua_State* lua) {
 		lua_pop(lua, lua_gettop(lua));
+	}
+
+	bool LuaScript::getFromStack(lua_State* lua,
+		const std::string& var_name, int& level) {
+		level = 0;
+
+		std::string var = "";
+
+		for (unsigned i = 0; i < var_name.size(); i++) {
+			if (var_name.at(i) == '.') {
+				if (level == 0)
+					lua_getglobal(lua, var.c_str());
+				else
+					lua_getfield(lua, -1, var.c_str());
+
+				if (lua_isnil(lua, -1)) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+					printError(var_name, var + " is not defined");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+					return false;
+				}
+				else {
+					var = "";
+					level++;
+				}
+			}
+			else var += var_name.at(i);
+		}
+
+		if (level == 0)
+			lua_getglobal(lua, var.c_str());
+		else
+			lua_getfield(lua, -1, var.c_str());
+
+		if (lua_isnil(lua, -1)) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			printError(var_name, var + " is not defined");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			return false;
+		}
+
+		return true;
 	}
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
