@@ -1,6 +1,6 @@
 --[[
 /*===========================================================================*
- * Arch Engine - "Testers/script_lua_script_test2.lua"                       *
+ * Arch Engine - "Testers/script_lua_script_test3.lua"                       *
  *                                                                           *
  * This is a tester script. It's purpose is to test some functionalities,    *
  * thus should be removed from releases.                                     *
@@ -17,22 +17,13 @@
 
 player = {
 	pos = {
-		x = 5.0,
-		y = 8.0
+		x = 10.0,
+		y = 20.0
 	},
 
-	file_name = "player.png",
+	file_name = "img.png",
 
-	health_points = 50
+	health_points = 100
 }
 
-enemy = {
-	pos = {
-		x = 18.0,
-		y = 8.0
-	},
-
-	file_name = "enemy.png",
-
-	health_points = 200
-}
+array = { 0, 1, 1, 2, -23, 32 }

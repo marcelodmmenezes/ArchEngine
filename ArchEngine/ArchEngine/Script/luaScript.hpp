@@ -25,6 +25,7 @@
 #include <cassert>
 #include <cstdarg>
 #include <string>
+#include <vector>
 
 
 namespace Script {
@@ -39,20 +40,23 @@ namespace Script {
 		// be called, invalidating its state, which is difficult to see.
 		// The class has a flag (m_state) to ensure, through assertion, that
 		// the user will remember to call the methods.
-		void initialize(lua_State* lua, const std::string& path);
+		void initialize(const std::string& path);
 		void destroy();
 
-		void clearStack(lua_State* lua);
+		void clearStack();
 
 		// Binders
 		template<typename T>
-		T get(lua_State* lua, const std::string& var_name);
-		
-		bool getFromStack(lua_State* lua,
-			const std::string& var_name, int& level);
+		T get(const std::string& var_name);
+
+		// Return vectors are moved, not copied
+		std::vector<int> getIntVector(const std::string& name);
+		std::vector<std::string> getTableKeys(const std::string& name);
+
+		bool getFromStack(const std::string& var_name, int& level);
 
 		template<typename T>
-		T luaGet(lua_State* lua, const std::string& var_name) {
+		T luaGet(const std::string& var_name) {
 			return 0;
 		}
 
@@ -67,7 +71,7 @@ namespace Script {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
-		void printStack(lua_State* lua);
+		void printStack();
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 
 	private:
@@ -80,6 +84,9 @@ namespace Script {
 		// Flag to ensure resources have been freed
 		LuaScriptState m_state;
 
+		// Lua internal state
+		lua_State* m_lua;
+
 		// Script path
 		std::string m_path;
 	};
@@ -87,8 +94,8 @@ namespace Script {
 
 	//------------------------------------------------ Template implementations
 	template<typename T>
-	T LuaScript::get(lua_State* lua, const std::string& var_name) {
-		if (!lua) {
+	T LuaScript::get(const std::string& var_name) {
+		if (!m_lua) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			printError(var_name, "Script is not loaded");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
@@ -100,12 +107,12 @@ namespace Script {
 		// Used to store the top level of the stack
 		int level;
 
-		if (getFromStack(lua, var_name, level))
-			result = luaGet<T>(lua, var_name);
+		if (getFromStack(var_name, level))
+			result = luaGet<T>(var_name);
 		else
 			result = luaGetDefault<T>();
 
-		lua_pop(lua, level + 1);
+		lua_pop(m_lua, level + 1);
 		return result;
 	}
 
@@ -114,38 +121,34 @@ namespace Script {
 
 	// Bool
 	template <>
-	inline bool LuaScript::luaGet<bool>(lua_State* lua,
-		const std::string& var_name) {
-		return (bool)lua_toboolean(lua, -1);
+	inline bool LuaScript::luaGet<bool>(const std::string& var_name) {
+		return (bool)lua_toboolean(m_lua, -1);
 	}
 
 	// Float
 	template <>
-	inline float LuaScript::luaGet<float>(lua_State* lua,
-		const std::string& var_name) {
-		if (!lua_isnumber(lua, -1))
+	inline float LuaScript::luaGet<float>(const std::string& var_name) {
+		if (!lua_isnumber(m_lua, -1))
 			printError(var_name, "Not a number");
 
-		return (float)lua_tonumber(lua, -1);
+		return (float)lua_tonumber(m_lua, -1);
 	}
 
 	// Int
 	template <>
-	inline int LuaScript::luaGet<int>(lua_State* lua,
-		const std::string& var_name) {
-		if (!lua_isnumber(lua, -1))
+	inline int LuaScript::luaGet<int>(const std::string& var_name) {
+		if (!lua_isnumber(m_lua, -1))
 			printError(var_name, "Not a number");
 
-		return (int)lua_tonumber(lua, -1);
+		return (int)lua_tonumber(m_lua, -1);
 	}
 
 	// String
 	template <>
-	inline std::string LuaScript::luaGet<std::string>(lua_State* lua,
-		const std::string& var_name) {
+	inline std::string LuaScript::luaGet<std::string>(const std::string& var_name) {
 		std::string s = "";
-		if (lua_isstring(lua, -1))
-			s = std::string(lua_tostring(lua, -1));
+		if (lua_isstring(m_lua, -1))
+			s = std::string(lua_tostring(m_lua, -1));
 		else
 			printError(var_name, "Not a string");
 

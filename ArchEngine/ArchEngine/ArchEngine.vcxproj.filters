@@ -56,5 +56,11 @@
     <None Include="Testers\script_lua_script_test1.lua">
       <Filter>Testers</Filter>
     </None>
+    <None Include="Testers\script_lua_script_test2.lua">
+      <Filter>Testers</Filter>
+    </None>
+    <None Include="Testers\script_lua_script_test3.lua">
+      <Filter>Testers</Filter>
+    </None>
   </ItemGroup>
 </Project>

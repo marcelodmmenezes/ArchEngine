@@ -38,15 +38,20 @@ namespace Script {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 	}
 
-	void LuaScript::initialize(lua_State* lua, const std::string& path) {
+	void LuaScript::initialize(const std::string& path) {
 		m_path = path;
 
-		if (luaL_loadfile(lua, m_path.c_str()) || lua_pcall(lua, 0, 0, 0)) {
+		m_lua = luaL_newstate();
+		luaL_openlibs(m_lua);
+
+		if (luaL_loadfile(m_lua, m_path.c_str()) ||
+			lua_pcall(m_lua, 0, 0, 0)) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
-				"Failed to load(" + m_path + "): " + lua_tostring(lua, -1));
+				"Failed to load(" + m_path + "): " + lua_tostring(m_lua, -1));
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-			clearStack(lua);
+			m_lua = nullptr;
+			clearStack();
 		}
 		else
 			m_state = INITIALIZED;
@@ -57,6 +62,9 @@ namespace Script {
 		assert(m_state == INITIALIZED);
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
 
+		if (m_lua)
+			lua_close(m_lua);
+
 		m_state = SAFE_TO_DESTROY;
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
@@ -65,12 +73,62 @@ namespace Script {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 	}
 
-	void LuaScript::clearStack(lua_State* lua) {
-		lua_pop(lua, lua_gettop(lua));
+	void LuaScript::clearStack() {
+		lua_pop(m_lua, lua_gettop(m_lua));
 	}
 
-	bool LuaScript::getFromStack(lua_State* lua,
-		const std::string& var_name, int& level) {
+	std::vector<int> LuaScript::getIntVector(const std::string& name) {
+		std::vector<int> v;
+		int discard;
+
+		getFromStack(name.c_str(), discard);
+		if (lua_isnil(m_lua, -1))
+			return std::vector<int>();
+
+		lua_pushnil(m_lua);
+		while (lua_next(m_lua, -2)) {
+			v.push_back((int)lua_tonumber(m_lua, -1));
+			lua_pop(m_lua, 1);
+		}
+
+		clearStack();
+		return v; // Moved, not copied
+	}
+
+	std::vector<std::string> LuaScript::getTableKeys(const std::string& name) {
+		std::string code =
+			"function getKeys(name) "
+			"s = \"\""
+			"for k, v in pairs(_G[name]) do "
+			"    s = s..k..\",\" "
+			"    end "
+			"return s "
+			"end"; // Lua function for getting table keys
+		
+		luaL_loadstring(m_lua, code.c_str()); // load code
+		lua_pcall(m_lua, 0, 0, 0); // execute code
+		lua_getglobal(m_lua, "getKeys"); // get function
+		lua_pushstring(m_lua, name.c_str());
+		lua_pcall(m_lua, 1, 1, 0); // execute function
+		
+		std::string test = lua_tostring(m_lua, -1);
+		std::vector<std::string> strings;
+		std::string temp = "";
+
+		for (unsigned int i = 0; i < test.size(); i++) {
+			if (test.at(i) != ',')
+				temp += test.at(i);
+			else {
+				strings.push_back(temp);
+				temp = "";
+			}
+		}
+
+		clearStack();
+		return strings; // Moved, not copied
+	}
+
+	bool LuaScript::getFromStack(const std::string& var_name, int& level) {
 		level = 0;
 
 		std::string var = "";
@@ -78,11 +136,11 @@ namespace Script {
 		for (unsigned i = 0; i < var_name.size(); i++) {
 			if (var_name.at(i) == '.') {
 				if (level == 0)
-					lua_getglobal(lua, var.c_str());
+					lua_getglobal(m_lua, var.c_str());
 				else
-					lua_getfield(lua, -1, var.c_str());
+					lua_getfield(m_lua, -1, var.c_str());
 
-				if (lua_isnil(lua, -1)) {
+				if (lua_isnil(m_lua, -1)) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 					printError(var_name, var + " is not defined");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
@@ -97,11 +155,11 @@ namespace Script {
 		}
 
 		if (level == 0)
-			lua_getglobal(lua, var.c_str());
+			lua_getglobal(m_lua, var.c_str());
 		else
-			lua_getfield(lua, -1, var.c_str());
+			lua_getfield(m_lua, -1, var.c_str());
 
-		if (lua_isnil(lua, -1)) {
+		if (lua_isnil(m_lua, -1)) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			printError(var_name, var + " is not defined");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
@@ -119,28 +177,28 @@ namespace Script {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
-	void LuaScript::printStack(lua_State* lua) {
-		int top = lua_gettop(lua);
+	void LuaScript::printStack() {
+		int top = lua_gettop(m_lua);
 
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"printing " + m_path + " script stack...");
 
 		for (int i = 1; i <= top; i++) {
-			int type = lua_type(lua, i);
+			int type = lua_type(m_lua, i);
 
 			switch (type) {
 			case LUA_TSTRING:
 				ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
-					"    " + std::string(lua_tostring(lua, i)));
+					"    " + std::string(lua_tostring(m_lua, i)));
 				break;
 			case LUA_TBOOLEAN:
-				printf(lua_toboolean(lua, i) ? "true" : "false");
+				printf(lua_toboolean(m_lua, i) ? "true" : "false");
 				break;
 			case LUA_TNUMBER:
-				printf("%g", lua_tonumber(lua, i));
+				printf("%g", lua_tonumber(m_lua, i));
 				break;
 			default:
-				printf("%s", lua_typename(lua, type));
+				printf("%s", lua_typename(m_lua, type));
 				break;
 			}
 		}
