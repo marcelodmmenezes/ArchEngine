@@ -7,10 +7,15 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 09/04/2018                                                       *
- * Last Modified: 11/04/2018                                                 *
+ * Last Modified: 15/04/2018                                                 *
  *===========================================================================*/
 
-/*
+
+#include "../Core/engineMacros.hpp"
+
+// Check if this tester is active
+#if defined(ARCH_ENGINE_UTILS_LOGGER_TEST)
+
 #include "../Utils/logger.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -26,24 +31,26 @@ using namespace Utils;
 void startLoggingService();
 void logDaemon(const std::string& thread_name);
 
+
 int main(int argc, char* argv[]) {
 	try {
-		startLoggingService(); 
+		startLoggingService();
+
+		std::thread t1(logDaemon, "t1");
+		std::thread t2(logDaemon, "t2");
+		std::thread t3(logDaemon, "t3");
+
+		t1.join();
+		t2.join();
+		t3.join();
 	}
-	catch (std::runtime_error) {
+	catch (...) {
 		return EXIT_FAILURE;
 	}
 
-	std::thread t1(logDaemon, "t1");
-	std::thread t2(logDaemon, "t2");
-	std::thread t3(logDaemon, "t3");
-
-	t1.join();
-	t2.join();
-	t3.join();
-
 	return EXIT_SUCCESS;
 }
+
 
 void startLoggingService() {
 	std::shared_ptr<Logger<ConsoleLogPolicy>>
@@ -70,7 +77,7 @@ void logDaemon(const std::string& thread_name) {
 	console_logger->setThreadName(thread_name);
 	console_logger->log<LOG_INFO>("Test");
 	*/
-/*
+
 	for (int i = 0; i < 4000; i++) {
 		auto file_logger = ServiceLocator::getFileLogger();
 		file_logger->setThreadName(thread_name + "_" + std::to_string(i));
@@ -83,4 +90,5 @@ void logDaemon(const std::string& thread_name) {
 			file_logger->log<LOG_DEBUG>("Han shot first");
 	}
 }
-*/
+
+#endif	// ARCH_ENGINE_UTILS_LOGGER_TEST

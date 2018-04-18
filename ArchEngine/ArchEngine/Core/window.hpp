@@ -3,11 +3,11 @@
  *                                                                           *
  * This class defines the attributes of the game window.                     *
  * Using SDL2 library for Operating System abstraction.                      *
- * (https://www.libsdl.org/index.php).                                       *
+ * - (https://www.libsdl.org/index.php).                                     *
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 11/04/2018                                                 *
+ * Last Modified: 16/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -36,8 +36,8 @@ namespace Core {
 
 		// Memory related stuff is initialized and destroyed mannualy (and not
 		// on the constructor/destructor), due to the fact that if we have
-		// multiple windows inside a container the destructor might invalidate
-		// some OpenGL context stuff, which is difficult to see.
+		// multiple windows inside a container ~Window() might be called,
+		// invalidating some OpenGL context stuff, which is difficult to see.
 		// The class has a flag (m_state) to ensure, through assertion, that
 		// the user will remember to call the methods.
 		bool initialize(

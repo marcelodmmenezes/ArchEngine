@@ -24,11 +24,19 @@ OBJDIR = GCCOutput/Intermediate
 TESTOBJDIR = $(OBJDIR)/Tests
 
 CORE = ArchEngine/Core
+SCRIPT = ArchEngine/Script
 TESTERS = ArchEngine/Testers
 UTILS = ArchEngine/Utils
 
 
 #------------------------------------------------------------------------ Rules
+
+info:
+	@echo "Usage:"
+	@echo "make install_dependencies -> install all the needed libraries"
+	@echo "make create_directories -> \
+creates the necessary directories for compilation"
+	@echo "make build -> not implemented"
 
 
 #------------------------------------------------------------------------ Tests
@@ -59,6 +67,19 @@ $(TESTOBJDIR)/window.o : $(CORE)/window.cpp
 core_window_test: $(OBJ)
 	$(CXX) -o $(TESTOUTDIR)/$@ $^ $(CXXFLAGS) $(LIBS)
 
+#--- LuaBinder ---#
+_OBJ = script_lua_binder_test.o serviceLocator.o luaBinder.o
+OBJ = $(patsubst %, $(TESTOBJDIR)/%, $(_OBJ))
+
+$(TESTOBJDIR)/luaBinder.o : $(SCRIPT)/luaBinder.cpp
+	$(CXX) -c -o $@ $< $(CXXFLAGS)
+
+$(TESTOBJDIR)/script_lua_binder_test.o : $(TESTERS)/script_lua_binder_test.cpp
+	$(CXX) -c -o $@ $< $(CXXFLAGS)
+
+script_lua_binder_test: $(OBJ)
+	$(CXX) -o $(TESTOUTDIR)/$@ $^ $(CXXFLAGS) $(LIBS)
+
 
 #------------------------------------------------------------------------ Utils
 
@@ -70,6 +91,7 @@ create_directories:
 
 install_dependencies:
 	sudo apt-get install libsdl2-dev
+	sudo apt-get install lua5.3
 
 clean:
 	rm $(OBJDIR)/*.o

@@ -124,22 +124,30 @@
   <ItemGroup>
     <ClInclude Include="Core\engineMacros.hpp" />
     <ClInclude Include="Core\window.hpp" />
+    <ClInclude Include="Script\luaScript.hpp" />
     <ClInclude Include="Utils\logger.hpp" />
     <ClInclude Include="Utils\serviceLocator.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\window.cpp" />
+    <ClCompile Include="Script\luaScript.cpp" />
     <ClCompile Include="Testers\core_window_test.cpp" />
+    <ClCompile Include="Testers\script_lua_script_test.cpp" />
     <ClCompile Include="Testers\utils_logger_test.cpp" />
     <ClCompile Include="Utils\serviceLocator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Testers\script_lua_script_test1.lua" />
+    <None Include="Testers\script_lua_script_test2.lua" />
+    <None Include="Testers\script_lua_script_test3.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\sdl2.redist.2.0.5\build\native\sdl2.redist.targets" Condition="Exists('..\packages\sdl2.redist.2.0.5\build\native\sdl2.redist.targets')" />
     <Import Project="..\packages\sdl2.2.0.5\build\native\sdl2.targets" Condition="Exists('..\packages\sdl2.2.0.5\build\native\sdl2.targets')" />
+    <Import Project="..\packages\lua.redist.5.3.4\build\native\lua.redist.targets" Condition="Exists('..\packages\lua.redist.5.3.4\build\native\lua.redist.targets')" />
+    <Import Project="..\packages\lua.5.3.4\build\native\lua.targets" Condition="Exists('..\packages\lua.5.3.4\build\native\lua.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -147,5 +155,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\sdl2.redist.2.0.5\build\native\sdl2.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sdl2.redist.2.0.5\build\native\sdl2.redist.targets'))" />
     <Error Condition="!Exists('..\packages\sdl2.2.0.5\build\native\sdl2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sdl2.2.0.5\build\native\sdl2.targets'))" />
+    <Error Condition="!Exists('..\packages\lua.redist.5.3.4\build\native\lua.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\lua.redist.5.3.4\build\native\lua.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\lua.5.3.4\build\native\lua.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\lua.5.3.4\build\native\lua.targets'))" />
   </Target>
 </Project>

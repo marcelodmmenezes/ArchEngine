@@ -10,6 +10,9 @@
     <Filter Include="Testers">
       <UniqueIdentifier>{ce2e013a-8443-412b-8471-c36fc3870cb5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Script">
+      <UniqueIdentifier>{88469830-e234-4858-a929-f57635e0bd90}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils\logger.hpp">
@@ -23,6 +26,9 @@
     </ClInclude>
     <ClInclude Include="Core\engineMacros.hpp">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\luaScript.hpp">
+      <Filter>Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -38,8 +44,23 @@
     <ClCompile Include="Testers\core_window_test.cpp">
       <Filter>Testers</Filter>
     </ClCompile>
+    <ClCompile Include="Script\luaScript.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Testers\script_lua_script_test.cpp">
+      <Filter>Testers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Testers\script_lua_script_test1.lua">
+      <Filter>Testers</Filter>
+    </None>
+    <None Include="Testers\script_lua_script_test2.lua">
+      <Filter>Testers</Filter>
+    </None>
+    <None Include="Testers\script_lua_script_test3.lua">
+      <Filter>Testers</Filter>
+    </None>
   </ItemGroup>
 </Project>
