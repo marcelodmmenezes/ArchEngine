@@ -6,28 +6,26 @@
 #*                                                                           *
 #* Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
 #* Created: 10/04/2018                                                       *
-#* Last Modified: 10/04/2018                                                 *
+#* Last Modified: 17/04/2018                                                 *
 #*===========================================================================*/
 
-
-#------------------------------------------------------------ Compiler settings
-
-CXX = g++
-CXXFLAGS = -std=c++11
-LIBS = -pthread -lSDL2
 
 #---------------------------------------------------------------------- Folders
 
 OUTDIR = GCCOutput
-TESTOUTDIR = GCCOutput/Tests
 OBJDIR = GCCOutput/Intermediate
-TESTOBJDIR = $(OBJDIR)/Tests
 
 CORE = ArchEngine/Core
 SCRIPT = ArchEngine/Script
 TESTERS = ArchEngine/Testers
 UTILS = ArchEngine/Utils
 
+#------------------------------------------------------------ Compiler settings
+
+CXX = g++
+CXXFLAGS = -std=c++11 -I/usr/include/lua5.3
+LIBS = -pthread -lSDL2 -llua5.3
+VPATH = $(CORE):$(SCRIPT):$(TESTERS):$(UTILS)
 
 #------------------------------------------------------------------------ Rules
 
@@ -36,62 +34,64 @@ info:
 	@echo "make install_dependencies -> install all the needed libraries"
 	@echo "make create_directories -> \
 creates the necessary directories for compilation"
-	@echo "make build -> not implemented"
+	@echo "make build -> compiles the engine"
 
 
-#------------------------------------------------------------------------ Tests
+COMPILEOBJ = $(CXX) -c -o $@ $< $(CXXFLAGS)
 
-#--- Logger ---#
-_OBJ = utils_logger_test.o serviceLocator.o
-OBJ = $(patsubst %, $(TESTOBJDIR)/%, $(_OBJ))
+$(OBJDIR)/$(CORE)/window.o : $(CORE)/window.cpp
+	$(COMPILEOBJ)
 
-$(TESTOBJDIR)/utils_logger_test.o : $(TESTERS)/utils_logger_test.cpp
-	$(CXX) -c -o $@ $< $(CXXFLAGS)
+$(OBJDIR)/$(SCRIPT)/luaScript.o : $(SCRIPT)/luaScript.cpp
+	$(COMPILEOBJ)
 
-$(TESTOBJDIR)/serviceLocator.o: $(UTILS)/serviceLocator.cpp
-	$(CXX) -c -o $@ $< $(CXXFLAGS)
+$(OBJDIR)/$(TESTERS)/core_window_test.o : \
+	$(TESTERS)/core_window_test.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(TESTERS)/script_lua_script_test.o : \
+	$(TESTERS)/script_lua_script_test.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(TESTERS)/utils_logger_test.o : \
+	$(TESTERS)/utils_logger_test.cpp
+	$(COMPILEOBJ)
 
-utils_logger_test: $(OBJ)
-	$(CXX) -o $(TESTOUTDIR)/$@ $^ $(CXXFLAGS) $(LIBS)
+$(OBJDIR)/$(UTILS)/serviceLocator.o : $(UTILS)/serviceLocator.cpp
+	$(COMPILEOBJ)
 
-#--- Window ---#
-_OBJ = core_window_test.o serviceLocator.o window.o
-OBJ = $(patsubst %, $(TESTOBJDIR)/%, $(_OBJ))
+_OBJ = $(CORE)/window.o $(SCRIPT)/luaScript.o $(TESTERS)/core_window_test.o \
+	$(TESTERS)/script_lua_script_test.o $(TESTERS)/utils_logger_test.o \
+	$(UTILS)/serviceLocator.o
+OBJ = $(patsubst %, $(OBJDIR)/%, $(_OBJ))
 
-$(TESTOBJDIR)/core_window_test.o : $(TESTERS)/core_window_test.cpp
-	$(CXX) -c -o $@ $< $(CXXFLAGS)
-
-$(TESTOBJDIR)/window.o : $(CORE)/window.cpp
-	$(CXX) -c -o $@ $< $(CXXFLAGS)
-
-core_window_test: $(OBJ)
-	$(CXX) -o $(TESTOUTDIR)/$@ $^ $(CXXFLAGS) $(LIBS)
-
-#--- LuaBinder ---#
-_OBJ = script_lua_binder_test.o serviceLocator.o luaBinder.o
-OBJ = $(patsubst %, $(TESTOBJDIR)/%, $(_OBJ))
-
-$(TESTOBJDIR)/luaBinder.o : $(SCRIPT)/luaBinder.cpp
-	$(CXX) -c -o $@ $< $(CXXFLAGS)
-
-$(TESTOBJDIR)/script_lua_binder_test.o : $(TESTERS)/script_lua_binder_test.cpp
-	$(CXX) -c -o $@ $< $(CXXFLAGS)
-
-script_lua_binder_test: $(OBJ)
-	$(CXX) -o $(TESTOUTDIR)/$@ $^ $(CXXFLAGS) $(LIBS)
+build: $(OBJ)
+	$(CXX) -o $(OUTDIR)/Build/ArchEngine $^ $(CXXFLAGS) $(LIBS)
 
 
 #------------------------------------------------------------------------ Utils
 
 create_directories:
-	mkdir GCCOutput
-	mkdir GCCOutput/Tests
-	mkdir GCCOutput/Intermediate
-	mkdir GCCOutput/Intermediate/Tests
+	if [ ! -d GCCOutput ]; then mkdir GCCOutput; fi
+	if [ ! -d GCCOutput/Build ]; then mkdir GCCOutput/Build; fi
+	if [ ! -d GCCOutput/Intermediate ]; then mkdir GCCOutput/Intermediate; fi
+	if [ ! -d GCCOutput/Intermediate/ArchEngine ]; then \
+		mkdir GCCOutput/Intermediate/ArchEngine; fi
+	if [ ! -d GCCOutput/Intermediate/$(CORE) ]; then \
+		mkdir GCCOutput/Intermediate/$(CORE); fi
+	if [ ! -d GCCOutput/Intermediate/$(SCRIPT) ]; then \
+		mkdir GCCOutput/Intermediate/$(SCRIPT); fi
+	if [ ! -d GCCOutput/Intermediate/$(TESTERS) ]; then \
+		mkdir GCCOutput/Intermediate/$(TESTERS); fi
+	if [ ! -d GCCOutput/Intermediate/$(UTILS) ]; then \
+		mkdir GCCOutput/Intermediate/$(UTILS); fi
+	@echo ""
 
 install_dependencies:
-	sudo apt-get install libsdl2-dev
-	sudo apt-get install lua5.3
+	if ! locate libsdl2-dev; then \
+		sudo apt-get install libsdl2-dev; fi
+	if ! locate liblua5.3-dev; then \
+		sudo apt-get install liblua5.3-dev; fi
+
+.PHONY: clean
 
 clean:
-	rm $(OBJDIR)/*.o
+	rm -rf $(OUTDIR)
