@@ -98,11 +98,11 @@ namespace Script {
 	std::vector<std::string> LuaScript::getTableKeys(const std::string& name) {
 		std::string code =
 			"function getKeys(name) "
-			"s = \"\""
-			"for k, v in pairs(_G[name]) do "
-			"    s = s..k..\",\" "
+			"    s = \"\""
+			"    for k, v in pairs(_G[name]) do "
+			"        s = s..k..\",\" "
 			"    end "
-			"return s "
+			"    return s "
 			"end"; // Lua function for getting table keys
 		
 		luaL_loadstring(m_lua, code.c_str()); // load code
@@ -126,6 +126,44 @@ namespace Script {
 
 		clearStack();
 		return strings; // Moved, not copied
+	}
+
+	std::vector<std::pair<std::string, std::string>>
+		LuaScript::getTablePairs(const std::string& name) {
+		std::string code =
+			"function getPairs(name) "
+			"    s = \"\""
+			"    for k, v in pairs(_G[name]) do "
+			"        s = s..k..\":\"..tostring(v)..\",\" "
+			"    end "
+			"    return s "
+			"end";
+
+		luaL_loadstring(m_lua, code.c_str()); // load code
+		lua_pcall(m_lua, 0, 0, 0); // execute code
+		lua_getglobal(m_lua, "getPairs"); // get function
+		lua_pushstring(m_lua, name.c_str());
+		lua_pcall(m_lua, 1, 1, 0); // execute function
+
+		std::string test = lua_tostring(m_lua, -1);
+		std::vector<std::pair<std::string, std::string>> pairs;
+		std::string tempk = "", tempv = "";
+
+		for (unsigned int i = 0; i < test.size(); i++) {
+			if (test.at(i) == ':') {
+				tempk = tempv;
+				tempv = "";
+			}
+			else if (test.at(i) != ',')
+				tempv += test.at(i);
+			else {
+				pairs.push_back(std::make_pair(tempk, tempv));
+				tempv = "";
+			}
+		}
+
+		clearStack();
+		return pairs; // Moved, not copied
 	}
 
 	bool LuaScript::getFromStack(const std::string& var_name, int& level) {

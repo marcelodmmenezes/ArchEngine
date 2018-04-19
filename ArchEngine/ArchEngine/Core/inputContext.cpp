@@ -18,32 +18,44 @@
 
 
 using namespace Script;
+using namespace Utils;
 
 
 namespace Core {
-	InputContext(const std::string& path) {
-		Lua
+	InputContext::InputContext(const std::string& path) {/*
+		LuaScript context;
+		context.initialize(path);
+
+		std::vector<std::string> keys = script.getTableKeys("context");
+
+		for (auto &it : keys)
+			ss << it << ", ";
+		ss << "\n";
+
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(ss);
+
+		script.destroy();
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLog()->log<LOG_DEBUG>(
 			path + " input context constructor");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG*/
 	}
 
-	~InputContext() {
+	InputContext::~InputContext() {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
-		ServiceLocator::getFileLog()->log<LOG_DEBUG>(
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Input context destructor");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
-	bool mapButtonToAction(SDL_Keycode button, InputAction &action) {
-
+	bool InputContext::mapButtonToAction(SDL_Keycode button, InputAction &action) {
+		return true;
 	}
-	bool mapButtonToState(SDL_Keycode button, InputState &state) {
-
+	bool InputContext::mapButtonToState(SDL_Keycode button, InputState &state) {
+		return true;
 	}
-	bool mapAxisToRange(SDL_EventType, InputRange &range) {
-
+	bool InputContext::mapAxisToRange(SDL_EventType, InputRange &range) {
+		return true;
 	}
 }

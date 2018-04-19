@@ -17,9 +17,12 @@
 ]]
 
 
--- Using SDL keycodes for mapping. Change to more generic stuff later
+-- Using SDL keycodes for mapping. Change to more generic stuff later.
 
-test = {
+-- The 'context', 'actions', 'states' and 'ranges' name is hardcoded, so it
+-- should always be those names. Make this dynamic later.
+
+context = {
 	actions = {
 		SDLK_ESCAPE = "ACTION_QUIT"
 	},

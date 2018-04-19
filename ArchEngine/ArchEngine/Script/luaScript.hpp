@@ -9,7 +9,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 15/04/2018                                                       *
- * Last Modified: 16/04/2018                                                 *
+ * Last Modified: 19/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -25,6 +25,7 @@
 #include <cassert>
 #include <cstdarg>
 #include <string>
+#include <utility>
 #include <vector>
 
 
@@ -52,6 +53,8 @@ namespace Script {
 		// Return vectors are moved, not copied
 		std::vector<int> getIntVector(const std::string& name);
 		std::vector<std::string> getTableKeys(const std::string& name);
+		std::vector<std::pair<std::string, std::string>>
+			getTablePairs(const std::string& name);
 
 		bool getFromStack(const std::string& var_name, int& level);
 

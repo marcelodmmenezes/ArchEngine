@@ -22,6 +22,12 @@
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
+#if defined(__unix__)
+#include <SDL2/SDL.h>
+#elif defined(_MSC_VER)
+#include <SDL.h>
+#endif
+
 #include <map>
 #include <string>
 
