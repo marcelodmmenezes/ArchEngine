@@ -9,7 +9,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 15/04/2018                                                       *
- * Last Modified: 17/04/2018                                                 *
+ * Last Modified: 19/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -21,10 +21,10 @@ using namespace Utils;
 
 namespace Script {
 	LuaScript::LuaScript() : m_state(CONSTRUCTED) {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"LuaScript constructor");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
 	LuaScript::~LuaScript() {
@@ -32,10 +32,10 @@ namespace Script {
 		assert(m_state == CONSTRUCTED || m_state == SAFE_TO_DESTROY);
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
 
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"LuaScript destructor");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
 	void LuaScript::initialize(const std::string& path) {
@@ -67,10 +67,10 @@ namespace Script {
 
 		m_state = SAFE_TO_DESTROY;
 
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			m_path + " window destroyed");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
 	void LuaScript::clearStack() {

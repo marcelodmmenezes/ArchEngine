@@ -3,11 +3,6 @@
  *                                                                           *
  * The inputs accepted by ArchEngine are divided into actions, states and    *
  * ranges.                                                                   *
- * - Actions happen once, when the button is first pressed or released       *
- * (For instance, holding down a button only triggers one action).           *
- * - States defines when some game event should be on or off.                *
- * - Ranges are inputs associated with a value, usefull for mouse            *
- * representation.                                                           *
  *                                                                           *
  * The actions, states and ranges will be defined as the engine grows. For   *
  * now, there are just some basic actions for debugging.                     *
@@ -16,6 +11,7 @@
  * - (https://www.gamedev.net/articles/programming/                          *
  *    general-and-gameplay-programming/                                      *
  *    designing-a-robust-input-handling-system-for-games-r2975)              *
+ * - Game Coding Complete - Mike McShaffry and David Graham                  *
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
@@ -28,29 +24,36 @@
 
 
 namespace Core {
-	enum Action {
-		// Camera related actions
-		ACTION_CAMERA_MOVEMENT_FORWARD,
-		ACTION_CAMERA_MOVEMENT_BACKWARD,
-		ACTION_CAMERA_MOVEMENT_LEFT,
-		ACTION_CAMERA_MOVEMENT_RIGHT,
-		ACTION_CAMERA_MOVEMENT_UP,
-		ACTION_CAMERA_MOVEMENT_DOWN,
+    // Actions happen once, when the button is first pressed or released
+    // (For instance, holding down a button only triggers one action).
+	enum InputAction {
+		// Window related actions
+		INPUT_ACTION_WINDOW_MINIMIZE,
+		INPUT_ACTION_WINDOW_MAXIMIZE,
 
 		// System related actions
-		ACTION_QUIT
-	}
+		INPUT_ACTION_QUIT
+	};
 
-	enum State {
+    // States defines when some game event should be on or off.
+	enum InputState {
 		// Camera related states
-		STATE_CAMERA_FAST
-	}
+		INPUT_STATE_CAMERA_MOVEMENT_FORWARD,
+		INPUT_STATE_CAMERA_MOVEMENT_BACKWARD,
+		INPUT_STATE_CAMERA_MOVEMENT_LEFT,
+		INPUT_STATE_CAMERA_MOVEMENT_RIGHT,
+		INPUT_STATE_CAMERA_MOVEMENT_UP,
+		INPUT_STATE_CAMERA_MOVEMENT_DOWN,
+		INPUT_STATE_CAMERA_MOVEMENT_FAST
+	};
 
-	enum Range {
+    // Ranges are inputs associated with a value, usefull for mouse
+    // representation.
+	enum InputRange {
 		// Camera related ranges
-		RANGE_CAMERA_AXIS_X,
-		RANGE_CAMERA_AXIS_Y
-	}
+		INPUT_RANGE_CAMERA_AXIS_X,
+		INPUT_RANGE_CAMERA_AXIS_Y
+	};
 }
 
 

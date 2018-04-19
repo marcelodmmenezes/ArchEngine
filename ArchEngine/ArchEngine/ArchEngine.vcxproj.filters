@@ -33,6 +33,9 @@
     <ClInclude Include="Core\inputs.hpp">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\inputContext.hpp">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -52,6 +55,9 @@
     </ClCompile>
     <ClCompile Include="Testers\script_lua_script_test.cpp">
       <Filter>Testers</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\inputContext.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

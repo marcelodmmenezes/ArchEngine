@@ -23,10 +23,10 @@ namespace Core {
 		m_vsync(vsync), m_anti_aliasing(anti_aliasing),
 		m_fullscreen(fullscreen), m_state(CONSTRUCTED),
 		m_window(nullptr) {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			m_title + " window constructor");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
 	Window::~Window() {
@@ -34,10 +34,10 @@ namespace Core {
 		assert(m_state == CONSTRUCTED || m_state == SAFE_TO_DESTROY);
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
 
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			m_title + " window destructor");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
 	//----------------------------------------------------------------- Methods
@@ -115,10 +115,10 @@ namespace Core {
 
 		m_state = INITIALIZED;
 
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			m_title + " window initialized");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 
 		return true;
 	}
@@ -144,10 +144,10 @@ namespace Core {
 
 		m_state = SAFE_TO_DESTROY;
 
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			m_title + " window destroyed");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
 	void Window::setPosition(int x, int y) {
