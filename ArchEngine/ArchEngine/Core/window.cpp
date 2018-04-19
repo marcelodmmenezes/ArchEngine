@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 16/04/2018                                                 *
+ * Last Modified: 19/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -211,39 +211,35 @@ namespace Core {
 
 	//----------------------------------------------------------------- Setters
 	void Window::setSize(int width, int height) {
-		this->m_width = width;
-		this->m_height = height;
+		m_width = width;
+		m_height = height;
 
-		if (this->m_fullscreen)
-			SDL_SetWindowFullscreen(this->m_window, 0);
+		if (m_fullscreen)
+			SDL_SetWindowFullscreen(m_window, 0);
 
-		SDL_SetWindowSize(this->m_window, this->m_width, this->m_height);
+		SDL_SetWindowSize(m_window, m_width, m_height);
 	}
 
 	void Window::setWidth(int width) {
-		this->m_width = width;
+		m_width = width;
 
-		int discard;
+		SDL_GetWindowSize(m_window, nullptr, &m_height);
 
-		SDL_GetWindowSize(this->m_window, &discard, &this->m_height);
+		if (m_fullscreen)
+			SDL_SetWindowFullscreen(m_window, 0);
 
-		if (this->m_fullscreen)
-			SDL_SetWindowFullscreen(this->m_window, 0);
-
-		SDL_SetWindowSize(this->m_window, this->m_width, this->m_height);
+		SDL_SetWindowSize(m_window, m_width, m_height);
 	}
 
 	void Window::setHeight(int height) {
-		this->m_height = height;
+		m_height = height;
 
-		int discard;
+		SDL_GetWindowSize(m_window, &m_width, nullptr);
 
-		SDL_GetWindowSize(this->m_window, &this->m_width, &discard);
+		if (m_fullscreen)
+			SDL_SetWindowFullscreen(m_window, 0);
 
-		if (this->m_fullscreen)
-			SDL_SetWindowFullscreen(this->m_window, 0);
-
-		SDL_SetWindowSize(this->m_window, this->m_width, this->m_height);
+		SDL_SetWindowSize(m_window, m_width, m_height);
 	//-----------------------------------------------------------------------//
 	}
 }

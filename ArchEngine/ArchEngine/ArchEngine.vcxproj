@@ -123,6 +123,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Core\engineMacros.hpp" />
+    <ClInclude Include="Core\inputs.hpp" />
     <ClInclude Include="Core\window.hpp" />
     <ClInclude Include="Script\luaScript.hpp" />
     <ClInclude Include="Utils\logger.hpp" />

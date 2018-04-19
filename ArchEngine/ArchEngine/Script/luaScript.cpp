@@ -1,16 +1,16 @@
 /*===========================================================================*
-* Arch Engine - "Script/luaScript.hpp                                       *
-*                                                                           *
-* Class responsible for communication between the engine and Lua Scripts.   *
-* Based in:                                                                 *
-* - (https://eliasdaler.wordpress.com/2013/10/11/lua_cpp_binder/)           *
-* - Roberto Ierusalimschy's Programming in Lua, 4th edition                 *
-* - Game Programming Gems 6                                                 *
-*                                                                           *
-* Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
-* Created: 15/04/2018                                                       *
-* Last Modified: 16/04/2018                                                 *
-*===========================================================================*/
+ * Arch Engine - "Script/luaScript.hpp                                       *
+ *                                                                           *
+ * Class responsible for communication between the engine and Lua Scripts.   *
+ * Based in:                                                                 *
+ * - (https://eliasdaler.wordpress.com/2013/10/11/lua_cpp_binder/)           *
+ * - Roberto Ierusalimschy's Programming in Lua, 4th edition                 *
+ * - Game Programming Gems 6                                                 *
+ *                                                                           *
+ * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
+ * Created: 15/04/2018                                                       *
+ * Last Modified: 17/04/2018                                                 *
+ *===========================================================================*/
 
 
 #include "luaScript.hpp"
