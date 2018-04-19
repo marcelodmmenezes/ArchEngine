@@ -13,6 +13,9 @@
     <Filter Include="Script">
       <UniqueIdentifier>{88469830-e234-4858-a929-f57635e0bd90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Config">
+      <UniqueIdentifier>{735bb79e-983a-4ca9-9db7-709519818e22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils\logger.hpp">
@@ -70,6 +73,12 @@
     </None>
     <None Include="Testers\script_lua_script_test3.lua">
       <Filter>Testers</Filter>
+    </None>
+    <None Include="Config\inputContexts.lua">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="Config\testContext.lua">
+      <Filter>Config</Filter>
     </None>
   </ItemGroup>
 </Project>
