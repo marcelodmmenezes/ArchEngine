@@ -56,7 +56,7 @@ namespace Script {
 		std::vector<std::pair<std::string, std::string>>
 			getTablePairs(const std::string& name);
 
-		bool getFromStack(const std::string& var_name, int& level);
+		bool getToStack(const std::string& var_name, int& level);
 
 		template<typename T>
 		T luaGet(const std::string& var_name) {

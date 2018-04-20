@@ -39,14 +39,8 @@ context = {
 
 	ranges = {
 		SDL_MOUSE_MOTION = {
-			range = "RANGE_CAMERA_AXIS_X",
-			min = -1000,
-			max = 1000,
-			sensitivity = 50
-		},
-
-		SDL_MOUSE_MOTION = {
-			range = "RANGE_CAMERA_AXIS_Y",
+			range_x = "RANGE_CAMERA_AXIS_X",
+			range_y = "RANGE_CAMERA_AXIS_X",
 			min = -1000,
 			max = 1000,
 			sensitivity = 50

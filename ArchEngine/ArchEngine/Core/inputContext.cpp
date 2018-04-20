@@ -26,7 +26,7 @@ namespace Core {
 		LuaScript context;
 		context.initialize(path);
 
-		std::vector<std::string> keys = script.getTableKeys("context");
+		std::vector<std::string> keys = context.getTableKeys("context");
 
 		for (auto &it : keys)
 			ss << it << ", ";
@@ -34,7 +34,7 @@ namespace Core {
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(ss);
 
-		script.destroy();
+		context.destroy();
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLog()->log<LOG_DEBUG>(
