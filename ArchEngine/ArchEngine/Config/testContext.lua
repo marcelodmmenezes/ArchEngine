@@ -37,12 +37,22 @@ context = {
 		SDLK_LSHIFT = "STATE_CAMERA_MOVEMENT_FAST"
 	},
 
+	-- Always mapped to mouse motion. Maybe a joystick in the future
 	ranges = {
-		SDL_MOUSE_MOTION = {
-			range_x = "RANGE_CAMERA_AXIS_X",
-			range_y = "RANGE_CAMERA_AXIS_X",
-			min = -1000,
-			max = 1000,
+		MOUSE_AXIS_X = {
+			range = "RANGE_CAMERA_AXIS_X",
+			min_input = -1000,
+			max_input = 1000,
+			min_output = -1,
+			max_output = 1,
+			sensitivity = 50
+		},
+		MOUSE_AXIS_Y = {
+			range = "RANGE_CAMERA_AXIS_Y",
+			min_input = -1000,
+			max_input = 1000,
+			min_output = -1,
+			max_output = 1,
 			sensitivity = 50
 		}
 	}

@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 19/04/2018                                                 *
+ * Last Modified: 20/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -38,16 +38,34 @@ namespace Core {
 		InputContext(const std::string& path);
 		~InputContext();
 
-		bool mapButtonToAction(SDL_Keycode button, InputAction &action);
-		bool mapButtonToState(SDL_Keycode button, InputState &state);
-		bool mapAxisToRange(SDL_EventType, InputRange &range);
+		bool mapKeyToAction(SDL_Keycode key, InputAction& action);
+		bool mapKeyToState(SDL_Keycode key, InputState& state);
+
+		bool mapModToAction(SDL_Keymod mod, InputAction& action);
+		bool mapModToState(SDL_Keymod mod, InputState& state);
+
+		bool mapAxisToRange(ControllerAxis axis, InputRange& range);
 
 	private:
-		std::map<SDL_Keycode, InputAction> m_actions;
-		std::map<SDL_Keycode, InputState> m_states;
-		std::map<SDL_EventType, InputRange> m_ranges;
+		struct Range {
+			InputRange range;
+			int min_input;
+			int max_input;
+			int min_output;
+			int max_output;
+			double sensitivity;
+		};
 
-		std::map<InputRange, double> m_sensivities;
+		// Key <-> action, key <-> state mapping
+		std::map<SDL_Keycode, InputAction> m_key_actions;
+		std::map<SDL_Keycode, InputState> m_key_states;
+
+		// Modifier <-> action, modifier <-> state mapping
+		std::map<SDL_Keymod, InputAction> m_mod_actions;
+		std::map<SDL_Keymod, InputState> m_mod_states;
+
+		// ControllerAxis <-> Range mapping
+		std::map<ControllerAxis, Range> m_ranges;
 	};
 }
 

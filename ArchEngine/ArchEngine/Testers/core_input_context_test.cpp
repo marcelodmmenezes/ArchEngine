@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 19/04/2018                                                 *
+ * Last Modified: 20/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -16,15 +16,18 @@
  // Check if this tester is active
 #if defined(ARCH_ENGINE_CORE_INPUT_CONTEXT_TEST)
 
+#include "../Core/inputContext.hpp"
 #include "../Utils/serviceLocator.hpp"
 #include "../Script/luaScript.hpp"
 
 
+using namespace Core;
 using namespace Script;
 using namespace Utils;
 
 
 void test1(); // Tests if context tables are read correctly
+void test2(); // Tests if InputContext is parsing files correctly
 void startLoggingService();
 
 
@@ -39,6 +42,13 @@ int main(int argc, char* argv[]) {
 		test1();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished first test\n\
+----------------------------------------------------------------------------");
+
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Testing if InputContext is parsing files correctly");
+		test2();
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Finished second test\n\
 ----------------------------------------------------------------------------");
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>("Finished tests");
@@ -89,6 +99,10 @@ void test1() {
 	ServiceLocator::getFileLogger()->log<LOG_INFO>(ss);
 
 	script.destroy();
+}
+
+void test2() {
+	InputContext ic("../../ArchEngine/Config/testContext.lua");
 }
 
 void startLoggingService() {

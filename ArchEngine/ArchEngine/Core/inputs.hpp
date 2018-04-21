@@ -27,6 +27,8 @@ namespace Core {
     // Actions happen once, when the button is first pressed or released
     // (For instance, holding down a button only triggers one action).
 	enum InputAction {
+		INPUT_ACTION_NONE,
+
 		// Window related actions
 		INPUT_ACTION_WINDOW_MINIMIZE,
 		INPUT_ACTION_WINDOW_MAXIMIZE,
@@ -37,6 +39,8 @@ namespace Core {
 
     // States defines when some game event should be on or off.
 	enum InputState {
+		INPUT_STATE_NONE,
+
 		// Camera related states
 		INPUT_STATE_CAMERA_MOVEMENT_FORWARD,
 		INPUT_STATE_CAMERA_MOVEMENT_BACKWARD,
@@ -50,9 +54,17 @@ namespace Core {
     // Ranges are inputs associated with a value, usefull for mouse
     // representation.
 	enum InputRange {
+		INPUT_RANGE_NONE,
+
 		// Camera related ranges
 		INPUT_RANGE_CAMERA_AXIS_X,
 		INPUT_RANGE_CAMERA_AXIS_Y
+	};
+
+	// Mouse axes should be mapped to input ranges
+	enum ControllerAxis {
+		MOUSE_AXIS_X,
+		MOUSE_AXIS_Y
 	};
 }
 
