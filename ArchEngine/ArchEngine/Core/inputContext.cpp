@@ -206,45 +206,109 @@ namespace Core {
 		LuaScript context;
 		context.initialize(path);
 
-		// Gets the mapping of SDL to engine states
+		// Gets the mapping of SDL to engine input actions
 		std::vector<std::pair<std::string, std::string>> mapping =
-			context.getTablePairs("context.states");
+			context.getTablePairs("context.actions");
 
 		for (auto &input : mapping) {
-			// Tries to find action
+			// Gets the corresponding state
+			auto action_it = InputNames::engine_actions.find(input.second);
+
+			if (action_it == InputNames::engine_actions.end()) {
+				// If none was found the input file is wrong
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+				ServiceLocator::getFileLogger()->log<LOG_ERROR>(
+					"Could not map " + path + " input context");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+				assert(false); // Should never get here
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+			}
+
+			// Tries to find key
 			auto key_it = InputNames::keycode_names.find(input.first);
 
 			if (key_it != InputNames::keycode_names.end()) {
-
+				m_key_actions[key_it->second] = action_it->second;
 				continue; // If found, continues the iteration
 			}
 
-			// Tries to find state
+			// Tries to find modifier
 			auto mod_it = InputNames::keymod_names.find(input.first);
 
 			if (mod_it != InputNames::keymod_names.end()) {
-				continue; // If found, continues the iteration
-			}
-
-			// Tries to find controller axis
-			auto ca_it = InputNames::controller_axis.find(input.first);
-
-			if (ca_it != InputNames::controller_axis.end()) {
+				m_mod_actions[mod_it->second] = action_it->second;
 				continue; // If found, continues the iteration
 			}
 
 			// If none was found the input file is wrong
-#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
-			assert(false);
-#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
-
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
 				"Could not map " + path + " input context");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+			assert(false); // Should never get here
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
 		}
 
+		// Gets the mapping of SDL to engine input states
+		mapping = context.getTablePairs("context.states");
 
+		for (auto &input : mapping) {
+			// Gets the corresponding state
+			auto state_it = InputNames::engine_states.find(input.second);
+
+			if (state_it == InputNames::engine_states.end()) {
+				// If none was found the input file is wrong
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+				ServiceLocator::getFileLogger()->log<LOG_ERROR>(
+					"Could not map " + path + " input context");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+				assert(false);
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+			}
+
+			// Tries to find key
+			auto key_it = InputNames::keycode_names.find(input.first);
+
+			if (key_it != InputNames::keycode_names.end()) {
+				m_key_states[key_it->second] = state_it->second;
+				continue; // If found, continues the iteration
+			}
+
+			// Tries to find modifier
+			auto mod_it = InputNames::keymod_names.find(input.first);
+
+			if (mod_it != InputNames::keymod_names.end()) {
+				m_mod_states[mod_it->second] = state_it->second;
+				continue; // If found, continues the iteration
+			}
+
+			// If none was found the input file is wrong
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
+				"Could not map " + path + " input context");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+			assert(false);
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+		}
+
+		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
+		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
+		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
+		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
+		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
+		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
+		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
+		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
+		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
+		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
 
 		context.destroy();
 

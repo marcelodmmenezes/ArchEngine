@@ -12,7 +12,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 19/04/2018                                                 *
+ * Last Modified: 20/04/2018                                                 *
  *===========================================================================*/
 ]]
 
@@ -24,23 +24,23 @@
 
 context = {
 	actions = {
-		SDLK_ESCAPE = "ACTION_QUIT"
+		SDLK_ESCAPE = "INPUT_ACTION_QUIT"
 	},
 
 	states = {
-		SDLK_w = "STATE_CAMERA_MOVE_FORWARD",
-		SDLK_s = "STATE_CAMERA_MOVE_BACKWARD",
-		SDLK_a = "STATE_CAMERA_MOVE_LEFT",
-		SDLK_d = "STATE_CAMERA_MOVE_RIGHT",
-		SDLK_q = "STATE_CAMERA_MOVEMENT_UP",
-		SDLK_e = "STATE_CAMERA_MOVEMENT_DOWN",
-		SDLK_LSHIFT = "STATE_CAMERA_MOVEMENT_FAST"
+		SDLK_w = "INPUT_STATE_CAMERA_MOVEMENT_FORWARD",
+		SDLK_s = "INPUT_STATE_CAMERA_MOVEMENT_BACKWARD",
+		SDLK_a = "INPUT_STATE_CAMERA_MOVEMENT_LEFT",
+		SDLK_d = "INPUT_STATE_CAMERA_MOVEMENT_RIGHT",
+		SDLK_q = "INPUT_STATE_CAMERA_MOVEMENT_UP",
+		SDLK_e = "INPUT_STATE_CAMERA_MOVEMENT_DOWN",
+		SDLK_LSHIFT = "INPUT_STATE_CAMERA_MOVEMENT_FAST"
 	},
 
 	-- Always mapped to mouse motion. Maybe a joystick in the future
 	ranges = {
 		MOUSE_AXIS_X = {
-			range = "RANGE_CAMERA_AXIS_X",
+			range = "INPUT_RANGE_CAMERA_AXIS_X",
 			min_input = -1000,
 			max_input = 1000,
 			min_output = -1,
@@ -48,7 +48,7 @@ context = {
 			sensitivity = 50
 		},
 		MOUSE_AXIS_Y = {
-			range = "RANGE_CAMERA_AXIS_Y",
+			range = "INPUT_RANGE_CAMERA_AXIS_Y",
 			min_input = -1000,
 			max_input = 1000,
 			min_output = -1,
