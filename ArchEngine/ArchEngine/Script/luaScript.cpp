@@ -251,13 +251,16 @@ namespace Script {
 					"    " + std::string(lua_tostring(m_lua, i)));
 				break;
 			case LUA_TBOOLEAN:
-				printf(lua_toboolean(m_lua, i) ? "true" : "false");
+				ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
+					"    " + lua_toboolean(m_lua, i) ? "true" : "false");
 				break;
 			case LUA_TNUMBER:
-				printf("%g", lua_tonumber(m_lua, i));
+				ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
+					std::to_string(lua_tonumber(m_lua, i)));
 				break;
 			default:
-				printf("%s", lua_typename(m_lua, type));
+				ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
+					lua_typename(m_lua, type));
 				break;
 			}
 		}

@@ -49,10 +49,10 @@ namespace Core {
 	private:
 		struct Range {
 			InputRange range;
-			int min_input;
-			int max_input;
-			int min_output;
-			int max_output;
+			double min_input;
+			double max_input;
+			double min_output;
+			double max_output;
 			double sensitivity;
 		};
 

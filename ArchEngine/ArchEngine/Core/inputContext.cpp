@@ -24,7 +24,7 @@ using namespace Utils;
 namespace Core {
 	namespace InputNames {
 		// Remember to clear maps after input reading to save memory
-		// String <-> SDL_Keycode mapping
+		//-------------------------------------- String <-> SDL_Keycode mapping
 		std::map<std::string, SDL_Keycode> keycode_names = {
 			// SDL_Keycode
 			std::make_pair("SDLK_UNKNOWN", SDLK_UNKNOWN),
@@ -200,17 +200,20 @@ namespace Core {
 				INPUT_RANGE_CAMERA_AXIS_Y),
 		};
 	}
+	//-------------------------------------------------------------------------
 
 	//------------------------------------------------------------ InputContext
 	InputContext::InputContext(const std::string& path) {
 		LuaScript context;
 		context.initialize(path);
 
-		// Gets the mapping of SDL to engine input actions
+		// TODO: The table names must be exactly like these. Change later.
+
+		//------------------------------------------------------- INPUT ACTIONS
 		std::vector<std::pair<std::string, std::string>> mapping =
 			context.getTablePairs("context.actions");
 
-		for (auto &input : mapping) {
+		for (auto& input : mapping) {
 			// Gets the corresponding state
 			auto action_it = InputNames::engine_actions.find(input.second);
 
@@ -252,11 +255,12 @@ namespace Core {
 			assert(false); // Should never get here
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
 		}
+		//---------------------------------------------------------------------
 
-		// Gets the mapping of SDL to engine input states
+		//-------------------------------------------------------- INPUT STATES
 		mapping = context.getTablePairs("context.states");
 
-		for (auto &input : mapping) {
+		for (auto& input : mapping) {
 			// Gets the corresponding state
 			auto state_it = InputNames::engine_states.find(input.second);
 
@@ -298,17 +302,49 @@ namespace Core {
 			assert(false);
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
 		}
+		//---------------------------------------------------------------------
 
-		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
-		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
-		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
-		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
-		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
-		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
-		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
-		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
-		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
-		//-------- TODO: INPUT RANGES - TODO: INPUT RANGES - TODO: INPUT RANGES
+		//-------------------------------------------------------- INPUT RANGES
+		mapping = context.getTablePairs("context.ranges.MOUSE_AXIS_X");
+
+		for (unsigned i = 0; i < 2; i++) {
+			Range aux_range; // Auxiliary variable to parse the ranges
+
+			for (auto& it : mapping) {
+				if (it.first == "range")
+					aux_range.range = InputNames::engine_ranges[it.second];
+				else if (it.first == "min_input")
+					aux_range.min_input = std::stod(it.second);
+				else if (it.first == "max_input")
+					aux_range.max_input = std::stod(it.second);
+				else if (it.first == "min_output")
+					aux_range.min_output = std::stod(it.second);
+				else if (it.first == "max_output")
+					aux_range.max_output = std::stod(it.second);
+				else if (it.first == "sensitivity")
+					aux_range.sensitivity = std::stod(it.second);
+				else {
+					// If none was found the input file is wrong
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+					ServiceLocator::getFileLogger()->log<LOG_ERROR>(
+						"Could not map " + path + " input context");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+					assert(false);
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+				}
+			}
+
+			// Hard coded assuming there's only the two mouse axis
+			if (i == 0)
+				m_ranges[MOUSE_AXIS_X] = aux_range;
+			else
+				m_ranges[MOUSE_AXIS_Y] = aux_range;
+
+			mapping = context.getTablePairs("context.ranges.MOUSE_AXIS_Y");
+		}
+		//---------------------------------------------------------------------
 
 		context.destroy();
 
