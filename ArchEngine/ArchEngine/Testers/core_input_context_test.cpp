@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 20/04/2018                                                 *
+ * Last Modified: 23/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -16,7 +16,7 @@
  // Check if this tester is active
 #if defined(ARCH_ENGINE_CORE_INPUT_CONTEXT_TEST)
 
-#include "../Core/inputContext.hpp"
+#include "../Core/inputManager.hpp"
 #include "../Utils/serviceLocator.hpp"
 #include "../Script/luaScript.hpp"
 
@@ -28,6 +28,7 @@ using namespace Utils;
 
 void test1(); // Tests if context tables are read correctly
 void test2(); // Tests if InputContext is parsing files correctly
+void test3(); // Tests if InputManager is handling files correctly
 void startLoggingService();
 
 
@@ -49,6 +50,13 @@ int main(int argc, char* argv[]) {
 		test2();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished second test\n\
+----------------------------------------------------------------------------");
+
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Testing if InputManager is handling files correctly");
+		test3();
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Finished third test\n\
 ----------------------------------------------------------------------------");
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>("Finished tests");
@@ -103,6 +111,10 @@ void test1() {
 
 void test2() {
 	InputContext ic("../../ArchEngine/Config/testContext.lua");
+}
+
+void test3() {
+	InputManager::getInstance().initialize("../../ArchEngine/Config/inputContexts.lua");
 }
 
 void startLoggingService() {

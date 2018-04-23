@@ -12,11 +12,11 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 19/04/2018                                                 *
+ * Last Modified: 23/04/2018                                                 *
  *===========================================================================*/
 ]]
 
 
 contexts = {
-	test = "Config/testContext.lua"
+	test = "../../ArchEngine/Config/testContext.lua"
 }
