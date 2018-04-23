@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 20/04/2018                                                 *
+ * Last Modified: 23/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -203,6 +203,11 @@ namespace Core {
 	//-------------------------------------------------------------------------
 
 	//------------------------------------------------------------ InputContext
+	// Range default constructor
+	InputContext::Range::Range() : m_range(INPUT_RANGE_NONE),
+		m_min_input(-1.0), m_max_input(1.0), m_min_output(1.0),
+		m_max_output(1.0), m_sensitivity(1.0) {}
+
 	InputContext::InputContext(const std::string& path) {
 		LuaScript context;
 		context.initialize(path);
@@ -312,17 +317,17 @@ namespace Core {
 
 			for (auto& it : mapping) {
 				if (it.first == "range")
-					aux_range.range = InputNames::engine_ranges[it.second];
+					aux_range.m_range = InputNames::engine_ranges[it.second];
 				else if (it.first == "min_input")
-					aux_range.min_input = std::stod(it.second);
+					aux_range.m_min_input = std::stod(it.second);
 				else if (it.first == "max_input")
-					aux_range.max_input = std::stod(it.second);
+					aux_range.m_max_input = std::stod(it.second);
 				else if (it.first == "min_output")
-					aux_range.min_output = std::stod(it.second);
+					aux_range.m_min_output = std::stod(it.second);
 				else if (it.first == "max_output")
-					aux_range.max_output = std::stod(it.second);
+					aux_range.m_max_output = std::stod(it.second);
 				else if (it.first == "sensitivity")
-					aux_range.sensitivity = std::stod(it.second);
+					aux_range.m_sensitivity = std::stod(it.second);
 				else {
 					// If none was found the input file is wrong
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
@@ -406,16 +411,23 @@ namespace Core {
 	}
 
 	bool InputContext::mapAxisToRange(ControllerAxis axis, InputRange& range) {
-		// TODO
-		/*
 		auto it = m_ranges.find(axis);
 
 		if (it != m_ranges.end()) {
-			range = it->second;
+			range = it->second.m_range;
 			return true;
 		}
 
-		return false;*/
-		return true;
+		return false;
+	}
+
+	double InputContext::getAxisSensitivity(ControllerAxis axis) {
+		auto it = m_ranges.find(axis);
+
+		if (it != m_ranges.end())
+			return it->second.m_sensitivity;
+
+		// If not found, returns a default value of 1.0
+		return 1.0;
 	}
 }

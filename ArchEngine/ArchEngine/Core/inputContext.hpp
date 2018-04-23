@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 20/04/2018                                                 *
+ * Last Modified: 23/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -45,15 +45,18 @@ namespace Core {
 		bool mapModToState(SDL_Keymod mod, InputState& state);
 
 		bool mapAxisToRange(ControllerAxis axis, InputRange& range);
+		double getAxisSensitivity(ControllerAxis axis);
 
 	private:
 		struct Range {
-			InputRange range;
-			double min_input;
-			double max_input;
-			double min_output;
-			double max_output;
-			double sensitivity;
+			Range();
+
+			InputRange m_range;
+			double m_min_input;
+			double m_max_input;
+			double m_min_output;
+			double m_max_output;
+			double m_sensitivity;
 		};
 
 		// Key <-> action, key <-> state mapping

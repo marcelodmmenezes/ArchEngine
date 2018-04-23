@@ -124,6 +124,7 @@
   <ItemGroup>
     <ClInclude Include="Core\engineMacros.hpp" />
     <ClInclude Include="Core\inputContext.hpp" />
+    <ClInclude Include="Core\inputManager.hpp" />
     <ClInclude Include="Core\inputs.hpp" />
     <ClInclude Include="Core\window.hpp" />
     <ClInclude Include="Script\luaScript.hpp" />
@@ -132,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\inputContext.cpp" />
+    <ClCompile Include="Core\inputManager.cpp" />
     <ClCompile Include="Core\window.cpp" />
     <ClCompile Include="Script\luaScript.cpp" />
     <ClCompile Include="Testers\core_input_context_test.cpp" />
