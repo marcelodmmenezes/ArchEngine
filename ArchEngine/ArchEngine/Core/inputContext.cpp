@@ -216,6 +216,10 @@ namespace Core {
 		m_min_input(-1.0), m_max_input(1.0), m_min_output(-1.0),
 		m_max_output(1.0), m_sensitivity(1.0) {}
 
+	bool RangeInfo::operator<(const RangeInfo& ri) const {
+		return m_range < ri.m_range;
+	}
+
 	void RangeInfo::calc(double value) {
 		if (value < m_min_input)
 			value = m_min_input;
@@ -374,7 +378,7 @@ namespace Core {
 			}
 
 			// Hard coded assuming there's only the two mouse axis
-			m_ranges[i] = aux_range;
+			m_ranges[(ControllerAxis)i] = aux_range;
 
 			mapping = lua_context.getTablePairs("context.ranges.MOUSE_AXIS_Y");
 		}

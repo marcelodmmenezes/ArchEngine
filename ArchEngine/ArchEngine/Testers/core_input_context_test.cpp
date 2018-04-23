@@ -115,6 +115,15 @@ void test2() {
 
 void test3() {
 	InputManager::getInstance().initialize("../../ArchEngine/Config/inputContexts.lua");
+	InputManager::getInstance().pushContext("test");
+
+	// Simulates some button presses
+	InputManager::getInstance().setKeyState(SDLK_w, true, false);
+	InputManager::getInstance().setModState(KMOD_LSHIFT, true, false);
+	InputManager::getInstance().setAxisValue(MOUSE_AXIS_X, 200);
+	InputManager::getInstance().setAxisValue(MOUSE_AXIS_Y, 100);
+
+	InputManager::getInstance().dispatch();
 }
 
 void startLoggingService() {

@@ -82,10 +82,6 @@ namespace Core {
 		// TODO
 	}
 
-	void InputManager::destroy() {
-		// TODO
-	}
-
 	void InputManager::pushContext(const std::string& context) {
 		auto it = m_mapped_contexts.find(context);
 
@@ -221,5 +217,28 @@ namespace Core {
 
 	void InputManager::dispatch() {
 		// TODO
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		std::stringstream ss;
+
+		ss << "\n\n    INPUTMANAGER DISPATCH:\n    ACTIONS: ";
+
+		for (auto it : m_current_input.m_actions)
+			ss << it << " ";
+
+		ss << "\n    STATES: ";
+
+		for (auto it : m_current_input.m_states)
+			ss << it << " ";
+
+		ss << "\n    RANGES: ";
+
+		for (auto& it : m_current_input.m_ranges)
+			ss << it.m_range << " ";
+
+		ss << "\n\n";
+
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(ss);
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 }

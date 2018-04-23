@@ -40,6 +40,8 @@ namespace Core {
 	struct RangeInfo {
 		RangeInfo();
 
+		bool operator<(const RangeInfo& ri) const;
+
 		void calc(double value);
 
 		InputRange m_range;

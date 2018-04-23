@@ -61,7 +61,6 @@ namespace Core {
 
 		void initialize(const std::string& path);
 		void update();
-		void destroy();
 
 		// Adds or removes an active input context
 		void pushContext(const std::string& context);
@@ -73,6 +72,12 @@ namespace Core {
 		void setAxisValue(ControllerAxis axis, double value);
 		void clearInput();
 
+		// Sends the CurrentInput configuration to the engine
+		void dispatch();
+
+	private:
+		InputManager();
+
 		// Engine actions and states triggers
 		bool triggerAction(SDL_Keycode key, InputAction& action);
 		bool triggerAction(SDL_Keymod mod, InputAction& action);
@@ -80,13 +85,7 @@ namespace Core {
 		bool triggerState(SDL_Keymod mod, InputState& state);
 		void triggerAndConsume(SDL_Keycode key);
 		void triggerAndConsume(SDL_Keymod mod);
-
-		// Sends the CurrentInput configuration to the engine
-		void dispatch();
-
-	private:
-		InputManager();
-
+		
 		std::vector<InputContext> m_contexts;
 
 		// Maps the context name to its position in m_contexts
