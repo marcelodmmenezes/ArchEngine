@@ -37,6 +37,22 @@ namespace Core {
 		void clearInputMapping();
 	}
 
+	struct RangeInfo {
+		RangeInfo();
+
+		void calc(double value);
+
+		InputRange m_range;
+		double m_min_input;
+		double m_max_input;
+		double m_min_output;
+		double m_max_output;
+		double m_sensitivity;
+
+		// Stores the current value of the range
+		double m_value;
+	};
+
 	class InputContext {
 	public:
 		InputContext(const std::string& path);
@@ -48,21 +64,10 @@ namespace Core {
 		bool mapModToAction(SDL_Keymod mod, InputAction& action);
 		bool mapModToState(SDL_Keymod mod, InputState& state);
 
-		bool mapAxisToRange(ControllerAxis axis, InputRange& range);
+		bool mapAxisToRange(ControllerAxis axis, RangeInfo& range);
 		double getAxisSensitivity(ControllerAxis axis);
 
 	private:
-		struct Range {
-			Range();
-
-			InputRange m_range;
-			double m_min_input;
-			double m_max_input;
-			double m_min_output;
-			double m_max_output;
-			double m_sensitivity;
-		};
-
 		// Key <-> action, key <-> state mapping
 		std::map<SDL_Keycode, InputAction> m_key_actions;
 		std::map<SDL_Keycode, InputState> m_key_states;
@@ -72,7 +77,7 @@ namespace Core {
 		std::map<SDL_Keymod, InputState> m_mod_states;
 
 		// ControllerAxis <-> Range mapping
-		std::map<ControllerAxis, Range> m_ranges;
+		std::map<ControllerAxis, RangeInfo> m_ranges;
 	};
 }
 

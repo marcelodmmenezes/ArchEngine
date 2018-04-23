@@ -33,10 +33,23 @@
 
 #include <fstream>
 #include <map>
+#include <set>
 #include <string>
+#include <vector>
 
 
 namespace Core {
+	struct CurrentInput {
+		// Sets for O(log(n)) access
+		std::set<InputAction> m_actions;
+		std::set<InputState> m_states;
+		std::set<RangeInfo> m_ranges;
+
+		void removeAction(InputAction action);
+		void removeState(InputState state);
+		void removeRange(RangeInfo range);
+	};
+
 	class InputManager {
 	public:
 		~InputManager();
@@ -54,18 +67,34 @@ namespace Core {
 		void pushContext(const std::string& context);
 		void popContext();
 
-		// Sends the current input configuration to the engine
-		void dispatch();
+		// Input gathering and clearing
+		void setKeyState(SDL_Keycode key, bool pressed, bool prev_pressed);
+		void setModState(SDL_Keymod mod, bool pressed, bool prev_pressed);
+		void setAxisValue(ControllerAxis axis, double value);
+		void clearInput();
 
-		void clear(); // Clears all current input
+		// Engine actions and states triggers
+		bool triggerAction(SDL_Keycode key, InputAction& action);
+		bool triggerAction(SDL_Keymod mod, InputAction& action);
+		bool triggerState(SDL_Keycode key, InputState& state);
+		bool triggerState(SDL_Keymod mod, InputState& state);
+		void triggerAndConsume(SDL_Keycode key);
+		void triggerAndConsume(SDL_Keymod mod);
+
+		// Sends the CurrentInput configuration to the engine
+		void dispatch();
 
 	private:
 		InputManager();
 
-		std::map<std::string, InputContext> m_contexts;
-		std::vector<InputContext*> m_active_contexts;
+		std::vector<InputContext> m_contexts;
 
+		// Maps the context name to its position in m_contexts
+		std::map<std::string, unsigned> m_mapped_contexts;
+		// The indices of the active contexts
+		std::vector<unsigned> m_active_contexts;
 
+		CurrentInput m_current_input;
 	};
 }
 

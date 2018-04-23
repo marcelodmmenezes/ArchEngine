@@ -34,7 +34,9 @@ namespace Core {
 		INPUT_ACTION_WINDOW_MAXIMIZE,
 
 		// System related actions
-		INPUT_ACTION_QUIT
+		INPUT_ACTION_QUIT,
+
+		N_INPUT_ACTIONS
 	};
 
     // States defines when some game event should be on or off.
@@ -48,7 +50,9 @@ namespace Core {
 		INPUT_STATE_CAMERA_MOVEMENT_RIGHT,
 		INPUT_STATE_CAMERA_MOVEMENT_UP,
 		INPUT_STATE_CAMERA_MOVEMENT_DOWN,
-		INPUT_STATE_CAMERA_MOVEMENT_FAST
+		INPUT_STATE_CAMERA_MOVEMENT_FAST,
+
+		N_INPUT_STATES
 	};
 
     // Ranges are inputs associated with a value, usefull for mouse
@@ -58,13 +62,17 @@ namespace Core {
 
 		// Camera related ranges
 		INPUT_RANGE_CAMERA_AXIS_X,
-		INPUT_RANGE_CAMERA_AXIS_Y
+		INPUT_RANGE_CAMERA_AXIS_Y,
+
+		N_INPUT_RANGES
 	};
 
 	// Mouse axes should be mapped to input ranges
 	enum ControllerAxis {
 		MOUSE_AXIS_X,
-		MOUSE_AXIS_Y
+		MOUSE_AXIS_Y,
+
+		N_AXES
 	};
 }
 

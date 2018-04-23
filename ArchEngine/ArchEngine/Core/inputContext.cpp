@@ -211,12 +211,22 @@ namespace Core {
 	}
 	//-------------------------------------------------------------------------
 
-	//------------------------------------------------------------ InputContext
-	// Range default constructor
-	InputContext::Range::Range() : m_range(INPUT_RANGE_NONE),
-		m_min_input(-1.0), m_max_input(1.0), m_min_output(1.0),
+	//--------------------------------------------------------------- RangeInfo
+	RangeInfo::RangeInfo() : m_range(INPUT_RANGE_NONE),
+		m_min_input(-1.0), m_max_input(1.0), m_min_output(-1.0),
 		m_max_output(1.0), m_sensitivity(1.0) {}
 
+	void RangeInfo::calc(double value) {
+		if (value < m_min_input)
+			value = m_min_input;
+		else if (value > m_max_input)
+			value = m_max_input;
+
+		m_value = (((value - m_min_input) / (m_max_input - m_min_input)
+			* (m_max_output - m_min_output)) + m_min_output) * m_sensitivity;
+	}
+
+	//------------------------------------------------------------ InputContext
 	InputContext::InputContext(const std::string& path) {
 		LuaScript lua_context;
 		lua_context.initialize(path);
@@ -321,8 +331,8 @@ namespace Core {
 		//-------------------------------------------------------- INPUT RANGES
 		mapping = lua_context.getTablePairs("context.ranges.MOUSE_AXIS_X");
 
-		for (unsigned i = 0; i < 2; i++) {
-			Range aux_range; // Auxiliary variable to parse the ranges
+		for (unsigned i = 0; i < N_AXES; i++) {
+			RangeInfo aux_range; // Auxiliary variable to parse the ranges
 
 			for (auto& it : mapping) {
 				if (it.first == "range")
@@ -364,10 +374,7 @@ namespace Core {
 			}
 
 			// Hard coded assuming there's only the two mouse axis
-			if (i == 0)
-				m_ranges[MOUSE_AXIS_X] = aux_range;
-			else
-				m_ranges[MOUSE_AXIS_Y] = aux_range;
+			m_ranges[i] = aux_range;
 
 			mapping = lua_context.getTablePairs("context.ranges.MOUSE_AXIS_Y");
 		}
@@ -432,11 +439,11 @@ namespace Core {
 		return false;
 	}
 
-	bool InputContext::mapAxisToRange(ControllerAxis axis, InputRange& range) {
+	bool InputContext::mapAxisToRange(ControllerAxis axis, RangeInfo& range) {
 		auto it = m_ranges.find(axis);
 
 		if (it != m_ranges.end()) {
-			range = it->second.m_range;
+			range = it->second;
 			return true;
 		}
 
