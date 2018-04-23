@@ -9,7 +9,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 15/04/2018                                                       *
- * Last Modified: 19/04/2018                                                 *
+ * Last Modified: 23/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -161,8 +161,6 @@ namespace Script {
 			lua_getfield(m_lua, -1, tables[i].c_str());
 			lua_remove(m_lua, -2);
 		}
-
-		printStack();
 
 		lua_pcall(m_lua, 1, 1, 0); // execute function
 

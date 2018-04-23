@@ -23,6 +23,13 @@
 
 #include "inputContext.hpp"
 #include "../Script/luaScript.hpp"
+#include "../Utils/serviceLocator.hpp"
+
+#if defined(__unix__)
+#include <SDL2/SDL.h>
+#elif defined(_MSC_VER)
+#include <SDL.h>
+#endif
 
 #include <fstream>
 #include <map>
@@ -43,10 +50,22 @@ namespace Core {
 		void update();
 		void destroy();
 
+		// Adds or removes an active input context
+		void pushContext(const std::string& context);
+		void popContext();
+
+		// Sends the current input configuration to the engine
+		void dispatch();
+
+		void clear(); // Clears all current input
+
 	private:
 		InputManager();
 
 		std::map<std::string, InputContext> m_contexts;
+		std::vector<InputContext*> m_active_contexts;
+
+
 	};
 }
 

@@ -23,7 +23,6 @@ using namespace Utils;
 
 namespace Core {
 	namespace InputNames {
-		// Remember to clear maps after input reading to save memory
 		//-------------------------------------- String <-> SDL_Keycode mapping
 		std::map<std::string, SDL_Keycode> keycode_names = {
 			// SDL_Keycode
@@ -166,9 +165,9 @@ namespace Core {
 		std::map<std::string, InputAction> engine_actions = {
 			std::make_pair("INPUT_ACTION_NONE", INPUT_ACTION_NONE),
 			std::make_pair("INPUT_ACTION_WINDOW_MINIMIZE",
-				INPUT_ACTION_WINDOW_MINIMIZE),
+			INPUT_ACTION_WINDOW_MINIMIZE),
 			std::make_pair("INPUT_ACTION_WINDOW_MAXIMIZE",
-				INPUT_ACTION_WINDOW_MAXIMIZE),
+			INPUT_ACTION_WINDOW_MAXIMIZE),
 			std::make_pair("INPUT_ACTION_QUIT", INPUT_ACTION_QUIT),
 		};
 
@@ -176,29 +175,39 @@ namespace Core {
 		std::map<std::string, InputState> engine_states = {
 			std::make_pair("INPUT_STATE_NONE", INPUT_STATE_NONE),
 			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_FORWARD",
-				INPUT_STATE_CAMERA_MOVEMENT_FORWARD),
+			INPUT_STATE_CAMERA_MOVEMENT_FORWARD),
 			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_BACKWARD",
-				INPUT_STATE_CAMERA_MOVEMENT_BACKWARD),
+			INPUT_STATE_CAMERA_MOVEMENT_BACKWARD),
 			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_LEFT",
-				INPUT_STATE_CAMERA_MOVEMENT_LEFT),
+			INPUT_STATE_CAMERA_MOVEMENT_LEFT),
 			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_RIGHT",
-				INPUT_STATE_CAMERA_MOVEMENT_RIGHT),
+			INPUT_STATE_CAMERA_MOVEMENT_RIGHT),
 			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_UP",
-				INPUT_STATE_CAMERA_MOVEMENT_UP),
+			INPUT_STATE_CAMERA_MOVEMENT_UP),
 			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_DOWN",
-				INPUT_STATE_CAMERA_MOVEMENT_DOWN),
+			INPUT_STATE_CAMERA_MOVEMENT_DOWN),
 			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_FAST",
-				INPUT_STATE_CAMERA_MOVEMENT_FAST),
+			INPUT_STATE_CAMERA_MOVEMENT_FAST),
 		};
 
 		// String <-> engine_ranges mapping
 		std::map<std::string, InputRange> engine_ranges = {
 			std::make_pair("INPUT_RANGE_NONE", INPUT_RANGE_NONE),
 			std::make_pair("INPUT_RANGE_CAMERA_AXIS_X",
-				INPUT_RANGE_CAMERA_AXIS_X),
+			INPUT_RANGE_CAMERA_AXIS_X),
 			std::make_pair("INPUT_RANGE_CAMERA_AXIS_Y",
-				INPUT_RANGE_CAMERA_AXIS_Y),
+			INPUT_RANGE_CAMERA_AXIS_Y),
 		};
+
+		// Remember to clear maps after input reading to save memory
+		void clearInputMapping() {
+			keycode_names.clear();
+			keymod_names.clear();
+			engine_actions.clear();
+			engine_states.clear();
+			engine_ranges.clear();
+			controller_axis.clear();
+		}
 	}
 	//-------------------------------------------------------------------------
 
@@ -209,14 +218,14 @@ namespace Core {
 		m_max_output(1.0), m_sensitivity(1.0) {}
 
 	InputContext::InputContext(const std::string& path) {
-		LuaScript context;
-		context.initialize(path);
+		LuaScript lua_context;
+		lua_context.initialize(path);
 
 		// TODO: The table names must be exactly like these. Change later.
 
 		//------------------------------------------------------- INPUT ACTIONS
 		std::vector<std::pair<std::string, std::string>> mapping =
-			context.getTablePairs("context.actions");
+			lua_context.getTablePairs("context.actions");
 
 		for (auto& input : mapping) {
 			// Gets the corresponding state
@@ -263,7 +272,7 @@ namespace Core {
 		//---------------------------------------------------------------------
 
 		//-------------------------------------------------------- INPUT STATES
-		mapping = context.getTablePairs("context.states");
+		mapping = lua_context.getTablePairs("context.states");
 
 		for (auto& input : mapping) {
 			// Gets the corresponding state
@@ -310,7 +319,7 @@ namespace Core {
 		//---------------------------------------------------------------------
 
 		//-------------------------------------------------------- INPUT RANGES
-		mapping = context.getTablePairs("context.ranges.MOUSE_AXIS_X");
+		mapping = lua_context.getTablePairs("context.ranges.MOUSE_AXIS_X");
 
 		for (unsigned i = 0; i < 2; i++) {
 			Range aux_range; // Auxiliary variable to parse the ranges
@@ -341,17 +350,30 @@ namespace Core {
 				}
 			}
 
+			// Checks if the range values are correct
+			if (aux_range.m_min_input >= aux_range.m_max_input ||
+				aux_range.m_min_output >= aux_range.m_max_output) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+				ServiceLocator::getFileLogger()->log<LOG_ERROR>(path + 
+					" has ranges with min values higher than max values");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+				assert(false);
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+			}
+
 			// Hard coded assuming there's only the two mouse axis
 			if (i == 0)
 				m_ranges[MOUSE_AXIS_X] = aux_range;
 			else
 				m_ranges[MOUSE_AXIS_Y] = aux_range;
 
-			mapping = context.getTablePairs("context.ranges.MOUSE_AXIS_Y");
+			mapping = lua_context.getTablePairs("context.ranges.MOUSE_AXIS_Y");
 		}
 		//---------------------------------------------------------------------
 
-		context.destroy();
+		lua_context.destroy();
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(

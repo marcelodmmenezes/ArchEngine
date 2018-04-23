@@ -1,7 +1,10 @@
 /*===========================================================================*
  * Arch Engine - "Core/inputManager.hpp"                                     *
  *                                                                           *
- * Responsible for creating and handling all input associated stuff.         *
+ * Responsible for creating and managing all input associated stuff.         *
+ * There's already too much layers of abstraction in the input system, due   *
+ * to all the key mapping functionalities, so I opted for using a singleton  *
+ * approach instead of using the ServiceLocator.                             *
  *                                                                           *
  * Based in:                                                                 *
  * - (https://www.gamedev.net/articles/programming/                          *
@@ -42,16 +45,21 @@ namespace Core {
 	}
 
 	void InputManager::initialize(const std::string& path) {
-		LuaScript context;
-		context.initialize(path);
+		// Reads the input contexts
+		LuaScript lua_context;
+		lua_context.initialize(path);
 
-		auto input_contexts = context.getTablePairs("contexts");
+		auto input_contexts = lua_context.getTablePairs("contexts");
 
 		for (auto& it : input_contexts)
 			m_contexts.insert(std::make_pair(
 				it.first, InputContext(it.second)));
 
-		context.destroy();
+		lua_context.destroy();
+
+		// Once the input contexts are read, the maps in Core::InputNames
+		// (inputContext.cpp) are cleared. No more need for them.
+		InputNames::clearInputMapping();
 	}
 
 	void InputManager::update() {
@@ -60,5 +68,23 @@ namespace Core {
 
 	void InputManager::destroy() {
 		// TODO
+	}
+
+	void InputManager::pushContext(const std::string& context) {
+		auto it = m_contexts.find(context);
+
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+		assert(it != m_contexts.end());
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+
+		m_active_contexts.push_back(&it->second);
+	}
+
+	void InputManager::popContext() {
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+		assert(!m_active_contexts.empty());
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+
+		m_active_contexts.pop_back();
 	}
 }

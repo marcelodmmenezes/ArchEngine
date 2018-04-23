@@ -33,6 +33,10 @@
 
 
 namespace Core {
+	namespace InputNames {
+		void clearInputMapping();
+	}
+
 	class InputContext {
 	public:
 		InputContext(const std::string& path);
