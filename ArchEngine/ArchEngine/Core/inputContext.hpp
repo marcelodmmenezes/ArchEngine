@@ -37,17 +37,18 @@
  *
  * These input events are represented simple as integers. The keys associated
  * with each event are described at the lua input context scripts, and it's up
- * to the game programmer to define the key/event relationship. Later he can
+ * to the game programmer to define the key/event relationship. Later, he can
  * define a game event associated with each integer, through enumarations for
  * instance, making the input system very customizable.
 
- * Actions happen once, when the button is first pressed or released
- * (For instance, holding down a button only triggers one action).
+ * - Actions happen once, when the button is first pressed or released
+ * (for instance, holding down a button only triggers one action).
  *
- * States defines when some game event should be on or off.
+ * - States defines when some game event should be on or off
+ * (represents continuous events by holding down buttons, for instance).
  *
- * Ranges are inputs associated with a value, usefull for mouse
- * representation.
+ * - Ranges are inputs associated with a value, usefull for analogic controls
+ * (like mouse and joystick) representation.
  */
 
 
@@ -96,6 +97,11 @@ namespace Core {
 		InputContext(const std::string& path);
 		~InputContext();
 
+		// These mapping methods return 'true' if the current context
+		// has an input event associated with the given key,
+		// key modifier, mouse button or controller axis.
+		// Returns 'false' otherwise.
+
 		bool mapKeyToAction(SDL_Keycode key, InputAction& action);
 		bool mapKeyToState(SDL_Keycode key, InputState& state);
 
@@ -106,6 +112,8 @@ namespace Core {
 		bool mapMBToState(MouseButton mb, InputState& state);
 
 		bool mapAxisToRange(ControllerAxis axis, RangeInfo& range);
+
+		// Returns the given axis sensitivity (Captain Obvious!)
 		double getAxisSensitivity(ControllerAxis axis);
 
 	private:
