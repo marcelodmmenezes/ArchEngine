@@ -155,54 +155,65 @@ namespace Core {
 			std::make_pair("KMOD_RESERVED", KMOD_RESERVED)
 		};
 
+		// String <-> SDL mouse buttons
+		std::map<std::string, MouseButton> mouse_buttons_names = {
+			std::make_pair("SDL_BUTTON_LEFT", SDL_BUTTON_LEFT),
+			std::make_pair("SDL_BUTTON_MIDDLE", SDL_BUTTON_MIDDLE),
+			std::make_pair("SDL_BUTTON_RIGHT", SDL_BUTTON_RIGHT)
+		};
+
 		// String <-> contoller_axis mapping
 		std::map<std::string, ControllerAxis> controller_axis = {
 			std::make_pair("MOUSE_AXIS_X", MOUSE_AXIS_X),
-			std::make_pair("MOUSE_AXIS_Y", MOUSE_AXIS_Y)
+			std::make_pair("MOUSE_AXIS_Y", MOUSE_AXIS_Y),
+			std::make_pair("MOUSE_WHEEL", MOUSE_WHEEL)
 		};
 
 		// String <-> engine_actions mapping
 		std::map<std::string, InputAction> engine_actions = {
 			std::make_pair("INPUT_ACTION_NONE", INPUT_ACTION_NONE),
 			std::make_pair("INPUT_ACTION_WINDOW_MINIMIZE",
-			INPUT_ACTION_WINDOW_MINIMIZE),
+				INPUT_ACTION_WINDOW_MINIMIZE),
 			std::make_pair("INPUT_ACTION_WINDOW_MAXIMIZE",
-			INPUT_ACTION_WINDOW_MAXIMIZE),
-			std::make_pair("INPUT_ACTION_QUIT", INPUT_ACTION_QUIT),
+				INPUT_ACTION_WINDOW_MAXIMIZE),
+			std::make_pair("INPUT_ACTION_QUIT", INPUT_ACTION_QUIT)
 		};
 
 		// String <-> engine_states mapping
 		std::map<std::string, InputState> engine_states = {
 			std::make_pair("INPUT_STATE_NONE", INPUT_STATE_NONE),
 			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_FORWARD",
-			INPUT_STATE_CAMERA_MOVEMENT_FORWARD),
+				INPUT_STATE_CAMERA_MOVEMENT_FORWARD),
 			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_BACKWARD",
-			INPUT_STATE_CAMERA_MOVEMENT_BACKWARD),
+				INPUT_STATE_CAMERA_MOVEMENT_BACKWARD),
 			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_LEFT",
-			INPUT_STATE_CAMERA_MOVEMENT_LEFT),
+				INPUT_STATE_CAMERA_MOVEMENT_LEFT),
 			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_RIGHT",
-			INPUT_STATE_CAMERA_MOVEMENT_RIGHT),
+				INPUT_STATE_CAMERA_MOVEMENT_RIGHT),
 			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_UP",
-			INPUT_STATE_CAMERA_MOVEMENT_UP),
+				INPUT_STATE_CAMERA_MOVEMENT_UP),
 			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_DOWN",
-			INPUT_STATE_CAMERA_MOVEMENT_DOWN),
+				INPUT_STATE_CAMERA_MOVEMENT_DOWN),
 			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_FAST",
-			INPUT_STATE_CAMERA_MOVEMENT_FAST),
+				INPUT_STATE_CAMERA_MOVEMENT_FAST)
 		};
 
 		// String <-> engine_ranges mapping
 		std::map<std::string, InputRange> engine_ranges = {
 			std::make_pair("INPUT_RANGE_NONE", INPUT_RANGE_NONE),
 			std::make_pair("INPUT_RANGE_CAMERA_AXIS_X",
-			INPUT_RANGE_CAMERA_AXIS_X),
+				INPUT_RANGE_CAMERA_AXIS_X),
 			std::make_pair("INPUT_RANGE_CAMERA_AXIS_Y",
-			INPUT_RANGE_CAMERA_AXIS_Y),
+				INPUT_RANGE_CAMERA_AXIS_Y),
+			std::make_pair("INPUT_RANGE_CAMERA_ZOOM",
+				INPUT_RANGE_CAMERA_ZOOM)
 		};
 
 		// Remember to clear maps after input reading to save memory
 		void clearInputMapping() {
 			keycode_names.clear();
 			keymod_names.clear();
+			mouse_buttons_names.clear();
 			engine_actions.clear();
 			engine_states.clear();
 			engine_ranges.clear();
@@ -273,6 +284,14 @@ namespace Core {
 				continue; // If found, continues the iteration
 			}
 
+			// Tries to find mouse button
+			auto mb_it = InputNames::mouse_buttons_names.find(input.first);
+
+			if (mb_it != InputNames::mouse_buttons_names.end()) {
+				m_mb_actions[mb_it->second] = action_it->second;
+				continue; // If found, continues the iteration
+			}
+
 			// If none was found the input file is wrong
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
@@ -320,6 +339,14 @@ namespace Core {
 				continue; // If found, continues the iteration
 			}
 
+			// Tries to find mouse button
+			auto mb_it = InputNames::mouse_buttons_names.find(input.first);
+
+			if (mb_it != InputNames::mouse_buttons_names.end()) {
+				m_mb_states[mb_it->second] = state_it->second;
+				continue; // If found, continues the iteration
+			}
+
 			// If none was found the input file is wrong
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
@@ -333,9 +360,14 @@ namespace Core {
 		//---------------------------------------------------------------------
 
 		//-------------------------------------------------------- INPUT RANGES
-		mapping = lua_context.getTablePairs("context.ranges.MOUSE_AXIS_X");
+		std::string axis_names[] = {
+			"MOUSE_AXIS_X", "MOUSE_AXIS_Y", "MOUSE_WHEEL"
+		};
 
 		for (unsigned i = 0; i < N_AXES; i++) {
+			mapping = lua_context.getTablePairs(
+				"context.ranges." + axis_names[i]);
+
 			RangeInfo aux_range; // Auxiliary variable to parse the ranges
 
 			for (auto& it : mapping) {
@@ -368,7 +400,7 @@ namespace Core {
 			if (aux_range.m_min_input >= aux_range.m_max_input ||
 				aux_range.m_min_output >= aux_range.m_max_output) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-				ServiceLocator::getFileLogger()->log<LOG_ERROR>(path + 
+				ServiceLocator::getFileLogger()->log<LOG_ERROR>(path +
 					" has ranges with min values higher than max values");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 
@@ -377,10 +409,9 @@ namespace Core {
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
 			}
 
-			// Hard coded assuming there's only the two mouse axis
+			// Hard coded assuming there's only the mouse axes
+			// and they are in the right order
 			m_ranges[(ControllerAxis)i] = aux_range;
-
-			mapping = lua_context.getTablePairs("context.ranges.MOUSE_AXIS_Y");
 		}
 		//---------------------------------------------------------------------
 
@@ -436,6 +467,28 @@ namespace Core {
 		auto it = m_mod_states.find(mod);
 
 		if (it != m_mod_states.end()) {
+			state = it->second;
+			return true;
+		}
+
+		return false;
+	}
+
+	bool InputContext::mapMBToAction(MouseButton mb, InputAction& action) {
+		auto it = m_mb_actions.find(mb);
+
+		if (it != m_mb_actions.end()) {
+			action = it->second;
+			return true;
+		}
+
+		return false;
+	}
+
+	bool InputContext::mapMBToState(MouseButton mb, InputState& state) {
+		auto it = m_mb_states.find(mb);
+
+		if (it != m_mb_states.end()) {
 			state = it->second;
 			return true;
 		}

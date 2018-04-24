@@ -63,6 +63,7 @@ namespace Core {
 		// Camera related ranges
 		INPUT_RANGE_CAMERA_AXIS_X,
 		INPUT_RANGE_CAMERA_AXIS_Y,
+		INPUT_RANGE_CAMERA_ZOOM,
 
 		N_INPUT_RANGES
 	};
@@ -71,6 +72,7 @@ namespace Core {
 	enum ControllerAxis {
 		MOUSE_AXIS_X,
 		MOUSE_AXIS_Y,
+		MOUSE_WHEEL,
 
 		N_AXES
 	};

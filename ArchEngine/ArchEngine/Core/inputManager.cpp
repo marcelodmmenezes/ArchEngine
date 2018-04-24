@@ -82,7 +82,7 @@ namespace Core {
 		// TODO
 	}
 
-	void InputManager::pushContext(const std::string& context) {
+	void InputManager::contextOn(const std::string& context) {
 		auto it = m_mapped_contexts.find(context);
 
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
@@ -92,10 +92,19 @@ namespace Core {
 		m_active_contexts.push_back(it->second);
 	}
 
-	void InputManager::popContext() {
+	void InputManager::contextOff(const std::string& context) {
+		auto it = m_mapped_contexts.find(context);
+
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
-		assert(!m_active_contexts.empty());
+		assert(it != m_mapped_contexts.end());
+		assert(it->second < m_active_contexts.size());
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+
+		// As the order doesn't matter, we can swap the desired active
+		// context with the last and remove the new last, to avoid
+		// unnecessary copies.
+		std::swap(m_active_contexts[it->second],
+			m_active_contexts[m_active_contexts.size() - 1]);
 
 		m_active_contexts.pop_back();
 	}

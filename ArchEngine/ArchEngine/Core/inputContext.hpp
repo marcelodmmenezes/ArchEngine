@@ -33,6 +33,9 @@
 
 
 namespace Core {
+	// Mouse buttons in SDL are just a macro
+	typedef int MouseButton;
+
 	namespace InputNames {
 		void clearInputMapping();
 	}
@@ -66,6 +69,9 @@ namespace Core {
 		bool mapModToAction(SDL_Keymod mod, InputAction& action);
 		bool mapModToState(SDL_Keymod mod, InputState& state);
 
+		bool mapMBToAction(MouseButton mb, InputAction& action);
+		bool mapMBToState(MouseButton mb, InputState& state);
+
 		bool mapAxisToRange(ControllerAxis axis, RangeInfo& range);
 		double getAxisSensitivity(ControllerAxis axis);
 
@@ -77,6 +83,10 @@ namespace Core {
 		// Modifier <-> action, modifier <-> state mapping
 		std::map<SDL_Keymod, InputAction> m_mod_actions;
 		std::map<SDL_Keymod, InputState> m_mod_states;
+
+		// Mouse buttons <-> action, Mouse buttons <-> state mapping
+		std::map<MouseButton, InputAction> m_mb_actions;
+		std::map<MouseButton, InputState> m_mb_states;
 
 		// ControllerAxis <-> Range mapping
 		std::map<ControllerAxis, RangeInfo> m_ranges;

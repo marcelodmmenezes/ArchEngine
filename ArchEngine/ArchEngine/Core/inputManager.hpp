@@ -63,8 +63,8 @@ namespace Core {
 		void update();
 
 		// Adds or removes an active input context
-		void pushContext(const std::string& context);
-		void popContext();
+		void contextOn(const std::string& context);
+		void contextOff(const std::string& context);
 
 		// Input gathering and clearing
 		void setKeyState(SDL_Keycode key, bool pressed, bool prev_pressed);

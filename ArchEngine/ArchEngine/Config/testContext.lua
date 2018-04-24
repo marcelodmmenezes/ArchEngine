@@ -12,7 +12,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 20/04/2018                                                 *
+ * Last Modified: 23/04/2018                                                 *
  *===========================================================================*/
 ]]
 
@@ -49,6 +49,14 @@ context = {
 		},
 		MOUSE_AXIS_Y = {
 			range = "INPUT_RANGE_CAMERA_AXIS_Y",
+			min_input = -1000,
+			max_input = 1000,
+			min_output = -1,
+			max_output = 1,
+			sensitivity = 50
+		},
+		MOUSE_WHEEL = {
+			range = "INPUT_RANGE_CAMERA_ZOOM",
 			min_input = -1000,
 			max_input = 1000,
 			min_output = -1,
