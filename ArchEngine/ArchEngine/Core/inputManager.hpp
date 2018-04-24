@@ -91,9 +91,9 @@ namespace Core {
 		bool triggerModState(SDL_Keymod mod, InputState& state);
 		bool triggerMBState(MouseButton mb, InputState& state);
 
-		void triggerKeyAndConsume(SDL_Keycode key);
-		void triggerModAndConsume(SDL_Keymod mod);
-		void triggerMBAndConsume(MouseButton mb);
+		void consumeKey(SDL_Keycode key);
+		void consumeMod(SDL_Keymod mod);
+		void consumeMB(MouseButton mb);
 
 		// Force actions, states or ranges to happen
 		void forceAction(InputAction action);

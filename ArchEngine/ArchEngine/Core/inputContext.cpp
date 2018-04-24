@@ -172,6 +172,7 @@ namespace Core {
 		// String <-> engine_actions mapping
 		std::map<std::string, InputAction> engine_actions = {
 			std::make_pair("INPUT_ACTION_NONE", INPUT_ACTION_NONE),
+			std::make_pair("INPUT_ACTION_SHOT", INPUT_ACTION_SHOT),
 			std::make_pair("INPUT_ACTION_WINDOW_MINIMIZE",
 				INPUT_ACTION_WINDOW_MINIMIZE),
 			std::make_pair("INPUT_ACTION_WINDOW_MAXIMIZE",

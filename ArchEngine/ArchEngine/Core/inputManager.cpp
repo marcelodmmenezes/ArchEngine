@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 23/04/2018                                                 *
+ * Last Modified: 24/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -76,7 +76,7 @@ namespace Core {
 
 		// Once the input contexts are read, the maps in Core::InputNames
 		// (inputContext.cpp) are cleared. No more need for them.
-		//InputNames::clearInputMapping();
+		InputNames::clearInputMapping();
 	}
 
 	void InputManager::update() {
@@ -131,6 +131,21 @@ namespace Core {
 
 				// The prev_state is now 'pressed'
 				m_key_prev_state[sdl_event.key.keysym.sym] = true;
+
+				// Triggers all pressed key modifiers
+				SDL_Keymod modifiers[] = {
+					KMOD_LSHIFT, KMOD_RSHIFT, KMOD_LCTRL, KMOD_RCTRL,
+					KMOD_LALT, KMOD_RALT, KMOD_LGUI, KMOD_RGUI,
+					KMOD_NUM, KMOD_CAPS, KMOD_MODE, KMOD_RESERVED
+				};
+
+				for (unsigned i = 0; i < 12; i++) {
+					if (sdl_event.key.keysym.mod & modifiers[i]) {
+						setModState(modifiers[i], true,
+							m_mod_prev_state[modifiers[i]]);
+						m_mod_prev_state[modifiers[i]] = true;
+					}
+				}
 			}
 			else if (sdl_event.type == SDL_KEYUP) {
 				// Sets the event
@@ -139,6 +154,21 @@ namespace Core {
 
 				// The prev_state is now 'released'
 				m_key_prev_state[sdl_event.key.keysym.sym] = false;
+
+				// Triggers all released key modifiers
+				SDL_Keymod modifiers[] = {
+					KMOD_LSHIFT, KMOD_RSHIFT, KMOD_LCTRL, KMOD_RCTRL,
+					KMOD_LALT, KMOD_RALT, KMOD_LGUI, KMOD_RGUI,
+					KMOD_NUM, KMOD_CAPS, KMOD_MODE, KMOD_RESERVED
+				};
+
+				for (unsigned i = 0; i < 12; i++) {
+					if (sdl_event.key.keysym.mod & modifiers[i]) {
+						setModState(modifiers[i], false,
+							m_mod_prev_state[modifiers[i]]);
+						m_mod_prev_state[modifiers[i]] = false;
+					}
+				}
 			}
 		}
 	}
@@ -185,7 +215,7 @@ namespace Core {
 			return;
 		}
 
-		triggerKeyAndConsume(key);
+		consumeKey(key);
 	}
 
 	void InputManager::setModState(SDL_Keymod mod,
@@ -203,7 +233,7 @@ namespace Core {
 			return;
 		}
 
-		triggerModAndConsume(mod);
+		consumeMod(mod);
 	}
 
 	void InputManager::setMBState(MouseButton mb,
@@ -221,7 +251,7 @@ namespace Core {
 			return;
 		}
 
-		triggerMBAndConsume(mb);
+		consumeMB(mb);
 	}
 
 	void InputManager::setAxisValue(ControllerAxis axis, double value) {
@@ -283,7 +313,7 @@ namespace Core {
 
 	bool InputManager::triggerModAction(SDL_Keymod mod, InputAction& action) {
 		for (unsigned it : m_active_contexts)
-			if (m_contexts[it].mapKeyToAction(mod, action))
+			if (m_contexts[it].mapModToAction(mod, action))
 				return true;
 
 		return false;
@@ -291,7 +321,7 @@ namespace Core {
 
 	bool InputManager::triggerMBAction(MouseButton mb, InputAction& action) {
 		for (unsigned it : m_active_contexts)
-			if (m_contexts[it].mapKeyToAction(mb, action))
+			if (m_contexts[it].mapMBToAction(mb, action))
 				return true;
 
 		return false;
@@ -308,7 +338,7 @@ namespace Core {
 
 	bool InputManager::triggerModState(SDL_Keymod mod, InputState& state) {
 		for (unsigned it : m_active_contexts)
-			if (m_contexts[it].mapKeyToState(mod, state))
+			if (m_contexts[it].mapModToState(mod, state))
 				return true;
 
 		return false;
@@ -316,14 +346,14 @@ namespace Core {
 
 	bool InputManager::triggerMBState(MouseButton mb, InputState& state) {
 		for (unsigned it : m_active_contexts)
-			if (m_contexts[it].mapKeyToState(mb, state))
+			if (m_contexts[it].mapMBToState(mb, state))
 				return true;
 
 		return false;
 	}
 
 	//--- Trigger & Consume
-	void InputManager::triggerKeyAndConsume(SDL_Keycode key) {
+	void InputManager::consumeKey(SDL_Keycode key) {
 		InputAction action;
 		InputState state;
 
@@ -334,7 +364,7 @@ namespace Core {
 			m_current_input.removeState(state);
 	}
 
-	void InputManager::triggerModAndConsume(SDL_Keymod mod) {
+	void InputManager::consumeMod(SDL_Keymod mod) {
 		InputAction action;
 		InputState state;
 
@@ -345,7 +375,7 @@ namespace Core {
 			m_current_input.removeState(state);
 	}
 
-	void InputManager::triggerMBAndConsume(MouseButton mb) {
+	void InputManager::consumeMB(MouseButton mb) {
 		InputAction action;
 		InputState state;
 

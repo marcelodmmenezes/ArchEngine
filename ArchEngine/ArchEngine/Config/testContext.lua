@@ -12,7 +12,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 23/04/2018                                                 *
+ * Last Modified: 24/04/2018                                                 *
  *===========================================================================*/
 ]]
 
@@ -24,6 +24,8 @@
 
 context = {
 	actions = {
+		SDL_BUTTON_LEFT = "INPUT_ACTION_SHOT",
+		SDLK_SPACE = "INPUT_ACTION_SHOT",
 		SDLK_ESCAPE = "INPUT_ACTION_QUIT"
 	},
 

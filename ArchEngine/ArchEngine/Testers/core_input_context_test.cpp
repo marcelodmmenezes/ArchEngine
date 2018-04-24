@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 23/04/2018                                                 *
+ * Last Modified: 24/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -56,6 +56,10 @@ int main(int argc, char* argv[]) {
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Testing if InputManager is handling files correctly");
+
+		InputManager::getInstance().initialize(
+			"../../ArchEngine/Config/inputContexts.lua");
+
 		test3();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished third test\n\
@@ -123,7 +127,6 @@ void test2() {
 }
 
 void test3() {
-	InputManager::getInstance().initialize("../../ArchEngine/Config/inputContexts.lua");
 	InputManager::getInstance().contextOn("test");
 
 	// Simulates some button presses
@@ -142,7 +145,6 @@ void test4() {
 	Window window(true, true, false);
 	window.initialize("InputLoop test");
 
-	InputManager::getInstance().initialize("../../ArchEngine/Config/inputContexts.lua");
 	InputManager::getInstance().contextOn("test");
 
 	bool running = true;
@@ -150,6 +152,7 @@ void test4() {
 	while (running) {
 		InputManager::getInstance().update();
 		InputManager::getInstance().dispatch(running);
+		InputManager::getInstance().clearInput();
 	}
 
 	window.destroy();

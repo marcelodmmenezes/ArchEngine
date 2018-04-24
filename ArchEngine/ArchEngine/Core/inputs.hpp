@@ -15,7 +15,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 19/04/2018                                                 *
+ * Last Modified: 24/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -28,6 +28,9 @@ namespace Core {
     // (For instance, holding down a button only triggers one action).
 	enum InputAction {
 		INPUT_ACTION_NONE,
+
+		// Testing action
+		INPUT_ACTION_SHOT,
 
 		// Window related actions
 		INPUT_ACTION_WINDOW_MINIMIZE,
