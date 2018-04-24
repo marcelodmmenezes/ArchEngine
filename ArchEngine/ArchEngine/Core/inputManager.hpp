@@ -106,6 +106,14 @@ namespace Core {
 		int m_mouse_last_x;
 		int m_mouse_last_y;
 
+		// List of sdl key modifiers for iteration,
+		// for it's not a sequential enumeration.
+		SDL_Keymod m_sdl_modifiers[12] = {
+			KMOD_LSHIFT, KMOD_RSHIFT, KMOD_LCTRL, KMOD_RCTRL,
+			KMOD_LALT, KMOD_RALT, KMOD_LGUI, KMOD_RGUI,
+			KMOD_NUM, KMOD_CAPS, KMOD_MODE, KMOD_RESERVED
+		};
+
 		// Stores the previous key states (true = pressed, false = released)
 		std::map<SDL_Keycode, bool> m_key_prev_state;
 		// Stores the previous modifier states

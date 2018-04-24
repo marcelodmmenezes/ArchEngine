@@ -83,10 +83,12 @@ namespace Core {
 		SDL_Event sdl_event;
 
 		while (SDL_PollEvent(&sdl_event)) {
-			if (sdl_event.type == SDL_QUIT) {
-				forceAction(INPUT_ACTION_QUIT);
-			}
-			else if (sdl_event.type == SDL_MOUSEMOTION) {
+			switch (sdl_event.type) {
+			case SDL_QUIT:
+				forceAction(0); // Hardcoding for testing
+				break;
+
+			case SDL_MOUSEMOTION:
 				int x, y;
 
 				if (SDL_GetRelativeMouseMode) {
@@ -104,27 +106,31 @@ namespace Core {
 					setAxisValue(MOUSE_AXIS_X, -x);
 					setAxisValue(MOUSE_AXIS_Y, -y);
 				}
-			}
-			else if (sdl_event.type == SDL_MOUSEWHEEL) {
+				break;
+
+			case SDL_MOUSEWHEEL:
 				setAxisValue(MOUSE_WHEEL, sdl_event.wheel.y);
-			}
-			else if (sdl_event.type == SDL_MOUSEBUTTONDOWN) {
+				break;
+
+			case SDL_MOUSEBUTTONDOWN:
 				// Sets the event
 				setMBState(sdl_event.button.button, true,
 					m_mb_prev_state[sdl_event.button.button]);
 
 				// The prev_state is now 'pressed'
 				m_mb_prev_state[sdl_event.button.button] = true;
-			}
-			else if (sdl_event.type == SDL_MOUSEBUTTONUP) {
+				break;
+
+			case SDL_MOUSEBUTTONUP:
 				// Sets the event
 				setMBState(sdl_event.button.button, false,
 					m_mb_prev_state[sdl_event.button.button]);
 
 				// The prev_state is now 'released'
 				m_mb_prev_state[sdl_event.button.button] = false;
-			}
-			else if (sdl_event.type == SDL_KEYDOWN) {
+				break;
+
+			case SDL_KEYDOWN:
 				// Sets the event
 				setKeyState(sdl_event.key.keysym.sym, true,
 					m_key_prev_state[sdl_event.key.keysym.sym]);
@@ -132,22 +138,16 @@ namespace Core {
 				// The prev_state is now 'pressed'
 				m_key_prev_state[sdl_event.key.keysym.sym] = true;
 
-				// Triggers all pressed key modifiers
-				SDL_Keymod modifiers[] = {
-					KMOD_LSHIFT, KMOD_RSHIFT, KMOD_LCTRL, KMOD_RCTRL,
-					KMOD_LALT, KMOD_RALT, KMOD_LGUI, KMOD_RGUI,
-					KMOD_NUM, KMOD_CAPS, KMOD_MODE, KMOD_RESERVED
-				};
-
 				for (unsigned i = 0; i < 12; i++) {
-					if (sdl_event.key.keysym.mod & modifiers[i]) {
-						setModState(modifiers[i], true,
-							m_mod_prev_state[modifiers[i]]);
-						m_mod_prev_state[modifiers[i]] = true;
+					if (sdl_event.key.keysym.mod & m_sdl_modifiers[i]) {
+						setModState(m_sdl_modifiers[i], true,
+							m_mod_prev_state[m_sdl_modifiers[i]]);
+						m_mod_prev_state[m_sdl_modifiers[i]] = true;
 					}
 				}
-			}
-			else if (sdl_event.type == SDL_KEYUP) {
+				break;
+
+			case SDL_KEYUP:
 				// Sets the event
 				setKeyState(sdl_event.key.keysym.sym, false,
 					m_key_prev_state[sdl_event.key.keysym.sym]);
@@ -155,20 +155,14 @@ namespace Core {
 				// The prev_state is now 'released'
 				m_key_prev_state[sdl_event.key.keysym.sym] = false;
 
-				// Triggers all released key modifiers
-				SDL_Keymod modifiers[] = {
-					KMOD_LSHIFT, KMOD_RSHIFT, KMOD_LCTRL, KMOD_RCTRL,
-					KMOD_LALT, KMOD_RALT, KMOD_LGUI, KMOD_RGUI,
-					KMOD_NUM, KMOD_CAPS, KMOD_MODE, KMOD_RESERVED
-				};
-
 				for (unsigned i = 0; i < 12; i++) {
-					if (sdl_event.key.keysym.mod & modifiers[i]) {
-						setModState(modifiers[i], false,
-							m_mod_prev_state[modifiers[i]]);
-						m_mod_prev_state[modifiers[i]] = false;
+					if (sdl_event.key.keysym.mod & m_sdl_modifiers[i]) {
+						setModState(m_sdl_modifiers[i], false,
+							m_mod_prev_state[m_sdl_modifiers[i]]);
+						m_mod_prev_state[m_sdl_modifiers[i]] = false;
 					}
 				}
+				break;
 			}
 		}
 	}
@@ -273,14 +267,14 @@ namespace Core {
 	
 	void InputManager::dispatch(bool& running) {
 		// TODO
-		/*
+
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		std::stringstream ss;
 
 		ss << "\n\n    INPUTMANAGER DISPATCH:\n    ACTIONS: ";
 
 		for (auto it : m_current_input.m_actions) {
-			if (it == INPUT_ACTION_QUIT)
+			if (it == 0) // Hardcoded for testing
 				running = false;
 
 			ss << it << " ";
@@ -299,7 +293,7 @@ namespace Core {
 		ss << "\n\n";
 
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(ss);
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG*/
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
 	//--- Action triggers

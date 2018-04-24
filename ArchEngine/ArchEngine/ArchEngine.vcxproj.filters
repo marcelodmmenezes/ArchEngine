@@ -33,9 +33,6 @@
     <ClInclude Include="Script\luaScript.hpp">
       <Filter>Script</Filter>
     </ClInclude>
-    <ClInclude Include="Core\inputs.hpp">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Core\inputContext.hpp">
       <Filter>Core</Filter>
     </ClInclude>

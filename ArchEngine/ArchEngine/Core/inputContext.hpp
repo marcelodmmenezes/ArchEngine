@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 23/04/2018                                                 *
+ * Last Modified: 24/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -18,7 +18,6 @@
 #define CORE_INPUT_CONTEXT_HPP
 
 
-#include "inputs.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -32,9 +31,43 @@
 #include <string>
 
 
+/*
+ * The inputs accepted by ArchEngine are divided into actions, states and
+ * ranges, which I'll call input events.
+ *
+ * These input events are represented simple as integers. The keys associated
+ * with each event are described at the lua input context scripts, and it's up
+ * to the game programmer to define the key/event relationship. Later he can
+ * define a game event associated with each integer, through enumarations for
+ * instance, making the input system very customizable.
+
+ * Actions happen once, when the button is first pressed or released
+ * (For instance, holding down a button only triggers one action).
+ *
+ * States defines when some game event should be on or off.
+ *
+ * Ranges are inputs associated with a value, usefull for mouse
+ * representation.
+ */
+
+
 namespace Core {
-	// Mouse buttons in SDL are just a macro
+	// Mouse buttons in SDL are just a macro.
 	typedef int MouseButton;
+
+	// As SDL doesn't define axes, they're defined here.
+	enum ControllerAxis {
+		MOUSE_AXIS_X,
+		MOUSE_AXIS_Y,
+		MOUSE_WHEEL,
+
+		N_AXES
+	};
+
+	// Typedefs for readability
+	typedef int InputAction;
+	typedef int InputState;
+	typedef int InputRange;
 
 	namespace InputNames {
 		void clearInputMapping();

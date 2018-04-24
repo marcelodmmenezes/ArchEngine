@@ -22,27 +22,29 @@
 -- The 'context', 'actions', 'states' and 'ranges' name is hardcoded, so it
 -- should always be those names. Make this dynamic later.
 
+-- The buttons are mapped to integers by the game programmer, who later defines
+-- the game input events based on those integers.
+
 context = {
 	actions = {
-		SDL_BUTTON_LEFT = "INPUT_ACTION_SHOT",
-		SDLK_SPACE = "INPUT_ACTION_SHOT",
-		SDLK_ESCAPE = "INPUT_ACTION_QUIT"
+		SDL_BUTTON_LEFT = 0,
+		SDLK_SPACE = 1,
+		SDLK_ESCAPE = 2
 	},
 
 	states = {
-		SDLK_w = "INPUT_STATE_CAMERA_MOVEMENT_FORWARD",
-		SDLK_s = "INPUT_STATE_CAMERA_MOVEMENT_BACKWARD",
-		SDLK_a = "INPUT_STATE_CAMERA_MOVEMENT_LEFT",
-		SDLK_d = "INPUT_STATE_CAMERA_MOVEMENT_RIGHT",
-		SDLK_q = "INPUT_STATE_CAMERA_MOVEMENT_UP",
-		SDLK_e = "INPUT_STATE_CAMERA_MOVEMENT_DOWN",
-		SDLK_LSHIFT = "INPUT_STATE_CAMERA_MOVEMENT_FAST"
+		SDLK_w = 0,
+		SDLK_s = 1,
+		SDLK_a = 2,
+		SDLK_d = 3,
+		SDLK_q = 4,
+		SDLK_e = 5,
+		SDLK_LSHIFT = 6
 	},
 
-	-- Always mapped to mouse motion. Maybe a joystick in the future
 	ranges = {
 		MOUSE_AXIS_X = {
-			range = "INPUT_RANGE_CAMERA_AXIS_X",
+			range = 0,
 			min_input = -1000,
 			max_input = 1000,
 			min_output = -1,
@@ -50,7 +52,7 @@ context = {
 			sensitivity = 50
 		},
 		MOUSE_AXIS_Y = {
-			range = "INPUT_RANGE_CAMERA_AXIS_Y",
+			range = 1,
 			min_input = -1000,
 			max_input = 1000,
 			min_output = -1,
@@ -58,7 +60,7 @@ context = {
 			sensitivity = 50
 		},
 		MOUSE_WHEEL = {
-			range = "INPUT_RANGE_CAMERA_ZOOM",
+			range = 2,
 			min_input = -1000,
 			max_input = 1000,
 			min_output = -1,

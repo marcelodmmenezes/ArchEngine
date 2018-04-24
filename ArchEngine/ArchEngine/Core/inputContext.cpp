@@ -169,62 +169,18 @@ namespace Core {
 			std::make_pair("MOUSE_WHEEL", MOUSE_WHEEL)
 		};
 
-		// String <-> engine_actions mapping
-		std::map<std::string, InputAction> engine_actions = {
-			std::make_pair("INPUT_ACTION_NONE", INPUT_ACTION_NONE),
-			std::make_pair("INPUT_ACTION_SHOT", INPUT_ACTION_SHOT),
-			std::make_pair("INPUT_ACTION_WINDOW_MINIMIZE",
-				INPUT_ACTION_WINDOW_MINIMIZE),
-			std::make_pair("INPUT_ACTION_WINDOW_MAXIMIZE",
-				INPUT_ACTION_WINDOW_MAXIMIZE),
-			std::make_pair("INPUT_ACTION_QUIT", INPUT_ACTION_QUIT)
-		};
-
-		// String <-> engine_states mapping
-		std::map<std::string, InputState> engine_states = {
-			std::make_pair("INPUT_STATE_NONE", INPUT_STATE_NONE),
-			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_FORWARD",
-				INPUT_STATE_CAMERA_MOVEMENT_FORWARD),
-			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_BACKWARD",
-				INPUT_STATE_CAMERA_MOVEMENT_BACKWARD),
-			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_LEFT",
-				INPUT_STATE_CAMERA_MOVEMENT_LEFT),
-			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_RIGHT",
-				INPUT_STATE_CAMERA_MOVEMENT_RIGHT),
-			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_UP",
-				INPUT_STATE_CAMERA_MOVEMENT_UP),
-			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_DOWN",
-				INPUT_STATE_CAMERA_MOVEMENT_DOWN),
-			std::make_pair("INPUT_STATE_CAMERA_MOVEMENT_FAST",
-				INPUT_STATE_CAMERA_MOVEMENT_FAST)
-		};
-
-		// String <-> engine_ranges mapping
-		std::map<std::string, InputRange> engine_ranges = {
-			std::make_pair("INPUT_RANGE_NONE", INPUT_RANGE_NONE),
-			std::make_pair("INPUT_RANGE_CAMERA_AXIS_X",
-				INPUT_RANGE_CAMERA_AXIS_X),
-			std::make_pair("INPUT_RANGE_CAMERA_AXIS_Y",
-				INPUT_RANGE_CAMERA_AXIS_Y),
-			std::make_pair("INPUT_RANGE_CAMERA_ZOOM",
-				INPUT_RANGE_CAMERA_ZOOM)
-		};
-
 		// Remember to clear maps after input reading to save memory
 		void clearInputMapping() {
 			keycode_names.clear();
 			keymod_names.clear();
 			mouse_buttons_names.clear();
-			engine_actions.clear();
-			engine_states.clear();
-			engine_ranges.clear();
 			controller_axis.clear();
 		}
 	}
 	//-------------------------------------------------------------------------
 
 	//--------------------------------------------------------------- RangeInfo
-	RangeInfo::RangeInfo() : m_range(INPUT_RANGE_NONE),
+	RangeInfo::RangeInfo() : m_range(-1),
 		m_min_input(-1.0), m_max_input(1.0), m_min_output(-1.0),
 		m_max_output(1.0), m_sensitivity(1.0) {}
 
@@ -255,25 +211,13 @@ namespace Core {
 
 		for (auto& input : mapping) {
 			// Gets the corresponding state
-			auto action_it = InputNames::engine_actions.find(input.second);
-
-			if (action_it == InputNames::engine_actions.end()) {
-				// If none was found the input file is wrong
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-				ServiceLocator::getFileLogger()->log<LOG_ERROR>(
-					"Could not map " + path + " input context");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-
-#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
-				assert(false); // Should never get here
-#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
-			}
+			int action = std::stoi(input.second);
 
 			// Tries to find key
 			auto key_it = InputNames::keycode_names.find(input.first);
 
 			if (key_it != InputNames::keycode_names.end()) {
-				m_key_actions[key_it->second] = action_it->second;
+				m_key_actions[key_it->second] = action;
 				continue; // If found, continues the iteration
 			}
 
@@ -281,7 +225,7 @@ namespace Core {
 			auto mod_it = InputNames::keymod_names.find(input.first);
 
 			if (mod_it != InputNames::keymod_names.end()) {
-				m_mod_actions[mod_it->second] = action_it->second;
+				m_mod_actions[mod_it->second] = action;
 				continue; // If found, continues the iteration
 			}
 
@@ -289,7 +233,7 @@ namespace Core {
 			auto mb_it = InputNames::mouse_buttons_names.find(input.first);
 
 			if (mb_it != InputNames::mouse_buttons_names.end()) {
-				m_mb_actions[mb_it->second] = action_it->second;
+				m_mb_actions[mb_it->second] = action;
 				continue; // If found, continues the iteration
 			}
 
@@ -310,25 +254,13 @@ namespace Core {
 
 		for (auto& input : mapping) {
 			// Gets the corresponding state
-			auto state_it = InputNames::engine_states.find(input.second);
-
-			if (state_it == InputNames::engine_states.end()) {
-				// If none was found the input file is wrong
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-				ServiceLocator::getFileLogger()->log<LOG_ERROR>(
-					"Could not map " + path + " input context");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-
-#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
-				assert(false);
-#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
-			}
+			int state = std::stoi(input.second);
 
 			// Tries to find key
 			auto key_it = InputNames::keycode_names.find(input.first);
 
 			if (key_it != InputNames::keycode_names.end()) {
-				m_key_states[key_it->second] = state_it->second;
+				m_key_states[key_it->second] = state;
 				continue; // If found, continues the iteration
 			}
 
@@ -336,7 +268,7 @@ namespace Core {
 			auto mod_it = InputNames::keymod_names.find(input.first);
 
 			if (mod_it != InputNames::keymod_names.end()) {
-				m_mod_states[mod_it->second] = state_it->second;
+				m_mod_states[mod_it->second] = state;
 				continue; // If found, continues the iteration
 			}
 
@@ -344,7 +276,7 @@ namespace Core {
 			auto mb_it = InputNames::mouse_buttons_names.find(input.first);
 
 			if (mb_it != InputNames::mouse_buttons_names.end()) {
-				m_mb_states[mb_it->second] = state_it->second;
+				m_mb_states[mb_it->second] = state;
 				continue; // If found, continues the iteration
 			}
 
@@ -373,7 +305,7 @@ namespace Core {
 
 			for (auto& it : mapping) {
 				if (it.first == "range")
-					aux_range.m_range = InputNames::engine_ranges[it.second];
+					aux_range.m_range = std::stoi(it.second);
 				else if (it.first == "min_input")
 					aux_range.m_min_input = std::stod(it.second);
 				else if (it.first == "max_input")
@@ -385,7 +317,8 @@ namespace Core {
 				else if (it.first == "sensitivity")
 					aux_range.m_sensitivity = std::stod(it.second);
 				else {
-					// If none was found the input file is wrong
+					// If it.first is not in the above ifs,
+					// the input file is wrong.
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 					ServiceLocator::getFileLogger()->log<LOG_ERROR>(
 						"Could not map " + path + " input context");
