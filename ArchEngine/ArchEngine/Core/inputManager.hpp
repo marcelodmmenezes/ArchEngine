@@ -60,6 +60,8 @@ namespace Core {
 		static InputManager& getInstance();
 
 		void initialize(const std::string& path);
+
+		// Gathers and maps the events from the operating system
 		void update();
 
 		// Adds or removes an active input context
@@ -69,6 +71,7 @@ namespace Core {
 		// Input gathering and clearing
 		void setKeyState(SDL_Keycode key, bool pressed, bool prev_pressed);
 		void setModState(SDL_Keymod mod, bool pressed, bool prev_pressed);
+		void setMBState(MouseButton mb, bool pressed, bool prev_pressed);
 		void setAxisValue(ControllerAxis axis, double value);
 		void clearInput();
 
@@ -78,21 +81,44 @@ namespace Core {
 	private:
 		InputManager();
 
-		// Engine actions and states triggers
+		// Actions and states triggers
 		bool triggerAction(SDL_Keycode key, InputAction& action);
 		bool triggerAction(SDL_Keymod mod, InputAction& action);
+		bool triggerAction(MouseButton bm, InputAction& action);
+
 		bool triggerState(SDL_Keycode key, InputState& state);
 		bool triggerState(SDL_Keymod mod, InputState& state);
+		bool triggerState(MouseButton mb, InputState& state);
+
 		void triggerAndConsume(SDL_Keycode key);
 		void triggerAndConsume(SDL_Keymod mod);
-		
-		std::vector<InputContext> m_contexts;
+		void triggerAndConsume(MouseButton mb);
 
-		// Maps the context name to its position in m_contexts
+		// Force actions, states or ranges to happen
+		void forceAction(InputAction action);
+		void forceState(InputState state);
+		void forceRangeInfo(RangeInfo range);
+
+		// Mouse control variables
+		// Auxiliary to make right calc when mouse first enters the screen
+		bool m_mouse_first; 
+		int m_mouse_last_x;
+		int m_mouse_last_y;
+
+		// Stores the previous key states (true = pressed, false = released)
+		std::map<SDL_Keycode, bool> m_key_prev_state;
+		// Stores the previous modifier states
+		std::map<SDL_Keymod, bool> m_mod_prev_state;
+		// Stores the previous mouse button states
+		std::map<MouseButton, bool> m_mb_prev_state;
+
+		// Input contexts
+		std::vector<InputContext> m_contexts;
+		// Maps the context name to its index in m_contexts
 		std::map<std::string, unsigned> m_mapped_contexts;
 		// The indices of the active contexts
 		std::vector<unsigned> m_active_contexts;
-
+		// Stores the actions, states and ranges that happen at each frame
 		CurrentInput m_current_input;
 	};
 }

@@ -39,7 +39,8 @@ namespace Core {
 	}
 
 	//------------------------------------------------------------ InputManager
-	InputManager::InputManager() {
+	InputManager::InputManager() : m_mouse_first(true),
+		m_mouse_last_x(0), m_mouse_last_y(0) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Input Manager constructor");
@@ -79,9 +80,69 @@ namespace Core {
 	}
 
 	void InputManager::update() {
-		// TODO
-	}
+		SDL_Event sdl_event;
 
+		while (SDL_PollEvent(&sdl_event)) {
+			if (sdl_event.type == SDL_QUIT) {
+				forceAction(INPUT_ACTION_QUIT);
+			}
+			else if (sdl_event.type == SDL_MOUSEMOTION) {
+				int x, y;
+
+				if (SDL_GetRelativeMouseMode) {
+					SDL_GetRelativeMouseState(&x, &y);
+
+					if (m_mouse_first)
+						m_mouse_first = false;
+					else {
+						setAxisValue(MOUSE_AXIS_X, -x);
+						setAxisValue(MOUSE_AXIS_Y, -y);
+					}
+				}
+				else {
+					SDL_GetMouseState(&x, &y);
+					setAxisValue(MOUSE_AXIS_X, -x);
+					setAxisValue(MOUSE_AXIS_Y, -y);
+				}
+			}
+			else if (sdl_event.type == SDL_MOUSEWHEEL) {
+				setAxisValue(MOUSE_WHEEL, sdl_event.wheel.y);
+			}
+			else if (sdl_event.type == SDL_MOUSEBUTTONDOWN) {
+				// Sets the event
+				setMBState(sdl_event.button.button, true,
+					m_mb_prev_state[sdl_event.button.button]);
+
+				// The prev_state is now 'pressed'
+				m_mb_prev_state[sdl_event.button.button] = true;
+			}
+			else if (sdl_event.type == SDL_MOUSEBUTTONUP) {
+				// Sets the event
+				setMBState(sdl_event.button.button, false,
+					m_mb_prev_state[sdl_event.button.button]);
+
+				// The prev_state is now 'released'
+				m_mb_prev_state[sdl_event.button.button] = false;
+			}
+			else if (sdl_event.type == SDL_KEYDOWN) {
+				// Sets the event
+				setKeyState(sdl_event.key.keysym.sym, true,
+					m_key_prev_state[sdl_event.key.keysym.sym]);
+
+				// The prev_state is now 'pressed'
+				m_key_prev_state[sdl_event.key.keysym.sym] = true;
+			}
+			else if (sdl_event.type == SDL_KEYUP) {
+				// Sets the event
+				setKeyState(sdl_event.key.keysym.sym, false,
+					m_key_prev_state[sdl_event.key.keysym.sym]);
+
+				// The prev_state is now 'released'
+				m_key_prev_state[sdl_event.key.keysym.sym] = false;
+			}
+		}
+	}
+	
 	void InputManager::contextOn(const std::string& context) {
 		auto it = m_mapped_contexts.find(context);
 
@@ -114,18 +175,14 @@ namespace Core {
 		InputAction action;
 		InputState state;
 
-		if (pressed && !prev_pressed) {
-			if (triggerAction(key, action)) {
-				m_current_input.m_actions.insert(action);
-				return;
-			}
+		if (pressed && !prev_pressed && triggerAction(key, action)) {
+			m_current_input.m_actions.insert(action);
+			return;
 		}
 
-		if (pressed) {
-			if (triggerState(key, state)) {
-				m_current_input.m_states.insert(state);
-				return;
-			}
+		if (pressed && triggerState(key, state)) {
+			m_current_input.m_states.insert(state);
+			return;
 		}
 
 		triggerAndConsume(key);
@@ -136,21 +193,35 @@ namespace Core {
 		InputAction action;
 		InputState state;
 
-		if (pressed && !prev_pressed) {
-			if (triggerAction(mod, action)) {
-				m_current_input.m_actions.insert(action);
-				return;
-			}
+		if (pressed && !prev_pressed && triggerAction(mod, action)) {
+			m_current_input.m_actions.insert(action);
+			return;
 		}
 
-		if (pressed) {
-			if (triggerState(mod, state)) {
-				m_current_input.m_states.insert(state);
-				return;
-			}
+		if (pressed && triggerState(mod, state)) {
+			m_current_input.m_states.insert(state);
+			return;
 		}
 
 		triggerAndConsume(mod);
+	}
+
+	void InputManager::setMBState(MouseButton mb,
+		bool pressed, bool prev_pressed) {
+		InputAction action;
+		InputState state;
+
+		if (pressed && !prev_pressed && triggerAction(mb, action)) {
+			m_current_input.m_actions.insert(action);
+			return;
+		}
+
+		if (pressed && triggerState(mb, state)) {
+			m_current_input.m_states.insert(state);
+			return;
+		}
+
+		triggerAndConsume(mb);
 	}
 
 	void InputManager::setAxisValue(ControllerAxis axis, double value) {
@@ -169,61 +240,7 @@ namespace Core {
 		m_current_input.m_actions.clear();
 		m_current_input.m_ranges.clear();
 	}
-
-	bool InputManager::triggerAction(SDL_Keycode key, InputAction& action) {
-		for (unsigned it : m_active_contexts)
-			if (m_contexts[it].mapKeyToAction(key, action))
-				return true;
-
-		return false;
-	}
-
-	bool InputManager::triggerAction(SDL_Keymod mod, InputAction& action) {
-		for (unsigned it : m_active_contexts)
-			if (m_contexts[it].mapKeyToAction(mod, action))
-				return true;
-
-		return false;
-	}
-
-	bool InputManager::triggerState(SDL_Keycode key, InputState& state) {
-		for (unsigned it : m_active_contexts)
-			if (m_contexts[it].mapKeyToState(key, state))
-				return true;
-
-		return false;
-	}
-
-	bool InputManager::triggerState(SDL_Keymod mod, InputState& state) {
-		for (unsigned it : m_active_contexts)
-			if (m_contexts[it].mapKeyToState(mod, state))
-				return true;
-
-		return false;
-	}
-
-	void InputManager::triggerAndConsume(SDL_Keycode key) {
-		InputAction action;
-		InputState state;
-
-		if (triggerAction(key, action))
-			m_current_input.removeAction(action);
-
-		if (triggerState(key, state))
-			m_current_input.removeState(state);
-	}
-
-	void InputManager::triggerAndConsume(SDL_Keymod mod) {
-		InputAction action;
-		InputState state;
-
-		if (triggerAction(mod, action))
-			m_current_input.removeAction(action);
-
-		if (triggerState(mod, state))
-			m_current_input.removeState(state);
-	}
-
+	
 	void InputManager::dispatch() {
 		// TODO
 
@@ -249,5 +266,102 @@ namespace Core {
 
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(ss);
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+	}
+
+	//--- Action triggers
+	bool InputManager::triggerAction(SDL_Keycode key, InputAction& action) {
+		for (unsigned it : m_active_contexts)
+			if (m_contexts[it].mapKeyToAction(key, action))
+				return true;
+
+		return false;
+	}
+
+	bool InputManager::triggerAction(SDL_Keymod mod, InputAction& action) {
+		for (unsigned it : m_active_contexts)
+			if (m_contexts[it].mapKeyToAction(mod, action))
+				return true;
+
+		return false;
+	}
+
+	bool InputManager::triggerAction(MouseButton mb, InputAction& action) {
+		for (unsigned it : m_active_contexts)
+			if (m_contexts[it].mapKeyToAction(mb, action))
+				return true;
+
+		return false;
+	}
+
+	//--- State triggers
+	bool InputManager::triggerState(SDL_Keycode key, InputState& state) {
+		for (unsigned it : m_active_contexts)
+			if (m_contexts[it].mapKeyToState(key, state))
+				return true;
+
+		return false;
+	}
+
+	bool InputManager::triggerState(SDL_Keymod mod, InputState& state) {
+		for (unsigned it : m_active_contexts)
+			if (m_contexts[it].mapKeyToState(mod, state))
+				return true;
+
+		return false;
+	}
+
+	bool InputManager::triggerState(MouseButton mb, InputState& state) {
+		for (unsigned it : m_active_contexts)
+			if (m_contexts[it].mapKeyToState(mb, state))
+				return true;
+
+		return false;
+	}
+
+	//--- Trigger & Consume
+	void InputManager::triggerAndConsume(SDL_Keycode key) {
+		InputAction action;
+		InputState state;
+
+		if (triggerAction(key, action))
+			m_current_input.removeAction(action);
+
+		if (triggerState(key, state))
+			m_current_input.removeState(state);
+	}
+
+	void InputManager::triggerAndConsume(SDL_Keymod mod) {
+		InputAction action;
+		InputState state;
+
+		if (triggerAction(mod, action))
+			m_current_input.removeAction(action);
+
+		if (triggerState(mod, state))
+			m_current_input.removeState(state);
+	}
+
+	void InputManager::triggerAndConsume(MouseButton mb) {
+		InputAction action;
+		InputState state;
+
+		if (triggerAction(mb, action))
+			m_current_input.removeAction(action);
+
+		if (triggerState(mb, state))
+			m_current_input.removeState(state);
+	}
+
+	// Force actions, states or ranges to happen
+	void InputManager::forceAction(InputAction action) {
+		m_current_input.m_actions.insert(action);
+	}
+
+	void InputManager::forceState(InputState state) {
+		m_current_input.m_states.insert(state);
+	}
+
+	void InputManager::forceRangeInfo(RangeInfo range) {
+		m_current_input.m_ranges.insert(range);
 	}
 }
