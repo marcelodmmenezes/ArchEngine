@@ -17,6 +17,7 @@
 #if defined(ARCH_ENGINE_CORE_INPUT_CONTEXT_TEST)
 
 #include "../Core/inputManager.hpp"
+#include "../Core/window.hpp"
 #include "../Utils/serviceLocator.hpp"
 #include "../Script/luaScript.hpp"
 
@@ -29,6 +30,7 @@ using namespace Utils;
 void test1(); // Tests if context tables are read correctly
 void test2(); // Tests if InputContext is parsing files correctly
 void test3(); // Tests if InputManager is handling files correctly
+void test4(); // Tests an input loop
 void startLoggingService();
 
 
@@ -57,6 +59,13 @@ int main(int argc, char* argv[]) {
 		test3();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished third test\n\
+----------------------------------------------------------------------------");
+
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Testing an input loop");
+		test4();
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Finished fourth test\n\
 ----------------------------------------------------------------------------");
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>("Finished tests");
@@ -123,9 +132,27 @@ void test3() {
 	InputManager::getInstance().setAxisValue(MOUSE_AXIS_X, 200);
 	InputManager::getInstance().setAxisValue(MOUSE_AXIS_Y, 100);
 
-	InputManager::getInstance().dispatch();
+	bool discard;
+	InputManager::getInstance().dispatch(discard);
 
 	InputManager::getInstance().contextOff("test");
+}
+
+void test4() {
+	Window window(true, true, false);
+	window.initialize("InputLoop test");
+
+	InputManager::getInstance().initialize("../../ArchEngine/Config/inputContexts.lua");
+	InputManager::getInstance().contextOn("test");
+
+	bool running = true;
+
+	while (running) {
+		InputManager::getInstance().update();
+		InputManager::getInstance().dispatch(running);
+	}
+
+	window.destroy();
 }
 
 void startLoggingService() {

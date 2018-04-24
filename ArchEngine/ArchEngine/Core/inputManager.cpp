@@ -76,7 +76,7 @@ namespace Core {
 
 		// Once the input contexts are read, the maps in Core::InputNames
 		// (inputContext.cpp) are cleared. No more need for them.
-		InputNames::clearInputMapping();
+		//InputNames::clearInputMapping();
 	}
 
 	void InputManager::update() {
@@ -175,17 +175,17 @@ namespace Core {
 		InputAction action;
 		InputState state;
 
-		if (pressed && !prev_pressed && triggerAction(key, action)) {
+		if (pressed && !prev_pressed && triggerKeyAction(key, action)) {
 			m_current_input.m_actions.insert(action);
 			return;
 		}
 
-		if (pressed && triggerState(key, state)) {
+		if (pressed && triggerKeyState(key, state)) {
 			m_current_input.m_states.insert(state);
 			return;
 		}
 
-		triggerAndConsume(key);
+		triggerKeyAndConsume(key);
 	}
 
 	void InputManager::setModState(SDL_Keymod mod,
@@ -193,17 +193,17 @@ namespace Core {
 		InputAction action;
 		InputState state;
 
-		if (pressed && !prev_pressed && triggerAction(mod, action)) {
+		if (pressed && !prev_pressed && triggerModAction(mod, action)) {
 			m_current_input.m_actions.insert(action);
 			return;
 		}
 
-		if (pressed && triggerState(mod, state)) {
+		if (pressed && triggerModState(mod, state)) {
 			m_current_input.m_states.insert(state);
 			return;
 		}
 
-		triggerAndConsume(mod);
+		triggerModAndConsume(mod);
 	}
 
 	void InputManager::setMBState(MouseButton mb,
@@ -211,17 +211,17 @@ namespace Core {
 		InputAction action;
 		InputState state;
 
-		if (pressed && !prev_pressed && triggerAction(mb, action)) {
+		if (pressed && !prev_pressed && triggerMBAction(mb, action)) {
 			m_current_input.m_actions.insert(action);
 			return;
 		}
 
-		if (pressed && triggerState(mb, state)) {
+		if (pressed && triggerMBState(mb, state)) {
 			m_current_input.m_states.insert(state);
 			return;
 		}
 
-		triggerAndConsume(mb);
+		triggerMBAndConsume(mb);
 	}
 
 	void InputManager::setAxisValue(ControllerAxis axis, double value) {
@@ -241,7 +241,7 @@ namespace Core {
 		m_current_input.m_ranges.clear();
 	}
 	
-	void InputManager::dispatch() {
+	void InputManager::dispatch(bool& running) {
 		// TODO
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
@@ -249,8 +249,12 @@ namespace Core {
 
 		ss << "\n\n    INPUTMANAGER DISPATCH:\n    ACTIONS: ";
 
-		for (auto it : m_current_input.m_actions)
+		for (auto it : m_current_input.m_actions) {
+			if (it == INPUT_ACTION_QUIT)
+				running = false;
+
 			ss << it << " ";
+		}
 
 		ss << "\n    STATES: ";
 
@@ -269,7 +273,7 @@ namespace Core {
 	}
 
 	//--- Action triggers
-	bool InputManager::triggerAction(SDL_Keycode key, InputAction& action) {
+	bool InputManager::triggerKeyAction(SDL_Keycode key, InputAction& action) {
 		for (unsigned it : m_active_contexts)
 			if (m_contexts[it].mapKeyToAction(key, action))
 				return true;
@@ -277,7 +281,7 @@ namespace Core {
 		return false;
 	}
 
-	bool InputManager::triggerAction(SDL_Keymod mod, InputAction& action) {
+	bool InputManager::triggerModAction(SDL_Keymod mod, InputAction& action) {
 		for (unsigned it : m_active_contexts)
 			if (m_contexts[it].mapKeyToAction(mod, action))
 				return true;
@@ -285,7 +289,7 @@ namespace Core {
 		return false;
 	}
 
-	bool InputManager::triggerAction(MouseButton mb, InputAction& action) {
+	bool InputManager::triggerMBAction(MouseButton mb, InputAction& action) {
 		for (unsigned it : m_active_contexts)
 			if (m_contexts[it].mapKeyToAction(mb, action))
 				return true;
@@ -294,7 +298,7 @@ namespace Core {
 	}
 
 	//--- State triggers
-	bool InputManager::triggerState(SDL_Keycode key, InputState& state) {
+	bool InputManager::triggerKeyState(SDL_Keycode key, InputState& state) {
 		for (unsigned it : m_active_contexts)
 			if (m_contexts[it].mapKeyToState(key, state))
 				return true;
@@ -302,7 +306,7 @@ namespace Core {
 		return false;
 	}
 
-	bool InputManager::triggerState(SDL_Keymod mod, InputState& state) {
+	bool InputManager::triggerModState(SDL_Keymod mod, InputState& state) {
 		for (unsigned it : m_active_contexts)
 			if (m_contexts[it].mapKeyToState(mod, state))
 				return true;
@@ -310,7 +314,7 @@ namespace Core {
 		return false;
 	}
 
-	bool InputManager::triggerState(MouseButton mb, InputState& state) {
+	bool InputManager::triggerMBState(MouseButton mb, InputState& state) {
 		for (unsigned it : m_active_contexts)
 			if (m_contexts[it].mapKeyToState(mb, state))
 				return true;
@@ -319,36 +323,36 @@ namespace Core {
 	}
 
 	//--- Trigger & Consume
-	void InputManager::triggerAndConsume(SDL_Keycode key) {
+	void InputManager::triggerKeyAndConsume(SDL_Keycode key) {
 		InputAction action;
 		InputState state;
 
-		if (triggerAction(key, action))
+		if (triggerKeyAction(key, action))
 			m_current_input.removeAction(action);
 
-		if (triggerState(key, state))
+		if (triggerKeyState(key, state))
 			m_current_input.removeState(state);
 	}
 
-	void InputManager::triggerAndConsume(SDL_Keymod mod) {
+	void InputManager::triggerModAndConsume(SDL_Keymod mod) {
 		InputAction action;
 		InputState state;
 
-		if (triggerAction(mod, action))
+		if (triggerModAction(mod, action))
 			m_current_input.removeAction(action);
 
-		if (triggerState(mod, state))
+		if (triggerModState(mod, state))
 			m_current_input.removeState(state);
 	}
 
-	void InputManager::triggerAndConsume(MouseButton mb) {
+	void InputManager::triggerMBAndConsume(MouseButton mb) {
 		InputAction action;
 		InputState state;
 
-		if (triggerAction(mb, action))
+		if (triggerMBAction(mb, action))
 			m_current_input.removeAction(action);
 
-		if (triggerState(mb, state))
+		if (triggerMBState(mb, state))
 			m_current_input.removeState(state);
 	}
 

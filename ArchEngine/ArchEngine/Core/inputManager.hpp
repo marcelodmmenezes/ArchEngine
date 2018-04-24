@@ -76,23 +76,24 @@ namespace Core {
 		void clearInput();
 
 		// Sends the CurrentInput configuration to the engine
-		void dispatch();
+		// The parameter is provisory, for testing.
+		void dispatch(bool& running);
 
 	private:
 		InputManager();
 
 		// Actions and states triggers
-		bool triggerAction(SDL_Keycode key, InputAction& action);
-		bool triggerAction(SDL_Keymod mod, InputAction& action);
-		bool triggerAction(MouseButton bm, InputAction& action);
+		bool triggerKeyAction(SDL_Keycode key, InputAction& action);
+		bool triggerModAction(SDL_Keymod mod, InputAction& action);
+		bool triggerMBAction(MouseButton mb, InputAction& action);
 
-		bool triggerState(SDL_Keycode key, InputState& state);
-		bool triggerState(SDL_Keymod mod, InputState& state);
-		bool triggerState(MouseButton mb, InputState& state);
+		bool triggerKeyState(SDL_Keycode key, InputState& state);
+		bool triggerModState(SDL_Keymod mod, InputState& state);
+		bool triggerMBState(MouseButton mb, InputState& state);
 
-		void triggerAndConsume(SDL_Keycode key);
-		void triggerAndConsume(SDL_Keymod mod);
-		void triggerAndConsume(MouseButton mb);
+		void triggerKeyAndConsume(SDL_Keycode key);
+		void triggerModAndConsume(SDL_Keymod mod);
+		void triggerMBAndConsume(MouseButton mb);
 
 		// Force actions, states or ranges to happen
 		void forceAction(InputAction action);
