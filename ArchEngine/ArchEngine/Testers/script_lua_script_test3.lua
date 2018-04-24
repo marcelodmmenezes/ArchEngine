@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/04/2018                                                       *
- * Last Modified: 16/04/2018                                                 *
+ * Last Modified: 19/04/2018                                                 *
  *===========================================================================*/
 ]]
 
@@ -27,3 +27,11 @@ player = {
 }
 
 array = { 0, 1, 1, 2, -23, 32 }
+
+table = {
+	k1 = "v1",
+	k2 = "v2",
+	k3 = 3,
+	k4 = nil,
+	k5 = array
+}

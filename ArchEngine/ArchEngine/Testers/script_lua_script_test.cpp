@@ -7,12 +7,12 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 15/04/2018                                                       *
- * Last Modified: 16/04/2018                                                 *
+ * Last Modified: 19/04/2018                                                 *
  *===========================================================================*/
 
 
 #include "../Core/engineMacros.hpp"
- 
+
  // Check if this tester is active
 #if defined(ARCH_ENGINE_SCRIPT_LUA_SCRIPT_TEST)
 
@@ -140,7 +140,7 @@ void test3() {
 	script.initialize("../../ArchEngine/Testers/script_lua_script_test3.lua");
 
 	std::vector<int> v = script.getIntVector("array");
-	
+
 	ss << "\n\n    Array elements: ";
 	for (auto &it : v)
 		ss << it << ", ";
@@ -151,6 +151,14 @@ void test3() {
 	ss << "    Keys of [player] table: ";
 	for (auto &it : keys)
 		ss << it << ", ";
+	ss << "\n";
+
+	std::vector<std::pair<std::string, std::string>> pairs =
+		script.getTablePairs("table");
+
+	ss << "    Values of [table] table: ";
+	for (auto &it : pairs)
+		ss << it.first << ":" << it.second << ", ";
 	ss << "\n";
 
 	ServiceLocator::getFileLogger()->log<LOG_INFO>(ss);
