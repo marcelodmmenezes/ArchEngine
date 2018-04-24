@@ -273,7 +273,7 @@ namespace Core {
 	
 	void InputManager::dispatch(bool& running) {
 		// TODO
-
+		/*
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		std::stringstream ss;
 
@@ -299,7 +299,7 @@ namespace Core {
 		ss << "\n\n";
 
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(ss);
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG*/
 	}
 
 	//--- Action triggers

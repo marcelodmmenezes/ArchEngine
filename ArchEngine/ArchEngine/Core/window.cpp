@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 19/04/2018                                                 *
+ * Last Modified: 24/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -183,6 +183,14 @@ namespace Core {
 		if (m_state == INITIALIZED)
 			SDL_SetWindowFullscreen(this->m_window,
 				m_fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+	}
+
+	void Window::captureMouse() {
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+	}
+
+	void Window::releaseMouse() {
+		SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
 
 	//----------------------------------------------------------------- Getters

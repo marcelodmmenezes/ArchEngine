@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 16/04/2018                                                 *
+ * Last Modified: 24/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -66,6 +66,9 @@ namespace Core {
 		void setVSync(bool state);
 		void antiAliasing(unsigned n_samples);
 		void fullscreen(bool state);
+
+		void captureMouse();
+		void releaseMouse();
 
 		// Getters
 		std::string getTitle() const;
