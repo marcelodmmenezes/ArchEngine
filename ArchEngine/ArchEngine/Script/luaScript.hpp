@@ -41,7 +41,7 @@ namespace Script {
 		// be called, invalidating its state, which is difficult to see.
 		// The class has a flag (m_state) to ensure, through assertion, that
 		// the user will remember to call the methods.
-		void initialize(const std::string& path);
+		bool initialize(const std::string& path);
 		void destroy();
 
 		void clearStack();

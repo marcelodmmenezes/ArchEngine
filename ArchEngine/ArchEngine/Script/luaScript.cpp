@@ -9,7 +9,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 15/04/2018                                                       *
- * Last Modified: 23/04/2018                                                 *
+ * Last Modified: 25/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -38,7 +38,7 @@ namespace Script {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
-	void LuaScript::initialize(const std::string& path) {
+	bool LuaScript::initialize(const std::string& path) {
 		m_path = path;
 
 		m_lua = luaL_newstate();
@@ -52,9 +52,11 @@ namespace Script {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			m_lua = nullptr;
 			clearStack();
+			return false;
 		}
-		else
-			m_state = INITIALIZED;
+
+		m_state = INITIALIZED;
+		return true;
 	}
 
 	void LuaScript::destroy() {

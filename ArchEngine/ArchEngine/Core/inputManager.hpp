@@ -59,7 +59,7 @@ namespace Core {
 
 		static InputManager& getInstance();
 
-		void initialize(const std::string& path);
+		bool initialize(const std::string& path);
 
 		// Gathers and maps the events from the operating system
 		void update();

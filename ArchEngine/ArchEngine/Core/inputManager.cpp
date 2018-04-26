@@ -59,10 +59,12 @@ namespace Core {
 		return instance;
 	}
 
-	void InputManager::initialize(const std::string& path) {
+	bool InputManager::initialize(const std::string& path) {
 		// Reads the input contexts
 		LuaScript lua_context;
-		lua_context.initialize(path);
+
+		if (!lua_context.initialize(path))
+			return false;
 
 		auto input_contexts = lua_context.getTablePairs("contexts");
 
@@ -77,6 +79,8 @@ namespace Core {
 		// Once the input contexts are read, the maps in Core::InputNames
 		// (inputContext.cpp) are cleared. No more need for them.
 		InputNames::clearInputMapping();
+
+		return true;
 	}
 
 	void InputManager::update() {
