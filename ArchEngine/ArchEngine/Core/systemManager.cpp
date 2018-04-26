@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 26/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -70,14 +70,18 @@ namespace Core {
 	}
 
 	void SystemManager::run() {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Running main loop");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 
 		bool running = true;
 
+		// Time control
+
 		while (running) {
+
+
 			//---------------------------------------------------- Gather Input
 			InputManager::getInstance().update(running);
 		}
@@ -115,15 +119,25 @@ namespace Core {
 			"Logging Systems online...");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
-#endif	// !defined(ARCH_ENGINE_LOGGER_SUPPRESS_INFO) || \
+#endif	/* !defined(ARCH_ENGINE_LOGGER_SUPPRESS_INFO) || \
 	!defined(ARCH_ENGINE_LOGGER_SUPPRESS_WARNING) || \
 	!defined(ARCH_ENGINE_LOGGER_SUPPRESS_ERROR) || \
-	!defined(ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG)
+	!defined(ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG) */
 	}
 
 	bool SystemManager::loadConfigurations(const std::string& config_path) {
 		LuaScript lua_context;
 		lua_context.initialize(config_path);
+
+		//------------------------------------------- Engine configuration file
+		LuaScript engine_config;
+		engine_config.initialize(lua_context.get<std::string>("engineConfig"));
+
+		m_ticks_per_second = engine_config.get<int>("ticks_per_second");
+		m_skip_ticks = engine_config.get<int>("skip_ticks");
+		m_max_frameskip = engine_config.get<int>("max_frameskip");
+
+		engine_config.destroy();
 
 		//------------------------------------ Input systems configuration file
 		if (!InputManager::getInstance().initialize(

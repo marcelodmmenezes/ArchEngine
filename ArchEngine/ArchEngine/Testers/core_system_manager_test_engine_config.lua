@@ -13,5 +13,6 @@
 ]]
 
 
-inputContexts = "../../ArchEngine/Testers/inputContexts.lua"
+engineConfig = "../../ArchEngine/Testers/engineConfig.lua"
 windowConfig = "../../ArchEngine/Testers/windowConfig.lua"
+inputContexts = "../../ArchEngine/Testers/inputContexts.lua"

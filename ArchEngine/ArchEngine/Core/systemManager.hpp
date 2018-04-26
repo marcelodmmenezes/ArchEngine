@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 26/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -19,6 +19,7 @@
 #include "window.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
+#include "../Utils/timer.hpp"
 
 #if defined(__unix__)
 #include <SDL2/SDL.h>
@@ -56,6 +57,14 @@ namespace Core {
 
 		// For now there's only one window which is owned by the SystemManager
 		Window m_window;
+
+		// Timer
+		Timer m_timer;
+
+		// Game loop time control variables
+		int m_ticks_per_second;
+		int m_skip_ticks;
+		int m_max_frameskip;
 	};
 }
 

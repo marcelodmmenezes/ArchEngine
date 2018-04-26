@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 26/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -191,7 +191,7 @@ namespace Core {
 
 		// As the order doesn't matter, we can swap the desired active
 		// context with the last and remove the new last, to avoid
-		// unnecessary copies.
+		// unnecessary shifting.
 		std::swap(m_active_contexts[it->second],
 			m_active_contexts[m_active_contexts.size() - 1]);
 

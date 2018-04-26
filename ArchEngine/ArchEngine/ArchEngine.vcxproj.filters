@@ -42,6 +42,9 @@
     <ClInclude Include="Config\engineMacros.hpp">
       <Filter>Config</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\timer.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -77,6 +80,9 @@
     <ClCompile Include="Testers\core_system_manager_test.cpp">
       <Filter>Testers</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\timer.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -99,6 +105,9 @@
       <Filter>Testers</Filter>
     </None>
     <None Include="Testers\windowConfig.lua">
+      <Filter>Testers</Filter>
+    </None>
+    <None Include="Testers\engineConfig.lua">
       <Filter>Testers</Filter>
     </None>
   </ItemGroup>

@@ -1,6 +1,6 @@
 --[[
 /*===========================================================================*
- * Arch Engine - "Testers/core_system_manager_test_engine_config.lua"        *
+ * Arch Engine - "Testers/windowConfig.lua"                                  *
  *                                                                           *
  * This is a tester script. It's purpose is to test some functionalities,    *
  * thus should be removed from releases.                                     *

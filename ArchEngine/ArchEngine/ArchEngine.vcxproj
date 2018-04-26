@@ -130,6 +130,7 @@
     <ClInclude Include="Script\luaScript.hpp" />
     <ClInclude Include="Utils\logger.hpp" />
     <ClInclude Include="Utils\serviceLocator.hpp" />
+    <ClInclude Include="Utils\timer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\inputContext.cpp" />
@@ -143,10 +144,12 @@
     <ClCompile Include="Testers\script_lua_script_test.cpp" />
     <ClCompile Include="Testers\utils_logger_test.cpp" />
     <ClCompile Include="Utils\serviceLocator.cpp" />
+    <ClCompile Include="Utils\timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Testers\core_system_manager_test_engine_config.lua" />
+    <None Include="Testers\engineConfig.lua" />
     <None Include="Testers\inputContexts.lua" />
     <None Include="Testers\script_lua_script_test1.lua" />
     <None Include="Testers\script_lua_script_test2.lua" />
