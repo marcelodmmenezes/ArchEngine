@@ -7,11 +7,11 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 24/04/2018                                                 *
+ * Last Modified: 25/04/2018                                                 *
  *===========================================================================*/
 
 
-#include "../Core/engineMacros.hpp"
+#include "../Config/engineMacros.hpp"
 
  // Check if this tester is active
 #if defined(ARCH_ENGINE_CORE_INPUT_CONTEXT_TEST)
@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
 			"Testing if InputManager is handling files correctly");
 
 		InputManager::getInstance().initialize(
-			"../../ArchEngine/Config/inputContexts.lua");
+			"../../ArchEngine/Testers/inputContexts.lua");
 
 		test3();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
@@ -86,7 +86,7 @@ void test1() {
 	std::stringstream ss;
 
 	LuaScript script;
-	script.initialize("../../ArchEngine/Config/testContext.lua");
+	script.initialize("../../ArchEngine/Testers/testContext.lua");
 
 	std::vector<std::pair<std::string, std::string>> mapping =
 		script.getTablePairs("context");
@@ -123,7 +123,7 @@ void test1() {
 }
 
 void test2() {
-	InputContext ic("../../ArchEngine/Config/testContext.lua");
+	InputContext ic("../../ArchEngine/Testers/testContext.lua");
 }
 
 void test3() {

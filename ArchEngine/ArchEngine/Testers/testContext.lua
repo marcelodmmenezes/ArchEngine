@@ -1,8 +1,10 @@
 --[[
 /*===========================================================================*
- * Arch Engine - "Config/testContext.lua"                                    *
+ * Arch Engine - "Testers/testContext.lua"                                   *
  *                                                                           *
- * Input context for debugging                                               *
+ * This is a tester script. It's purpose is to test some functionalities,    *
+ * thus should be removed from releases.                                     *
+ * Expect some hard coded, bizarre stuff. You've been warned ;)              *
  *                                                                           *
  * Based in:                                                                 *
  * - (https://www.gamedev.net/articles/programming/                          *
@@ -12,7 +14,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 24/04/2018                                                 *
+ * Last Modified: 25/04/2018                                                 *
  *===========================================================================*/
 ]]
 

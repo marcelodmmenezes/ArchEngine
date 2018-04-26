@@ -7,11 +7,11 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 15/04/2018                                                       *
- * Last Modified: 19/04/2018                                                 *
+ * Last Modified: 25/04/2018                                                 *
  *===========================================================================*/
 
 
-#include "../Core/engineMacros.hpp"
+#include "../Config/engineMacros.hpp"
 
  // Check if this tester is active
 #if defined(ARCH_ENGINE_SCRIPT_LUA_SCRIPT_TEST)

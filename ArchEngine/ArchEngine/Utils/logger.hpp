@@ -9,7 +9,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 08/04/2018                                                       *
- * Last Modified: 16/04/2018                                                 *
+ * Last Modified: 25/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -17,7 +17,7 @@
 #define UTILS_LOGGER_HPP
 
 
-#include "../Core/engineMacros.hpp"
+#include "../Config/engineMacros.hpp"
 
 #include <atomic>
 #include <chrono>

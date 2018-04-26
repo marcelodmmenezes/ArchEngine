@@ -11,7 +11,7 @@
  *===========================================================================*/
 
 
-#include "../Core/engineMacros.hpp"
+#include "../Config/engineMacros.hpp"
 
 // Check if this tester is active
 #if defined(ARCH_ENGINE_UTILS_LOGGER_TEST)

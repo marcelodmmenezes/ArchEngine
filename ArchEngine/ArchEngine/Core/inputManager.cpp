@@ -91,7 +91,7 @@ namespace Core {
 			case SDL_MOUSEMOTION:
 				int x, y;
 
-				if (SDL_GetRelativeMouseMode) {
+				if (SDL_GetRelativeMouseMode()) {
 					SDL_GetRelativeMouseState(&x, &y);
 
 					if (m_mouse_first)

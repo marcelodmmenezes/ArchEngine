@@ -9,7 +9,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 15/04/2018                                                       *
- * Last Modified: 19/04/2018                                                 *
+ * Last Modified: 25/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -17,7 +17,7 @@
 #define SCRIPT_LUA_SCRIPT_HPP
 
 
-#include "../Core/engineMacros.hpp"
+#include "../Config/engineMacros.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 #include <lua.hpp>
@@ -110,7 +110,7 @@ namespace Script {
 		// Used to store the top level of the stack
 		int level;
 
-		if (getFromStack(var_name, level))
+		if (getToStack(var_name, level))
 			result = luaGet<T>(var_name);
 		else
 			result = luaGetDefault<T>();

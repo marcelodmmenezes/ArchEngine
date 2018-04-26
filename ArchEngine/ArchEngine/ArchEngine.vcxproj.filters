@@ -27,9 +27,6 @@
     <ClInclude Include="Core\window.hpp">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Core\engineMacros.hpp">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Script\luaScript.hpp">
       <Filter>Script</Filter>
     </ClInclude>
@@ -38,6 +35,12 @@
     </ClInclude>
     <ClInclude Include="Core\inputManager.hpp">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\systemManager.hpp">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\engineMacros.hpp">
+      <Filter>Config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +71,9 @@
     <ClCompile Include="Core\inputManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Core\systemManager.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -80,11 +86,11 @@
     <None Include="Testers\script_lua_script_test3.lua">
       <Filter>Testers</Filter>
     </None>
-    <None Include="Config\inputContexts.lua">
-      <Filter>Config</Filter>
+    <None Include="Testers\inputContexts.lua">
+      <Filter>Testers</Filter>
     </None>
-    <None Include="Config\testContext.lua">
-      <Filter>Config</Filter>
+    <None Include="Testers\testContext.lua">
+      <Filter>Testers</Filter>
     </None>
   </ItemGroup>
 </Project>

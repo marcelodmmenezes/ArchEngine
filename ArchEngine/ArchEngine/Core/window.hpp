@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 24/04/2018                                                 *
+ * Last Modified: 25/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -15,7 +15,7 @@
 #define CORE_WINDOW_HPP
 
 
-#include "engineMacros.hpp"
+#include "../Config/engineMacros.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 #if defined(__unix__)

@@ -1,16 +1,16 @@
 /*===========================================================================*
- * Arch Engine - "Core/engineMacros.hpp"                                     *
+ * Arch Engine - "Config/engineMacros.hpp"                                   *
  *                                                                           *
  * Macros for engine compile configuration                                   *
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 19/04/2018                                                 *
+ * Last Modified: 25/04/2018                                                 *
  *===========================================================================*/
 
 
-#ifndef CORE_ENGINE_MACROS_HPP
-#define CORE_ENGINE_MACROS_HPP
+#ifndef CONFIG_ENGINE_MACROS_HPP
+#define CONFIG_ENGINE_MACROS_HPP
 
 
 // Testers
@@ -32,4 +32,4 @@
 #define SDL_MAIN_HANDLED
 
 
-#endif	// CORE_ENGINE_MACROS_HPP
+#endif	// CONFIG_ENGINE_MACROS_HPP

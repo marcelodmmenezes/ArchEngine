@@ -7,11 +7,11 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 11/04/2018                                                       *
- * Last Modified: 16/04/2018                                                 *
+ * Last Modified: 25/04/2018                                                 *
  *===========================================================================*/
 
 
-#include "../Core/engineMacros.hpp"
+#include "../Config/engineMacros.hpp"
 
  // Check if this tester is active
 #if defined(ARCH_ENGINE_CORE_WINDOW_TEST)
