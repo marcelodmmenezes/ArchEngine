@@ -12,22 +12,35 @@
  *===========================================================================*/
 ]]
 
-vsync = true
-anti_aliasing = 4
-fullscreen = false
+
 title = "ArchEngine"
+
+-- Window position and size
 pos_x = -1 -- -1 for SDL_WINDOWPOS_CENTERED
 pos_y = -1 -- -1 for SDL_WINDOWPOS_CENTERED
 width = 800
 height = 600
+
+-- Color bits
 r_size = 8
 g_size = 8
 b_size = 8
 a_size = 8
+
+-- Buffers size
 depth_size = 8
 stencil_size = 8
+
+vsync = true
+fullscreen = false
+
+-- Antialiasing
 ms_n_buffers = 1
 ms_n_samples = 4
-sdl_flags = { "SDL_WINDOW_OPENGL" }
+
+-- Supported OpenGL context
 context_major_version = 3
 context_minor_version = 3
+
+-- SDL Config
+sdl_flags = { "SDL_WINDOW_OPENGL", "SDL_WINDOW_RESIZABLE" }

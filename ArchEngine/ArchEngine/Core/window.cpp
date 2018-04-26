@@ -149,7 +149,6 @@ namespace Core {
 		};
 
 		setVSync(lua_context.get<bool>("vsync"));
-		antiAliasing(lua_context.get<int>("anti_aliasing"));
 		fullscreen(lua_context.get<bool>("fullscreen"));
 
 		int pos_x;

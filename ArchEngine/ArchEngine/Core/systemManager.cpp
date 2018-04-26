@@ -61,7 +61,7 @@ namespace Core {
 
 		//------------------------------------- Engine successfully initialized
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-		ServiceLocator::getFileLogger()->log<LOG_ERROR>(
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Engine successfully initialized");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
