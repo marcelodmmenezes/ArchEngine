@@ -97,6 +97,24 @@ namespace Script {
 		return v; // Moved, not copied
 	}
 
+	std::vector<std::string> LuaScript::getStringVector(const std::string& name) {
+		std::vector<std::string> v;
+		int discard;
+
+		getToStack(name.c_str(), discard);
+		if (lua_isnil(m_lua, -1))
+			return std::vector<std::string>();
+
+		lua_pushnil(m_lua);
+		while (lua_next(m_lua, -2)) {
+			v.push_back(lua_tostring(m_lua, -1));
+			lua_pop(m_lua, 1);
+		}
+
+		clearStack();
+		return v; // Moved, not copied
+	}
+
 	std::vector<std::string> LuaScript::getTableKeys(const std::string& name) {
 		std::string code =
 			"function getKeys(name) "

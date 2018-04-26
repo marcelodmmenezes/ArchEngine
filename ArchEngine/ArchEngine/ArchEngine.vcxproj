@@ -152,6 +152,7 @@
     <None Include="Testers\script_lua_script_test2.lua" />
     <None Include="Testers\script_lua_script_test3.lua" />
     <None Include="Testers\testContext.lua" />
+    <None Include="Testers\windowConfig.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -53,6 +53,9 @@ namespace Core {
 		bool loadConfigurations(const std::string& config_path);
 
 		bool m_initialized;
+
+		// For now there's only one window which is owned by the SystemManager
+		Window m_window;
 	};
 }
 

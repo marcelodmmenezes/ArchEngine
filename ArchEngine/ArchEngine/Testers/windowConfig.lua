@@ -12,6 +12,22 @@
  *===========================================================================*/
 ]]
 
-
-inputContexts = "../../ArchEngine/Testers/inputContexts.lua"
-windowConfig = "../../ArchEngine/Testers/windowConfig.lua"
+vsync = true
+anti_aliasing = 4
+fullscreen = false
+title = "ArchEngine"
+pos_x = -1 -- -1 for SDL_WINDOWPOS_CENTERED
+pos_y = -1 -- -1 for SDL_WINDOWPOS_CENTERED
+width = 800
+height = 600
+r_size = 8
+g_size = 8
+b_size = 8
+a_size = 8
+depth_size = 8
+stencil_size = 8
+ms_n_buffers = 1
+ms_n_samples = 4
+sdl_flags = { "SDL_WINDOW_OPENGL" }
+context_major_version = 3
+context_minor_version = 3

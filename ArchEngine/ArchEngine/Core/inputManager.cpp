@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 24/04/2018                                                 *
+ * Last Modified: 25/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -83,13 +83,13 @@ namespace Core {
 		return true;
 	}
 
-	void InputManager::update() {
+	void InputManager::update(bool& running) {
 		SDL_Event sdl_event;
 
 		while (SDL_PollEvent(&sdl_event)) {
 			switch (sdl_event.type) {
 			case SDL_QUIT:
-				forceAction(0); // Hardcoding for testing
+				running = false;
 				break;
 
 			case SDL_MOUSEMOTION:
@@ -269,35 +269,8 @@ namespace Core {
 		m_current_input.m_ranges.clear();
 	}
 	
-	void InputManager::dispatch(bool& running) {
+	void InputManager::dispatch() {
 		// TODO
-		/*
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
-		std::stringstream ss;
-
-		ss << "\n\n    INPUTMANAGER DISPATCH:\n    ACTIONS: ";
-
-		for (auto it : m_current_input.m_actions) {
-			if (it == 0) // Hardcoded for testing
-				running = false;
-
-			ss << it << " ";
-		}
-
-		ss << "\n    STATES: ";
-
-		for (auto it : m_current_input.m_states)
-			ss << it << " ";
-
-		ss << "\n    RANGES: ";
-
-		for (auto& it : m_current_input.m_ranges)
-			ss << it.m_range << " ";
-
-		ss << "\n\n";
-
-		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(ss);
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG*/
 	}
 
 	//--- Action triggers

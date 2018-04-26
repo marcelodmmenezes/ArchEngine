@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 23/04/2018                                                 *
+ * Last Modified: 25/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -62,7 +62,7 @@ namespace Core {
 		bool initialize(const std::string& path);
 
 		// Gathers and maps the events from the operating system
-		void update();
+		void update(bool& running);
 
 		// Adds or removes an active input context
 		void contextOn(const std::string& context);
@@ -76,8 +76,7 @@ namespace Core {
 		void clearInput();
 
 		// Sends the CurrentInput configuration to the engine
-		// The parameter is provisory, for testing.
-		void dispatch(bool& running);
+		void dispatch();
 
 	private:
 		InputManager();

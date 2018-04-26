@@ -98,5 +98,8 @@
     <None Include="Testers\core_system_manager_test_engine_config.lua">
       <Filter>Testers</Filter>
     </None>
+    <None Include="Testers\windowConfig.lua">
+      <Filter>Testers</Filter>
+    </None>
   </ItemGroup>
 </Project>

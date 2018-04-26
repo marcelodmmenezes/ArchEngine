@@ -16,6 +16,7 @@
 
 
 #include "../Config/engineMacros.hpp"
+#include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 #if defined(__unix__)
@@ -31,7 +32,10 @@
 namespace Core {
 	class Window {
 	public:
-		Window(bool vsync, bool anti_aliasing, bool fullscreen);
+		Window(bool vsync = true,
+			bool anti_aliasing = true,
+			bool fullscreen = true);
+
 		~Window();
 
 		// Memory related stuff is initialized and destroyed mannualy (and not
@@ -57,6 +61,9 @@ namespace Core {
 			unsigned sdl_flags = SDL_WINDOW_OPENGL,
 			unsigned context_major_version = 3,
 			unsigned context_minor_version = 3);
+
+		// Same as initialize, but loads parameters from file
+		bool initializeFromConfigFile(const std::string& path);
 
 		void update();
 		void destroy();

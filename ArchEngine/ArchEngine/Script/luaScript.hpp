@@ -52,6 +52,7 @@ namespace Script {
 
 		// Return vectors are moved, not copied
 		std::vector<int> getIntVector(const std::string& name);
+		std::vector<std::string> getStringVector(const std::string& name);
 		std::vector<std::string> getTableKeys(const std::string& name);
 		std::vector<std::pair<std::string, std::string>>
 			getTablePairs(const std::string& name);

@@ -7,13 +7,14 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 24/04/2018                                                 *
+ * Last Modified: 25/04/2018                                                 *
  *===========================================================================*/
 
 
 #include "window.hpp"
 
 
+using namespace Script;
 using namespace Utils;
 
 
@@ -22,12 +23,7 @@ namespace Core {
 	Window::Window(bool vsync, bool anti_aliasing, bool fullscreen) :
 		m_vsync(vsync), m_anti_aliasing(anti_aliasing),
 		m_fullscreen(fullscreen), m_state(CONSTRUCTED),
-		m_window(nullptr) {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
-		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
-			m_title + " window constructor");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
-	}
+		m_window(nullptr) {}
 
 	Window::~Window() {
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
@@ -120,6 +116,76 @@ namespace Core {
 			m_title + " window initialized");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 
+		return true;
+	}
+
+	bool Window::initializeFromConfigFile(const std::string& path) {
+		LuaScript lua_context;
+		lua_context.initialize(path);
+
+		// Maps sdl flags to their name string representation,
+		// so we can load the flag by it's name from files.
+		std::map<std::string, SDL_WindowFlags> sdl_window_flags_map = {
+			std::make_pair("SDL_WINDOW_FULLSCREEN", SDL_WINDOW_FULLSCREEN),
+			std::make_pair("SDL_WINDOW_OPENGL", SDL_WINDOW_OPENGL),
+			std::make_pair("SDL_WINDOW_SHOWN", SDL_WINDOW_SHOWN),
+			std::make_pair("SDL_WINDOW_HIDDEN", SDL_WINDOW_HIDDEN),
+			std::make_pair("SDL_WINDOW_BORDERLESS", SDL_WINDOW_BORDERLESS),
+			std::make_pair("SDL_WINDOW_RESIZABLE", SDL_WINDOW_RESIZABLE),
+			std::make_pair("SDL_WINDOW_MINIMIZED", SDL_WINDOW_MINIMIZED),
+			std::make_pair("SDL_WINDOW_MAXIMIZED", SDL_WINDOW_MAXIMIZED),
+			std::make_pair("SDL_WINDOW_INPUT_GRABBED", SDL_WINDOW_INPUT_GRABBED),
+			std::make_pair("SDL_WINDOW_INPUT_FOCUS", SDL_WINDOW_INPUT_FOCUS),
+			std::make_pair("SDL_WINDOW_MOUSE_FOCUS", SDL_WINDOW_MOUSE_FOCUS),
+			std::make_pair("SDL_WINDOW_FULLSCREEN_DESKTOP", SDL_WINDOW_FULLSCREEN_DESKTOP),
+			std::make_pair("SDL_WINDOW_FOREIGN", SDL_WINDOW_FOREIGN),
+			std::make_pair("SDL_WINDOW_ALLOW_HIGHDPI", SDL_WINDOW_ALLOW_HIGHDPI),
+			std::make_pair("SDL_WINDOW_MOUSE_CAPTURE", SDL_WINDOW_MOUSE_CAPTURE),
+			std::make_pair("SDL_WINDOW_ALWAYS_ON_TOP", SDL_WINDOW_ALWAYS_ON_TOP),
+			std::make_pair("SDL_WINDOW_SKIP_TASKBAR", SDL_WINDOW_SKIP_TASKBAR),
+			std::make_pair("SDL_WINDOW_UTILITY", SDL_WINDOW_UTILITY),
+			std::make_pair("SDL_WINDOW_TOOLTIP", SDL_WINDOW_TOOLTIP),
+			std::make_pair("SDL_WINDOW_POPUP_MENU", SDL_WINDOW_POPUP_MENU)
+		};
+
+		setVSync(lua_context.get<bool>("vsync"));
+		antiAliasing(lua_context.get<int>("anti_aliasing"));
+		fullscreen(lua_context.get<bool>("fullscreen"));
+
+		int pos_x;
+		if (pos_x = lua_context.get<int>("pos_x") == -1)
+			pos_x = SDL_WINDOWPOS_CENTERED;
+
+		int pos_y;
+		if (pos_y = lua_context.get<int>("pos_y") == -1)
+			pos_y = SDL_WINDOWPOS_CENTERED;
+
+		auto flags = lua_context.getStringVector("sdl_flags");
+		int sdl_flags = 0;
+
+		for (auto& it : flags)
+			sdl_flags |= sdl_window_flags_map[it];
+
+		if (!initialize(
+			lua_context.get<std::string>("title"),
+			pos_x,
+			pos_y,
+			lua_context.get<int>("width"),
+			lua_context.get<int>("height"),
+			lua_context.get<int>("r_size"),
+			lua_context.get<int>("g_size"),
+			lua_context.get<int>("b_size"),
+			lua_context.get<int>("a_size"),
+			lua_context.get<int>("depth_size"),
+			lua_context.get<int>("stencil_size"),
+			lua_context.get<int>("ms_n_buffers"),
+			lua_context.get<int>("ms_n_samples"),
+			sdl_flags,
+			lua_context.get<int>("context_major_version"),
+			lua_context.get<int>("context_minor_version")))
+			return false;
+
+		lua_context.destroy();
 		return true;
 	}
 

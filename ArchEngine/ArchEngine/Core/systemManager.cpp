@@ -20,7 +20,9 @@ using namespace Utils;
 namespace Core {
 	SystemManager::SystemManager() : m_initialized(false) {}
 
-	SystemManager::~SystemManager() {}
+	SystemManager::~SystemManager() {
+		m_window.destroy();
+	}
 
 	SystemManager& SystemManager::getInstance() {
 		static SystemManager instance;
@@ -73,8 +75,12 @@ namespace Core {
 			"Running main loop");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
-		// TODO
+		bool running = true;
 
+		while (running) {
+			//---------------------------------------------------- Gather Input
+			InputManager::getInstance().update(running);
+		}
 	}
 
 	void SystemManager::exit() {
@@ -122,6 +128,11 @@ namespace Core {
 		//------------------------------------ Input systems configuration file
 		if (!InputManager::getInstance().initialize(
 			lua_context.get<std::string>("inputContexts")))
+			return false;
+
+		//------------------------------------------- Window configuration file
+		if (!m_window.initializeFromConfigFile(
+			lua_context.get<std::string>("windowConfig")))
 			return false;
 
 		lua_context.destroy();
