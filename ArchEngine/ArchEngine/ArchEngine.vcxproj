@@ -138,6 +138,7 @@
     <ClCompile Include="Core\window.cpp" />
     <ClCompile Include="Script\luaScript.cpp" />
     <ClCompile Include="Testers\core_input_context_test.cpp" />
+    <ClCompile Include="Testers\core_system_manager_test.cpp" />
     <ClCompile Include="Testers\core_window_test.cpp" />
     <ClCompile Include="Testers\script_lua_script_test.cpp" />
     <ClCompile Include="Testers\utils_logger_test.cpp" />
@@ -145,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Testers\core_system_manager_test_engine_config.lua" />
     <None Include="Testers\inputContexts.lua" />
     <None Include="Testers\script_lua_script_test1.lua" />
     <None Include="Testers\script_lua_script_test2.lua" />

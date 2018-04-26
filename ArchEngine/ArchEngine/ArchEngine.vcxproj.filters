@@ -74,6 +74,9 @@
     <ClCompile Include="Core\systemManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Testers\core_system_manager_test.cpp">
+      <Filter>Testers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -90,6 +93,9 @@
       <Filter>Testers</Filter>
     </None>
     <None Include="Testers\testContext.lua">
+      <Filter>Testers</Filter>
+    </None>
+    <None Include="Testers\core_system_manager_test_engine_config.lua">
       <Filter>Testers</Filter>
     </None>
   </ItemGroup>

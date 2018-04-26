@@ -15,9 +15,19 @@
 
 
 #include "../Config/engineMacros.hpp"
+#include "inputManager.hpp"
+#include "window.hpp"
+#include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
-#include <cassert>
+#if defined(__unix__)
+#include <SDL2/SDL.h>
+#elif defined(_MSC_VER)
+#include <SDL.h>
+#endif
+
+#include <memory>
+#include <string>
 
 
 namespace Core {
@@ -30,14 +40,17 @@ namespace Core {
 
 		static SystemManager& getInstance();
 
-		bool initialize();
+		bool initialize(const std::string& config_path);
 		void run();
-		int exit();
+		void exit();
 
 		bool isInitialized() const;
 
 	private:
 		SystemManager();
+
+		void startLoggingServices();
+		bool loadConfigurations(const std::string& config_path);
 
 		bool m_initialized;
 	};
