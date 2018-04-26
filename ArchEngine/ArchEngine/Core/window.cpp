@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 26/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -148,8 +148,8 @@ namespace Core {
 			std::make_pair("SDL_WINDOW_POPUP_MENU", SDL_WINDOW_POPUP_MENU)
 		};
 
-		setVSync(lua_context.get<bool>("vsync"));
-		fullscreen(lua_context.get<bool>("fullscreen"));
+		m_vsync = lua_context.get<bool>("vsync");
+		m_fullscreen = lua_context.get<bool>("fullscreen");
 
 		int pos_x;
 		if (pos_x = lua_context.get<int>("pos_x") == -1)
@@ -227,7 +227,7 @@ namespace Core {
 		m_vsync = state;
 
 		if (m_state == INITIALIZED)
-			SDL_GL_SetSwapInterval(state);
+			SDL_GL_SetSwapInterval(state ? SDL_TRUE : SDL_FALSE);
 	}
 
 	void Window::antiAliasing(unsigned n_samples) {

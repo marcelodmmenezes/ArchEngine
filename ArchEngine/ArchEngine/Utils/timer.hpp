@@ -21,6 +21,7 @@
 #include <SDL.h>
 #endif
 
+#include <cstdlib>
 #include <algorithm>
 
 
@@ -30,19 +31,18 @@ namespace Utils {
 		Timer();
 		~Timer();
 
-		void start(bool reset = false);
-		void stop();
-
+		void init();
 		void calc();
 
-		int getTicks() const;
+		int getCurrentTicks() const;
+		int getFrameCount() const;
 
 		double getDeltaTime() const;
-		double getFramerate() const;
+		double getFrameRate() const;
 
 	private:
 		// Number of frames for average fps calculation
-		static const unsigned N_AVG_FRAMES;
+		static const unsigned N_AVG_FRAMES = 20;
 
 		// Last N_FRAMES frame durations
 		int m_frame_durations[N_AVG_FRAMES];
@@ -61,9 +61,6 @@ namespace Utils {
 		double m_average_frame_duration;
 		// FPS
 		double m_frames_per_second;
-
-		// Timer state control variable
-		bool m_running;
 	};
 }
 

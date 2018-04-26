@@ -31,7 +31,7 @@ a_size = 8
 depth_size = 8
 stencil_size = 8
 
-vsync = true
+vsync = true -- Just a hint, the driver does what it wants
 fullscreen = false
 
 -- Antialiasing

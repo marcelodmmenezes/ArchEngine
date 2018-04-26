@@ -4,6 +4,10 @@
  * Heart of the engine. Responsible for systems intialization and shutdown,  *
  * the game loop and other stuff I'll add as the egine grows...              *
  *                                                                           *
+ * Game loop based in:                                                       *
+ * - (http://www.koonsolo.com/news/dewitters-gameloop/)                      *
+ * - (https://gafferongames.com/post/fix_your_timestep/)                     *
+ *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
  * Last Modified: 26/04/2018                                                 *
@@ -74,16 +78,42 @@ namespace Core {
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Running main loop");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
-
+		
 		bool running = true;
+		
+		m_timer.init();
 
-		// Time control
-
+		int next_game_tick = m_timer.getCurrentTicks();
+		// Game update loop counter
+		int update_loops;
+		// Value for rendering calculations
+		float interpolation; 
+		
 		while (running) {
+			//---------------------------------------------------- Time control
+			m_timer.calc();
 
-
-			//---------------------------------------------------- Gather Input
+			//------------------------------------------------- Input gathering
 			InputManager::getInstance().update(running);
+
+			//----------------------------------------------- Game logic update
+			update_loops = 0;
+
+			while (m_timer.getCurrentTicks() > next_game_tick &&
+				update_loops < m_max_frameskip) {
+				// TODO: update the game
+
+				next_game_tick += m_skip_ticks;
+				update_loops++;
+			}
+
+			//------------------------------------------------- Scene rendering
+			interpolation = (float)(m_timer.getCurrentTicks() + m_skip_ticks -
+				next_game_tick) / (float)m_skip_ticks;
+
+			// TODO: render scene
+
+			m_window.update();
 		}
 	}
 

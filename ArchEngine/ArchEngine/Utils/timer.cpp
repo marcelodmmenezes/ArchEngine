@@ -14,13 +14,8 @@
 
 namespace Utils {
 	Timer::Timer() : m_last_frame(0.0), m_frame_count(0),
-		m_frames_per_second(0.0), m_running(false) {
+		m_frames_per_second(0.0) {
 		std::fill(m_frame_durations, m_frame_durations + N_AVG_FRAMES, 0);
-
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
-		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
-			"Timer constructor");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
 	Timer::~Timer() {
@@ -30,30 +25,13 @@ namespace Utils {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
-	void Timer::start(bool reset) {
-		if (!m_running) {
-			if (reset) {
-				m_last_frame = 0;
-				m_frame_count = 0;
-				m_frames_per_second = 0.0;
-				m_last_ticks = SDL_GetTicks();
-			}
-
-			m_running = true;
-		}
-	}
-
-	void Timer::stop() {
-		if (m_running) {
-			m_last_ticks = SDL_GetTicks();
-			m_running = false;
-		}
+	void Timer::init() {
+		m_last_ticks = SDL_GetTicks();
 	}
 
 	void Timer::calc() {
 		int frame_durations_index; // m_frame_durations index
 		int ticks; // Current SDL_GetTicks value
-		int count;
 
 		frame_durations_index = m_frame_count % N_AVG_FRAMES;
 		ticks = SDL_GetTicks();
@@ -65,11 +43,11 @@ namespace Utils {
 
 		// Adding current frame
 		m_frame_durations[frame_durations_index] = ticks - m_last_ticks;
-		m_last_ticks = get_ticks;
+		m_last_ticks = ticks;
 		m_frame_count++;
 
-		// Checks if m_fram_durations is at maximum capacity
-		count = std::min(m_frame_count, N_AVG_FRAMES);
+		// Avoiding invalid access
+		int count = std::min(m_frame_count, (int)N_AVG_FRAMES);
 
 		// Averaging FPS
 		m_frames_per_second = 0;
@@ -81,15 +59,19 @@ namespace Utils {
 		m_frames_per_second = 1000.0 / m_frames_per_second;
 	}
 
-	int Timer::getTicks() const {
+	int Timer::getCurrentTicks() const {
 		return SDL_GetTicks();
+	}
+
+	int Timer::getFrameCount() const {
+		return m_frame_count;
 	}
 
 	double Timer::getDeltaTime() const {
 		return m_delta_time;
 	}
 
-	double Timer::getFramerate() const {
+	double Timer::getFrameRate() const {
 		return m_frames_per_second;
 	}
 }

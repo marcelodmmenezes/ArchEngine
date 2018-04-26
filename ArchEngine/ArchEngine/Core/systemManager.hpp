@@ -59,7 +59,7 @@ namespace Core {
 		Window m_window;
 
 		// Timer
-		Timer m_timer;
+		Utils::Timer m_timer;
 
 		// Game loop time control variables
 		int m_ticks_per_second;
