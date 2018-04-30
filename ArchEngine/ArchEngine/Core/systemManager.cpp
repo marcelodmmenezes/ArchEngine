@@ -73,6 +73,9 @@ namespace Core {
 		return true;
 	}
 
+	//-----------------------------------------------------------------------//
+	//----------------------------------------------------------- GAME LOOP -//
+	//-----------------------------------------------------------------------//
 	void SystemManager::run() {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
