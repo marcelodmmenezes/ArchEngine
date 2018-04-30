@@ -16,6 +16,9 @@
     <Filter Include="Config">
       <UniqueIdentifier>{735bb79e-983a-4ca9-9db7-709519818e22}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ECS">
+      <UniqueIdentifier>{e735e134-4ae6-42a4-9dca-0fec528ed375}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils\logger.hpp">
@@ -44,6 +47,18 @@
     </ClInclude>
     <ClInclude Include="Utils\timer.hpp">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\idGenerator.hpp">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\iComponent.hpp">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\iEntity.hpp">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\iSystem.hpp">
+      <Filter>ECS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +97,12 @@
     </ClCompile>
     <ClCompile Include="Utils\timer.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Testers\ecs_ecs_test.cpp">
+      <Filter>Testers</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\idGenerator.cpp">
+      <Filter>ECS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

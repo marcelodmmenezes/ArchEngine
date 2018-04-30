@@ -127,6 +127,10 @@
     <ClInclude Include="Core\inputManager.hpp" />
     <ClInclude Include="Core\systemManager.hpp" />
     <ClInclude Include="Core\window.hpp" />
+    <ClInclude Include="ECS\iComponent.hpp" />
+    <ClInclude Include="ECS\idGenerator.hpp" />
+    <ClInclude Include="ECS\iEntity.hpp" />
+    <ClInclude Include="ECS\iSystem.hpp" />
     <ClInclude Include="Script\luaScript.hpp" />
     <ClInclude Include="Utils\logger.hpp" />
     <ClInclude Include="Utils\serviceLocator.hpp" />
@@ -137,10 +141,12 @@
     <ClCompile Include="Core\inputManager.cpp" />
     <ClCompile Include="Core\systemManager.cpp" />
     <ClCompile Include="Core\window.cpp" />
+    <ClCompile Include="ECS\idGenerator.cpp" />
     <ClCompile Include="Script\luaScript.cpp" />
     <ClCompile Include="Testers\core_input_context_test.cpp" />
     <ClCompile Include="Testers\core_system_manager_test.cpp" />
     <ClCompile Include="Testers\core_window_test.cpp" />
+    <ClCompile Include="Testers\ecs_ecs_test.cpp" />
     <ClCompile Include="Testers\script_lua_script_test.cpp" />
     <ClCompile Include="Testers\utils_logger_test.cpp" />
     <ClCompile Include="Utils\serviceLocator.cpp" />

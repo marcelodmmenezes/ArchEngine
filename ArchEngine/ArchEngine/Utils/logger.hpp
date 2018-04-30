@@ -9,7 +9,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 08/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 30/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -47,9 +47,9 @@ namespace Utils {
 	//------------------------------------------------------------ Log Policies
 	// A LogPolicy is used by the Logger to define where the log
 	// output should be directed to.
-	class LogPolicyInterface {
+	class ILogPolicy {
 	public:
-		virtual ~LogPolicyInterface() = default;
+		virtual ~ILogPolicy() = default;
 
 		virtual bool openOutputStream(const std::string& path) = 0;
 		virtual void closeOutputStream() = 0;
@@ -57,7 +57,7 @@ namespace Utils {
 	};
 
 	// LogPolicy for console writing
-	class ConsoleLogPolicy : public LogPolicyInterface {
+	class ConsoleLogPolicy : public ILogPolicy {
 	public:
 		~ConsoleLogPolicy() {}
 
@@ -73,7 +73,7 @@ namespace Utils {
 	};
 
 	// LogPolicy for file writing
-	class FileLogPolicy : public LogPolicyInterface {
+	class FileLogPolicy : public ILogPolicy {
 	public:
 		FileLogPolicy() {}
 
