@@ -19,6 +19,9 @@
     <Filter Include="ECS">
       <UniqueIdentifier>{e735e134-4ae6-42a4-9dca-0fec528ed375}</UniqueIdentifier>
     </Filter>
+    <Filter Include="OS">
+      <UniqueIdentifier>{e19062f9-8273-4917-bb2e-9510b0f2e590}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils\logger.hpp">
@@ -27,17 +30,8 @@
     <ClInclude Include="Utils\serviceLocator.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Core\window.hpp">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Script\luaScript.hpp">
       <Filter>Script</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\inputContext.hpp">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\inputManager.hpp">
-      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Config\engineMacros.hpp">
       <Filter>Config</Filter>
@@ -57,27 +51,33 @@
     <ClInclude Include="ECS\iSystem.hpp">
       <Filter>ECS</Filter>
     </ClInclude>
-    <ClInclude Include="Core\eventSystem.hpp">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\delegate.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Core\engine.hpp">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\eventManager.hpp">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\iEvent.cpp">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="OS\inputContext.hpp">
+      <Filter>OS</Filter>
+    </ClInclude>
+    <ClInclude Include="OS\inputManager.hpp">
+      <Filter>OS</Filter>
+    </ClInclude>
+    <ClInclude Include="OS\window.hpp">
+      <Filter>OS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Core\window.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Testers\utils_logger_test.cpp">
-      <Filter>Testers</Filter>
-    </ClCompile>
-    <ClCompile Include="Testers\core_window_test.cpp">
       <Filter>Testers</Filter>
     </ClCompile>
     <ClCompile Include="Script\luaScript.cpp">
@@ -85,15 +85,6 @@
     </ClCompile>
     <ClCompile Include="Testers\script_lua_script_test.cpp">
       <Filter>Testers</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\inputContext.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Testers\core_input_context_test.cpp">
-      <Filter>Testers</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\inputManager.cpp">
-      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Utils\timer.cpp">
       <Filter>Utils</Filter>
@@ -104,13 +95,31 @@
     <ClCompile Include="ECS\idGenerator.cpp">
       <Filter>ECS</Filter>
     </ClCompile>
-    <ClCompile Include="Core\eventSystem.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Core\engine.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Testers\core_engine_test.cpp">
+      <Filter>Testers</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\eventManager.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\iEvent.hpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="OS\inputContext.cpp">
+      <Filter>OS</Filter>
+    </ClCompile>
+    <ClCompile Include="OS\inputManager.cpp">
+      <Filter>OS</Filter>
+    </ClCompile>
+    <ClCompile Include="OS\window.cpp">
+      <Filter>OS</Filter>
+    </ClCompile>
+    <ClCompile Include="Testers\os_input_context_test.cpp">
+      <Filter>Testers</Filter>
+    </ClCompile>
+    <ClCompile Include="Testers\os_window_test.cpp">
       <Filter>Testers</Filter>
     </ClCompile>
   </ItemGroup>
@@ -131,13 +140,13 @@
     <None Include="Testers\testContext.lua">
       <Filter>Testers</Filter>
     </None>
-    <None Include="Testers\core_system_manager_test_engine_config.lua">
-      <Filter>Testers</Filter>
-    </None>
     <None Include="Testers\windowConfig.lua">
       <Filter>Testers</Filter>
     </None>
     <None Include="Testers\engineConfig.lua">
+      <Filter>Testers</Filter>
+    </None>
+    <None Include="Testers\core_engine_test_engine_config.lua">
       <Filter>Testers</Filter>
     </None>
   </ItemGroup>

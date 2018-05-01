@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Core/window.hpp"                                           *
+ * Arch Engine - "OS/window.hpp"                                             *
  *                                                                           *
  * This class defines the attributes of the game window.                     *
  * Using SDL2 library for Operating System abstraction.                      *
@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 26/04/2018                                                 *
+ * Last Modified: 01/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -18,7 +18,7 @@ using namespace Script;
 using namespace Utils;
 
 
-namespace Core {
+namespace OS {
 	//------------------------------------------------ Constructor / Destructor
 	Window::Window(bool vsync, bool anti_aliasing, bool fullscreen) :
 		m_vsync(vsync), m_anti_aliasing(anti_aliasing),

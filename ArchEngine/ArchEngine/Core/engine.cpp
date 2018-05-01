@@ -17,6 +17,7 @@
 #include "engine.hpp"
 
 
+using namespace OS;
 using namespace Script;
 using namespace Utils;
 

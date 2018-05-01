@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 30/04/2018                                                 *
+ * Last Modified: 01/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -19,8 +19,8 @@
 
 
 #include "../Config/engineMacros.hpp"
-#include "inputManager.hpp"
-#include "window.hpp"
+#include "../OS/inputManager.hpp"
+#include "../OS/window.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 #include "../Utils/timer.hpp"
@@ -60,7 +60,7 @@ namespace Core {
 		bool m_initialized;
 
 		// For now there's only one window which is owned by the SystemManager
-		Window m_window;
+		OS::Window m_window;
 
 		// Timer
 		Utils::Timer m_timer;

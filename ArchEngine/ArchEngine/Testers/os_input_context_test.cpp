@@ -7,22 +7,22 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 30/04/2018                                                 *
+ * Last Modified: 01/05/2018                                                 *
  *===========================================================================*/
 
 
 #include "../Config/engineMacros.hpp"
 
  // Check if this tester is active
-#if defined(ARCH_ENGINE_CORE_INPUT_CONTEXT_TEST)
+#if defined(ARCH_ENGINE_OS_INPUT_CONTEXT_TEST)
 
-#include "../Core/inputManager.hpp"
-#include "../Core/window.hpp"
+#include "../OS/inputManager.hpp"
+#include "../OS/window.hpp"
 #include "../Utils/serviceLocator.hpp"
 #include "../Script/luaScript.hpp"
 
 
-using namespace Core;
+using namespace OS;
 using namespace Script;
 using namespace Utils;
 
@@ -177,4 +177,4 @@ void startLoggingService() {
 }
 
 
-#endif	// ARCH_ENGINE_CORE_INPUT_CONTEXT_TEST
+#endif	// ARCH_ENGINE_OS_INPUT_CONTEXT_TEST

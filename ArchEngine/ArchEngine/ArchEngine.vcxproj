@@ -124,14 +124,15 @@
   <ItemGroup>
     <ClInclude Include="Config\engineMacros.hpp" />
     <ClInclude Include="Core\engine.hpp" />
-    <ClInclude Include="Core\eventSystem.hpp" />
-    <ClInclude Include="Core\inputContext.hpp" />
-    <ClInclude Include="Core\inputManager.hpp" />
-    <ClInclude Include="Core\window.hpp" />
+    <ClInclude Include="Core\iEvent.cpp" />
+    <ClInclude Include="Core\eventManager.hpp" />
     <ClInclude Include="ECS\iComponent.hpp" />
     <ClInclude Include="ECS\idGenerator.hpp" />
     <ClInclude Include="ECS\iEntity.hpp" />
     <ClInclude Include="ECS\iSystem.hpp" />
+    <ClInclude Include="OS\inputContext.hpp" />
+    <ClInclude Include="OS\inputManager.hpp" />
+    <ClInclude Include="OS\window.hpp" />
     <ClInclude Include="Script\luaScript.hpp" />
     <ClInclude Include="Utils\delegate.hpp" />
     <ClInclude Include="Utils\logger.hpp" />
@@ -140,15 +141,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\engine.cpp" />
-    <ClCompile Include="Core\eventSystem.cpp" />
-    <ClCompile Include="Core\inputContext.cpp" />
-    <ClCompile Include="Core\inputManager.cpp" />
-    <ClCompile Include="Core\window.cpp" />
+    <ClCompile Include="Core\iEvent.hpp" />
+    <ClCompile Include="Core\eventManager.cpp" />
     <ClCompile Include="ECS\idGenerator.cpp" />
+    <ClCompile Include="OS\inputContext.cpp" />
+    <ClCompile Include="OS\inputManager.cpp" />
+    <ClCompile Include="OS\window.cpp" />
     <ClCompile Include="Script\luaScript.cpp" />
-    <ClCompile Include="Testers\core_input_context_test.cpp" />
+    <ClCompile Include="Testers\os_input_context_test.cpp" />
     <ClCompile Include="Testers\core_engine_test.cpp" />
-    <ClCompile Include="Testers\core_window_test.cpp" />
+    <ClCompile Include="Testers\os_window_test.cpp" />
     <ClCompile Include="Testers\ecs_ecs_test.cpp" />
     <ClCompile Include="Testers\script_lua_script_test.cpp" />
     <ClCompile Include="Testers\utils_logger_test.cpp" />
@@ -157,7 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Testers\core_system_manager_test_engine_config.lua" />
+    <None Include="Testers\core_engine_test_engine_config.lua" />
     <None Include="Testers\engineConfig.lua" />
     <None Include="Testers\inputContexts.lua" />
     <None Include="Testers\script_lua_script_test1.lua" />

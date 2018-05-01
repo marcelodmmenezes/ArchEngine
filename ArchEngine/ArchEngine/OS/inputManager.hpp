@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Core/inputManager.hpp"                                     *
+ * Arch Engine - "OS/inputManager.hpp"                                       *
  *                                                                           *
  * Responsible for creating and managing all input associated stuff.         *
  * There's already too much layers of abstraction in the input system, due   *
@@ -13,12 +13,12 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 30/04/2018                                                 *
+ * Last Modified: 01/05/2018                                                 *
  *===========================================================================*/
 
 
-#ifndef CORE_INPUT_MANAGER_HPP
-#define CORE_INPUT_MANAGER_HPP
+#ifndef OS_INPUT_MANAGER_HPP
+#define OS_INPUT_MANAGER_HPP
 
 
 #include "inputContext.hpp"
@@ -37,7 +37,7 @@
 #include <vector>
 
 
-namespace Core {
+namespace OS {
 	struct CurrentInput {
 		// Sets for O(log(n)) access
 		std::set<InputAction> m_actions;
@@ -131,4 +131,4 @@ namespace Core {
 }
 
 
-#endif	// CORE_INPUT_MANAGER_HPP
+#endif	// OS_INPUT_MANAGER_HPP

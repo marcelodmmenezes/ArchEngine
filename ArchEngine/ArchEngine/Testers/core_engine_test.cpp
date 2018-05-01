@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 30/04/2018                                                 *
+ * Last Modified: 01/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -26,7 +26,7 @@ using namespace Core;
 
 int main(int argc, char* argv[]) {
 	if (Engine::getInstance().initialize("../../ArchEngine/Testers/"
-		"core_system_manager_test_engine_config.lua")) {
+		"core_engine_test_engine_config.lua")) {
 		Engine::getInstance().run();
 		Engine::getInstance().exit();
 		return EXIT_SUCCESS;

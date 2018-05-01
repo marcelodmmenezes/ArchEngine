@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Core/inputManager.hpp"                                     *
+ * Arch Engine - "OS/inputManager.hpp"                                       *
  *                                                                           *
  * Responsible for creating and managing all input associated stuff.         *
  * There's already too much layers of abstraction in the input system, due   *
@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 26/04/2018                                                 *
+ * Last Modified: 01/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -24,7 +24,7 @@ using namespace Script;
 using namespace Utils;
 
 
-namespace Core {
+namespace OS {
 	//------------------------------------------------------------ CurrentInput
 	void CurrentInput::removeAction(InputAction action) {
 		m_actions.erase(action);

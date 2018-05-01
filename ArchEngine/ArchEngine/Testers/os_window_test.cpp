@@ -7,16 +7,16 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 11/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 01/05/2018                                                 *
  *===========================================================================*/
 
 
 #include "../Config/engineMacros.hpp"
 
  // Check if this tester is active
-#if defined(ARCH_ENGINE_CORE_WINDOW_TEST)
+#if defined(ARCH_ENGINE_OS_WINDOW_TEST)
 
-#include "../Core/window.hpp"
+#include "../OS/window.hpp"
 
 #include "../Utils/logger.hpp"
 #include "../Utils/serviceLocator.hpp"
@@ -29,6 +29,7 @@
 #include <thread>
 
 
+using namespace OS;
 using namespace Utils;
 
 
@@ -120,7 +121,7 @@ void startLoggingService() {
 }
 
 void firstWindowTest() {
-	Core::Window w1(true, true, false);
+	Window w1(true, true, false);
 
 	w1.initialize("First window");
 	ServiceLocator::getFileLogger()->log<LOG_DEBUG>("w1 initialized");
@@ -137,7 +138,7 @@ void firstWindowTest() {
 }
 
 void secondWindowTest() {
-	Core::Window w2(true, true, false);
+	Window w2(true, true, false);
 
 	w2.initialize("Second window");
 	ServiceLocator::getFileLogger()->log<LOG_DEBUG>("w2 initialized");
@@ -226,7 +227,7 @@ void secondWindowTest() {
 }
 
 void thirdWindowTest() {
-	Core::Window w3(true, true, false), w4(true, true, false);
+	Window w3(true, true, false), w4(true, true, false);
 
 	bool w4_init = false;
 
@@ -266,4 +267,4 @@ void fourthWindowTest() {
 }
 
 
-#endif	// ARCH_ENGINE_CORE_WINDOW_TEST
+#endif	// ARCH_ENGINE_OS_WINDOW_TEST

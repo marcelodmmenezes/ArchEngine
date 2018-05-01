@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Core/window.hpp"                                           *
+ * Arch Engine - "OS/window.hpp"                                             *
  *                                                                           *
  * This class defines the attributes of the game window.                     *
  * Using SDL2 library for Operating System abstraction.                      *
@@ -7,12 +7,12 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 01/05/2018                                                 *
  *===========================================================================*/
 
 
-#ifndef CORE_WINDOW_HPP
-#define CORE_WINDOW_HPP
+#ifndef OS_WINDOW_HPP
+#define OS_WINDOW_HPP
 
 
 #include "../Config/engineMacros.hpp"
@@ -29,7 +29,7 @@
 #include <string>
 
 
-namespace Core {
+namespace OS {
 	class Window {
 	public:
 		Window(bool vsync = true,
@@ -149,4 +149,4 @@ namespace Core {
 }
 
 
-#endif	// CORE_WINDOW_HPP
+#endif	// OS_WINDOW_HPP
