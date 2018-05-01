@@ -60,6 +60,12 @@
     <ClInclude Include="ECS\iSystem.hpp">
       <Filter>ECS</Filter>
     </ClInclude>
+    <ClInclude Include="Core\eventSystem.hpp">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\delegate.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -103,6 +109,9 @@
     </ClCompile>
     <ClCompile Include="ECS\idGenerator.cpp">
       <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\eventSystem.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -123,6 +123,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Config\engineMacros.hpp" />
+    <ClInclude Include="Core\eventSystem.hpp" />
     <ClInclude Include="Core\inputContext.hpp" />
     <ClInclude Include="Core\inputManager.hpp" />
     <ClInclude Include="Core\systemManager.hpp" />
@@ -132,11 +133,13 @@
     <ClInclude Include="ECS\iEntity.hpp" />
     <ClInclude Include="ECS\iSystem.hpp" />
     <ClInclude Include="Script\luaScript.hpp" />
+    <ClInclude Include="Utils\delegate.hpp" />
     <ClInclude Include="Utils\logger.hpp" />
     <ClInclude Include="Utils\serviceLocator.hpp" />
     <ClInclude Include="Utils\timer.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Core\eventSystem.cpp" />
     <ClCompile Include="Core\inputContext.cpp" />
     <ClCompile Include="Core\inputManager.cpp" />
     <ClCompile Include="Core\systemManager.cpp" />
