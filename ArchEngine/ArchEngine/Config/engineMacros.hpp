@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 30/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -15,7 +15,7 @@
 
 // Testers
 //#define ARCH_ENGINE_CORE_INPUT_CONTEXT_TEST
-//#define ARCH_ENGINE_CORE_SYSTEM_MANAGER_TEST
+//#define ARCH_ENGINE_CORE_ENGINE_TEST
 //#define ARCH_ENGINE_CORE_WINDOW_TEST
 #define ARCH_ENGINE_ECS_ECS_TEST
 //#define ARCH_ENGINE_SCRIPT_LUA_SCRIPT_TEST

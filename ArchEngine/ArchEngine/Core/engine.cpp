@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Core/systemManager.hpp"                                    *
+ * Arch Engine - "Core/engine.hpp"                                           *
  *                                                                           *
  * Heart of the engine. Responsible for systems intialization and shutdown,  *
  * the game loop and other stuff I'll add as the egine grows...              *
@@ -10,11 +10,11 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 26/04/2018                                                 *
+ * Last Modified: 30/04/2018                                                 *
  *===========================================================================*/
 
 
-#include "systemManager.hpp"
+#include "engine.hpp"
 
 
 using namespace Script;
@@ -22,18 +22,18 @@ using namespace Utils;
 
 
 namespace Core {
-	SystemManager::SystemManager() : m_initialized(false) {}
+	Engine::Engine() : m_initialized(false) {}
 
-	SystemManager::~SystemManager() {
+	Engine::~Engine() {
 		m_window.destroy();
 	}
 
-	SystemManager& SystemManager::getInstance() {
-		static SystemManager instance;
+	Engine& Engine::getInstance() {
+		static Engine instance;
 		return instance;
 	}
 
-	bool SystemManager::initialize(const std::string& config_path) {
+	bool Engine::initialize(const std::string& config_path) {
 		//------------------------------------------------- Initializing Logger
 		if (!m_initialized)
 			startLoggingServices();
@@ -76,7 +76,7 @@ namespace Core {
 	//-----------------------------------------------------------------------//
 	//----------------------------------------------------------- GAME LOOP -//
 	//-----------------------------------------------------------------------//
-	void SystemManager::run() {
+	void Engine::run() {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Running main loop");
@@ -120,14 +120,14 @@ namespace Core {
 		}
 	}
 
-	void SystemManager::exit() {
+	void Engine::exit() {
 		SDL_Quit();
 		m_initialized = false;
 	}
 
-	bool SystemManager::isInitialized() const { return m_initialized; }
+	bool Engine::isInitialized() const { return m_initialized; }
 
-	void SystemManager::startLoggingServices() {
+	void Engine::startLoggingServices() {
 #if !defined(ARCH_ENGINE_LOGGER_SUPPRESS_INFO) || \
 	!defined(ARCH_ENGINE_LOGGER_SUPPRESS_WARNING) || \
 	!defined(ARCH_ENGINE_LOGGER_SUPPRESS_ERROR) || \
@@ -158,7 +158,7 @@ namespace Core {
 	!defined(ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG) */
 	}
 
-	bool SystemManager::loadConfigurations(const std::string& config_path) {
+	bool Engine::loadConfigurations(const std::string& config_path) {
 		LuaScript lua_context;
 		lua_context.initialize(config_path);
 

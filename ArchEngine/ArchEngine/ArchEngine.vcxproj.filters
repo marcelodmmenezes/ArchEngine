@@ -39,9 +39,6 @@
     <ClInclude Include="Core\inputManager.hpp">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Core\systemManager.hpp">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Config\engineMacros.hpp">
       <Filter>Config</Filter>
     </ClInclude>
@@ -65,6 +62,9 @@
     </ClInclude>
     <ClInclude Include="Utils\delegate.hpp">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\engine.hpp">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -95,12 +95,6 @@
     <ClCompile Include="Core\inputManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Core\systemManager.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Testers\core_system_manager_test.cpp">
-      <Filter>Testers</Filter>
-    </ClCompile>
     <ClCompile Include="Utils\timer.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
@@ -112,6 +106,12 @@
     </ClCompile>
     <ClCompile Include="Core\eventSystem.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\engine.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Testers\core_engine_test.cpp">
+      <Filter>Testers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

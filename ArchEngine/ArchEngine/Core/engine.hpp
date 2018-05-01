@@ -1,17 +1,21 @@
 /*===========================================================================*
- * Arch Engine - "Core/systemManager.hpp"                                    *
+ * Arch Engine - "Core/engine.hpp"                                           *
  *                                                                           *
  * Heart of the engine. Responsible for systems intialization and shutdown,  *
  * the game loop and other stuff I'll add as the egine grows...              *
  *                                                                           *
+ * Game loop based in:                                                       *
+ * - (http://www.koonsolo.com/news/dewitters-gameloop/)                      *
+ * - (https://gafferongames.com/post/fix_your_timestep/)                     *
+ *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 26/04/2018                                                 *
+ * Last Modified: 30/04/2018                                                 *
  *===========================================================================*/
 
 
-#ifndef CORE_SYSTEM_MANAGER_HPP
-#define CORE_SYSTEM_MANAGER_HPP
+#ifndef CORE_ENGINE_HPP
+#define CORE_ENGINE_HPP
 
 
 #include "../Config/engineMacros.hpp"
@@ -32,14 +36,14 @@
 
 
 namespace Core {
-	class SystemManager {
+	class Engine {
 	public:
-		~SystemManager();
+		~Engine();
 
-		SystemManager(const SystemManager&) = delete;
-		void operator=(const SystemManager&) = delete;
+		Engine(const Engine&) = delete;
+		void operator=(const Engine&) = delete;
 
-		static SystemManager& getInstance();
+		static Engine& getInstance();
 
 		bool initialize(const std::string& config_path);
 		void run();
@@ -48,7 +52,7 @@ namespace Core {
 		bool isInitialized() const;
 
 	private:
-		SystemManager();
+		Engine();
 
 		void startLoggingServices();
 		bool loadConfigurations(const std::string& config_path);
@@ -69,4 +73,4 @@ namespace Core {
 }
 
 
-#endif	// CORE_SYSTEM_MANAGER_HPP
+#endif	// CORE_ENGINE_HPP

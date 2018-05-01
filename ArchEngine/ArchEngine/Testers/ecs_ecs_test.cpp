@@ -16,7 +16,7 @@
  // Check if this tester is active
 #if defined(ARCH_ENGINE_ECS_ECS_TEST)
 
-#include "../Core/systemManager.hpp"
+#include "../Core/engine.hpp"
 #include "../ECS/idGenerator.hpp"
 #include "../Utils/delegate.hpp"
 #include "../Utils/serviceLocator.hpp"
@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
 			"Testing Delegate");
 		test2();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
-			"Finished first test\n\
+			"Finished second test\n\
 ----------------------------------------------------------------------------");
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>("Finished tests");

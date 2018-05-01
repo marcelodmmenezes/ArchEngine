@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 30/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -135,8 +135,7 @@ void test3() {
 	InputManager::getInstance().setAxisValue(MOUSE_AXIS_X, 200);
 	InputManager::getInstance().setAxisValue(MOUSE_AXIS_Y, 100);
 
-	bool discard;
-	InputManager::getInstance().dispatch(discard);
+	InputManager::getInstance().dispatch();
 
 	InputManager::getInstance().contextOff("test");
 }
@@ -150,8 +149,8 @@ void test4() {
 	bool running = true;
 
 	while (running) {
-		InputManager::getInstance().update();
-		InputManager::getInstance().dispatch(running);
+		InputManager::getInstance().update(running);
+		InputManager::getInstance().dispatch();
 		InputManager::getInstance().clearInput();
 	}
 
