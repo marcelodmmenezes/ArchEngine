@@ -1,12 +1,13 @@
 #*===========================================================================*
 #* Arch Engine - "Makefile"                                                  *
 #*                                                                           *
-#* Makefile for project build on linux. Just a basic/test Makefile for now.  *
+#* Makefile for project build on Ubuntu.                                     *
+#* Just a basic/test hard-coded Makefile for now.                            *
 #* It will be upgraded during engine's development                           *
 #*                                                                           *
 #* Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
 #* Created: 10/04/2018                                                       *
-#* Last Modified: 17/04/2018                                                 *
+#* Last Modified: 27/04/2018                                                 *
 #*===========================================================================*/
 
 
@@ -39,12 +40,24 @@ creates the necessary directories for compilation"
 
 COMPILEOBJ = $(CXX) -c -o $@ $< $(CXXFLAGS)
 
+$(OBJDIR)/$(CORE)/inputContext.o : $(CORE)/inputContext.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(CORE)/inputManager.o : $(CORE)/inputManager.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(CORE)/systemManager.o : $(CORE)/systemManager.cpp
+	$(COMPILEOBJ)
 $(OBJDIR)/$(CORE)/window.o : $(CORE)/window.cpp
 	$(COMPILEOBJ)
 
 $(OBJDIR)/$(SCRIPT)/luaScript.o : $(SCRIPT)/luaScript.cpp
 	$(COMPILEOBJ)
 
+$(OBJDIR)/$(TESTERS)/core_input_context_test.o : \
+	$(TESTERS)/core_input_context_test.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(TESTERS)/core_system_manager_test.o : \
+	$(TESTERS)/core_system_manager_test.cpp
+	$(COMPILEOBJ)
 $(OBJDIR)/$(TESTERS)/core_window_test.o : \
 	$(TESTERS)/core_window_test.cpp
 	$(COMPILEOBJ)
@@ -57,10 +70,14 @@ $(OBJDIR)/$(TESTERS)/utils_logger_test.o : \
 
 $(OBJDIR)/$(UTILS)/serviceLocator.o : $(UTILS)/serviceLocator.cpp
 	$(COMPILEOBJ)
+$(OBJDIR)/$(UTILS)/timer.o : $(UTILS)/timer.cpp
+	$(COMPILEOBJ)
 
-_OBJ = $(CORE)/window.o $(SCRIPT)/luaScript.o $(TESTERS)/core_window_test.o \
+_OBJ = $(CORE)/inputContext.o $(CORE)/inputManager.o $(CORE)/systemManager.o \
+	$(CORE)/window.o $(SCRIPT)/luaScript.o $(TESTERS)/core_input_context_test.o\
+	$(TESTERS)/core_system_manager_test.o $(TESTERS)/core_window_test.o \
 	$(TESTERS)/script_lua_script_test.o $(TESTERS)/utils_logger_test.o \
-	$(UTILS)/serviceLocator.o
+	$(UTILS)/serviceLocator.o $(UTILS)/timer.o
 OBJ = $(patsubst %, $(OBJDIR)/%, $(_OBJ))
 
 build: $(OBJ)

@@ -140,12 +140,15 @@ namespace Core {
 			std::make_pair("SDL_WINDOW_FULLSCREEN_DESKTOP", SDL_WINDOW_FULLSCREEN_DESKTOP),
 			std::make_pair("SDL_WINDOW_FOREIGN", SDL_WINDOW_FOREIGN),
 			std::make_pair("SDL_WINDOW_ALLOW_HIGHDPI", SDL_WINDOW_ALLOW_HIGHDPI),
-			std::make_pair("SDL_WINDOW_MOUSE_CAPTURE", SDL_WINDOW_MOUSE_CAPTURE),
+			std::make_pair("SDL_WINDOW_MOUSE_CAPTURE", SDL_WINDOW_MOUSE_CAPTURE)
+#if defined(_MSC_VER) // The flags below are only available in X11
+			,
 			std::make_pair("SDL_WINDOW_ALWAYS_ON_TOP", SDL_WINDOW_ALWAYS_ON_TOP),
 			std::make_pair("SDL_WINDOW_SKIP_TASKBAR", SDL_WINDOW_SKIP_TASKBAR),
 			std::make_pair("SDL_WINDOW_UTILITY", SDL_WINDOW_UTILITY),
 			std::make_pair("SDL_WINDOW_TOOLTIP", SDL_WINDOW_TOOLTIP),
 			std::make_pair("SDL_WINDOW_POPUP_MENU", SDL_WINDOW_POPUP_MENU)
+#endif
 		};
 
 		m_vsync = lua_context.get<bool>("vsync");
