@@ -124,6 +124,7 @@
   <ItemGroup>
     <ClInclude Include="Config\engineMacros.hpp" />
     <ClInclude Include="Core\engine.hpp" />
+    <ClInclude Include="Core\concurrentEventQueue.hpp" />
     <ClInclude Include="Core\iEvent.cpp" />
     <ClInclude Include="Core\eventManager.hpp" />
     <ClInclude Include="ECS\iComponent.hpp" />
@@ -141,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\engine.cpp" />
+    <ClCompile Include="Core\concurrentEventQueue.cpp" />
     <ClCompile Include="Core\iEvent.hpp" />
     <ClCompile Include="Core\eventManager.cpp" />
     <ClCompile Include="ECS\idGenerator.cpp" />
@@ -148,6 +150,7 @@
     <ClCompile Include="OS\inputManager.cpp" />
     <ClCompile Include="OS\window.cpp" />
     <ClCompile Include="Script\luaScript.cpp" />
+    <ClCompile Include="Testers\event_system_test.cpp" />
     <ClCompile Include="Testers\os_input_context_test.cpp" />
     <ClCompile Include="Testers\core_engine_test.cpp" />
     <ClCompile Include="Testers\os_window_test.cpp" />
