@@ -64,10 +64,6 @@ namespace Core {
 		
 		// Posts a message to the queue
 		// CAREFUL: Events are moved
-		// Should be called with std::move
-		// e.g.:
-		//   std::unique_ptr<IEvent> evnt(new Event());
-		//   postEvent(std::move(evnt));
 		void postEvent(std::shared_ptr<IEvent> evnt);
 
 	private:
