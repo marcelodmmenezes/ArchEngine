@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 30/04/2018                                                 *
+ * Last Modified: 01/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -18,7 +18,6 @@
 
 #include "../Core/engine.hpp"
 #include "../ECS/idGenerator.hpp"
-#include "../Utils/delegate.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 #include <cstdlib>
@@ -31,19 +30,7 @@ using namespace ECS;
 using namespace Utils;
 
 
-class Test2Aux {
-public:
-	void Method();
-	void Method(const std::string& str);
-	void Method(int num, const std::string& str);
-};
-
-
 void test1(); // Tests ECS id generator
-void test2(); // Tests delegate
-void test2Aux_Function();
-void test2Aux_Function(const std::string& str);
-void test2Aux_Function(int num, const std::string& str);
 void startLoggingService();
 
 
@@ -58,13 +45,6 @@ int main(int argc, char* argv[]) {
 		test1();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished first test\n\
-----------------------------------------------------------------------------");
-
-		ServiceLocator::getFileLogger()->log<LOG_INFO>(
-			"Testing Delegate");
-		test2();
-		ServiceLocator::getFileLogger()->log<LOG_INFO>(
-			"Finished second test\n\
 ----------------------------------------------------------------------------");
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>("Finished tests");
@@ -113,69 +93,6 @@ void test1() {
 		<< IdGenerator<IComponent>::generateId<bool>() << "\n";
 
 	ServiceLocator::getFileLogger()->log<LOG_INFO>(ss);
-}
-
-void test2() {
-	Delegate<void(const std::string&)> delegate[2];
-
-	Test2Aux inst;
-
-	std::vector<std::pair<Delegate<void(const std::string&)>, std::string>>
-		delegates;
-
-
-	delegate[0].bind<&test2Aux_Function>();
-	delegates.push_back(
-		std::make_pair(delegate[0], "\n\nTest2Aux_Function\n"));
-
-	delegate[1].bind<Test2Aux, &Test2Aux::Method>(&inst);
-	delegates.push_back(
-		std::make_pair(delegate[1], "\n\nTest2Aux_Method\n"));
-
-	for (auto& it : delegates)
-		it.first.invoke(it.second);
-
-	Delegate<void()> one_parameter_delegate;
-	one_parameter_delegate.bind<&test2Aux_Function>();
-	one_parameter_delegate.invoke();
-
-	one_parameter_delegate.bind<Test2Aux, &Test2Aux::Method>(&inst);
-	one_parameter_delegate.invoke();
-
-	Delegate<void(int, const std::string&)> two_parameter_delegate;
-	two_parameter_delegate.bind<&test2Aux_Function>();
-	two_parameter_delegate.invoke(5, "Two parameters function delegate\n");
-
-	two_parameter_delegate.bind<Test2Aux, &Test2Aux::Method>(&inst);
-	two_parameter_delegate.invoke(5, "Two parameters method delegate\n");
-}
-
-void test2Aux_Function() {
-	ServiceLocator::getFileLogger()->log<LOG_INFO>(
-		"\n\nNo parameters function delegate\n");
-}
-
-void test2Aux_Function(const std::string& str) {
-	ServiceLocator::getFileLogger()->log<LOG_INFO>(str);
-}
-
-void test2Aux_Function(int num, const std::string& str) {
-	ServiceLocator::getFileLogger()->log<LOG_INFO>(
-		"\n\n" + std::to_string(num) + " " + str);
-}
-
-void Test2Aux::Method() {
-	ServiceLocator::getFileLogger()->log<LOG_INFO>(
-		"\n\nNo parameters method delegate\n");
-}
-
-void Test2Aux::Method(const std::string& str) {
-	ServiceLocator::getFileLogger()->log<LOG_INFO>(str);
-}
-
-void Test2Aux::Method(int num, const std::string& str) {
-	ServiceLocator::getFileLogger()->log<LOG_INFO>(
-		"\n\n" + std::to_string(num) + " " + str);
 }
 
 void startLoggingService() {

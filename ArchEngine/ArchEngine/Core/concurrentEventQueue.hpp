@@ -24,6 +24,7 @@
 #include <atomic>
 #include <cassert>
 #include <chrono>
+#include <memory>
 #include <mutex>
 #include <queue>
 #include <string>
@@ -39,7 +40,7 @@ namespace Core {
 
 	struct ThreadMessage {
 		ThreadMessageType m_type;
-		IEvent m_event;
+		std::shared_ptr<IEvent> m_event;
 	};
 
 	class ConcurrentEventQueue {
@@ -63,7 +64,11 @@ namespace Core {
 		
 		// Posts a message to the queue
 		// CAREFUL: Events are moved
-		void postEvent(IEvent& evnt);
+		// Should be called with std::move
+		// e.g.:
+		//   std::unique_ptr<IEvent> evnt(new Event());
+		//   postEvent(std::move(evnt));
+		void postEvent(std::shared_ptr<IEvent> evnt);
 
 	private:
 		enum State {

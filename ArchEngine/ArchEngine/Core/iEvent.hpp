@@ -14,14 +14,15 @@
 #define CORE_I_EVENT_HPP
 
 
+#include <string>
+
+
 namespace Core {
 	class IEvent {
 	public:
-		unsigned int getId();
+		virtual std::string test() = 0;
 	private:
 	};
-
-	class NullEvent : public IEvent {};
 }
 
 

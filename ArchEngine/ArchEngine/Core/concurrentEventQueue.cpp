@@ -57,13 +57,16 @@ namespace Core {
 		if (!m_thread)
 			return;
 
-		std::lock_guard<std::mutex> lock(m_mutex);
+		// std::lock_guard unlocks in destructor, therefore the brackets
+		{
+			std::lock_guard<std::mutex> lock(m_mutex);
 
-		// Creates and post a detroy message to the messaging system
-		m_queue.push(std::move(ThreadMessage{
-			TMT_DESTROY, std::move(NullEvent()) }));
+			// Creates and post a detroy message to the messaging system
+			m_queue.push(std::move(ThreadMessage{
+				TMT_DESTROY, nullptr }));
 
-		m_cv.notify_one();
+			m_cv.notify_one();
+		}
 
 		m_thread->join();
 		delete m_thread;
@@ -83,7 +86,7 @@ namespace Core {
 		return std::this_thread::get_id();
 	}
 
-	void ConcurrentEventQueue::postEvent(IEvent& evnt) {
+	void ConcurrentEventQueue::postEvent(std::shared_ptr<IEvent> evnt) {
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
 		assert(m_state == INITIALIZED);
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
@@ -91,7 +94,7 @@ namespace Core {
 		std::unique_lock<std::mutex> lock(m_mutex);
 
 		m_queue.push(std::move(ThreadMessage{
-			TMT_USER_EVENT, std::move(evnt)}));
+			TMT_USER_EVENT, std::move(evnt) }));
 
 		m_cv.notify_one();
 	}
@@ -107,50 +110,54 @@ namespace Core {
 		ThreadMessage msg; // Aux to pop from queue
 
 		while (true) {
-			std::unique_lock<std::mutex> lock(m_mutex);
+			// std::unique_lock unlocks in destructor, therefore the brackets
+			{
+				std::unique_lock<std::mutex> lock(m_mutex);
 
-			// Waiting for event to be added to the queue
-			while (m_queue.empty())
-				m_cv.wait(lock);
+				// Waiting for event to be added to the queue
+				while (m_queue.empty())
+					m_cv.wait(lock);
 
-			if (m_queue.empty())
-				continue;
+				if (m_queue.empty())
+					continue;
 
-			msg = m_queue.front();
-			m_queue.pop();
-		}
-
-		switch (msg.m_type) {
-		case TMT_USER_EVENT:
-			// TODO: iterate through event listeners and dispatch message
-
-			break;
-
-		case TMT_TIMER:
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-			ServiceLocator::getFileLogger()->log<LOG_INFO>(
-				"Timer expired on " + m_thread_name);
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-			break;
-
-		case TMT_DESTROY:
-			m_timer_exit = true;
-			timer_thread.join();
-
-			std::unique_lock<std::mutex> lock(m_mutex);
-
-			// Ignoring the remainig messages
-			while (!m_queue.empty()) {
 				msg = m_queue.front();
 				m_queue.pop();
 			}
 
+			switch (msg.m_type) {
+			case TMT_USER_EVENT:
+				// TODO: iterate through event listeners and dispatch message
+				ServiceLocator::getFileLogger()->log<LOG_INFO>(msg.m_event->test());
+
+				break;
+
+			case TMT_TIMER:
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-			ServiceLocator::getFileLogger()->log<LOG_INFO>(
-				"Exit thread on " + m_thread_name);
+				ServiceLocator::getFileLogger()->log<LOG_INFO>(
+					"Timer expired on " + m_thread_name);
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+				break;
+
+			case TMT_DESTROY:
+				m_timer_exit = true;
+				timer_thread.join();
+
+				std::unique_lock<std::mutex> lock(m_mutex);
+
+				// Ignoring the remainig messages
+				while (!m_queue.empty()) {
+					msg = m_queue.front();
+					m_queue.pop();
+				}
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+				ServiceLocator::getFileLogger()->log<LOG_INFO>(
+					"Exit thread on " + m_thread_name);
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
-			return; // Quits daemon
+				return; // Quits daemon
+			}
 		}
 	}
 
@@ -162,7 +169,7 @@ namespace Core {
 			std::unique_lock<std::mutex> lock(m_mutex);
 
 			m_queue.push(std::move(ThreadMessage{
-				TMT_TIMER, std::move(NullEvent())}));
+				TMT_TIMER, nullptr }));
 
 			m_cv.notify_one();
 		}
