@@ -18,10 +18,21 @@
 
 
 namespace Core {
+	enum EventType {
+		TEST_EVENT_1,
+		TEST_EVENT_2,
+		TEST_EVENT_3
+	};
+
 	class IEvent {
 	public:
-		virtual std::string test() = 0;
-	private:
+		IEvent(EventType type) : m_type(type) {}
+		virtual ~IEvent() = 0 {}
+
+		virtual EventType getType() = 0;
+
+	protected:
+		EventType m_type;
 	};
 }
 

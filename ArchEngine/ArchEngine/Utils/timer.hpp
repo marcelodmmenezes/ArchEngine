@@ -34,7 +34,7 @@ namespace Utils {
 		void init();
 		void calc();
 
-		int getCurrentTicks() const;
+		static int getCurrentTicks();
 		int getFrameCount() const;
 
 		double getDeltaTime() const;

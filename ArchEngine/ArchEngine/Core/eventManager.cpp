@@ -1,8 +1,13 @@
 /*===========================================================================*
- * Arch Engine - "Core/eventManager.cpp                                      *
+ * Arch Engine - "Core/eventManager.hpp                                      *
  *                                                                           *
  * Simple event system for communication between engine elements.            *
  * It consists of a basic observer pattern implementation.                   *
+ *                                                                           *
+ * Based in:                                                                 *
+ * - (https://www.codeproject.com/Articles/1169105/                          *
+ *    Cplusplus-std-thread-Event-Loop-with-Message-Queue)                    *
+ * - Game Coding Complete, 4th edition - Mike McShaffry, David Rez Graham    *
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
@@ -56,8 +61,9 @@ namespace Core {
 
 		lua_context.destroy();
 
-		// Initializes event queue
-		if (!m_queue.initialize(q_thread_name, q_timer_wait_duration)) {
+		// Initializes concurrent event queue
+		if (!m_concurrent_queue.initialize(
+			q_thread_name, q_timer_wait_duration)) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
 				"Could not initialize event queue");
@@ -70,14 +76,60 @@ namespace Core {
 		return true;
 	}
 
+	void EventManager::dispatch(unsigned long max_milliseconds) {
+		// Calculates the maximum time we can spend from now
+		unsigned long ticks = (unsigned long)Timer::getCurrentTicks();
+		unsigned long max_ms = max_milliseconds == ULONG_MAX ?
+			ULONG_MAX : ticks + max_milliseconds;
+
+		// Gets events from other threads into event queue
+		EventPtr evnt;
+		while (m_concurrent_queue.getEvent(evnt)) {
+			m_event_queue.push(evnt);
+
+			ticks = (unsigned long)Timer::getCurrentTicks();
+
+#ifndef ARCH_ENGINE_LOGGER_WARNING
+			if (max_milliseconds != ULONG_MAX && ticks >= max_ms)
+				ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+					"EventManager dispatcher: ConcurrentQueue flooding");
+#endif	// ARCH_ENGINE_LOGGER_WARNING
+		}
+
+		// Dipatches the events
+		while (!m_event_queue.empty()) {
+			// Gets event from queue
+			auto evnt = m_event_queue.front();
+			m_event_queue.pop();
+
+			const EventType event_type = evnt->getType();
+
+			// Iterates through registered listeners, invoking them
+			auto it = m_event_listeners.find(event_type);
+			auto aux_it = it;
+
+			while (it != m_event_listeners.end() && it->first == aux_it->first) {
+				it->second.invoke(evnt);
+				++it;
+			}
+
+			ticks = (unsigned int)Timer::getCurrentTicks();
+
+#ifndef ARCH_ENGINE_LOGGER_WARNING
+			if (max_milliseconds != ULONG_MAX && ticks >= max_ms)
+				ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+					"EventManager dispatcher: Could not process all frame's events");
+#endif	// ARCH_ENGINE_LOGGER_WARNING
+		}
+	}
+
 	void EventManager::destroy() {
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
 		assert(m_state == INITIALIZED);
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
 
-
-		// Destroys event queue
-		m_queue.destroy();
+		// Destroys concurrent event queue
+		m_concurrent_queue.destroy();
 
 		m_state = SAFE_TO_DESTROY;
 	}

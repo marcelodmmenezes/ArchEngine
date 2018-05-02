@@ -41,26 +41,22 @@ public:
 
 class Test2Event_1 : public IEvent {
 public:
-	Test2Event_1(const std::string& str) : m_str(str) {}
+	Test2Event_1(EventType type) : IEvent(type) {}
+	~Test2Event_1() override {}
 
-	std::string test() override {
-		return m_str;
+	EventType getType() override {
+		return m_type;
 	}
-
-private:
-	std::string m_str;
 };
 
 class Test2Event_2 : public IEvent {
 public:
-	Test2Event_2(const std::string& str) : m_str(str) {}
+	Test2Event_2(EventType type) : IEvent(type) {}
+	~Test2Event_2() override {}
 
-	std::string test() override {
-		return m_str;
+	EventType getType() override {
+		return m_type;
 	}
-
-private:
-	std::string m_str;
 };
 
 
@@ -83,21 +79,21 @@ int main(int argc, char* argv[]) {
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Testing delegate");
-		//test1();
+		test1();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished first test\n\
 ----------------------------------------------------------------------------");
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Testing concurrent event queue");
-		//test2();
+		test2();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished second test\n\
 ----------------------------------------------------------------------------");
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Testing concurrent event queue from multiple threads");
-		//test3();
+		test3();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished third test\n\
 ----------------------------------------------------------------------------");
@@ -189,8 +185,8 @@ void test2() {
 		auto now = std::chrono::high_resolution_clock().now();
 
 		for (int i = 0; i < 1000; i++) {
-			std::shared_ptr<IEvent> evnt1(new Test2Event_1(std::to_string(i)));
-			std::shared_ptr<IEvent> evnt2(new Test2Event_2(std::to_string(i)));
+			std::shared_ptr<IEvent> evnt1(new Test2Event_1(TEST_EVENT_1));
+			std::shared_ptr<IEvent> evnt2(new Test2Event_2(TEST_EVENT_2));
 
 			queue.postEvent(std::move(evnt1));
 			queue.postEvent(std::move(evnt2));
@@ -226,7 +222,7 @@ void test3() {
 		queue.destroy();
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
-			"Test1 elapsed time: " + std::to_string((
+			"Test3 elapsed time: " + std::to_string((
 				std::chrono::high_resolution_clock().now() - now).count()));
 	}
 	else
@@ -236,9 +232,7 @@ void test3() {
 
 void test3Aux_Function(ConcurrentEventQueue* queue, unsigned i) {
 	std::this_thread::sleep_for(std::chrono::duration<unsigned>(2));
-	std::stringstream ss;
-	ss << i << " " << std::this_thread::get_id();
-	std::shared_ptr<IEvent> evnt1(new Test2Event_1(ss.str()));
+	std::shared_ptr<IEvent> evnt1(new Test2Event_1(TEST_EVENT_3));
 	queue->postEvent(std::move(evnt1));
 }
 

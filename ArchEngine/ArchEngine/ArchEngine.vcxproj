@@ -125,7 +125,6 @@
     <ClInclude Include="Config\engineMacros.hpp" />
     <ClInclude Include="Core\engine.hpp" />
     <ClInclude Include="Core\concurrentEventQueue.hpp" />
-    <ClInclude Include="Core\iEvent.cpp" />
     <ClInclude Include="Core\eventManager.hpp" />
     <ClInclude Include="ECS\iComponent.hpp" />
     <ClInclude Include="ECS\idGenerator.hpp" />

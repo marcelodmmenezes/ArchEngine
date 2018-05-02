@@ -32,6 +32,8 @@
 
 
 namespace Core {
+	typedef std::shared_ptr<IEvent> EventPtr;
+
 	enum ThreadMessageType {
 		TMT_USER_EVENT, // User defined event
 		TMT_TIMER, // Thread timer
@@ -40,7 +42,7 @@ namespace Core {
 
 	struct ThreadMessage {
 		ThreadMessageType m_type;
-		std::shared_ptr<IEvent> m_event;
+		EventPtr m_event;
 	};
 
 	class ConcurrentEventQueue {
@@ -66,7 +68,11 @@ namespace Core {
 		
 		// Posts a message to the queue
 		// CAREFUL: Events are moved
-		void postEvent(std::shared_ptr<IEvent> evnt);
+		void postEvent(EventPtr evnt);
+
+		// Used by eventManager to dispatch the concurrent events
+		// Returns false if m_event_queue is empty
+		bool getEvent(EventPtr& evnt);
 
 	private:
 		enum State {
@@ -81,8 +87,15 @@ namespace Core {
 		State m_state;
 
 		std::thread* m_thread;
-		std::queue<ThreadMessage> m_queue;
-		std::mutex m_mutex;
+		
+		// This queue stores any type of messages from any thread.
+		std::queue<ThreadMessage> m_message_queue;
+		std::mutex m_mq_mutex;
+		// The filtered events are stored in this queue and sent to the
+		// event manager for dispatching.
+		std::queue<EventPtr> m_event_queue;
+		std::mutex m_eq_mutex;
+
 		std::condition_variable m_cv;
 		std::atomic<bool> m_timer_exit;
 		std::string m_thread_name;

@@ -59,7 +59,7 @@ namespace Utils {
 		m_frames_per_second = 1000.0 / m_frames_per_second;
 	}
 
-	int Timer::getCurrentTicks() const {
+	int Timer::getCurrentTicks() {
 		return SDL_GetTicks();
 	}
 

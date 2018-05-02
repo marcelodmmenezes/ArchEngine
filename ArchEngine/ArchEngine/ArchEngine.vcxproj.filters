@@ -60,9 +60,6 @@
     <ClInclude Include="Core\eventManager.hpp">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Core\iEvent.cpp">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="OS\inputContext.hpp">
       <Filter>OS</Filter>
     </ClInclude>

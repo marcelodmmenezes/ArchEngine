@@ -4,6 +4,11 @@
  * Simple event system for communication between engine elements.            *
  * It consists of a basic observer pattern implementation.                   *
  *                                                                           *
+ * Based in:                                                                 *
+ * - (https://www.codeproject.com/Articles/1169105/                          *
+ *    Cplusplus-std-thread-Event-Loop-with-Message-Queue)                    *
+ * - Game Coding Complete, 4th edition - Mike McShaffry, David Rez Graham    *
+ *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
  * Last Modified: 01/05/2018                                                 *
@@ -17,10 +22,15 @@
 #include "iEvent.hpp"
 #include "concurrentEventQueue.hpp"
 #include "../Script/luaScript.hpp"
+#include "../Utils/delegate.hpp"
 #include "../Utils/serviceLocator.hpp"
+#include "../Utils/timer.hpp"
 
 #include <cassert>
+#include <limits>
+#include <map>
 #include <string>
+#include <vector>
 
 
 namespace Core {
@@ -34,7 +44,18 @@ namespace Core {
 		static EventManager& getInstance();
 
 		bool initialize(const std::string& config_path);
+		void dispatch(unsigned long max_milliseconds = ULONG_MAX);
 		void destroy();
+
+		bool addListener(const Delegate<void(EventPtr)>& listener,
+			EventType evnt);
+		bool removeListener(const Delegate<void(EventPtr)>& listener,
+			EventType evnt);
+
+		// Skips queue and call listeners directly
+		void triggerEvent(EventPtr& evnt);
+		void enqueueEvent(EventPtr& evnt);
+		void abortEvent(EventPtr& evnt, bool all_of_type = false);
 
 	private:
 		enum State {
@@ -45,9 +66,18 @@ namespace Core {
 
 		EventManager();
 
+		// EventManager state
 		State m_state;
 
-		ConcurrentEventQueue m_queue;
+		// Thread-safe realtime event queue.
+		// Acquires events from any thread.
+		ConcurrentEventQueue m_concurrent_queue;
+
+		// Actual event queue
+		std::queue<EventPtr> m_event_queue;
+
+		// Listeners by event type
+		std::multimap<EventType, Delegate<void(EventPtr)>> m_event_listeners;
 	};
 }
 
