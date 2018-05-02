@@ -15,19 +15,39 @@
 
 
 #include "iEvent.hpp"
+#include "concurrentEventQueue.hpp"
+#include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
+
+#include <cassert>
+#include <string>
 
 
 namespace Core {
 	class EventManager {
 	public:
+		~EventManager();
+
 		EventManager(const EventManager&) = delete;
 		void operator=(const EventManager&) = delete;
 
 		static EventManager& getInstance();
 
+		bool initialize(const std::string& config_path);
+		void destroy();
+
 	private:
+		enum State {
+			CONSTRUCTED,
+			INITIALIZED,
+			SAFE_TO_DESTROY
+		};
+
 		EventManager();
+
+		State m_state;
+
+		ConcurrentEventQueue m_queue;
 	};
 }
 

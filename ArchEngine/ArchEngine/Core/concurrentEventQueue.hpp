@@ -45,15 +45,17 @@ namespace Core {
 
 	class ConcurrentEventQueue {
 	public:
-		ConcurrentEventQueue(const std::string& thread_name,
-			unsigned timer_wait_duration);
+		ConcurrentEventQueue();
 
 		ConcurrentEventQueue(const ConcurrentEventQueue&) = delete;
 		void operator=(const ConcurrentEventQueue&) = delete;
 
 		~ConcurrentEventQueue();
 
-		bool initialize();
+		// Default timer_wait_duration is set to 250 to avoid flooding
+		// the queue with TMT_TIMER events
+		bool initialize(const std::string& thread_name,
+			unsigned timer_wait_duration = 250);
 		void destroy();
 
 		// Gets this queue m_thread id

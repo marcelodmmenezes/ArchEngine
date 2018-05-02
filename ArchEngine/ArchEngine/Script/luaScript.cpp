@@ -9,7 +9,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 15/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 01/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -71,7 +71,7 @@ namespace Script {
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
-			m_path + " window destroyed");
+			m_path + " lua script destroyed");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 

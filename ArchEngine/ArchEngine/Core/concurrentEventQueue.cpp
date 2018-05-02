@@ -21,10 +21,8 @@ using namespace Utils;
 
 
 namespace Core {
-	ConcurrentEventQueue::ConcurrentEventQueue(const std::string& thread_name,
-		unsigned timer_wait_duration) : m_state(CONSTRUCTED),
-		m_thread(nullptr), m_thread_name(thread_name),
-		m_timer_wait_duration(timer_wait_duration) {
+	ConcurrentEventQueue::ConcurrentEventQueue() :
+		m_state(CONSTRUCTED), m_thread(nullptr) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			m_thread_name + " concurrent event queue constructor");
@@ -42,7 +40,11 @@ namespace Core {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
-	bool ConcurrentEventQueue::initialize() {
+	bool ConcurrentEventQueue::initialize(const std::string& thread_name,
+		unsigned timer_wait_duration) {
+		m_thread_name = thread_name;
+		m_timer_wait_duration = timer_wait_duration;
+
 		if (!m_thread)
 			m_thread = new std::thread(&ConcurrentEventQueue::update, this);
 		else
@@ -134,6 +136,8 @@ namespace Core {
 
 			case TMT_TIMER:
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+				ServiceLocator::getConsoleLogger()->log<LOG_INFO>(
+					"Timer expired on " + m_thread_name);
 				ServiceLocator::getFileLogger()->log<LOG_INFO>(
 					"Timer expired on " + m_thread_name);
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO

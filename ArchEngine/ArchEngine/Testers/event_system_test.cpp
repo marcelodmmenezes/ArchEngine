@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 30/04/2018                                                 *
+ * Last Modified: 01/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -18,6 +18,7 @@
 
 #include "../Core/engine.hpp"
 #include "../Core/concurrentEventQueue.hpp"
+#include "../Core/eventManager.hpp"
 #include "../Utils/delegate.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -43,7 +44,7 @@ public:
 	Test2Event_1(const std::string& str) : m_str(str) {}
 
 	std::string test() override {
-		return "Test2Event_1";
+		return m_str;
 	}
 
 private:
@@ -55,7 +56,7 @@ public:
 	Test2Event_2(const std::string& str) : m_str(str) {}
 
 	std::string test() override {
-		return "Test2Event_2";
+		return m_str;
 	}
 
 private:
@@ -69,7 +70,8 @@ void test1Aux_Function(const std::string& str);
 void test1Aux_Function(int num, const std::string& str);
 void test2(); // Tests concurrent event queue
 void test3(); // Tests concurrent event queue from multiple threads
-void test3Aux_Function(ConcurrentEventQueue* queue);
+void test3Aux_Function(ConcurrentEventQueue* queue, unsigned i);
+void test4(); // Tests the EventManager
 void startLoggingService();
 
 
@@ -81,23 +83,30 @@ int main(int argc, char* argv[]) {
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Testing delegate");
-		test1();
+		//test1();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished first test\n\
 ----------------------------------------------------------------------------");
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Testing concurrent event queue");
-		test2();
+		//test2();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished second test\n\
 ----------------------------------------------------------------------------");
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Testing concurrent event queue from multiple threads");
-		test3();
+		//test3();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished third test\n\
+----------------------------------------------------------------------------");
+
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Testing EventManager");
+		test4();
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Finished fourth test\n\
 ----------------------------------------------------------------------------");
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>("Finished tests");
@@ -111,23 +120,23 @@ int main(int argc, char* argv[]) {
 
 
 void test1() {
-	Delegate<void(const std::string&)> delegate[2];
+	Delegate<void(const std::string&)> delegates[2];
 
 	Test1Aux inst;
 
 	std::vector<std::pair<Delegate<void(const std::string&)>, std::string>>
-		delegates;
+		delegate_vector;
 
 
-	delegate[0].bind<&test1Aux_Function>();
-	delegates.push_back(
-		std::make_pair(delegate[0], "\n\nTest2Aux_Function\n"));
+	delegates[0].bind<&test1Aux_Function>();
+	delegate_vector.push_back(
+		std::make_pair(delegates[0], "\n\nTest2Aux_Function\n"));
 
-	delegate[1].bind<Test1Aux, &Test1Aux::Method>(&inst);
-	delegates.push_back(
-		std::make_pair(delegate[1], "\n\nTest2Aux_Method\n"));
+	delegates[1].bind<Test1Aux, &Test1Aux::Method>(&inst);
+	delegate_vector.push_back(
+		std::make_pair(delegates[1], "\n\nTest2Aux_Method\n"));
 
-	for (auto& it : delegates)
+	for (auto& it : delegate_vector)
 		it.first.invoke(it.second);
 
 	Delegate<void()> one_parameter_delegate;
@@ -174,9 +183,9 @@ void Test1Aux::Method(int num, const std::string& str) {
 }
 
 void test2() {
-	ConcurrentEventQueue queue("test2", 250u);
+	ConcurrentEventQueue queue;
 
-	if (queue.initialize()) {
+	if (queue.initialize("test2", 250u)) {
 		auto now = std::chrono::high_resolution_clock().now();
 
 		for (int i = 0; i < 1000; i++) {
@@ -199,15 +208,15 @@ void test2() {
 }
 
 void test3() {
-	ConcurrentEventQueue queue("test3", 250u);
+	ConcurrentEventQueue queue;
 
-	if (queue.initialize()) {
+	if (queue.initialize("test3", 250u)) {
 		auto now = std::chrono::high_resolution_clock().now();
 
 		std::vector<std::thread*> threads;
 
 		for (unsigned i = 0; i < 5; i++)
-			threads.push_back(new std::thread(test3Aux_Function, &queue));
+			threads.push_back(new std::thread(test3Aux_Function, &queue, i));
 
 		for (auto& it : threads) {
 			it->join();
@@ -225,11 +234,21 @@ void test3() {
 			"Failed to initialize concurrent event queue");
 }
 
-void test3Aux_Function(ConcurrentEventQueue* queue) {
+void test3Aux_Function(ConcurrentEventQueue* queue, unsigned i) {
+	std::this_thread::sleep_for(std::chrono::duration<unsigned>(2));
 	std::stringstream ss;
-	ss << std::this_thread::get_id();
+	ss << i << " " << std::this_thread::get_id();
 	std::shared_ptr<IEvent> evnt1(new Test2Event_1(ss.str()));
 	queue->postEvent(std::move(evnt1));
+}
+
+void test4() {
+	EventManager::getInstance().initialize(
+		"../../ArchEngine/Testers/eventConfig.lua");
+
+	std::this_thread::sleep_for(std::chrono::duration<unsigned>(2));
+
+	EventManager::getInstance().destroy();
 }
 
 void startLoggingService() {
