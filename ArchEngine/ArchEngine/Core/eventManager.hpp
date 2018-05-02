@@ -47,9 +47,9 @@ namespace Core {
 		void dispatch(unsigned long max_milliseconds = ULONG_MAX);
 		void destroy();
 
-		bool addListener(const Delegate<void(EventPtr)>& listener,
+		bool addListener(const Utils::Delegate<void(EventPtr)>& listener,
 			EventType evnt);
-		bool removeListener(const Delegate<void(EventPtr)>& listener,
+		bool removeListener(const Utils::Delegate<void(EventPtr)>& listener,
 			EventType evnt);
 
 		// Skips queue and call listeners directly
@@ -77,7 +77,8 @@ namespace Core {
 		std::queue<EventPtr> m_event_queue;
 
 		// Listeners by event type
-		std::multimap<EventType, Delegate<void(EventPtr)>> m_event_listeners;
+		std::multimap<EventType, Utils::Delegate<void(EventPtr)>>
+			m_event_listeners;
 	};
 }
 

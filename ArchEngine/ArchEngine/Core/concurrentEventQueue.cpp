@@ -104,8 +104,10 @@ namespace Core {
 	bool ConcurrentEventQueue::getEvent(EventPtr& evnt) {
 		m_eq_mutex.lock();
 
-		if (m_event_queue.empty())
+		if (m_event_queue.empty()) {
+			m_eq_mutex.unlock();
 			return false;
+		}
 
 		evnt = std::move(m_event_queue.front());
 		m_event_queue.pop();
@@ -168,13 +170,16 @@ namespace Core {
 				m_timer_exit = true;
 				timer_thread.join();
 
-				std::unique_lock<std::mutex> lock(m_mq_mutex);
+				std::unique_lock<std::mutex> lock1(m_mq_mutex);
 
 				// Ignoring the remainig messages
-				while (!m_message_queue.empty()) {
-					msg = m_message_queue.front();
+				while (!m_message_queue.empty())
 					m_message_queue.pop();
-				}
+
+				m_eq_mutex.lock();
+				while (!m_event_queue.empty())
+					m_event_queue.pop();
+				m_eq_mutex.unlock();
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 				ServiceLocator::getFileLogger()->log<LOG_INFO>(

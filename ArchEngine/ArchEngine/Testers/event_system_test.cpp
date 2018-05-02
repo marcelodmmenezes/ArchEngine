@@ -59,6 +59,16 @@ public:
 	}
 };
 
+class Test4AuxClass {
+public:
+	void method(EventPtr evnt) {
+		ServiceLocator::getConsoleLogger()->log<LOG_INFO>(
+			std::to_string(evnt->getType()));
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			std::to_string(evnt->getType()));
+	}
+};
+
 
 void test1(); // Tests delegate
 void test1Aux_Function();
@@ -240,7 +250,18 @@ void test4() {
 	EventManager::getInstance().initialize(
 		"../../ArchEngine/Testers/eventConfig.lua");
 
-	std::this_thread::sleep_for(std::chrono::duration<unsigned>(2));
+	Test4AuxClass inst;
+	Delegate<void(EventPtr)> dlgt;
+	dlgt.bind<Test4AuxClass, &Test4AuxClass::method>(&inst);
+
+	std::shared_ptr<IEvent> evnt1(new Test2Event_1(TEST_EVENT_1));
+
+	EventManager::getInstance().addListener(dlgt, evnt1->getType());
+	EventManager::getInstance().addListener(dlgt, evnt1->getType());
+
+	EventManager::getInstance().dispatch();
+
+	EventManager::getInstance().removeListener(dlgt, evnt1->getType());
 
 	EventManager::getInstance().destroy();
 }

@@ -87,6 +87,10 @@ namespace Utils {
 	public:
 		Delegate() : m_func(nullptr, nullptr) {}
 
+		bool operator==(const Delegate<T(ARG0)>& dlgt) {
+			return m_func.second == dlgt.m_func.second;
+		}
+
 		// Binds a function to this instance
 		template<void(*F)(ARG0)>
 		void bind() {

@@ -11,7 +11,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 01/05/2018                                                 *
+ * Last Modified: 02/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -108,7 +108,8 @@ namespace Core {
 			auto it = m_event_listeners.find(event_type);
 			auto aux_it = it;
 
-			while (it != m_event_listeners.end() && it->first == aux_it->first) {
+			while (it != m_event_listeners.end() &&
+				it->first == aux_it->first) {
 				it->second.invoke(evnt);
 				++it;
 			}
@@ -118,7 +119,8 @@ namespace Core {
 #ifndef ARCH_ENGINE_LOGGER_WARNING
 			if (max_milliseconds != ULONG_MAX && ticks >= max_ms)
 				ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-					"EventManager dispatcher: Could not process all frame's events");
+					"EventManager dispatcher: "
+					"Could not process all frame's events");
 #endif	// ARCH_ENGINE_LOGGER_WARNING
 		}
 	}
@@ -132,5 +134,54 @@ namespace Core {
 		m_concurrent_queue.destroy();
 
 		m_state = SAFE_TO_DESTROY;
+	}
+
+	bool EventManager::addListener(const Delegate<void(EventPtr)>& listener,
+		EventType evnt) {
+		// Iterates through registered listeners,
+		// to avoid inserting duplicate listener
+		auto it = m_event_listeners.find(evnt);
+		auto aux_it = it;
+
+		while (it != m_event_listeners.end() &&
+			it->first == aux_it->first) {
+			if (it->second == listener)
+				return false;
+			++it;
+		}
+
+		m_event_listeners.insert(std::make_pair(evnt, listener));
+
+		return true;
+	}
+
+	bool EventManager::removeListener(const Delegate<void(EventPtr)>& listener,
+		EventType evnt) {
+		// Iterates through registered listeners
+		auto it = m_event_listeners.find(evnt);
+		auto aux_it = it;
+
+		while (it != m_event_listeners.end() &&
+			it->first == aux_it->first) {
+			if (it->second == listener) {
+				m_event_listeners.erase(it);
+				return true;
+			}
+			++it;
+		}
+
+		return false;
+	}
+
+	void EventManager::triggerEvent(EventPtr& evnt) {
+
+	}
+
+	void EventManager::enqueueEvent(EventPtr& evnt) {
+
+	}
+
+	void EventManager::abortEvent(EventPtr& evnt, bool all_of_type) {
+
 	}
 }
