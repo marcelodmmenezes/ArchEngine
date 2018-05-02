@@ -29,7 +29,9 @@ namespace Core {
 		IEvent(EventType type) : m_type(type) {}
 		virtual ~IEvent() = 0 {}
 
-		virtual EventType getType() = 0;
+		EventType getType() {
+			return m_type;
+		}
 
 	protected:
 		EventType m_type;

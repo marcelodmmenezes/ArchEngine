@@ -85,6 +85,12 @@ namespace Core {
 		// Gets events from other threads into event queue
 		EventPtr evnt;
 		while (m_concurrent_queue.getEvent(evnt)) {
+			// Abort event mechanism
+			if (m_abort_event && evnt->getType() == m_event_to_abort) {
+				m_abort_event = m_abort_all_of_type ? true : false;
+				continue;
+			}
+
 			m_event_queue.push(evnt);
 
 			ticks = (unsigned long)Timer::getCurrentTicks();
@@ -95,6 +101,8 @@ namespace Core {
 					"EventManager dispatcher: ConcurrentQueue flooding");
 #endif	// ARCH_ENGINE_LOGGER_WARNING
 		}
+
+		m_abort_event = false;
 
 		// Dipatches the events
 		while (!m_event_queue.empty()) {
@@ -138,11 +146,11 @@ namespace Core {
 
 	bool EventManager::addListener(const Delegate<void(EventPtr)>& listener,
 		EventType evnt) {
-		// Iterates through registered listeners,
-		// to avoid inserting duplicate listener
 		auto it = m_event_listeners.find(evnt);
 		auto aux_it = it;
 
+		// Iterates through registered listeners,
+		// to avoid inserting duplicate listener
 		while (it != m_event_listeners.end() &&
 			it->first == aux_it->first) {
 			if (it->second == listener)
@@ -157,10 +165,10 @@ namespace Core {
 
 	bool EventManager::removeListener(const Delegate<void(EventPtr)>& listener,
 		EventType evnt) {
-		// Iterates through registered listeners
 		auto it = m_event_listeners.find(evnt);
 		auto aux_it = it;
 
+		// Iterates through registered listeners
 		while (it != m_event_listeners.end() &&
 			it->first == aux_it->first) {
 			if (it->second == listener) {
@@ -173,15 +181,37 @@ namespace Core {
 		return false;
 	}
 
-	void EventManager::triggerEvent(EventPtr& evnt) {
+	bool EventManager::triggerEvent(EventPtr& evnt) {
+		bool triggered = false;
 
+		auto it = m_event_listeners.find(evnt->getType());
+		auto aux_it = it;
+
+		// Iterates through registered listeners
+		while (it != m_event_listeners.end() &&
+			it->first == aux_it->first) {
+			it->second.invoke(evnt);
+			triggered = true;
+			++it;
+		}
+
+		return triggered;
 	}
 
-	void EventManager::enqueueEvent(EventPtr& evnt) {
+	bool EventManager::enqueueEvent(EventPtr& evnt) {
+		// Posts event if there are listeners to it.
+		if (m_event_listeners.find(evnt->getType())
+			!= m_event_listeners.end()) {
+			m_concurrent_queue.postEvent(evnt);
+			return true;
+		}
 
+		return false;
 	}
 
-	void EventManager::abortEvent(EventPtr& evnt, bool all_of_type) {
-
+	void EventManager::abortEvent(EventType type, bool all_of_type) {
+		m_abort_event = true;
+		m_abort_all_of_type = all_of_type;
+		m_event_to_abort = type;
 	}
 }

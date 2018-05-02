@@ -43,20 +43,12 @@ class Test2Event_1 : public IEvent {
 public:
 	Test2Event_1(EventType type) : IEvent(type) {}
 	~Test2Event_1() override {}
-
-	EventType getType() override {
-		return m_type;
-	}
 };
 
 class Test2Event_2 : public IEvent {
 public:
 	Test2Event_2(EventType type) : IEvent(type) {}
 	~Test2Event_2() override {}
-
-	EventType getType() override {
-		return m_type;
-	}
 };
 
 class Test4AuxClass {

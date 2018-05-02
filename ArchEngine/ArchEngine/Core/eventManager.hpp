@@ -53,9 +53,9 @@ namespace Core {
 			EventType evnt);
 
 		// Skips queue and call listeners directly
-		void triggerEvent(EventPtr& evnt);
-		void enqueueEvent(EventPtr& evnt);
-		void abortEvent(EventPtr& evnt, bool all_of_type = false);
+		bool triggerEvent(EventPtr& evnt);
+		bool enqueueEvent(EventPtr& evnt);
+		void abortEvent(EventType type, bool all_of_type = false);
 
 	private:
 		enum State {
@@ -79,6 +79,11 @@ namespace Core {
 		// Listeners by event type
 		std::multimap<EventType, Utils::Delegate<void(EventPtr)>>
 			m_event_listeners;
+
+		// Event abortion flags
+		bool m_abort_event;
+		bool m_abort_all_of_type;
+		EventType m_event_to_abort;
 	};
 }
 
