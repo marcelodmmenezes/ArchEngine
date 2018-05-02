@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 01/05/2018                                                 *
+ * Last Modified: 02/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -78,6 +78,7 @@ void test2(); // Tests concurrent event queue
 void test3(); // Tests concurrent event queue from multiple threads
 void test3Aux_Function(ConcurrentEventQueue* queue, unsigned i);
 void test4(); // Tests the EventManager
+void test4Aux_Function(EventPtr evnt);
 void startLoggingService();
 
 
@@ -247,23 +248,58 @@ void test3Aux_Function(ConcurrentEventQueue* queue, unsigned i) {
 }
 
 void test4() {
+	std::stringstream ss;
+
 	EventManager::getInstance().initialize(
 		"../../ArchEngine/Testers/eventConfig.lua");
 
 	Test4AuxClass inst;
-	Delegate<void(EventPtr)> dlgt;
-	dlgt.bind<Test4AuxClass, &Test4AuxClass::method>(&inst);
+	Delegate<void(EventPtr)> dlgt1;
+	dlgt1.bind<Test4AuxClass, &Test4AuxClass::method>(&inst);
 
-	std::shared_ptr<IEvent> evnt1(new Test2Event_1(TEST_EVENT_1));
+	Delegate<void(EventPtr)> dlgt2;
+	dlgt2.bind<&test4Aux_Function>();
 
-	EventManager::getInstance().addListener(dlgt, evnt1->getType());
-	EventManager::getInstance().addListener(dlgt, evnt1->getType());
+	EventPtr evnt1(new Test2Event_1(TEST_EVENT_1));
+	EventPtr evnt2(new Test2Event_2(TEST_EVENT_2));
+
+	auto now = std::chrono::high_resolution_clock().now();
+
+	EventManager::getInstance().addListener(dlgt1, evnt1->getType());
+	for (int i = 0; i < 1000; i++)
+		assert(!EventManager::getInstance()
+			.addListener(dlgt1, evnt1->getType()));
+
+	ss << "\n\naddListener elapsed nanoseconds: " <<
+		(std::chrono::high_resolution_clock().now() - now).count() << "\n";
+
+	EventManager::getInstance().addListener(dlgt1, evnt2->getType());
+	EventManager::getInstance().addListener(dlgt2, evnt1->getType());
+	EventManager::getInstance().addListener(dlgt2, evnt2->getType());
 
 	EventManager::getInstance().dispatch();
 
-	EventManager::getInstance().removeListener(dlgt, evnt1->getType());
+	EventManager::getInstance().removeListener(dlgt1, evnt1->getType());
+
+	now = std::chrono::high_resolution_clock().now();
+
+	for (int i = 0; i < 1000; i++)
+		assert(!EventManager::getInstance()
+			.removeListener(dlgt1, evnt1->getType()));
+
+	ss << "\n\nremoveListener elapsed nanoseconds: " <<
+		(std::chrono::high_resolution_clock().now() - now).count() << "\n";
 
 	EventManager::getInstance().destroy();
+
+	ServiceLocator::getFileLogger()->log<LOG_INFO>(ss);
+}
+
+void test4Aux_Function(EventPtr evnt) {
+	ServiceLocator::getConsoleLogger()->log<LOG_INFO>(
+		std::to_string(evnt->getType()));
+	ServiceLocator::getFileLogger()->log<LOG_INFO>(
+		std::to_string(evnt->getType()));
 }
 
 void startLoggingService() {
