@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 02/05/2018                                                 *
+ * Last Modified: 03/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -24,6 +24,9 @@ namespace Core {
 		TEST_EVENT_1,
 		TEST_EVENT_2,
 		TEST_EVENT_3,
+
+		//--- Core events
+		CORE_QUIT_EVENT,
 
 		//--- Input events
 		INPUT_ACTION_EVENT,
@@ -45,6 +48,20 @@ namespace Core {
 
 	//-------------------------------------------------- Event concrete classes
 	
+	//----------------
+	//---- Core events
+	//----------------
+
+	class CoreQuitEvent : public IEvent {
+	public:
+		CoreQuitEvent();
+		~CoreQuitEvent();
+
+		EventType getType() const override;
+
+	private:
+	};
+
 	//----------------
 	//--- Input events
 	//----------------

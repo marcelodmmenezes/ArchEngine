@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 01/05/2018                                                 *
+ * Last Modified: 03/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -18,6 +18,7 @@
 #define CORE_ENGINE_HPP
 
 
+#include "event.hpp"
 #include "../Config/engineMacros.hpp"
 #include "../OS/inputManager.hpp"
 #include "../OS/window.hpp"
@@ -49,6 +50,8 @@ namespace Core {
 		void run();
 		void exit();
 
+		void handleEvents(EventPtr evnt);
+
 		bool isInitialized() const;
 
 	private:
@@ -58,6 +61,7 @@ namespace Core {
 		bool loadConfigurations(const std::string& config_path);
 
 		bool m_initialized;
+		bool m_running;
 
 		// For now there's only one window which is owned by the SystemManager
 		OS::Window m_window;

@@ -11,7 +11,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 02/05/2018                                                 *
+ * Last Modified: 03/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -55,7 +55,7 @@ namespace Utils {
 			assert(m_func.second);
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
 
-			return m_func.second(m_func.first);
+			m_func.second(m_func.first);
 		}
 
 	private:
@@ -112,7 +112,7 @@ namespace Utils {
 			assert(m_func.second);
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
 
-			return m_func.second(m_func.first, arg0);
+			m_func.second(m_func.first, arg0);
 		}
 
 	private:
@@ -165,7 +165,7 @@ namespace Utils {
 			assert(m_func.second);
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
 
-			return m_func.second(m_func.first, arg0, arg1);
+			m_func.second(m_func.first, arg0, arg1);
 		}
 
 	private:

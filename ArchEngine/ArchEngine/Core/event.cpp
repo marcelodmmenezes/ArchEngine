@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 02/05/2018                                                       *
- * Last Modified: 02/05/2018                                                 *
+ * Last Modified: 03/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -14,6 +14,11 @@
 
 
 namespace Core {
+	//------------------------------------------------------------- Core events
+	CoreQuitEvent::CoreQuitEvent() : IEvent(CORE_QUIT_EVENT) {}
+	CoreQuitEvent::~CoreQuitEvent() {}
+	EventType CoreQuitEvent::getType() const { return m_type; }
+
 	//------------------------------------------------------------ Input events
 	InputActionEvent::InputActionEvent() : IEvent(INPUT_ACTION_EVENT) {}
 	InputActionEvent::~InputActionEvent() {}

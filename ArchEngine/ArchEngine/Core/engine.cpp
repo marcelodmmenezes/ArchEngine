@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 30/04/2018                                                 *
+ * Last Modified: 03/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -23,7 +23,7 @@ using namespace Utils;
 
 
 namespace Core {
-	Engine::Engine() : m_initialized(false) {}
+	Engine::Engine() : m_initialized(false), m_running(false) {}
 
 	Engine::~Engine() {
 		m_window.destroy();
@@ -83,7 +83,7 @@ namespace Core {
 			"Running main loop");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		
-		bool running = true;
+		m_running = true;
 		
 		m_timer.init();
 
@@ -93,12 +93,12 @@ namespace Core {
 		// Value for rendering calculations
 		float interpolation; 
 		
-		while (running) {
+		while (m_running) {
 			//---------------------------------------------------- Time control
 			m_timer.calc();
 
 			//------------------------------------------------- Input gathering
-			InputManager::getInstance().update(running);
+			InputManager::getInstance().update(m_running);
 
 			//----------------------------------------------- Event dispatching
 			EventManager::getInstance().dispatch();
@@ -138,6 +138,14 @@ namespace Core {
 		SDL_Quit();
 
 		m_initialized = false;
+	}
+
+	void Engine::handleEvents(EventPtr evnt) {
+		switch (evnt->getType()) {
+		case CORE_QUIT_EVENT:
+			m_running = false;
+			break;
+		}
 	}
 
 	bool Engine::isInitialized() const { return m_initialized; }

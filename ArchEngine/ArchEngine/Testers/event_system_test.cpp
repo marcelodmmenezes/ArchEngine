@@ -70,10 +70,13 @@ public:
 	}
 };
 
-
 class Test5AuxClass {
 public:
 	void method(EventPtr evnt);
+};
+
+enum Test5GameEvents {
+	GAME_ACTION_QUIT = 2
 };
 
 
@@ -333,6 +336,9 @@ void test5() {
 		listener.bind<Test5AuxClass, &Test5AuxClass::method>(&instance);
 		EventManager::getInstance().addListener(listener, INPUT_STATE_EVENT);
 
+		listener.bind<Engine, &Engine::handleEvents>(&Engine::getInstance());
+		EventManager::getInstance().addListener(listener, CORE_QUIT_EVENT);
+
 		Engine::getInstance().run();
 	}
 	else
@@ -343,8 +349,15 @@ void test5() {
 }
 
 void test5Aux_Function(EventPtr evnt) {
-	ServiceLocator::getConsoleLogger()->log<LOG_INFO>(std::to_string(
-		std::static_pointer_cast<InputActionEvent>(evnt)->getValue()));
+	auto e = std::static_pointer_cast<InputActionEvent>(evnt);
+
+	ServiceLocator::getConsoleLogger()->log<LOG_INFO>(
+		std::to_string(e->getValue()));
+
+	if (e->getValue() == GAME_ACTION_QUIT) {
+		Core::EventPtr evnt(new Core::CoreQuitEvent());
+		EventManager::getInstance().postEvent(evnt);
+	}
 }
 
 void Test5AuxClass::method(EventPtr evnt) {

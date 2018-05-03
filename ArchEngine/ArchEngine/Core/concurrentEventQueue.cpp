@@ -159,9 +159,8 @@ namespace Core {
 			case TMT_TIMER:
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 				ServiceLocator::getConsoleLogger()->log<LOG_INFO>(
-					"Timer expired on " + m_thread_name);
-				ServiceLocator::getFileLogger()->log<LOG_INFO>(
-					"Timer expired on " + m_thread_name);
+					"Timer reached " + std::to_string(m_timer_wait_duration) +
+					" on " + m_thread_name);
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
 				break;
