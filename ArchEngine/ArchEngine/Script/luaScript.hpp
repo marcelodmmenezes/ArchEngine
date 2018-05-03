@@ -50,7 +50,7 @@ namespace Script {
 		template<typename T>
 		T get(const std::string& var_name);
 
-		// Return vectors are moved, not copied
+		// Returned vectors are moved, not copied
 		std::vector<int> getIntVector(const std::string& name);
 		std::vector<std::string> getStringVector(const std::string& name);
 		std::vector<std::string> getTableKeys(const std::string& name);
@@ -132,8 +132,10 @@ namespace Script {
 	// Float
 	template <>
 	inline float LuaScript::luaGet<float>(const std::string& var_name) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		if (!lua_isnumber(m_lua, -1))
 			printError(var_name, "Not a number");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 
 		return (float)lua_tonumber(m_lua, -1);
 	}
@@ -141,8 +143,10 @@ namespace Script {
 	// Int
 	template <>
 	inline int LuaScript::luaGet<int>(const std::string& var_name) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		if (!lua_isnumber(m_lua, -1))
 			printError(var_name, "Not a number");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 
 		return (int)lua_tonumber(m_lua, -1);
 	}
@@ -153,8 +157,10 @@ namespace Script {
 		std::string s = "";
 		if (lua_isstring(m_lua, -1))
 			s = std::string(lua_tostring(m_lua, -1));
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		else
 			printError(var_name, "Not a string");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 
 		return s;
 	}
