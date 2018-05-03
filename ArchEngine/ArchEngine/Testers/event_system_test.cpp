@@ -29,6 +29,7 @@
 
 
 using namespace Core;
+using namespace OS;
 using namespace Utils;
 
 
@@ -43,12 +44,20 @@ class Test2Event_1 : public IEvent {
 public:
 	Test2Event_1(EventType type) : IEvent(type) {}
 	~Test2Event_1() override {}
+
+	EventType getType() const override {
+		return m_type;
+	}
 };
 
 class Test2Event_2 : public IEvent {
 public:
 	Test2Event_2(EventType type) : IEvent(type) {}
 	~Test2Event_2() override {}
+
+	EventType getType() const override {
+		return m_type;
+	}
 };
 
 class Test4AuxClass {
@@ -62,6 +71,12 @@ public:
 };
 
 
+class Test5AuxClass {
+public:
+	void method(EventPtr evnt);
+};
+
+
 void test1(); // Tests delegate
 void test1Aux_Function();
 void test1Aux_Function(const std::string& str);
@@ -71,6 +86,8 @@ void test3(); // Tests concurrent event queue from multiple threads
 void test3Aux_Function(ConcurrentEventQueue* queue, unsigned i);
 void test4(); // Tests the EventManager
 void test4Aux_Function(EventPtr evnt);
+void test5(); // Tests the integration of event and input systems
+void test5Aux_Function(EventPtr evnt);
 void startLoggingService();
 
 
@@ -82,30 +99,37 @@ int main(int argc, char* argv[]) {
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Testing delegate");
-		test1();
+		//test1();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished first test\n\
 ----------------------------------------------------------------------------");
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Testing concurrent event queue");
-		test2();
+		//test2();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished second test\n\
 ----------------------------------------------------------------------------");
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Testing concurrent event queue from multiple threads");
-		test3();
+		//test3();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished third test\n\
 ----------------------------------------------------------------------------");
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Testing EventManager");
-		test4();
+		//test4();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished fourth test\n\
+----------------------------------------------------------------------------");
+
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Testing the integration of event and input systems");
+		test5();
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Finished fifth test\n\
 ----------------------------------------------------------------------------");
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>("Finished tests");
@@ -292,6 +316,40 @@ void test4Aux_Function(EventPtr evnt) {
 		std::to_string(evnt->getType()));
 	ServiceLocator::getFileLogger()->log<LOG_INFO>(
 		std::to_string(evnt->getType()));
+}
+
+void test5() {
+	if (Engine::getInstance().initialize("../../ArchEngine/Testers/"
+		"core_engine_test_engine_config.lua")) {
+
+		InputManager::getInstance().pushContext("test");
+
+		EventListener listener;
+
+		listener.bind<&test5Aux_Function>();
+		EventManager::getInstance().addListener(listener, INPUT_ACTION_EVENT);
+
+		Test5AuxClass instance;
+		listener.bind<Test5AuxClass, &Test5AuxClass::method>(&instance);
+		EventManager::getInstance().addListener(listener, INPUT_STATE_EVENT);
+
+		Engine::getInstance().run();
+	}
+	else
+		ServiceLocator::getFileLogger()->log<LOG_ERROR>(
+			"Failed to initialize ArchEngine");
+
+	Engine::getInstance().exit();
+}
+
+void test5Aux_Function(EventPtr evnt) {
+	ServiceLocator::getConsoleLogger()->log<LOG_INFO>(std::to_string(
+		std::static_pointer_cast<InputActionEvent>(evnt)->getValue()));
+}
+
+void Test5AuxClass::method(EventPtr evnt) {
+	ServiceLocator::getConsoleLogger()->log<LOG_INFO>(std::to_string(
+		std::static_pointer_cast<InputStateEvent>(evnt)->getValue()));
 }
 
 void startLoggingService() {

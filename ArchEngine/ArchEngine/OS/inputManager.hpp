@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 01/05/2018                                                 *
+ * Last Modified: 02/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -22,6 +22,7 @@
 
 
 #include "inputContext.hpp"
+#include "../Core/eventManager.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -64,8 +65,11 @@ namespace OS {
 		void update(bool& running);
 
 		// Adds or removes an active input context
-		void contextOn(const std::string& context);
-		void contextOff(const std::string& context);
+		void pushContext(const std::string& context);
+		void popContext(const std::string& context);
+
+	private:
+		InputManager();
 
 		// Input gathering and clearing
 		void setKeyState(SDL_Keycode key, bool pressed, bool prev_pressed);
@@ -76,9 +80,6 @@ namespace OS {
 
 		// Sends the CurrentInput configuration to the engine
 		void dispatch();
-
-	private:
-		InputManager();
 
 		// Actions and states triggers
 		bool triggerKeyAction(SDL_Keycode key, InputAction& action);

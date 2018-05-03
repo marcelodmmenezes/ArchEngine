@@ -142,7 +142,8 @@
   <ItemGroup>
     <ClCompile Include="Core\engine.cpp" />
     <ClCompile Include="Core\concurrentEventQueue.cpp" />
-    <ClCompile Include="Core\iEvent.hpp" />
+    <ClCompile Include="Core\event.cpp" />
+    <ClInclude Include="Core\event.hpp" />
     <ClCompile Include="Core\eventManager.cpp" />
     <ClCompile Include="ECS\idGenerator.cpp" />
     <ClCompile Include="OS\inputContext.cpp" />

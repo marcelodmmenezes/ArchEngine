@@ -100,6 +100,9 @@ namespace Core {
 			//------------------------------------------------- Input gathering
 			InputManager::getInstance().update(running);
 
+			//----------------------------------------------- Event dispatching
+			EventManager::getInstance().dispatch();
+
 			//----------------------------------------------- Game logic update
 			update_loops = 0;
 
@@ -122,7 +125,18 @@ namespace Core {
 	}
 
 	void Engine::exit() {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Destroying EventManager");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		EventManager::getInstance().destroy();
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Quiting SDL");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 		SDL_Quit();
+
 		m_initialized = false;
 	}
 
@@ -172,6 +186,11 @@ namespace Core {
 		m_max_frameskip = engine_config.get<int>("max_frameskip");
 
 		engine_config.destroy();
+
+		//------------------------------------- Event system configuration file
+		if (!EventManager::getInstance().initialize(
+			lua_context.get<std::string>("eventConfig")))
+			return false;
 
 		//------------------------------------ Input systems configuration file
 		if (!InputManager::getInstance().initialize(

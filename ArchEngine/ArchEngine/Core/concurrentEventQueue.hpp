@@ -18,7 +18,7 @@
 #define CORE_CONCURRENT_EVENT_QUEUE_HPP
 
 
-#include "iEvent.hpp"
+#include "event.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 #include <atomic>

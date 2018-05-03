@@ -144,7 +144,7 @@ namespace Core {
 		m_state = SAFE_TO_DESTROY;
 	}
 
-	bool EventManager::addListener(const Delegate<void(EventPtr)>& listener,
+	bool EventManager::addListener(const EventListener& listener,
 		EventType evnt) {
 		auto it = m_event_listeners.find(evnt);
 		auto aux_it = it;
@@ -163,7 +163,7 @@ namespace Core {
 		return true;
 	}
 
-	bool EventManager::removeListener(const Delegate<void(EventPtr)>& listener,
+	bool EventManager::removeListener(const EventListener& listener,
 		EventType evnt) {
 		auto it = m_event_listeners.find(evnt);
 		auto aux_it = it;
@@ -198,7 +198,7 @@ namespace Core {
 		return triggered;
 	}
 
-	bool EventManager::enqueueEvent(EventPtr& evnt) {
+	bool EventManager::postEvent(EventPtr& evnt) {
 		// Posts event if there are listeners to it.
 		if (m_event_listeners.find(evnt->getType())
 			!= m_event_listeners.end()) {

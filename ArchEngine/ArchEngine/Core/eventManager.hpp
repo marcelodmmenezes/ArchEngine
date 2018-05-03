@@ -11,7 +11,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 01/05/2018                                                 *
+ * Last Modified: 02/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -19,7 +19,7 @@
 #define CORE_EVENT_MANAGER_HPP
 
 
-#include "iEvent.hpp"
+#include "event.hpp"
 #include "concurrentEventQueue.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/delegate.hpp"
@@ -34,6 +34,8 @@
 
 
 namespace Core {
+	typedef Utils::Delegate<void(EventPtr)> EventListener;
+
 	class EventManager {
 	public:
 		~EventManager();
@@ -47,14 +49,14 @@ namespace Core {
 		void dispatch(unsigned long max_milliseconds = ULONG_MAX);
 		void destroy();
 
-		bool addListener(const Utils::Delegate<void(EventPtr)>& listener,
+		bool addListener(const EventListener& listener,
 			EventType evnt);
-		bool removeListener(const Utils::Delegate<void(EventPtr)>& listener,
+		bool removeListener(const EventListener& listener,
 			EventType evnt);
 
 		// Skips queue and call listeners directly
 		bool triggerEvent(EventPtr& evnt);
-		bool enqueueEvent(EventPtr& evnt);
+		bool postEvent(EventPtr& evnt);
 		void abortEvent(EventType type, bool all_of_type = false);
 
 	private:

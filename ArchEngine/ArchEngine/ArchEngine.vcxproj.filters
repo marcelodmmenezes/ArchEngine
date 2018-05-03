@@ -72,6 +72,9 @@
     <ClInclude Include="Core\concurrentEventQueue.hpp">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\event.hpp">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -104,9 +107,6 @@
     <ClCompile Include="Core\eventManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Core\iEvent.hpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="OS\inputContext.cpp">
       <Filter>OS</Filter>
     </ClCompile>
@@ -127,6 +127,9 @@
     </ClCompile>
     <ClCompile Include="Testers\event_system_test.cpp">
       <Filter>Testers</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\event.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

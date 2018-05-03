@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 01/05/2018                                                 *
+ * Last Modified: 02/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -169,9 +169,11 @@ namespace OS {
 				break;
 			}
 		}
+
+		dispatch();
 	}
 	
-	void InputManager::contextOn(const std::string& context) {
+	void InputManager::pushContext(const std::string& context) {
 		auto it = m_mapped_contexts.find(context);
 
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
@@ -181,7 +183,7 @@ namespace OS {
 		m_active_contexts.push_back(it->second);
 	}
 
-	void InputManager::contextOff(const std::string& context) {
+	void InputManager::popContext(const std::string& context) {
 		auto it = m_mapped_contexts.find(context);
 
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
@@ -270,7 +272,19 @@ namespace OS {
 	}
 	
 	void InputManager::dispatch() {
-		// TODO
+		for (auto& it : m_current_input.m_actions) {
+			Core::EventPtr evnt(new Core::InputActionEvent());
+			std::static_pointer_cast<Core::InputActionEvent>(evnt)->setValue(it);
+			Core::EventManager::getInstance().postEvent(evnt);
+		}
+
+		for (auto& it : m_current_input.m_states) {
+			Core::EventPtr evnt(new Core::InputStateEvent());
+			std::static_pointer_cast<Core::InputStateEvent>(evnt)->setValue(it);
+			Core::EventManager::getInstance().postEvent(evnt);
+		}
+
+		clearInput();
 	}
 
 	//--- Action triggers
