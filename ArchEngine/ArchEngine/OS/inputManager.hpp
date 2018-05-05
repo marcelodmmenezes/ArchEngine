@@ -39,6 +39,59 @@
 
 
 namespace OS {
+	//----------------
+	//--- Input events
+	//----------------
+
+	class InputActionEvent : public Core::IEvent {
+	public:
+		InputActionEvent();
+		InputActionEvent(OS::InputAction value);
+		~InputActionEvent();
+
+		Core::EventType getType() const override;
+
+		InputAction getValue() const;
+		void setValue(InputAction value);
+
+	private:
+		InputAction m_value;
+	};
+
+	class InputStateEvent : public Core::IEvent {
+	public:
+		InputStateEvent();
+		InputStateEvent(InputState value);
+		~InputStateEvent();
+
+		Core::EventType getType() const override;
+
+		InputState getValue() const;
+		void setValue(InputState value);
+
+	private:
+		InputState m_value;
+	};
+
+	class InputRangeEvent : public Core::IEvent {
+	public:
+		InputRangeEvent();
+		// CAUTION: OS::RangeInfo is moved
+		InputRangeEvent(RangeInfo& value);
+		~InputRangeEvent();
+
+		Core::EventType getType() const override;
+
+		RangeInfo getValue() const;
+		// CAUTION: OS::RangeInfo is moved
+		void setValue(RangeInfo& value);
+
+	private:
+		RangeInfo m_value;
+	};
+	//-------------------------------------------------------------------------
+
+
 	struct CurrentInput {
 		// Sets for O(log(n)) access
 		std::set<InputAction> m_actions;

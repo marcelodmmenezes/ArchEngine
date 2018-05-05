@@ -21,6 +21,7 @@
 
 #include "../Config/engineMacros.hpp"
 
+#include <cassert>
 #include <utility>
 
 

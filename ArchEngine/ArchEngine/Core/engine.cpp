@@ -23,6 +23,12 @@ using namespace Utils;
 
 
 namespace Core {
+	//------------------------------------------------------------- Core events
+	CoreQuitEvent::CoreQuitEvent() : IEvent(CORE_QUIT_EVENT) {}
+	CoreQuitEvent::~CoreQuitEvent() {}
+	EventType CoreQuitEvent::getType() const { return m_type; }
+
+	//------------------------------------------------------------------ Engine
 	Engine::Engine() : m_initialized(false), m_running(false) {}
 
 	Engine::~Engine() {

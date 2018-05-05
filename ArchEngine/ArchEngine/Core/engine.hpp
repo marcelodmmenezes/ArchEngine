@@ -37,6 +37,20 @@
 
 
 namespace Core {
+	//----------------
+	//---- Core events
+	//----------------
+
+	class CoreQuitEvent : public IEvent {
+	public:
+		CoreQuitEvent();
+		~CoreQuitEvent();
+
+		EventType getType() const override;
+	};
+	//-------------------------------------------------------------------------
+
+
 	class Engine {
 	public:
 		~Engine();

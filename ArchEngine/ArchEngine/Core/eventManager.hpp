@@ -11,7 +11,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 02/05/2018                                                 *
+ * Last Modified: 05/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -34,8 +34,6 @@
 
 
 namespace Core {
-	typedef Utils::Delegate<void(EventPtr)> EventListener;
-
 	class EventManager {
 	public:
 		~EventManager();

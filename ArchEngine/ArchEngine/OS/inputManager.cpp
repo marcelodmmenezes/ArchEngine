@@ -13,18 +13,46 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 02/05/2018                                                 *
+ * Last Modified: 05/05/2018                                                 *
  *===========================================================================*/
 
 
 #include "inputManager.hpp"
 
 
+using namespace Core;
 using namespace Script;
 using namespace Utils;
 
 
 namespace OS {
+	//------------------------------------------------------------ Input events
+	InputActionEvent::InputActionEvent() : IEvent(INPUT_ACTION_EVENT) {}
+	InputActionEvent::InputActionEvent(InputAction value) :
+		IEvent(INPUT_ACTION_EVENT), m_value(value) {}
+	InputActionEvent::~InputActionEvent() {}
+	EventType InputActionEvent::getType() const { return m_type; }
+	InputAction InputActionEvent::getValue() const { return m_value; }
+	void InputActionEvent::setValue(InputAction value) { m_value = value; }
+
+	InputStateEvent::InputStateEvent() : IEvent(INPUT_STATE_EVENT) {}
+	InputStateEvent::InputStateEvent(InputState value) :
+		IEvent(INPUT_STATE_EVENT), m_value(value) {}
+	InputStateEvent::~InputStateEvent() {}
+	EventType InputStateEvent::getType() const { return m_type; }
+	InputState InputStateEvent::getValue() const { return m_value; }
+	void InputStateEvent::setValue(InputState value) { m_value = value; }
+
+	InputRangeEvent::InputRangeEvent() : IEvent(INPUT_RANGE_EVENT) {}
+	InputRangeEvent::InputRangeEvent(RangeInfo& value) :
+		IEvent(INPUT_RANGE_EVENT), m_value(std::move(value)) {}
+	InputRangeEvent::~InputRangeEvent() {}
+	EventType InputRangeEvent::getType() const { return m_type; }
+	RangeInfo InputRangeEvent::getValue() const { return m_value; }
+	void InputRangeEvent::setValue(RangeInfo& value) {
+		m_value = std::move(value);
+	}
+
 	//------------------------------------------------------------ CurrentInput
 	void CurrentInput::removeAction(InputAction action) {
 		m_actions.erase(action);
@@ -273,17 +301,17 @@ namespace OS {
 	
 	void InputManager::dispatch() {
 		for (auto& it : m_current_input.m_actions) {
-			Core::EventPtr evnt(new Core::InputActionEvent(it));
+			Core::EventPtr evnt(new InputActionEvent(it));
 			Core::EventManager::getInstance().postEvent(evnt);
 		}
 
 		for (auto& it : m_current_input.m_states) {
-			Core::EventPtr evnt(new Core::InputStateEvent(it));
+			Core::EventPtr evnt(new InputStateEvent(it));
 			Core::EventManager::getInstance().postEvent(evnt);
 		}
 
 		for (auto& it : m_current_input.m_ranges) {
-			Core::EventPtr evnt(new Core::InputRangeEvent());
+			Core::EventPtr evnt(new InputRangeEvent());
 			Core::EventManager::getInstance().postEvent(evnt);
 		}
 

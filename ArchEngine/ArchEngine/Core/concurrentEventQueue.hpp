@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 01/05/2018                                                 *
+ * Last Modified: 05/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -32,8 +32,6 @@
 
 
 namespace Core {
-	typedef std::shared_ptr<IEvent> EventPtr;
-
 	enum ThreadMessageType {
 		TMT_USER_EVENT, // User defined event
 		TMT_TIMER, // Thread timer
