@@ -27,25 +27,25 @@ using namespace Utils;
 
 namespace OS {
 	//------------------------------------------------------------ Input events
-	InputActionEvent::InputActionEvent() : IEvent(INPUT_ACTION_EVENT) {}
+	InputActionEvent::InputActionEvent() : IEvent(EVENT_INPUT_ACTION) {}
 	InputActionEvent::InputActionEvent(InputAction value) :
-		IEvent(INPUT_ACTION_EVENT), m_value(value) {}
+		IEvent(EVENT_INPUT_ACTION), m_value(value) {}
 	InputActionEvent::~InputActionEvent() {}
 	EventType InputActionEvent::getType() const { return m_type; }
 	InputAction InputActionEvent::getValue() const { return m_value; }
 	void InputActionEvent::setValue(InputAction value) { m_value = value; }
 
-	InputStateEvent::InputStateEvent() : IEvent(INPUT_STATE_EVENT) {}
+	InputStateEvent::InputStateEvent() : IEvent(EVENT_INPUT_STATE) {}
 	InputStateEvent::InputStateEvent(InputState value) :
-		IEvent(INPUT_STATE_EVENT), m_value(value) {}
+		IEvent(EVENT_INPUT_STATE), m_value(value) {}
 	InputStateEvent::~InputStateEvent() {}
 	EventType InputStateEvent::getType() const { return m_type; }
 	InputState InputStateEvent::getValue() const { return m_value; }
 	void InputStateEvent::setValue(InputState value) { m_value = value; }
 
-	InputRangeEvent::InputRangeEvent() : IEvent(INPUT_RANGE_EVENT) {}
+	InputRangeEvent::InputRangeEvent() : IEvent(EVENT_INPUT_RANGE) {}
 	InputRangeEvent::InputRangeEvent(const RangeInfo& value) :
-		IEvent(INPUT_RANGE_EVENT), m_value(value) {}
+		IEvent(EVENT_INPUT_RANGE), m_value(value) {}
 	InputRangeEvent::~InputRangeEvent() {}
 	EventType InputRangeEvent::getType() const { return m_type; }
 	RangeInfo InputRangeEvent::getValue() const { return m_value; }
