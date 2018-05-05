@@ -44,14 +44,12 @@ namespace OS {
 	void InputStateEvent::setValue(InputState value) { m_value = value; }
 
 	InputRangeEvent::InputRangeEvent() : IEvent(INPUT_RANGE_EVENT) {}
-	InputRangeEvent::InputRangeEvent(RangeInfo& value) :
-		IEvent(INPUT_RANGE_EVENT), m_value(std::move(value)) {}
+	InputRangeEvent::InputRangeEvent(const RangeInfo& value) :
+		IEvent(INPUT_RANGE_EVENT), m_value(value) {}
 	InputRangeEvent::~InputRangeEvent() {}
 	EventType InputRangeEvent::getType() const { return m_type; }
 	RangeInfo InputRangeEvent::getValue() const { return m_value; }
-	void InputRangeEvent::setValue(RangeInfo& value) {
-		m_value = std::move(value);
-	}
+	void InputRangeEvent::setValue(const RangeInfo& value) { m_value = value; }
 
 	//------------------------------------------------------------ CurrentInput
 	void CurrentInput::removeAction(InputAction action) {
@@ -311,7 +309,7 @@ namespace OS {
 		}
 
 		for (auto& it : m_current_input.m_ranges) {
-			Core::EventPtr evnt(new InputRangeEvent());
+			Core::EventPtr evnt(new InputRangeEvent(it));
 			Core::EventManager::getInstance().postEvent(evnt);
 		}
 

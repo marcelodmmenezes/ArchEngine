@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 02/05/2018                                                 *
+ * Last Modified: 05/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -90,7 +90,8 @@ void test3Aux_Function(ConcurrentEventQueue* queue, unsigned i);
 void test4(); // Tests the EventManager
 void test4Aux_Function(EventPtr evnt);
 void test5(); // Tests the integration of event and input systems
-void test5Aux_Function(EventPtr evnt);
+void test5Aux_Function(EventPtr e);
+void test5Aux_Function2(EventPtr e);
 void startLoggingService();
 
 
@@ -324,17 +325,20 @@ void test4Aux_Function(EventPtr evnt) {
 void test5() {
 	if (Engine::getInstance().initialize("../../ArchEngine/Testers/"
 		"core_engine_test_engine_config.lua")) {
-
-		InputManager::getInstance().pushContext("test");
-
+		
 		EventListener listener;
-
+		Test5AuxClass instance;
+		
+		InputManager::getInstance().pushContext("test");
+		
 		listener.bind<&test5Aux_Function>();
 		EventManager::getInstance().addListener(listener, INPUT_ACTION_EVENT);
 
-		Test5AuxClass instance;
 		listener.bind<Test5AuxClass, &Test5AuxClass::method>(&instance);
 		EventManager::getInstance().addListener(listener, INPUT_STATE_EVENT);
+
+		listener.bind<&test5Aux_Function2>();
+		EventManager::getInstance().addListener(listener, INPUT_RANGE_EVENT);
 
 		listener.bind<Engine, &Engine::handleEvents>(&Engine::getInstance());
 		EventManager::getInstance().addListener(listener, CORE_QUIT_EVENT);
@@ -358,6 +362,18 @@ void test5Aux_Function(EventPtr e) {
 		Core::EventPtr evnt(new Core::CoreQuitEvent());
 		EventManager::getInstance().postEvent(evnt);
 	}
+}
+
+void test5Aux_Function2(EventPtr e) {
+	auto evnt = std::static_pointer_cast<InputRangeEvent>(e);
+
+	auto info = evnt->getValue();
+
+	std::stringstream ss;
+	ss << "Range: " << info.m_range << ", Sensitivity: " <<
+		info.m_sensitivity << ", value: " << info.m_value;
+
+	ServiceLocator::getConsoleLogger()->log<LOG_INFO>(ss);
 }
 
 void Test5AuxClass::method(EventPtr evnt) {

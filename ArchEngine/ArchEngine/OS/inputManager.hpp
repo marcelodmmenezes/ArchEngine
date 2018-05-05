@@ -76,15 +76,13 @@ namespace OS {
 	class InputRangeEvent : public Core::IEvent {
 	public:
 		InputRangeEvent();
-		// CAUTION: OS::RangeInfo is moved
-		InputRangeEvent(RangeInfo& value);
+		InputRangeEvent(const RangeInfo& value);
 		~InputRangeEvent();
 
 		Core::EventType getType() const override;
 
 		RangeInfo getValue() const;
-		// CAUTION: OS::RangeInfo is moved
-		void setValue(RangeInfo& value);
+		void setValue(const RangeInfo& value);
 
 	private:
 		RangeInfo m_value;
