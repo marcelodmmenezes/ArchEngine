@@ -348,13 +348,13 @@ void test5() {
 	Engine::getInstance().exit();
 }
 
-void test5Aux_Function(EventPtr evnt) {
-	auto e = std::static_pointer_cast<InputActionEvent>(evnt);
+void test5Aux_Function(EventPtr e) {
+	auto evnt = std::static_pointer_cast<InputActionEvent>(e);
 
 	ServiceLocator::getConsoleLogger()->log<LOG_INFO>(
-		std::to_string(e->getValue()));
+		std::to_string(evnt->getValue()));
 
-	if (e->getValue() == GAME_ACTION_QUIT) {
+	if (evnt->getValue() == GAME_ACTION_QUIT) {
 		Core::EventPtr evnt(new Core::CoreQuitEvent());
 		EventManager::getInstance().postEvent(evnt);
 	}

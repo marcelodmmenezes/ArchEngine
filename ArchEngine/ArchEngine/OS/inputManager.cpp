@@ -273,14 +273,17 @@ namespace OS {
 	
 	void InputManager::dispatch() {
 		for (auto& it : m_current_input.m_actions) {
-			Core::EventPtr evnt(new Core::InputActionEvent());
-			std::static_pointer_cast<Core::InputActionEvent>(evnt)->setValue(it);
+			Core::EventPtr evnt(new Core::InputActionEvent(it));
 			Core::EventManager::getInstance().postEvent(evnt);
 		}
 
 		for (auto& it : m_current_input.m_states) {
-			Core::EventPtr evnt(new Core::InputStateEvent());
-			std::static_pointer_cast<Core::InputStateEvent>(evnt)->setValue(it);
+			Core::EventPtr evnt(new Core::InputStateEvent(it));
+			Core::EventManager::getInstance().postEvent(evnt);
+		}
+
+		for (auto& it : m_current_input.m_ranges) {
+			Core::EventPtr evnt(new Core::InputRangeEvent());
 			Core::EventManager::getInstance().postEvent(evnt);
 		}
 

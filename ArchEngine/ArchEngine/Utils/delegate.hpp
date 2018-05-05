@@ -66,7 +66,7 @@ namespace Utils {
 		// In case of C-Style function
 		template<void(*F)()>
 		static inline void function(Instance) {
-			return (F)();
+			F();
 		}
 
 		// In case of Method
@@ -74,7 +74,7 @@ namespace Utils {
 		static inline void method(Instance instance) {
 			// It's safe to cast the instance pointer
 			// back to it's original class
-			return (static_cast<C*>(instance)->*M)();
+			(static_cast<C*>(instance)->*M)();
 		}
 
 		std::pair<Instance, Method> m_func;
@@ -123,7 +123,7 @@ namespace Utils {
 		// In case of C-Style function
 		template<void(*F)(ARG0)>
 		static inline void function(Instance, ARG0 arg0) {
-			return (F)(arg0);
+			F(arg0);
 		}
 
 		// In case of Method
@@ -131,7 +131,7 @@ namespace Utils {
 		static inline void method(Instance instance, ARG0 arg0) {
 			// It's safe to cast the instance pointer
 			// back to it's original class
-			return (static_cast<C*>(instance)->*M)(arg0);
+			(static_cast<C*>(instance)->*M)(arg0);
 		}
 
 		std::pair<Instance, Method> m_func;
@@ -176,7 +176,7 @@ namespace Utils {
 		// In case of C-Style function
 		template<void(*F)(ARG0, ARG1)>
 		static inline void function(Instance, ARG0 arg0, ARG1 arg1) {
-			return (F)(arg0, arg1);
+			F(arg0, arg1);
 		}
 
 		// In case of Method
@@ -184,7 +184,7 @@ namespace Utils {
 		static inline void method(Instance instance, ARG0 arg0, ARG1 arg1) {
 			// It's safe to cast the instance pointer
 			// back to it's original class
-			return (static_cast<C*>(instance)->*M)(arg0, arg1);
+			(static_cast<C*>(instance)->*M)(arg0, arg1);
 		}
 
 		std::pair<Instance, Method> m_func;

@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 02/05/2018                                                       *
- * Last Modified: 03/05/2018                                                 *
+ * Last Modified: 05/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -21,14 +21,26 @@ namespace Core {
 
 	//------------------------------------------------------------ Input events
 	InputActionEvent::InputActionEvent() : IEvent(INPUT_ACTION_EVENT) {}
+	InputActionEvent::InputActionEvent(OS::InputAction value) :
+		IEvent(INPUT_ACTION_EVENT), m_value(value) {}
 	InputActionEvent::~InputActionEvent() {}
 	EventType InputActionEvent::getType() const { return m_type; }
-	unsigned InputActionEvent::getValue() const { return m_value; }
-	void InputActionEvent::setValue(unsigned value) { m_value = value; }
+	OS::InputAction InputActionEvent::getValue() const { return m_value; }
+	void InputActionEvent::setValue(OS::InputAction value) { m_value = value; }
 
 	InputStateEvent::InputStateEvent() : IEvent(INPUT_STATE_EVENT) {}
+	InputStateEvent::InputStateEvent(OS::InputState value) :
+		IEvent(INPUT_STATE_EVENT), m_value(value) {}
 	InputStateEvent::~InputStateEvent() {}
 	EventType InputStateEvent::getType() const { return m_type; }
-	unsigned InputStateEvent::getValue() const { return m_value; }
-	void InputStateEvent::setValue(unsigned value) { m_value = value; }
+	OS::InputState InputStateEvent::getValue() const { return m_value; }
+	void InputStateEvent::setValue(OS::InputState value) { m_value = value; }
+
+	InputRangeEvent::InputRangeEvent() : IEvent(INPUT_RANGE_EVENT) {}
+	InputRangeEvent::InputRangeEvent(OS::RangeInfo value) :
+		IEvent(INPUT_RANGE_EVENT), m_value(value) {}
+	InputRangeEvent::~InputRangeEvent() {}
+	EventType InputRangeEvent::getType() const { return m_type; }
+	OS::RangeInfo InputRangeEvent::getValue() const { return m_value; }
+	void InputRangeEvent::setValue(OS::RangeInfo value) { m_value = value; }
 }
