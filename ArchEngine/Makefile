@@ -46,6 +46,8 @@ $(OBJDIR)/$(CORE)/concurrentEventQueue.o : $(CORE)/concurrentEventQueue.cpp
 	$(COMPILEOBJ)
 $(OBJDIR)/$(CORE)/engine.o : $(CORE)/engine.cpp
 	$(COMPILEOBJ)
+$(OBJDIR)/$(CORE)/event.o : $(CORE)/event.cpp
+	$(COMPILEOBJ)
 $(OBJDIR)/$(CORE)/eventManager.o : $(CORE)/eventManager.cpp
 	$(COMPILEOBJ)
 
@@ -91,13 +93,13 @@ $(OBJDIR)/$(UTILS)/serviceLocator.o : $(UTILS)/serviceLocator.cpp
 $(OBJDIR)/$(UTILS)/timer.o : $(UTILS)/timer.cpp
 	$(COMPILEOBJ)
 
-_OBJ = $(CORE)/concurrentEventQueue.o $(CORE)/engine.o $(CORE)/eventManager.o \
-	$(ECS)/idGenerator.o $(OS)/inputContext.o $(OS)/inputManager.o \
-	$(OS)/window.o $(SCRIPT)/luaScript.o $(TESTERS)/core_engine_test.o\
-	$(TESTERS)/ecs_ecs_test.o $(TESTERS)/event_system_test.o \
-	$(TESTERS)/os_input_context_test.o $(TESTERS)/os_window_test.o \
-	#(TESTERS)/script_lua_script_test.o $(TESTERS)/utils_logger_test.o \
-	$(UTILS)/serviceLocator.o $(UTILS)/timer.o
+_OBJ = $(CORE)/concurrentEventQueue.o $(CORE)/engine.o $(CORE)/event.o \
+	$(CORE)/eventManager.o $(ECS)/idGenerator.o $(OS)/inputContext.o \
+	$(OS)/inputManager.o $(OS)/window.o $(SCRIPT)/luaScript.o \
+	$(TESTERS)/core_engine_test.o $(TESTERS)/ecs_ecs_test.o \
+	$(TESTERS)/event_system_test.o $(TESTERS)/os_input_context_test.o \
+	$(TESTERS)/os_window_test.o $(TESTERS)/script_lua_script_test.o \
+	$(TESTERS)/utils_logger_test.o $(UTILS)/serviceLocator.o $(UTILS)/timer.o
 OBJ = $(patsubst %, $(OBJDIR)/%, $(_OBJ))
 
 build: $(OBJ)

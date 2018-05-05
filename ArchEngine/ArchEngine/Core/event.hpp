@@ -51,9 +51,6 @@ namespace Core {
 	protected:
 		EventType m_type;
 	};
-
-	// Virtual pure destructor needs implementation
-	IEvent::~IEvent() {}
 	
 	//---------------------------------------------------------------- Typedefs
 	typedef std::shared_ptr<IEvent> EventPtr;
