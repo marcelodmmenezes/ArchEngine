@@ -10,8 +10,8 @@
  *===========================================================================*/
 
 
-#ifndef CORE_I_EVENT_HPP
-#define CORE_I_EVENT_HPP
+#ifndef CORE_EVENT_HPP
+#define CORE_EVENT_HPP
 
 
 #include "../Utils/delegate.hpp"
@@ -24,17 +24,20 @@ namespace Core {
 	//------------------------------------------------------------- Event types
 	enum EventType {
 		//--- Test events
-		TEST_EVENT_1,
-		TEST_EVENT_2,
-		TEST_EVENT_3,
+		EVENT_TEST_1,
+		EVENT_TEST_2,
+		EVENT_TEST_3,
 
 		//--- Core events
-		CORE_QUIT_EVENT,
+		EVENT_CORE_QUIT,
 
 		//--- Input events
-		INPUT_ACTION_EVENT,
-		INPUT_STATE_EVENT,
-		INPUT_RANGE_EVENT
+		EVENT_INPUT_ACTION,
+		EVENT_INPUT_STATE,
+		EVENT_INPUT_RANGE,
+
+		//--- Control
+		NUMBER_OF_DEFAULT_EVENTS
 	};
 
 	//--------------------------------------------------------- Event interface
@@ -55,4 +58,4 @@ namespace Core {
 }
 
 
-#endif
+#endif	// CORE_EVENT_HPP

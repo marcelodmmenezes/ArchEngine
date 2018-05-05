@@ -24,7 +24,7 @@ using namespace Utils;
 
 namespace Core {
 	//------------------------------------------------------------- Core events
-	CoreQuitEvent::CoreQuitEvent() : IEvent(CORE_QUIT_EVENT) {}
+	CoreQuitEvent::CoreQuitEvent() : IEvent(EVENT_CORE_QUIT) {}
 	CoreQuitEvent::~CoreQuitEvent() {}
 	EventType CoreQuitEvent::getType() const { return m_type; }
 
@@ -148,7 +148,7 @@ namespace Core {
 
 	void Engine::handleEvents(EventPtr evnt) {
 		switch (evnt->getType()) {
-		case CORE_QUIT_EVENT:
+		case EVENT_CORE_QUIT:
 			m_running = false;
 			break;
 		}

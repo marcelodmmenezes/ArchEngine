@@ -73,10 +73,18 @@ public:
 class Test5AuxClass {
 public:
 	void method(EventPtr evnt);
+	void method2(EventPtr evnt);
 };
 
 enum Test5GameEvents {
 	GAME_ACTION_QUIT = 2
+};
+
+class UserDefinedEvent : public IEvent {
+public:
+	UserDefinedEvent() :
+		IEvent((Core::EventType)(NUMBER_OF_DEFAULT_EVENTS + 1)) {}
+	Core::EventType getType() const override { return m_type; }
 };
 
 
@@ -216,8 +224,8 @@ void test2() {
 		auto now = std::chrono::high_resolution_clock().now();
 
 		for (int i = 0; i < 1000; i++) {
-			std::shared_ptr<IEvent> evnt1(new Test2Event_1(TEST_EVENT_1));
-			std::shared_ptr<IEvent> evnt2(new Test2Event_2(TEST_EVENT_2));
+			std::shared_ptr<IEvent> evnt1(new Test2Event_1(EVENT_TEST_1));
+			std::shared_ptr<IEvent> evnt2(new Test2Event_2(EVENT_TEST_2));
 
 			queue.postEvent(std::move(evnt1));
 			queue.postEvent(std::move(evnt2));
@@ -263,7 +271,7 @@ void test3() {
 
 void test3Aux_Function(ConcurrentEventQueue* queue, unsigned i) {
 	std::this_thread::sleep_for(std::chrono::duration<unsigned>(2));
-	std::shared_ptr<IEvent> evnt1(new Test2Event_1(TEST_EVENT_3));
+	std::shared_ptr<IEvent> evnt1(new Test2Event_1(EVENT_TEST_3));
 	queue->postEvent(std::move(evnt1));
 }
 
@@ -280,8 +288,8 @@ void test4() {
 	Delegate<void(EventPtr)> dlgt2;
 	dlgt2.bind<&test4Aux_Function>();
 
-	EventPtr evnt1(new Test2Event_1(TEST_EVENT_1));
-	EventPtr evnt2(new Test2Event_2(TEST_EVENT_2));
+	EventPtr evnt1(new Test2Event_1(EVENT_TEST_1));
+	EventPtr evnt2(new Test2Event_2(EVENT_TEST_2));
 
 	auto now = std::chrono::high_resolution_clock().now();
 
@@ -332,16 +340,20 @@ void test5() {
 		InputManager::getInstance().pushContext("test");
 		
 		listener.bind<&test5Aux_Function>();
-		EventManager::getInstance().addListener(listener, INPUT_ACTION_EVENT);
+		EventManager::getInstance().addListener(listener, EVENT_INPUT_ACTION);
 
 		listener.bind<Test5AuxClass, &Test5AuxClass::method>(&instance);
-		EventManager::getInstance().addListener(listener, INPUT_STATE_EVENT);
+		EventManager::getInstance().addListener(listener, EVENT_INPUT_STATE);
 
 		listener.bind<&test5Aux_Function2>();
-		EventManager::getInstance().addListener(listener, INPUT_RANGE_EVENT);
+		EventManager::getInstance().addListener(listener, EVENT_INPUT_RANGE);
+
+		listener.bind<Test5AuxClass, &Test5AuxClass::method2>(&instance);
+		EventManager::getInstance().addListener(listener,
+			(Core::EventType)(NUMBER_OF_DEFAULT_EVENTS + 1));
 
 		listener.bind<Engine, &Engine::handleEvents>(&Engine::getInstance());
-		EventManager::getInstance().addListener(listener, CORE_QUIT_EVENT);
+		EventManager::getInstance().addListener(listener, EVENT_CORE_QUIT);
 
 		Engine::getInstance().run();
 	}
@@ -362,6 +374,10 @@ void test5Aux_Function(EventPtr e) {
 		Core::EventPtr evnt(new Core::CoreQuitEvent());
 		EventManager::getInstance().postEvent(evnt);
 	}
+	else if (evnt->getValue() == 0) {
+		Core::EventPtr evnt(new UserDefinedEvent());
+		EventManager::getInstance().postEvent(evnt);
+	}
 }
 
 void test5Aux_Function2(EventPtr e) {
@@ -379,6 +395,12 @@ void test5Aux_Function2(EventPtr e) {
 void Test5AuxClass::method(EventPtr evnt) {
 	ServiceLocator::getConsoleLogger()->log<LOG_INFO>(std::to_string(
 		std::static_pointer_cast<InputStateEvent>(evnt)->getValue()));
+}
+
+void Test5AuxClass::method2(EventPtr evnt) {
+	if (evnt->getType() == (Core::EventType)(NUMBER_OF_DEFAULT_EVENTS + 1))
+		ServiceLocator::getConsoleLogger()->log<LOG_INFO>(
+			"Events are extendable");
 }
 
 void startLoggingService() {
