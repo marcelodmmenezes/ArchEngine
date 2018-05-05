@@ -44,7 +44,7 @@ namespace Core {
 	class IEvent {
 	public:
 		IEvent(EventType type) : m_type(type) {}
-		virtual ~IEvent() = 0 {}
+		virtual ~IEvent() = 0;
 		
 		virtual EventType getType() const = 0;
 		

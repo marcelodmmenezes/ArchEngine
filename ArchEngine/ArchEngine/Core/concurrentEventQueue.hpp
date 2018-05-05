@@ -24,6 +24,7 @@
 #include <atomic>
 #include <cassert>
 #include <chrono>
+#include <condition_variable>
 #include <memory>
 #include <mutex>
 #include <queue>
