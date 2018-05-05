@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Core/inputContext.hpp"                                     *
+ * Arch Engine - "OS/inputContext.hpp"                                       *
  *                                                                           *
  * Represents the input context                                              *
  *                                                                           *
@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 23/04/2018                                                 *
+ * Last Modified: 01/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -21,7 +21,7 @@ using namespace Script;
 using namespace Utils;
 
 
-namespace Core {
+namespace OS {
 	namespace InputNames {
 		//-------------------------------------- String <-> SDL_Keycode mapping
 		std::map<std::string, SDL_Keycode> keycode_names = {

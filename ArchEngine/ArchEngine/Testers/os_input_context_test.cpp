@@ -7,22 +7,22 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 01/05/2018                                                 *
  *===========================================================================*/
 
 
 #include "../Config/engineMacros.hpp"
 
  // Check if this tester is active
-#if defined(ARCH_ENGINE_CORE_INPUT_CONTEXT_TEST)
+#if defined(ARCH_ENGINE_OS_INPUT_CONTEXT_TEST)
 
-#include "../Core/inputManager.hpp"
-#include "../Core/window.hpp"
+#include "../OS/inputManager.hpp"
+#include "../OS/window.hpp"
 #include "../Utils/serviceLocator.hpp"
 #include "../Script/luaScript.hpp"
 
 
-using namespace Core;
+using namespace OS;
 using namespace Script;
 using namespace Utils;
 
@@ -135,8 +135,7 @@ void test3() {
 	InputManager::getInstance().setAxisValue(MOUSE_AXIS_X, 200);
 	InputManager::getInstance().setAxisValue(MOUSE_AXIS_Y, 100);
 
-	bool discard;
-	InputManager::getInstance().dispatch(discard);
+	InputManager::getInstance().dispatch();
 
 	InputManager::getInstance().contextOff("test");
 }
@@ -150,8 +149,8 @@ void test4() {
 	bool running = true;
 
 	while (running) {
-		InputManager::getInstance().update();
-		InputManager::getInstance().dispatch(running);
+		InputManager::getInstance().update(running);
+		InputManager::getInstance().dispatch();
 		InputManager::getInstance().clearInput();
 	}
 
@@ -178,4 +177,4 @@ void startLoggingService() {
 }
 
 
-#endif	// ARCH_ENGINE_CORE_INPUT_CONTEXT_TEST
+#endif	// ARCH_ENGINE_OS_INPUT_CONTEXT_TEST

@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Core/inputManager.hpp"                                     *
+ * Arch Engine - "OS/inputManager.hpp"                                       *
  *                                                                           *
  * Responsible for creating and managing all input associated stuff.         *
  * There's already too much layers of abstraction in the input system, due   *
@@ -13,15 +13,16 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 02/05/2018                                                 *
  *===========================================================================*/
 
 
-#ifndef CORE_INPUT_MANAGER_HPP
-#define CORE_INPUT_MANAGER_HPP
+#ifndef OS_INPUT_MANAGER_HPP
+#define OS_INPUT_MANAGER_HPP
 
 
 #include "inputContext.hpp"
+#include "../Core/eventManager.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -31,14 +32,64 @@
 #include <SDL.h>
 #endif
 
-#include <fstream>
 #include <map>
 #include <set>
 #include <string>
 #include <vector>
 
 
-namespace Core {
+namespace OS {
+	//----------------
+	//--- Input events
+	//----------------
+
+	class InputActionEvent : public Core::IEvent {
+	public:
+		InputActionEvent();
+		InputActionEvent(OS::InputAction value);
+		~InputActionEvent();
+
+		Core::EventType getType() const override;
+
+		InputAction getValue() const;
+		void setValue(InputAction value);
+
+	private:
+		InputAction m_value;
+	};
+
+	class InputStateEvent : public Core::IEvent {
+	public:
+		InputStateEvent();
+		InputStateEvent(InputState value);
+		~InputStateEvent();
+
+		Core::EventType getType() const override;
+
+		InputState getValue() const;
+		void setValue(InputState value);
+
+	private:
+		InputState m_value;
+	};
+
+	class InputRangeEvent : public Core::IEvent {
+	public:
+		InputRangeEvent();
+		InputRangeEvent(const RangeInfo& value);
+		~InputRangeEvent();
+
+		Core::EventType getType() const override;
+
+		RangeInfo getValue() const;
+		void setValue(const RangeInfo& value);
+
+	private:
+		RangeInfo m_value;
+	};
+	//-------------------------------------------------------------------------
+
+
 	struct CurrentInput {
 		// Sets for O(log(n)) access
 		std::set<InputAction> m_actions;
@@ -65,8 +116,11 @@ namespace Core {
 		void update(bool& running);
 
 		// Adds or removes an active input context
-		void contextOn(const std::string& context);
-		void contextOff(const std::string& context);
+		void pushContext(const std::string& context);
+		void popContext(const std::string& context);
+
+	private:
+		InputManager();
 
 		// Input gathering and clearing
 		void setKeyState(SDL_Keycode key, bool pressed, bool prev_pressed);
@@ -77,9 +131,6 @@ namespace Core {
 
 		// Sends the CurrentInput configuration to the engine
 		void dispatch();
-
-	private:
-		InputManager();
 
 		// Actions and states triggers
 		bool triggerKeyAction(SDL_Keycode key, InputAction& action);
@@ -132,4 +183,4 @@ namespace Core {
 }
 
 
-#endif	// CORE_INPUT_MANAGER_HPP
+#endif	// OS_INPUT_MANAGER_HPP

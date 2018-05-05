@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Core/window.hpp"                                           *
+ * Arch Engine - "OS/window.hpp"                                             *
  *                                                                           *
  * This class defines the attributes of the game window.                     *
  * Using SDL2 library for Operating System abstraction.                      *
@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 01/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -18,7 +18,7 @@ using namespace Script;
 using namespace Utils;
 
 
-namespace Core {
+namespace OS {
 	//------------------------------------------------ Constructor / Destructor
 	Window::Window(bool vsync, bool anti_aliasing, bool fullscreen) :
 		m_vsync(vsync), m_anti_aliasing(anti_aliasing),
@@ -140,16 +140,19 @@ namespace Core {
 			std::make_pair("SDL_WINDOW_FULLSCREEN_DESKTOP", SDL_WINDOW_FULLSCREEN_DESKTOP),
 			std::make_pair("SDL_WINDOW_FOREIGN", SDL_WINDOW_FOREIGN),
 			std::make_pair("SDL_WINDOW_ALLOW_HIGHDPI", SDL_WINDOW_ALLOW_HIGHDPI),
-			std::make_pair("SDL_WINDOW_MOUSE_CAPTURE", SDL_WINDOW_MOUSE_CAPTURE),
+			std::make_pair("SDL_WINDOW_MOUSE_CAPTURE", SDL_WINDOW_MOUSE_CAPTURE)
+#if defined(_MSC_VER) // The flags below are only available in X11
+			,
 			std::make_pair("SDL_WINDOW_ALWAYS_ON_TOP", SDL_WINDOW_ALWAYS_ON_TOP),
 			std::make_pair("SDL_WINDOW_SKIP_TASKBAR", SDL_WINDOW_SKIP_TASKBAR),
 			std::make_pair("SDL_WINDOW_UTILITY", SDL_WINDOW_UTILITY),
 			std::make_pair("SDL_WINDOW_TOOLTIP", SDL_WINDOW_TOOLTIP),
 			std::make_pair("SDL_WINDOW_POPUP_MENU", SDL_WINDOW_POPUP_MENU)
+#endif
 		};
 
-		setVSync(lua_context.get<bool>("vsync"));
-		fullscreen(lua_context.get<bool>("fullscreen"));
+		m_vsync = lua_context.get<bool>("vsync");
+		m_fullscreen = lua_context.get<bool>("fullscreen");
 
 		int pos_x;
 		if (pos_x = lua_context.get<int>("pos_x") == -1)
@@ -227,7 +230,7 @@ namespace Core {
 		m_vsync = state;
 
 		if (m_state == INITIALIZED)
-			SDL_GL_SetSwapInterval(state);
+			SDL_GL_SetSwapInterval(state ? SDL_TRUE : SDL_FALSE);
 	}
 
 	void Window::antiAliasing(unsigned n_samples) {

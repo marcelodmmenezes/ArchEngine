@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 05/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -14,16 +14,18 @@
 
 
 // Testers
-//#define ARCH_ENGINE_CORE_INPUT_CONTEXT_TEST
-#define ARCH_ENGINE_CORE_SYSTEM_MANAGER_TEST
-//#define ARCH_ENGINE_CORE_WINDOW_TEST
+//#define ARCH_ENGINE_CORE_ENGINE_TEST
+#define ARCH_ENGINE_ECS_ECS_TEST
+//#define ARCH_ENGINE_EVENT_SYSTEM_TEST
+//#define ARCH_ENGINE_OS_INPUT_CONTEXT_TEST
+//#define ARCH_ENGINE_OS_WINDOW_TEST
 //#define ARCH_ENGINE_SCRIPT_LUA_SCRIPT_TEST
 //#define ARCH_ENGINE_UTILS_LOGGER_TEST
 
 // Assertion macros
 //#define ARCH_ENGINE_REMOVE_ASSERTIONS
 
-// Logging macros - names self explanatory
+// Logging macros
 //#define ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 //#define ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 //#define ARCH_ENGINE_LOGGER_SUPPRESS_ERROR

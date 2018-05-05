@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Core/inputContext.hpp"                                     *
+ * Arch Engine - "OS/inputContext.hpp"                                       *
  *                                                                           *
  * Represents the input context                                              *
  *                                                                           *
@@ -10,12 +10,12 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 24/04/2018                                                 *
+ * Last Modified: 01/05/2018                                                 *
  *===========================================================================*/
 
 
-#ifndef CORE_INPUT_CONTEXT_HPP
-#define CORE_INPUT_CONTEXT_HPP
+#ifndef OS_INPUT_CONTEXT_HPP
+#define OS_INPUT_CONTEXT_HPP
 
 
 #include "../Script/luaScript.hpp"
@@ -52,7 +52,7 @@
  */
 
 
-namespace Core {
+namespace OS {
 	// Mouse buttons in SDL are just a macro.
 	typedef int MouseButton;
 
@@ -135,4 +135,4 @@ namespace Core {
 }
 
 
-#endif	// CORE_INPUT_CONTEXT_HPP
+#endif	// OS_INPUT_CONTEXT_HPP

@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Core/inputManager.hpp"                                     *
+ * Arch Engine - "OS/inputManager.hpp"                                       *
  *                                                                           *
  * Responsible for creating and managing all input associated stuff.         *
  * There's already too much layers of abstraction in the input system, due   *
@@ -13,18 +13,44 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 05/05/2018                                                 *
  *===========================================================================*/
 
 
 #include "inputManager.hpp"
 
 
+using namespace Core;
 using namespace Script;
 using namespace Utils;
 
 
-namespace Core {
+namespace OS {
+	//------------------------------------------------------------ Input events
+	InputActionEvent::InputActionEvent() : IEvent(EVENT_INPUT_ACTION) {}
+	InputActionEvent::InputActionEvent(InputAction value) :
+		IEvent(EVENT_INPUT_ACTION), m_value(value) {}
+	InputActionEvent::~InputActionEvent() {}
+	EventType InputActionEvent::getType() const { return m_type; }
+	InputAction InputActionEvent::getValue() const { return m_value; }
+	void InputActionEvent::setValue(InputAction value) { m_value = value; }
+
+	InputStateEvent::InputStateEvent() : IEvent(EVENT_INPUT_STATE) {}
+	InputStateEvent::InputStateEvent(InputState value) :
+		IEvent(EVENT_INPUT_STATE), m_value(value) {}
+	InputStateEvent::~InputStateEvent() {}
+	EventType InputStateEvent::getType() const { return m_type; }
+	InputState InputStateEvent::getValue() const { return m_value; }
+	void InputStateEvent::setValue(InputState value) { m_value = value; }
+
+	InputRangeEvent::InputRangeEvent() : IEvent(EVENT_INPUT_RANGE) {}
+	InputRangeEvent::InputRangeEvent(const RangeInfo& value) :
+		IEvent(EVENT_INPUT_RANGE), m_value(value) {}
+	InputRangeEvent::~InputRangeEvent() {}
+	EventType InputRangeEvent::getType() const { return m_type; }
+	RangeInfo InputRangeEvent::getValue() const { return m_value; }
+	void InputRangeEvent::setValue(const RangeInfo& value) { m_value = value; }
+
 	//------------------------------------------------------------ CurrentInput
 	void CurrentInput::removeAction(InputAction action) {
 		m_actions.erase(action);
@@ -169,9 +195,11 @@ namespace Core {
 				break;
 			}
 		}
+
+		dispatch();
 	}
 	
-	void InputManager::contextOn(const std::string& context) {
+	void InputManager::pushContext(const std::string& context) {
 		auto it = m_mapped_contexts.find(context);
 
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
@@ -181,7 +209,7 @@ namespace Core {
 		m_active_contexts.push_back(it->second);
 	}
 
-	void InputManager::contextOff(const std::string& context) {
+	void InputManager::popContext(const std::string& context) {
 		auto it = m_mapped_contexts.find(context);
 
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
@@ -191,7 +219,7 @@ namespace Core {
 
 		// As the order doesn't matter, we can swap the desired active
 		// context with the last and remove the new last, to avoid
-		// unnecessary copies.
+		// unnecessary shifting.
 		std::swap(m_active_contexts[it->second],
 			m_active_contexts[m_active_contexts.size() - 1]);
 
@@ -270,7 +298,22 @@ namespace Core {
 	}
 	
 	void InputManager::dispatch() {
-		// TODO
+		for (auto& it : m_current_input.m_actions) {
+			Core::EventPtr evnt(new InputActionEvent(it));
+			Core::EventManager::getInstance().postEvent(evnt);
+		}
+
+		for (auto& it : m_current_input.m_states) {
+			Core::EventPtr evnt(new InputStateEvent(it));
+			Core::EventManager::getInstance().postEvent(evnt);
+		}
+
+		for (auto& it : m_current_input.m_ranges) {
+			Core::EventPtr evnt(new InputRangeEvent(it));
+			Core::EventManager::getInstance().postEvent(evnt);
+		}
+
+		clearInput();
 	}
 
 	//--- Action triggers
