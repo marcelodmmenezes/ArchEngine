@@ -7,7 +7,7 @@
 #*                                                                           *
 #* Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
 #* Created: 10/04/2018                                                       *
-#* Last Modified: 27/04/2018                                                 *
+#* Last Modified: 05/05/2018                                                 *
 #*===========================================================================*/
 
 
@@ -17,6 +17,8 @@ OUTDIR = GCCOutput
 OBJDIR = GCCOutput/Intermediate
 
 CORE = ArchEngine/Core
+ECS = ArchEngine/ECS
+OS = ArchEngine/OS
 SCRIPT = ArchEngine/Script
 TESTERS = ArchEngine/Testers
 UTILS = ArchEngine/Utils
@@ -40,26 +42,42 @@ creates the necessary directories for compilation"
 
 COMPILEOBJ = $(CXX) -c -o $@ $< $(CXXFLAGS)
 
-$(OBJDIR)/$(CORE)/inputContext.o : $(CORE)/inputContext.cpp
+$(OBJDIR)/$(CORE)/concurrentEventQueue.o : $(CORE)/concurrentEventQueue.cpp
 	$(COMPILEOBJ)
-$(OBJDIR)/$(CORE)/inputManager.o : $(CORE)/inputManager.cpp
+$(OBJDIR)/$(CORE)/engine.o : $(CORE)/engine.cpp
 	$(COMPILEOBJ)
-$(OBJDIR)/$(CORE)/systemManager.o : $(CORE)/systemManager.cpp
+$(OBJDIR)/$(CORE)/eventManager.o : $(CORE)/eventManager.cpp
 	$(COMPILEOBJ)
-$(OBJDIR)/$(CORE)/window.o : $(CORE)/window.cpp
+
+$(OBJDIR)/$(ECS)/idGenerator.o : $(ECS)/idGenerator.cpp
+	$(COMPILEOBJ)
+
+$(OBJDIR)/$(OS)/inputContext.o : $(OS)/inputContext.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(OS)/inputManager.o : $(OS)/inputManager.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(OS)/systemManager.o : $(OS)/systemManager.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(OS)/window.o : $(OS)/window.cpp
 	$(COMPILEOBJ)
 
 $(OBJDIR)/$(SCRIPT)/luaScript.o : $(SCRIPT)/luaScript.cpp
 	$(COMPILEOBJ)
 
-$(OBJDIR)/$(TESTERS)/core_input_context_test.o : \
-	$(TESTERS)/core_input_context_test.cpp
+$(OBJDIR)/$(TESTERS)/core_engine_test.o : \
+	$(TESTERS)/core_engine_test.cpp
 	$(COMPILEOBJ)
-$(OBJDIR)/$(TESTERS)/core_system_manager_test.o : \
-	$(TESTERS)/core_system_manager_test.cpp
+$(OBJDIR)/$(TESTERS)/ecs_ecs_test.o : \
+	$(TESTERS)/ecs_ecs_test.cpp
 	$(COMPILEOBJ)
-$(OBJDIR)/$(TESTERS)/core_window_test.o : \
-	$(TESTERS)/core_window_test.cpp
+$(OBJDIR)/$(TESTERS)/event_system_test.o : \
+	$(TESTERS)/event_system_test.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(TESTERS)/os_input_context_test.o : \
+	$(TESTERS)/os_input_context_test.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(TESTERS)/os_window_test.o : \
+	$(TESTERS)/os_window_test.cpp
 	$(COMPILEOBJ)
 $(OBJDIR)/$(TESTERS)/script_lua_script_test.o : \
 	$(TESTERS)/script_lua_script_test.cpp
@@ -73,10 +91,12 @@ $(OBJDIR)/$(UTILS)/serviceLocator.o : $(UTILS)/serviceLocator.cpp
 $(OBJDIR)/$(UTILS)/timer.o : $(UTILS)/timer.cpp
 	$(COMPILEOBJ)
 
-_OBJ = $(CORE)/inputContext.o $(CORE)/inputManager.o $(CORE)/systemManager.o \
-	$(CORE)/window.o $(SCRIPT)/luaScript.o $(TESTERS)/core_input_context_test.o\
-	$(TESTERS)/core_system_manager_test.o $(TESTERS)/core_window_test.o \
-	$(TESTERS)/script_lua_script_test.o $(TESTERS)/utils_logger_test.o \
+_OBJ = $(CORE)/concurrentEventQueue.o $(CORE)/engine.o $(CORE)/eventManager.o \
+	$(ECS)/idGenerator.o $(OS)/inputContext.o $(OS)/inputManager.o \
+	$(OS)/window.o $(SCRIPT)/luaScript.o $(TESTERS)/core_engine_test.o\
+	$(TESTERS)/ecs_ecs_test.o $(TESTERS)/event_system_test.o \
+	$(TESTERS)/os_input_context_test.o $(TESTERS)/os_window_test.o \
+	#(TESTERS)/script_lua_script_test.o $(TESTERS)/utils_logger_test.o \
 	$(UTILS)/serviceLocator.o $(UTILS)/timer.o
 OBJ = $(patsubst %, $(OBJDIR)/%, $(_OBJ))
 
@@ -94,6 +114,10 @@ create_directories:
 		mkdir GCCOutput/Intermediate/ArchEngine; fi
 	if [ ! -d GCCOutput/Intermediate/$(CORE) ]; then \
 		mkdir GCCOutput/Intermediate/$(CORE); fi
+	if [ ! -d GCCOutput/Intermediate/$(ECS) ]; then \
+		mkdir GCCOutput/Intermediate/$(ECS); fi
+	if [ ! -d GCCOutput/Intermediate/$(OS) ]; then \
+		mkdir GCCOutput/Intermediate/$(OS); fi
 	if [ ! -d GCCOutput/Intermediate/$(SCRIPT) ]; then \
 		mkdir GCCOutput/Intermediate/$(SCRIPT); fi
 	if [ ! -d GCCOutput/Intermediate/$(TESTERS) ]; then \

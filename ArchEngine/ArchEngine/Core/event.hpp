@@ -41,13 +41,16 @@ namespace Core {
 	class IEvent {
 	public:
 		IEvent(EventType type) : m_type(type) {}
-		virtual ~IEvent() = 0 {}
+		virtual ~IEvent() = 0;
 		
 		virtual EventType getType() const = 0;
 		
 	protected:
 		EventType m_type;
 	};
+
+	// Virtual pure destructor needs implementation
+	IEvent::~IEvent() {}
 	
 	//---------------------------------------------------------------- Typedefs
 	typedef std::shared_ptr<IEvent> EventPtr;

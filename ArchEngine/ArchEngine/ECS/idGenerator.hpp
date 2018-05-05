@@ -8,7 +8,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 30/04/2018                                                 *
+ * Last Modified: 05/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -38,8 +38,8 @@ namespace ECS {
 		// system.
 		template<typename U>
 		static const IdType generateId() {
-			static const IdType ID = s_count++;
-			return ID;
+			static const IdType id = s_count++;
+			return id;
 		}
 
 		static const IdType count() {

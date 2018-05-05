@@ -8,7 +8,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 30/04/2018                                                 *
+ * Last Modified: 05/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -17,7 +17,10 @@
 
 namespace ECS {
 	// Static members initialization
+	template<>
 	IdType IdGenerator<IEntity>::s_count = ID_TYPE_INITIAL_VALUE;
+	template<>
 	IdType IdGenerator<IComponent>::s_count = ID_TYPE_INITIAL_VALUE;
+	template<>
 	IdType IdGenerator<ISystem>::s_count = ID_TYPE_INITIAL_VALUE;
 }
