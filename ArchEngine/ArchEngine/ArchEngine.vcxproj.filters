@@ -128,6 +128,9 @@
     <ClCompile Include="Testers\event_system_test.cpp">
       <Filter>Testers</Filter>
     </ClCompile>
+    <ClCompile Include="Core\event.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
