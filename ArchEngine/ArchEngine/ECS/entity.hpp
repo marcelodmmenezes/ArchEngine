@@ -1,26 +1,27 @@
 /*===========================================================================*
  * Arch Engine - "ECS/iEntity.hpp                                            *
  *                                                                           *
- * Class responsible for generating unique identifiers to the ECS.           *
- * The class template is used to create ids for entities, components and     *
- * systems. The generateId method template uses a static aproach to generate *
- * unique ids to each type of entity, component or system.                   *
- *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
  * Last Modified: 30/04/2018                                                 *
  *===========================================================================*/
 
 
-#ifndef ECS_I_ENTITY_HPP
-#define ECS_I_ENTITY_HPP
+#ifndef ECS_ENTITY_HPP
+#define ECS_ENTITY_HPP
+
+
+#include "component.hpp"
 
 
 namespace ECS {
-	class IEntity {
-
+	struct Entity {
+		// Used for fast evaluation of what components the entity has.
+		ComponentMask m_mask;
+		// Index of it's components in the components arrays.
+		unsigned m_component_handles[NUMBER_OF_DEFAULT_COMPONENTS];
 	};
 }
 
 
-#endif	// ECS_I_ENTITY_HPP
+#endif	// ECS_ENTITY_HPP

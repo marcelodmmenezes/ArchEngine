@@ -39,18 +39,6 @@
     <ClInclude Include="Utils\timer.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ECS\idGenerator.hpp">
-      <Filter>ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="ECS\iComponent.hpp">
-      <Filter>ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="ECS\iEntity.hpp">
-      <Filter>ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="ECS\iSystem.hpp">
-      <Filter>ECS</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\delegate.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -75,6 +63,15 @@
     <ClInclude Include="Core\event.hpp">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="ECS\component.hpp">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\entity.hpp">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\ecsManager.hpp">
+      <Filter>ECS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -94,9 +91,6 @@
     </ClCompile>
     <ClCompile Include="Testers\ecs_ecs_test.cpp">
       <Filter>Testers</Filter>
-    </ClCompile>
-    <ClCompile Include="ECS\idGenerator.cpp">
-      <Filter>ECS</Filter>
     </ClCompile>
     <ClCompile Include="Core\engine.cpp">
       <Filter>Core</Filter>
@@ -130,6 +124,9 @@
     </ClCompile>
     <ClCompile Include="Core\event.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\ecsManager.cpp">
+      <Filter>ECS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

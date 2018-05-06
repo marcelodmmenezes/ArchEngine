@@ -126,10 +126,9 @@
     <ClInclude Include="Core\engine.hpp" />
     <ClInclude Include="Core\concurrentEventQueue.hpp" />
     <ClInclude Include="Core\eventManager.hpp" />
-    <ClInclude Include="ECS\iComponent.hpp" />
-    <ClInclude Include="ECS\idGenerator.hpp" />
-    <ClInclude Include="ECS\iEntity.hpp" />
-    <ClInclude Include="ECS\iSystem.hpp" />
+    <ClInclude Include="ECS\component.hpp" />
+    <ClInclude Include="ECS\ecsManager.hpp" />
+    <ClInclude Include="ECS\entity.hpp" />
     <ClInclude Include="OS\inputContext.hpp" />
     <ClInclude Include="OS\inputManager.hpp" />
     <ClInclude Include="OS\window.hpp" />
@@ -145,7 +144,7 @@
     <ClInclude Include="Core\event.hpp" />
     <ClCompile Include="Core\event.cpp" />
     <ClCompile Include="Core\eventManager.cpp" />
-    <ClCompile Include="ECS\idGenerator.cpp" />
+    <ClCompile Include="ECS\ecsManager.cpp" />
     <ClCompile Include="OS\inputContext.cpp" />
     <ClCompile Include="OS\inputManager.cpp" />
     <ClCompile Include="OS\window.cpp" />
