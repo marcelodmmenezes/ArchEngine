@@ -21,7 +21,7 @@ namespace ECS {
 	}
 
 	bool ECSManager::initialize(const std::string& config_path) {
-
+		return true; // TODO
 	}
 
 	void ECSManager::update() {
@@ -43,6 +43,8 @@ namespace ECS {
 		m_entities.push_back(entity);
 		m_entities_per_mask.insert(
 			std::make_pair(mask, m_entities.size() - 1));
+
+		return m_entities.size() - 1;
 	}
 
 	void ECSManager::removeEntity(unsigned entity_handle) {

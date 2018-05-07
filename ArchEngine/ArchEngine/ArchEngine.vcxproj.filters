@@ -125,11 +125,11 @@
     <ClCompile Include="Testers\event_system_test.cpp">
       <Filter>Testers</Filter>
     </ClCompile>
-    <ClCompile Include="Core\event.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="ECS\ecsManager.cpp">
       <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\event.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -53,7 +53,8 @@ namespace ECS {
 
 		// Stores a list of entities per mask.
 		// The unsigned represents the index of the entity in m_entities list.
-		std::multimap<ComponentMask, unsigned> m_entities_per_mask;
+		std::multimap<ComponentMask, unsigned, ComponentMaskComparer>
+			m_entities_per_mask;
 
 		std::vector<Entity> m_entities;
 	};

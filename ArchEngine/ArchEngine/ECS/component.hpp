@@ -32,6 +32,15 @@ namespace ECS {
 	// ComponentMask to represent it's components
 	typedef std::bitset<NUMBER_OF_DEFAULT_COMPONENTS> ComponentMask;
 
+	// Struct for comparing ComponentMasks
+	struct ComponentMaskComparer {
+		bool operator() (
+			const std::bitset<NUMBER_OF_DEFAULT_COMPONENTS>& b1,
+			const std::bitset<NUMBER_OF_DEFAULT_COMPONENTS>& b2) const {
+			return b1.to_ulong() < b2.to_ulong();
+		}
+	};
+
 	//----------------------------------------------- Component implementations
 
 	/* Components should be plain old data structs,

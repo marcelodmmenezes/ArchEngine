@@ -1,19 +1,23 @@
+--[[
 /*===========================================================================*
- * Arch Engine - "Core/event.hpp                                             *
+ * Arch Engine - "Testers/windowHotReload.lua"                               *
  *                                                                           *
- * Simple event system for communication between engine elements.            *
- * It consists of a basic observer pattern implementation.                   *
+ * This is a tester script. It's purpose is to test some functionalities,    *
+ * thus should be removed from releases.                                     *
+ * Expect some hard coded, bizarre stuff. You've been warned ;)              *
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 06/05/2018                                                       *
  * Last Modified: 06/05/2018                                                 *
  *===========================================================================*/
+]]
 
 
-#include "event.hpp"
+function xablau(x)
+	return x * 2
+end
 
-
-namespace Core {
-	// Virtual pure destructor needs implementation
-	IEvent::~IEvent() {}
-}
+x_pos = 30
+y_pos = 200
+width = 1000
+height = xablau(width)

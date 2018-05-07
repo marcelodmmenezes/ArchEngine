@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 01/05/2018                                                 *
+ * Last Modified: 06/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -64,6 +64,7 @@ namespace OS {
 
 		// Same as initialize, but loads parameters from file
 		bool initializeFromConfigFile(const std::string& path);
+		void reloadFromConfigFile(const std::string& path);
 
 		void update();
 		void destroy();

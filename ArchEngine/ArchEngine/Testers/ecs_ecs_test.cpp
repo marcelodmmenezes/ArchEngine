@@ -17,7 +17,7 @@
 #if defined(ARCH_ENGINE_ECS_ECS_TEST)
 
 #include "../Core/engine.hpp"
-#include "../ECS/idGenerator.hpp"
+#include "../OS/inputManager.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 #include <cstdlib>
@@ -26,11 +26,11 @@
 
 
 using namespace Core;
-using namespace ECS;
+using namespace OS;
 using namespace Utils;
 
 
-void test1(); // Tests ECS id generator
+void test1(); // Tests File Watcher
 void startLoggingService();
 
 
@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
 		ServiceLocator::getFileLogger()->log<LOG_INFO>("Started tests");
 
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
-			"Testing IdGenerator");
+			"Testing filewatcher");
 		test1();
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Finished first test\n\
@@ -60,37 +60,23 @@ int main(int argc, char* argv[]) {
 void test1() {
 	std::stringstream ss;
 
-	ss << "\nIdGenerator<IEntity> ids:\n";
-	ss << "    int, int:   "
-		<< IdGenerator<IEntity>::generateId<int>() << "\n";
-	ss << "    int, int:   "
-		<< IdGenerator<IEntity>::generateId<int>() << "\n";
-	ss << "    int, float: "
-		<< IdGenerator<IEntity>::generateId<float>() << "\n";
-	ss << "    int, float: "
-		<< IdGenerator<IEntity>::generateId<float>() << "\n";
-	ss << "    int, float: "
-		<< IdGenerator<IEntity>::generateId<float>() << "\n";
-	ss << "    int, int:   "
-		<< IdGenerator<IEntity>::generateId<int>() << "\n";
-	ss << "    int, bool:  "
-		<< IdGenerator<IEntity>::generateId<bool>() << "\n";
+	if (Engine::getInstance().initialize("../../ArchEngine/Testers/"
+		"core_engine_test_engine_config.lua")) {
 
-	ss << "IdGenerator<IComponent> ids:\n";
-	ss << "    float, int:   "
-		<< IdGenerator<IComponent>::generateId<int>() << "\n";
-	ss << "    float, int:   "
-		<< IdGenerator<IComponent>::generateId<int>() << "\n";
-	ss << "    float, float: "
-		<< IdGenerator<IComponent>::generateId<float>() << "\n";
-	ss << "    float, float: "
-		<< IdGenerator<IComponent>::generateId<float>() << "\n";
-	ss << "    float, float: "
-		<< IdGenerator<IComponent>::generateId<float>() << "\n";
-	ss << "    float, int:   "
-		<< IdGenerator<IComponent>::generateId<int>() << "\n";
-	ss << "    float, bool:  "
-		<< IdGenerator<IComponent>::generateId<bool>() << "\n";
+		EventListener listener;
+		listener.bind<Engine, &Engine::handleEvents>(&Engine::getInstance());
+		EventManager::getInstance().addListener(listener, EVENT_FILE_MODIFIED);
+		EventManager::getInstance().addListener(listener, EVENT_CORE_QUIT);
+		Engine::getInstance().watchFile("../../ArchEngine/Testers/"
+			"windowHotReload.lua");
+
+		Engine::getInstance().run();
+	}
+	else
+		ServiceLocator::getFileLogger()->log<LOG_ERROR>(
+			"Failed to initialize ArchEngine");
+
+	Engine::getInstance().exit();
 
 	ServiceLocator::getFileLogger()->log<LOG_INFO>(ss);
 }

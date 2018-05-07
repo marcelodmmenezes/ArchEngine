@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 03/05/2018                                                 *
+ * Last Modified: 06/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -106,6 +106,11 @@ namespace Core {
 			//------------------------------------------------- Input gathering
 			InputManager::getInstance().update(m_running);
 
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+			//--------------------------------------------------- Hot reloading
+			m_file_watcher.update();
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
+
 			//----------------------------------------------- Event dispatching
 			EventManager::getInstance().dispatch();
 
@@ -147,14 +152,43 @@ namespace Core {
 	}
 
 	void Engine::handleEvents(EventPtr evnt) {
+//------------ STILL TESTING -- STILL TESTING -- STILL TESTING -- STILL TESTING
+//------------ STILL TESTING -- STILL TESTING -- STILL TESTING -- STILL TESTING
+
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		// Has to be declared before switch statement
+		std::shared_ptr<FileModifiedEvent> fme;
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
+
 		switch (evnt->getType()) {
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		case EVENT_FILE_MODIFIED:
+			fme = std::static_pointer_cast<FileModifiedEvent>(evnt);
+			if (fme->getPath() == "../../ArchEngine/Testers/"
+				"windowHotReload.lua")
+				m_window.reloadFromConfigFile(fme->getPath());
+			break;
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 		case EVENT_CORE_QUIT:
 			m_running = false;
 			break;
 		}
+//------------ STILL TESTING -- STILL TESTING -- STILL TESTING -- STILL TESTING
+//------------ STILL TESTING -- STILL TESTING -- STILL TESTING -- STILL TESTING
 	}
 
 	bool Engine::isInitialized() const { return m_initialized; }
+
+
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+	bool Engine::watchFile(const std::string& path) {
+		return m_file_watcher.addFile(path);
+	}
+
+	bool Engine::unwatchFile(const std::string& path) {
+		return m_file_watcher.removeFile(path);
+	}
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
 	void Engine::startLoggingServices() {
 #if !defined(ARCH_ENGINE_LOGGER_SUPPRESS_INFO) || \

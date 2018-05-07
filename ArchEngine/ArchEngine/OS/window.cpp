@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 01/05/2018                                                 *
+ * Last Modified: 06/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -189,6 +189,18 @@ namespace OS {
 
 		lua_context.destroy();
 		return true;
+	}
+
+	void Window::reloadFromConfigFile(const std::string& path) {
+		LuaScript lua_context;
+		lua_context.initialize(path);
+
+		setPosition(lua_context.get<int>("x_pos"),
+			lua_context.get<int>("y_pos"));
+		setSize(lua_context.get<int>("width"),
+			lua_context.get<int>("height"));
+
+		lua_context.destroy();
 	}
 
 	void Window::update() {
