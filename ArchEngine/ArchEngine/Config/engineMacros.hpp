@@ -5,13 +5,16 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 05/05/2018                                                 *
+ * Last Modified: 06/05/2018                                                 *
  *===========================================================================*/
 
 
 #ifndef CONFIG_ENGINE_MACROS_HPP
 #define CONFIG_ENGINE_MACROS_HPP
 
+
+// Debugging
+#define ARCH_ENGINE_HOT_RELOAD_ON
 
 // Testers
 //#define ARCH_ENGINE_CORE_ENGINE_TEST

@@ -18,7 +18,7 @@ namespace ECS {
 	struct Entity {
 		// Used for fast evaluation of what components the entity has.
 		ComponentMask m_mask;
-		// Index of it's components in the components arrays.
+		// Index of Entity's components in the components arrays.
 		unsigned m_component_handles[NUMBER_OF_DEFAULT_COMPONENTS];
 	};
 }

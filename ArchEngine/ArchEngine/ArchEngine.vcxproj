@@ -134,6 +134,7 @@
     <ClInclude Include="OS\window.hpp" />
     <ClInclude Include="Script\luaScript.hpp" />
     <ClInclude Include="Utils\delegate.hpp" />
+    <ClInclude Include="Utils\fileWatcher.hpp" />
     <ClInclude Include="Utils\logger.hpp" />
     <ClInclude Include="Utils\serviceLocator.hpp" />
     <ClInclude Include="Utils\timer.hpp" />

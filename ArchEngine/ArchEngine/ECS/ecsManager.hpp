@@ -39,8 +39,8 @@ namespace ECS {
 		// CAUTION: Uses move semantics
 		// Returns the index to the component array position where
 		// the new component was added.
-		template<typename Type>
-		unsigned addComponent(Type& component);
+		template<typename T>
+		unsigned addComponent(T& component);
 
 		// CAUTION: Uses move semantics
 		// Returns an index to the m_entities position where
@@ -59,8 +59,8 @@ namespace ECS {
 	};
 
 	//----------------------------------- addComponent template specializations
-	template<Type>
-	unsigned ECSManager::addComponent(Type& comp) {
+	template<typename T>
+	unsigned ECSManager::addComponent(T& comp) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 		Utils::ServiceLocator.getFileLogger()->log<Utils::LOG_WARNING>(
 			"Component type does not exist");
