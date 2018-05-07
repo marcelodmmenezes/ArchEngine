@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 05/05/2018                                                 *
+ * Last Modified: 07/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -51,6 +51,52 @@ namespace OS {
 	RangeInfo InputRangeEvent::getValue() const { return m_value; }
 	void InputRangeEvent::setValue(const RangeInfo& value) { m_value = value; }
 
+
+	//---------------------------------------------------- Lua InputManager API
+	int pushContext(lua_State* lua) {
+		int argc = lua_gettop(lua);
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Lua pushing context with " + std::to_string(argc) + " arguments");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+		assert(argc == 1);
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+		std::string context(lua_tostring(lua, lua_gettop(lua)));
+		lua_pop(lua, 1);
+
+		InputManager::getInstance().pushContext(context);
+
+		// No values returned to Lua
+		return 0;
+	}
+
+	int popContext(lua_State* lua) {
+		int argc = lua_gettop(lua);
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Lua popping context with " + std::to_string(argc) + " arguments");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+		assert(argc == 1);
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+		std::string context(lua_tostring(lua, lua_gettop(lua)));
+		lua_pop(lua, 1);
+
+		InputManager::getInstance().popContext(context);
+
+		// No values returned to Lua
+		return 0;
+	}
+	//-------------------------------------------------------------------------
+
+
 	//------------------------------------------------------------ CurrentInput
 	void CurrentInput::removeAction(InputAction action) {
 		m_actions.erase(action);
@@ -64,9 +110,10 @@ namespace OS {
 		m_ranges.erase(range);
 	}
 
+
 	//------------------------------------------------------------ InputManager
 	InputManager::InputManager() : m_mouse_first(true),
-		m_mouse_last_x(0), m_mouse_last_y(0) {
+		m_mouse_last_x(0), m_mouse_last_y(0), m_file_being_watched(false) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Input Manager constructor");
@@ -74,6 +121,9 @@ namespace OS {
 	}
 
 	InputManager::~InputManager() {
+		EventManager::getInstance().removeListener(
+			m_file_modified_listener, EVENT_FILE_MODIFIED);
+
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Input Manager destructor");
@@ -86,6 +136,8 @@ namespace OS {
 	}
 
 	bool InputManager::initialize(const std::string& path) {
+		m_config_file_path = path;
+
 		// Reads the input contexts
 		LuaScript lua_context;
 
@@ -100,17 +152,64 @@ namespace OS {
 				it.first, m_contexts.size() - 1));
 		}
 
-		lua_context.destroy();
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		if (lua_context.get<bool>("hot_reload")) {
+			m_watch_file = true;
 
+			m_file_modified_listener.bind
+				<InputManager, &InputManager::onFileModifiedEvent>(this);
+			Core::EventManager::getInstance().addListener(
+				m_file_modified_listener, Core::EVENT_FILE_MODIFIED);
+		}
+
+		// Can't clear the input mapping if we're hot-reloading.
+#else
 		// Once the input contexts are read, the maps in Core::InputNames
 		// (inputContext.cpp) are cleared. No more need for them.
 		InputNames::clearInputMapping();
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
+
+		lua_context.destroy();
 
 		return true;
 	}
 
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+	void InputManager::onFileModifiedEvent(Core::EventPtr e) {
+		auto evnt = std::static_pointer_cast<FileModifiedEvent>(e);
+
+		// See if the modified file was the InputManager configuration
+		if (evnt->getPath() != m_config_file_path)
+			return;
+
+		LuaScript lua_context;
+		lua_context.initialize(m_config_file_path);
+
+		lua_context.pushFunction("pushContext", OS::pushContext);
+		lua_context.pushFunction("popContext", OS::popContext);
+
+		m_watch_file = lua_context.get<bool>("hot_reload");
+
+		lua_context.destroy();
+	}
+
+	void InputManager::watchInputManager(bool watch) {
+		m_watch_file = watch;
+	}
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
+
 	void InputManager::update(bool& running) {
 		SDL_Event sdl_event;
+
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		// Changes if the file is being watched according to parameters
+		if (m_watch_file != m_file_being_watched) {
+			Core::EventPtr evnt(new WatchFileEvent(
+				m_config_file_path, m_watch_file));
+			Core::EventManager::getInstance().postEvent(evnt);
+			m_file_being_watched = !m_file_being_watched;
+		}
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
 		while (SDL_PollEvent(&sdl_event)) {
 			switch (sdl_event.type) {
@@ -198,13 +297,18 @@ namespace OS {
 
 		dispatch();
 	}
-	
+
 	void InputManager::pushContext(const std::string& context) {
 		auto it = m_mapped_contexts.find(context);
 
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
 		assert(it != m_mapped_contexts.end());
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+		
+		for (auto it2 = m_active_contexts.begin();
+			it2 != m_active_contexts.end(); ++it2)
+			if (m_contexts[it->second] == m_contexts[*it2])
+				return;
 
 		m_active_contexts.push_back(it->second);
 	}
@@ -219,7 +323,7 @@ namespace OS {
 
 		// As the order doesn't matter, we can swap the desired active
 		// context with the last and remove the new last, to avoid
-		// unnecessary shifting.
+		// unnecessary copies.
 		std::swap(m_active_contexts[it->second],
 			m_active_contexts[m_active_contexts.size() - 1]);
 
@@ -296,7 +400,7 @@ namespace OS {
 		m_current_input.m_actions.clear();
 		m_current_input.m_ranges.clear();
 	}
-	
+
 	void InputManager::dispatch() {
 		for (auto& it : m_current_input.m_actions) {
 			Core::EventPtr evnt(new InputActionEvent(it));

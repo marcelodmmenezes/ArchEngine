@@ -16,3 +16,5 @@
 contexts = {
 	test = "../../ArchEngine/Testers/testContext.lua"
 }
+
+hot_reload = true;

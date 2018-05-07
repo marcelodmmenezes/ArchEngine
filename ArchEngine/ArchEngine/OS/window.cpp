@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 06/05/2018                                                 *
+ * Last Modified: 07/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -23,7 +23,7 @@ namespace OS {
 	Window::Window(bool vsync, bool anti_aliasing, bool fullscreen) :
 		m_vsync(vsync), m_anti_aliasing(anti_aliasing),
 		m_fullscreen(fullscreen), m_state(CONSTRUCTED),
-		m_window(nullptr) {}
+		m_window(nullptr), m_file_being_watched(false) {}
 
 	Window::~Window() {
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
@@ -162,7 +162,6 @@ namespace OS {
 		// Register for hot reload
 		if (lua_context.get<bool>("hot_reload")) {
 			m_watch_file = true;
-			m_file_being_watched = true;
 
 			m_file_modified_listener.bind
 				<Window, &Window::onFileModifiedEvent>(this);
@@ -211,6 +210,7 @@ namespace OS {
 		return true;
 	}
 
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
 	void Window::onFileModifiedEvent(Core::EventPtr e) {
 		auto evnt = std::static_pointer_cast<FileModifiedEvent>(e);
 
@@ -242,6 +242,7 @@ namespace OS {
 	void Window::watchWindow(bool watch) {
 		m_watch_file = watch;
 	}
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
 	void Window::update() {
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS

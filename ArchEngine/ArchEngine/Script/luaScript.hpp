@@ -50,6 +50,8 @@ namespace Script {
 		template<typename T>
 		T get(const std::string& var_name);
 
+		void pushFunction(const std::string& name, lua_CFunction function);
+
 		// Returned vectors are moved, not copied
 		std::vector<int> getIntVector(const std::string& name);
 		std::vector<std::string> getStringVector(const std::string& name);

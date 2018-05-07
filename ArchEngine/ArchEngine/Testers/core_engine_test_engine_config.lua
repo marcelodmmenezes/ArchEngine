@@ -8,12 +8,14 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 01/05/2018                                                 *
+ * Last Modified: 07/05/2018                                                 *
  *===========================================================================*/
 ]]
 
 
-engineConfig = "../../ArchEngine/Testers/engineConfig.lua"
-eventConfig = "../../ArchEngine/Testers/eventConfig.lua"
-windowConfig = "../../ArchEngine/Testers/windowConfig.lua"
-inputContexts = "../../ArchEngine/Testers/inputContexts.lua"
+files = {
+	engineConfig = "../../ArchEngine/Testers/engineConfig.lua",
+	eventConfig = "../../ArchEngine/Testers/eventConfig.lua",
+	windowConfig = "../../ArchEngine/Testers/windowConfig.lua",
+	inputContexts = "../../ArchEngine/Testers/inputContexts.lua"
+}

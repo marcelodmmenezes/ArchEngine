@@ -9,7 +9,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 15/04/2018                                                       *
- * Last Modified: 01/05/2018                                                 *
+ * Last Modified: 07/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -50,8 +50,8 @@ namespace Script {
 			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
 				"Failed to load(" + m_path + "): " + lua_tostring(m_lua, -1));
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-			m_lua = nullptr;
 			clearStack();
+			m_lua = nullptr;
 			return false;
 		}
 
@@ -77,6 +77,11 @@ namespace Script {
 
 	void LuaScript::clearStack() {
 		lua_pop(m_lua, lua_gettop(m_lua));
+	}
+
+	void LuaScript::pushFunction(const std::string& name,
+		lua_CFunction function) {
+		lua_register(m_lua, name.c_str(), function);
 	}
 
 	std::vector<int> LuaScript::getIntVector(const std::string& name) {

@@ -11,7 +11,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 02/05/2018                                                 *
+ * Last Modified: 07/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -137,6 +137,9 @@ namespace Core {
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
 		assert(m_state == INITIALIZED);
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+
+		// Removes listeners
+		m_event_listeners.clear();
 
 		// Destroys concurrent event queue
 		m_concurrent_queue.destroy();

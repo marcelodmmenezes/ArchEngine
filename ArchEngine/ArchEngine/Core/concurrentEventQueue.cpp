@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 01/05/2018                                                 *
+ * Last Modified: 07/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -157,12 +157,13 @@ namespace Core {
 				break;
 
 			case TMT_TIMER:
+				/*
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 				ServiceLocator::getConsoleLogger()->log<LOG_INFO>(
 					"Timer reached " + std::to_string(m_timer_wait_duration) +
 					" on " + m_thread_name);
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-
+				*/
 				break;
 
 			case TMT_DESTROY:

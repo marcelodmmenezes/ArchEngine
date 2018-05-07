@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 02/05/2018                                                 *
+ * Last Modified: 07/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -24,6 +24,7 @@
 #include "inputContext.hpp"
 #include "../Core/eventManager.hpp"
 #include "../Script/luaScript.hpp"
+#include "../Utils/fileWatcher.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 #if defined(__unix__)
@@ -32,6 +33,7 @@
 #include <SDL.h>
 #endif
 
+#include <cassert>
 #include <map>
 #include <set>
 #include <string>
@@ -89,6 +91,14 @@ namespace OS {
 	};
 	//-------------------------------------------------------------------------
 
+	
+	//------------------------
+	//--- Lua InputManager API
+	//------------------------
+	int pushContext(lua_State* lua);
+	int popContext(lua_State* lua);
+	//-------------------------------------------------------------------------
+
 
 	struct CurrentInput {
 		// Sets for O(log(n)) access
@@ -111,6 +121,11 @@ namespace OS {
 		static InputManager& getInstance();
 
 		bool initialize(const std::string& path);
+
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		void onFileModifiedEvent(Core::EventPtr e);
+		void watchInputManager(bool watch);
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
 		// Gathers and maps the events from the operating system
 		void update(bool& running);
@@ -179,6 +194,13 @@ namespace OS {
 		std::vector<unsigned> m_active_contexts;
 		// Stores the actions, states and ranges that happen at each frame
 		CurrentInput m_current_input;
+
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		// Hot-reloading configuration
+		std::string m_config_file_path;
+		bool m_watch_file, m_file_being_watched;
+		Core::EventListener m_file_modified_listener;
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 	};
 }
 

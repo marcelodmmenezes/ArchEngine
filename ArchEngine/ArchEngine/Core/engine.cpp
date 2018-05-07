@@ -103,8 +103,8 @@ namespace Core {
 			//---------------------------------------------------- Time control
 			m_timer.calc();
 
-#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
 			//--------------------------------------------------- Hot reloading
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
 			m_file_watcher.update();
 #endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
@@ -209,34 +209,28 @@ namespace Core {
 
 		//------------------------------------------- Engine configuration file
 		LuaScript engine_config;
-		engine_config.initialize(lua_context.get<std::string>("engineConfig"));
+		engine_config.initialize(
+			lua_context.get<std::string>("files.engineConfig"));
 
 		m_ticks_per_second = engine_config.get<int>("ticks_per_second");
 		m_skip_ticks = engine_config.get<int>("skip_ticks");
 		m_max_frameskip = engine_config.get<int>("max_frameskip");
 
-#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
-		auto files_to_watch = engine_config.getStringVector("files_to_watch");
-
-		for (auto& it : files_to_watch)
-			m_file_watcher.addFile(it);
-#endif	// ARCH_ENGINE_HOT_RELOAD_ON
-
 		engine_config.destroy();
 
 		//------------------------------------- Event system configuration file
 		if (!EventManager::getInstance().initialize(
-			lua_context.get<std::string>("eventConfig")))
+			lua_context.get<std::string>("files.eventConfig")))
 			return false;
 
 		//------------------------------------ Input systems configuration file
 		if (!InputManager::getInstance().initialize(
-			lua_context.get<std::string>("inputContexts")))
+			lua_context.get<std::string>("files.inputContexts")))
 			return false;
 
 		//------------------------------------------- Window configuration file
 		if (!m_window.initializeFromConfigFile(
-			lua_context.get<std::string>("windowConfig")))
+			lua_context.get<std::string>("files.windowConfig")))
 			return false;
 
 		lua_context.destroy();

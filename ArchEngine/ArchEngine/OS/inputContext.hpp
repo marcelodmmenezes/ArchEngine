@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 01/05/2018                                                 *
+ * Last Modified: 07/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -97,6 +97,8 @@ namespace OS {
 		InputContext(const std::string& path);
 		~InputContext();
 
+		bool operator==(const InputContext& context);
+
 		// These mapping methods return 'true' if the current context
 		// has an input event associated with the given key,
 		// key modifier, mouse button or controller axis.
@@ -131,6 +133,8 @@ namespace OS {
 
 		// ControllerAxis <-> Range mapping
 		std::map<ControllerAxis, RangeInfo> m_ranges;
+
+		std::string m_path;
 	};
 }
 

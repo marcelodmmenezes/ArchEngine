@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 01/05/2018                                                 *
+ * Last Modified: 07/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -200,6 +200,8 @@ namespace OS {
 
 	//------------------------------------------------------------ InputContext
 	InputContext::InputContext(const std::string& path) {
+		m_path = path;
+
 		LuaScript lua_context;
 		lua_context.initialize(path);
 
@@ -362,6 +364,10 @@ namespace OS {
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Input context destructor");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+	}
+
+	bool InputContext::operator==(const InputContext& context) {
+		return m_path == context.m_path;
 	}
 
 	bool InputContext::mapKeyToAction(SDL_Keycode key, InputAction& action) {
