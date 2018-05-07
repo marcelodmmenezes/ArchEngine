@@ -38,6 +38,7 @@ namespace Core {
 
 		//--- File watcher events
 		EVENT_FILE_MODIFIED,
+		EVENT_WATCH_FILE,
 
 		//--- Control
 		NUMBER_OF_DEFAULT_EVENTS

@@ -131,6 +131,9 @@
     <ClCompile Include="Core\event.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\fileWatcher.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

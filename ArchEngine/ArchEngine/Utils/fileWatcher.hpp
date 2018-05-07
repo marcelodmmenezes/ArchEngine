@@ -8,7 +8,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 06/05/2018                                                       *
- * Last Modified: 06/05/2018                                                 *
+ * Last Modified: 07/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -40,20 +40,27 @@ namespace Utils {
 
 	class FileModifiedEvent : public Core::IEvent {
 	public:
-		FileModifiedEvent(const std::string& path) :
-			Core::IEvent(Core::EVENT_FILE_MODIFIED), m_path(path) {}
+		FileModifiedEvent(const std::string& path);
+		~FileModifiedEvent();
 
-		~FileModifiedEvent() {}
-
-		Core::EventType getType() const override {
-			return m_type;
-		}
-
-		std::string getPath() const {
-			return m_path;
-		}
+		Core::EventType getType() const override;
+		std::string getPath() const;
 
 	private:
+		std::string m_path;
+	};
+
+	class WatchFileEvent : public Core::IEvent {
+	public:
+		WatchFileEvent(const std::string& path, bool add);
+		~WatchFileEvent();
+
+		Core::EventType getType() const override;
+		bool add() const;
+		std::string getPath() const;
+
+	private:
+		bool m_add;
 		std::string m_path;
 	};
 	//-------------------------------------------------------------------------
@@ -61,62 +68,22 @@ namespace Utils {
 
 	class FileWatcher {
 	public:
-		FileWatcher() {}
-		~FileWatcher() {}
+		FileWatcher();
+		~FileWatcher();
 
-		void update() {
-			struct ARCH_ENGINE_FILE_WATCHER_STAT result;
+		void update();
 
-			for (auto& it : m_files) {
-				if (ARCH_ENGINE_FILE_WATCHER_STAT(
-					it.first.c_str(), &result) == 0) {
-					auto mod_time = result.st_mtime;
+		void onWatchFileEvent(Core::EventPtr e);
 
-					if (it.second != mod_time) {
-						// File was modified
-						Core::EventPtr evnt(new FileModifiedEvent(it.first));
-						Core::EventManager::getInstance().postEvent(evnt);
-						it.second = mod_time;
-					}
-				}
-			}
-		}
-
-		bool addFile(const std::string& path) {
-			struct ARCH_ENGINE_FILE_WATCHER_STAT result;
-			time_t mod_time;
-
-			if (ARCH_ENGINE_FILE_WATCHER_STAT(path.c_str(), &result) == 0)
-				mod_time = result.st_mtime;
-			else {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-				ServiceLocator::getFileLogger()->log<LOG_ERROR>(
-					"Could not hot-reload " + path);
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-				return false;
-			}
-
-			m_files.push_back(std::make_pair(path, mod_time));
-		}
-
+		// True if added, false otherwise
+		bool addFile(const std::string& path);
 		// True if removed, false otherwise
-		bool removeFile(const std::string& path) {
-			// O(m_files.size()) + O("elements copied").
-			// It's fine, since there shouldn't be many files
-			// nor calls to this method
-			for (auto it = m_files.begin(); it != m_files.end(); ++it) {
-				if (it->first == path) {
-					m_files.erase(it);
-					return true;
-				}
-			}
-		
-			return false;
-		}
+		bool removeFile(const std::string& path);
 
 	private:
 		// File name and last modified time
 		std::vector<std::pair<std::string, time_t>> m_files;
+		Core::EventListener m_watch_file_listener;
 	};
 }
 

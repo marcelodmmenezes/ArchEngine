@@ -8,7 +8,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 07/05/2018                                                 *
  *===========================================================================*/
 ]]
 
@@ -44,3 +44,6 @@ context_minor_version = 3
 
 -- SDL Config
 sdl_flags = { "SDL_WINDOW_OPENGL", "SDL_WINDOW_RESIZABLE" }
+
+-- Window hot reload
+hot_reload = true

@@ -65,7 +65,6 @@ void test1() {
 
 		EventListener listener;
 		listener.bind<Engine, &Engine::handleEvents>(&Engine::getInstance());
-		EventManager::getInstance().addListener(listener, EVENT_FILE_MODIFIED);
 		EventManager::getInstance().addListener(listener, EVENT_CORE_QUIT);
 		Engine::getInstance().watchFile("../../ArchEngine/Testers/"
 			"windowHotReload.lua");

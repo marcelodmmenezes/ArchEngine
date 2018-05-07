@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 06/05/2018                                                 *
+ * Last Modified: 07/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -103,13 +103,13 @@ namespace Core {
 			//---------------------------------------------------- Time control
 			m_timer.calc();
 
-			//------------------------------------------------- Input gathering
-			InputManager::getInstance().update(m_running);
-
 #if defined(ARCH_ENGINE_HOT_RELOAD_ON)
 			//--------------------------------------------------- Hot reloading
 			m_file_watcher.update();
 #endif	// ARCH_ENGINE_HOT_RELOAD_ON
+
+			//------------------------------------------------- Input gathering
+			InputManager::getInstance().update(m_running);
 
 			//----------------------------------------------- Event dispatching
 			EventManager::getInstance().dispatch();
@@ -152,29 +152,11 @@ namespace Core {
 	}
 
 	void Engine::handleEvents(EventPtr evnt) {
-//------------ STILL TESTING -- STILL TESTING -- STILL TESTING -- STILL TESTING
-//------------ STILL TESTING -- STILL TESTING -- STILL TESTING -- STILL TESTING
-
-#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
-		// Has to be declared before switch statement
-		std::shared_ptr<FileModifiedEvent> fme;
-#endif	// ARCH_ENGINE_HOT_RELOAD_ON
-
 		switch (evnt->getType()) {
-#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
-		case EVENT_FILE_MODIFIED:
-			fme = std::static_pointer_cast<FileModifiedEvent>(evnt);
-			if (fme->getPath() == "../../ArchEngine/Testers/"
-				"windowHotReload.lua")
-				m_window.reloadFromConfigFile(fme->getPath());
-			break;
-#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 		case EVENT_CORE_QUIT:
 			m_running = false;
 			break;
 		}
-//------------ STILL TESTING -- STILL TESTING -- STILL TESTING -- STILL TESTING
-//------------ STILL TESTING -- STILL TESTING -- STILL TESTING -- STILL TESTING
 	}
 
 	bool Engine::isInitialized() const { return m_initialized; }
@@ -232,6 +214,13 @@ namespace Core {
 		m_ticks_per_second = engine_config.get<int>("ticks_per_second");
 		m_skip_ticks = engine_config.get<int>("skip_ticks");
 		m_max_frameskip = engine_config.get<int>("max_frameskip");
+
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		auto files_to_watch = engine_config.getStringVector("files_to_watch");
+
+		for (auto& it : files_to_watch)
+			m_file_watcher.addFile(it);
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
 		engine_config.destroy();
 

@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 06/05/2018                                                 *
+ * Last Modified: 07/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -15,8 +15,10 @@
 #define OS_WINDOW_HPP
 
 
+#include "../Core/eventManager.hpp"
 #include "../Config/engineMacros.hpp"
 #include "../Script/luaScript.hpp"
+#include "../Utils/fileWatcher.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 #if defined(__unix__)
@@ -64,7 +66,11 @@ namespace OS {
 
 		// Same as initialize, but loads parameters from file
 		bool initializeFromConfigFile(const std::string& path);
-		void reloadFromConfigFile(const std::string& path);
+
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		void onFileModifiedEvent(Core::EventPtr e);
+		void watchWindow(bool watch);
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
 		void update();
 		void destroy();
@@ -146,6 +152,13 @@ namespace OS {
 		// SDL variables
 		SDL_Window* m_window;
 		SDL_GLContext m_gl_context;
+
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		// Hot-reloading configuration
+		std::string m_config_file_path;
+		bool m_watch_file, m_file_being_watched;
+		Core::EventListener m_file_modified_listener;
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 	};
 }
 

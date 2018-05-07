@@ -120,6 +120,8 @@ namespace OS {
 	}
 
 	bool Window::initializeFromConfigFile(const std::string& path) {
+		m_config_file_path = path;
+
 		LuaScript lua_context;
 		lua_context.initialize(path);
 
@@ -134,16 +136,21 @@ namespace OS {
 			std::make_pair("SDL_WINDOW_RESIZABLE", SDL_WINDOW_RESIZABLE),
 			std::make_pair("SDL_WINDOW_MINIMIZED", SDL_WINDOW_MINIMIZED),
 			std::make_pair("SDL_WINDOW_MAXIMIZED", SDL_WINDOW_MAXIMIZED),
-			std::make_pair("SDL_WINDOW_INPUT_GRABBED", SDL_WINDOW_INPUT_GRABBED),
+			std::make_pair("SDL_WINDOW_INPUT_GRABBED",
+				SDL_WINDOW_INPUT_GRABBED),
 			std::make_pair("SDL_WINDOW_INPUT_FOCUS", SDL_WINDOW_INPUT_FOCUS),
 			std::make_pair("SDL_WINDOW_MOUSE_FOCUS", SDL_WINDOW_MOUSE_FOCUS),
-			std::make_pair("SDL_WINDOW_FULLSCREEN_DESKTOP", SDL_WINDOW_FULLSCREEN_DESKTOP),
+			std::make_pair("SDL_WINDOW_FULLSCREEN_DESKTOP",
+				SDL_WINDOW_FULLSCREEN_DESKTOP),
 			std::make_pair("SDL_WINDOW_FOREIGN", SDL_WINDOW_FOREIGN),
-			std::make_pair("SDL_WINDOW_ALLOW_HIGHDPI", SDL_WINDOW_ALLOW_HIGHDPI),
-			std::make_pair("SDL_WINDOW_MOUSE_CAPTURE", SDL_WINDOW_MOUSE_CAPTURE)
+			std::make_pair("SDL_WINDOW_ALLOW_HIGHDPI",
+				SDL_WINDOW_ALLOW_HIGHDPI),
+			std::make_pair("SDL_WINDOW_MOUSE_CAPTURE",
+				SDL_WINDOW_MOUSE_CAPTURE)
 #if defined(_MSC_VER) // The flags below are only available in X11
 			,
-			std::make_pair("SDL_WINDOW_ALWAYS_ON_TOP", SDL_WINDOW_ALWAYS_ON_TOP),
+			std::make_pair("SDL_WINDOW_ALWAYS_ON_TOP",
+				SDL_WINDOW_ALWAYS_ON_TOP),
 			std::make_pair("SDL_WINDOW_SKIP_TASKBAR", SDL_WINDOW_SKIP_TASKBAR),
 			std::make_pair("SDL_WINDOW_UTILITY", SDL_WINDOW_UTILITY),
 			std::make_pair("SDL_WINDOW_TOOLTIP", SDL_WINDOW_TOOLTIP),
@@ -151,15 +158,28 @@ namespace OS {
 #endif
 		};
 
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		// Register for hot reload
+		if (lua_context.get<bool>("hot_reload")) {
+			m_watch_file = true;
+			m_file_being_watched = true;
+
+			m_file_modified_listener.bind
+				<Window, &Window::onFileModifiedEvent>(this);
+			Core::EventManager::getInstance().addListener(
+				m_file_modified_listener, Core::EVENT_FILE_MODIFIED);
+		}
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
+
 		m_vsync = lua_context.get<bool>("vsync");
 		m_fullscreen = lua_context.get<bool>("fullscreen");
 
 		int pos_x;
-		if (pos_x = lua_context.get<int>("pos_x") == -1)
+		if ((pos_x = lua_context.get<int>("pos_x")) == -1)
 			pos_x = SDL_WINDOWPOS_CENTERED;
 
 		int pos_y;
-		if (pos_y = lua_context.get<int>("pos_y") == -1)
+		if ((pos_y = lua_context.get<int>("pos_y")) == -1)
 			pos_y = SDL_WINDOWPOS_CENTERED;
 
 		auto flags = lua_context.getStringVector("sdl_flags");
@@ -191,22 +211,52 @@ namespace OS {
 		return true;
 	}
 
-	void Window::reloadFromConfigFile(const std::string& path) {
-		LuaScript lua_context;
-		lua_context.initialize(path);
+	void Window::onFileModifiedEvent(Core::EventPtr e) {
+		auto evnt = std::static_pointer_cast<FileModifiedEvent>(e);
 
-		setPosition(lua_context.get<int>("x_pos"),
-			lua_context.get<int>("y_pos"));
+		// See if the modified file was the window configuration
+		if (evnt->getPath() != m_config_file_path)
+			return;
+
+		LuaScript lua_context;
+		lua_context.initialize(m_config_file_path);
+
 		setSize(lua_context.get<int>("width"),
 			lua_context.get<int>("height"));
 
+		int pos_x;
+		if ((pos_x = lua_context.get<int>("pos_x")) == -1)
+			pos_x = SDL_WINDOWPOS_CENTERED;
+
+		int pos_y;
+		if ((pos_y = lua_context.get<int>("pos_y")) == -1)
+			pos_y = SDL_WINDOWPOS_CENTERED;
+
+		setPosition(pos_x, pos_y);
+
+		m_watch_file = lua_context.get<bool>("hot_reload");
+
 		lua_context.destroy();
+	}
+
+	void Window::watchWindow(bool watch) {
+		m_watch_file = watch;
 	}
 
 	void Window::update() {
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
 		assert(m_state == INITIALIZED);
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		// Changes if the file is being watched according to parameters
+		if (m_watch_file != m_file_being_watched) {
+			Core::EventPtr evnt(new WatchFileEvent(
+				m_config_file_path, m_watch_file));
+			Core::EventManager::getInstance().postEvent(evnt);
+			m_file_being_watched = !m_file_being_watched;
+		}
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
 		SDL_GL_SwapWindow(this->m_window);
 	}
@@ -221,6 +271,9 @@ namespace OS {
 			SDL_DestroyWindow(this->m_window);
 			m_window = nullptr;
 		}
+
+		Core::EventManager::getInstance().removeListener(
+			m_file_modified_listener, Core::EVENT_FILE_MODIFIED);
 
 		m_state = SAFE_TO_DESTROY;
 

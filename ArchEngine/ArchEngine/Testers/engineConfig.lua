@@ -18,3 +18,6 @@
 ticks_per_second = 25
 skip_ticks = 1000 / ticks_per_second
 max_frameskip = 5
+
+-- Files to watch
+files_to_watch = { "../../ArchEngine/Testers/windowConfig.lua" }

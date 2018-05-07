@@ -157,6 +157,7 @@
     <ClCompile Include="Testers\ecs_ecs_test.cpp" />
     <ClCompile Include="Testers\script_lua_script_test.cpp" />
     <ClCompile Include="Testers\utils_logger_test.cpp" />
+    <ClCompile Include="Utils\fileWatcher.cpp" />
     <ClCompile Include="Utils\serviceLocator.cpp" />
     <ClCompile Include="Utils\timer.cpp" />
   </ItemGroup>
