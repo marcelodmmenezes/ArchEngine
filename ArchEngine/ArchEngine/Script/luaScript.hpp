@@ -30,6 +30,8 @@
 
 
 namespace Script {
+	typedef std::vector<std::pair<std::string, lua_CFunction>> LuaFunctions;
+
 	class LuaScript {
 	public:
 		LuaScript();
@@ -41,7 +43,9 @@ namespace Script {
 		// be called, invalidating its state, which is difficult to see.
 		// The class has a flag (m_state) to ensure, through assertion, that
 		// the user will remember to call the methods.
-		bool initialize(const std::string& path);
+		bool initialize(const std::string& path,
+			const LuaFunctions& functions = LuaFunctions());
+
 		void destroy();
 
 		void clearStack();
@@ -49,8 +53,6 @@ namespace Script {
 		// Binders
 		template<typename T>
 		T get(const std::string& var_name);
-
-		void pushFunction(const std::string& name, lua_CFunction function);
 
 		// Returned vectors are moved, not copied
 		std::vector<int> getIntVector(const std::string& name);

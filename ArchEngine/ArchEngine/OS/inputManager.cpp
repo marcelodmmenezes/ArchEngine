@@ -25,6 +25,51 @@ using namespace Script;
 using namespace Utils;
 
 
+//---------------------------------------------------- Lua InputManager API
+int pushContext(lua_State* lua) {
+	int argc = lua_gettop(lua);
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+	ServiceLocator::getFileLogger()->log<LOG_INFO>(
+		"Lua pushing context with " + std::to_string(argc) + " arguments");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+	assert(argc == 1);
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+	std::string context(lua_tostring(lua, lua_gettop(lua)));
+	lua_pop(lua, 1);
+
+	OS::InputManager::getInstance().pushContext(context);
+
+	// No values returned to Lua
+	return 0;
+}
+
+int popContext(lua_State* lua) {
+	int argc = lua_gettop(lua);
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+	ServiceLocator::getFileLogger()->log<LOG_INFO>(
+		"Lua popping context with " + std::to_string(argc) + " arguments");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+	assert(argc == 1);
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+	std::string context(lua_tostring(lua, lua_gettop(lua)));
+	lua_pop(lua, 1);
+
+	OS::InputManager::getInstance().popContext(context);
+
+	// No values returned to Lua
+	return 0;
+}
+//-------------------------------------------------------------------------
+
+
 namespace OS {
 	//------------------------------------------------------------ Input events
 	InputActionEvent::InputActionEvent() : IEvent(EVENT_INPUT_ACTION) {}
@@ -51,52 +96,7 @@ namespace OS {
 	RangeInfo InputRangeEvent::getValue() const { return m_value; }
 	void InputRangeEvent::setValue(const RangeInfo& value) { m_value = value; }
 
-
-	//---------------------------------------------------- Lua InputManager API
-	int pushContext(lua_State* lua) {
-		int argc = lua_gettop(lua);
-
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-		ServiceLocator::getFileLogger()->log<LOG_INFO>(
-			"Lua pushing context with " + std::to_string(argc) + " arguments");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-		
-#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
-		assert(argc == 1);
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-
-		std::string context(lua_tostring(lua, lua_gettop(lua)));
-		lua_pop(lua, 1);
-
-		InputManager::getInstance().pushContext(context);
-
-		// No values returned to Lua
-		return 0;
-	}
-
-	int popContext(lua_State* lua) {
-		int argc = lua_gettop(lua);
-
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-		ServiceLocator::getFileLogger()->log<LOG_INFO>(
-			"Lua popping context with " + std::to_string(argc) + " arguments");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-
-#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
-		assert(argc == 1);
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-
-		std::string context(lua_tostring(lua, lua_gettop(lua)));
-		lua_pop(lua, 1);
-
-		InputManager::getInstance().popContext(context);
-
-		// No values returned to Lua
-		return 0;
-	}
-	//-------------------------------------------------------------------------
-
-
+	
 	//------------------------------------------------------------ CurrentInput
 	void CurrentInput::removeAction(InputAction action) {
 		m_actions.erase(action);
@@ -183,10 +183,11 @@ namespace OS {
 			return;
 
 		LuaScript lua_context;
-		lua_context.initialize(m_config_file_path);
 
-		lua_context.pushFunction("pushContext", OS::pushContext);
-		lua_context.pushFunction("popContext", OS::popContext);
+		LuaFunctions functions;
+		functions.push_back(std::make_pair("pushContext", ::pushContext));
+		functions.push_back(std::make_pair("popContext", ::popContext));
+		lua_context.initialize(m_config_file_path, functions);
 
 		m_watch_file = lua_context.get<bool>("hot_reload");
 

@@ -97,6 +97,8 @@ namespace Core {
 		int m_skip_ticks;
 		int m_max_frameskip;
 
+		EventListener m_core_quit_listener;
+
 #if defined(ARCH_ENGINE_HOT_RELOAD_ON)
 		// Hot reloading system
 		Utils::FileWatcher m_file_watcher;

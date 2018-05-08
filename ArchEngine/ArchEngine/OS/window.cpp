@@ -263,9 +263,8 @@ namespace OS {
 	}
 
 	void Window::destroy() {
-#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
-		assert(m_state == INITIALIZED);
-#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+		if (m_state != INITIALIZED)
+			return;
 
 		if (m_window) {
 			SDL_GL_DeleteContext(this->m_gl_context);

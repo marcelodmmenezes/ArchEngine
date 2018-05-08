@@ -40,6 +40,16 @@
 #include <vector>
 
 
+ //------------------------
+ //--- Lua InputManager API
+ //------------------------
+extern "C" {
+	static int pushContext(lua_State* lua);
+	static int popContext(lua_State* lua);
+}
+//-------------------------------------------------------------------------
+
+
 namespace OS {
 	//----------------
 	//--- Input events
@@ -90,15 +100,6 @@ namespace OS {
 		RangeInfo m_value;
 	};
 	//-------------------------------------------------------------------------
-
-	
-	//------------------------
-	//--- Lua InputManager API
-	//------------------------
-	int pushContext(lua_State* lua);
-	int popContext(lua_State* lua);
-	//-------------------------------------------------------------------------
-
 
 	struct CurrentInput {
 		// Sets for O(log(n)) access

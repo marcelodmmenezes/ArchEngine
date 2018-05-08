@@ -70,6 +70,11 @@ namespace Core {
 			return false;
 		}
 
+		//----------------------------------------- Registering event listeners
+		m_core_quit_listener.bind<Engine, &Engine::handleEvents>(this);
+		EventManager::getInstance().addListener(
+			m_core_quit_listener, EVENT_CORE_QUIT);
+
 		//------------------------------------- Engine successfully initialized
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
@@ -220,18 +225,24 @@ namespace Core {
 
 		//------------------------------------- Event system configuration file
 		if (!EventManager::getInstance().initialize(
-			lua_context.get<std::string>("files.eventConfig")))
+			lua_context.get<std::string>("files.eventConfig"))) {
+			lua_context.destroy();
 			return false;
+		}
 
 		//------------------------------------ Input systems configuration file
 		if (!InputManager::getInstance().initialize(
-			lua_context.get<std::string>("files.inputContexts")))
+			lua_context.get<std::string>("files.inputContexts"))) {
+			lua_context.destroy();
 			return false;
+		}
 
 		//------------------------------------------- Window configuration file
 		if (!m_window.initializeFromConfigFile(
-			lua_context.get<std::string>("files.windowConfig")))
+			lua_context.get<std::string>("files.windowConfig"))) {
+			lua_context.destroy();
 			return false;
+		}
 
 		lua_context.destroy();
 

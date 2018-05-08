@@ -38,11 +38,17 @@ namespace Script {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
-	bool LuaScript::initialize(const std::string& path) {
+	bool LuaScript::initialize(const std::string& path,
+		const LuaFunctions& functions) {
 		m_path = path;
 
 		m_lua = luaL_newstate();
 		luaL_openlibs(m_lua);
+
+		// Push functions to script
+		for (auto& it : functions)
+			lua_register(m_lua, it.first.c_str(), it.second);
+
 
 		if (luaL_loadfile(m_lua, m_path.c_str()) ||
 			lua_pcall(m_lua, 0, 0, 0)) {
@@ -77,11 +83,6 @@ namespace Script {
 
 	void LuaScript::clearStack() {
 		lua_pop(m_lua, lua_gettop(m_lua));
-	}
-
-	void LuaScript::pushFunction(const std::string& name,
-		lua_CFunction function) {
-		lua_register(m_lua, name.c_str(), function);
 	}
 
 	std::vector<int> LuaScript::getIntVector(const std::string& name) {

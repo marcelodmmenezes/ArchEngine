@@ -30,7 +30,18 @@ using namespace OS;
 using namespace Utils;
 
 
+enum GameActions {
+	TEST_ACTION
+};
+
+enum GameStates {
+	TEST_STATE
+};
+
+
 void test1(); // Tests File Watcher
+void test1Aux_Function1(EventPtr e);
+void test1Aux_Function2(EventPtr e);
 void startLoggingService();
 
 
@@ -64,10 +75,14 @@ void test1() {
 		"core_engine_test_engine_config.lua")) {
 
 		EventListener listener;
-		listener.bind<Engine, &Engine::handleEvents>(&Engine::getInstance());
-		EventManager::getInstance().addListener(listener, EVENT_CORE_QUIT);
-		Engine::getInstance().watchFile("../../ArchEngine/Testers/"
-			"windowHotReload.lua");
+
+		listener.bind<&test1Aux_Function1>();
+		EventManager::getInstance().addListener(
+			listener, EVENT_INPUT_ACTION);
+
+		listener.bind<&test1Aux_Function2>();
+		EventManager::getInstance().addListener(
+			listener, EVENT_INPUT_STATE);
 
 		Engine::getInstance().run();
 	}
@@ -78,6 +93,26 @@ void test1() {
 	Engine::getInstance().exit();
 
 	ServiceLocator::getFileLogger()->log<LOG_INFO>(ss);
+}
+
+void test1Aux_Function1(EventPtr e) {
+	auto evnt = std::static_pointer_cast<InputActionEvent>(e);
+
+	switch (evnt->getValue()) {
+	case GameActions::TEST_ACTION:
+		std::cout << "TEST ACTION TRIGGERED";
+		break;
+	}
+}
+
+void test1Aux_Function2(EventPtr e) {
+	auto evnt = std::static_pointer_cast<InputStateEvent>(e);
+
+	switch (evnt->getValue()) {
+	case GameStates::TEST_STATE:
+		std::cout << "TEST STATE TRIGGERED";
+		break;
+	}
 }
 
 void startLoggingService() {
