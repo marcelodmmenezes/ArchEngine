@@ -96,6 +96,16 @@ namespace OS {
 	RangeInfo InputRangeEvent::getValue() const { return m_value; }
 	void InputRangeEvent::setValue(const RangeInfo& value) { m_value = value; }
 
+	InputContextEvent::InputContextEvent() : IEvent(EVENT_INPUT_CONTEXT) {}
+	InputContextEvent::InputContextEvent(const std::string& name, bool state) :
+		m_name(name), m_state(state) {}
+	InputContextEvent::~InputContextEvent() {}
+	Core::EventType InputContextEvent::getType() const { return m_type; }
+	std::string InputContextEvent::getName() const { return m_name; }
+	void InputContextEvent::setName(const std::string& name) { m_name = name; }
+	bool InputContextEvent::getState() const { return m_state; }
+	void InputContextEvent::setState(bool state) { m_state = state; }
+
 	
 	//------------------------------------------------------------ CurrentInput
 	void CurrentInput::removeAction(InputAction action) {
@@ -312,6 +322,9 @@ namespace OS {
 				return;
 
 		m_active_contexts.push_back(it->second);
+
+		EventPtr evnt(new InputContextEvent(context, true));
+		EventManager::getInstance().postEvent(evnt);
 	}
 
 	void InputManager::popContext(const std::string& context) {
@@ -329,6 +342,9 @@ namespace OS {
 			m_active_contexts[m_active_contexts.size() - 1]);
 
 		m_active_contexts.pop_back();
+
+		EventPtr evnt(new InputContextEvent(context, false));
+		EventManager::getInstance().postEvent(evnt);
 	}
 
 	void InputManager::setKeyState(SDL_Keycode key,

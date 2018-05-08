@@ -99,6 +99,26 @@ namespace OS {
 	private:
 		RangeInfo m_value;
 	};
+
+	class InputContextEvent : public Core::IEvent {
+	public:
+		InputContextEvent();
+		InputContextEvent(const std::string& name, bool state);
+		~InputContextEvent();
+
+		Core::EventType getType() const override;
+
+		std::string getName() const;
+		void setName(const std::string& name);
+
+		bool getState() const;
+		void setState(bool state);
+
+	private:
+		// true for pushed, false for popped
+		bool m_state;
+		std::string m_name;
+	};
 	//-------------------------------------------------------------------------
 
 	struct CurrentInput {

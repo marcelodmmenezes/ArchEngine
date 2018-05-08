@@ -35,6 +35,7 @@ namespace Core {
 		EVENT_INPUT_ACTION,
 		EVENT_INPUT_STATE,
 		EVENT_INPUT_RANGE,
+		EVENT_INPUT_CONTEXT,
 
 		//--- File watcher events
 		EVENT_FILE_MODIFIED,
