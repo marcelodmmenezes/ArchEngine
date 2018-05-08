@@ -17,6 +17,4 @@ contexts = {
 	test = "../../ArchEngine/Testers/testContext.lua"
 }
 
-popContext("test")
-
 hot_reload = true

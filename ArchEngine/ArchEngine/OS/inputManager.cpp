@@ -98,7 +98,7 @@ namespace OS {
 
 	InputContextEvent::InputContextEvent() : IEvent(EVENT_INPUT_CONTEXT) {}
 	InputContextEvent::InputContextEvent(const std::string& name, bool state) :
-		m_name(name), m_state(state) {}
+		IEvent(EVENT_INPUT_CONTEXT), m_name(name), m_state(state) {}
 	InputContextEvent::~InputContextEvent() {}
 	Core::EventType InputContextEvent::getType() const { return m_type; }
 	std::string InputContextEvent::getName() const { return m_name; }

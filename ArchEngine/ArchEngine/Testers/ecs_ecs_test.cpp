@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 01/05/2018                                                 *
+ * Last Modified: 07/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -38,10 +38,10 @@ enum GameStates {
 	TEST_STATE
 };
 
-
 void test1(); // Tests File Watcher
 void test1Aux_Function1(EventPtr e);
 void test1Aux_Function2(EventPtr e);
+void test1Aux_Function3(EventPtr e);
 void startLoggingService();
 
 
@@ -84,6 +84,10 @@ void test1() {
 		EventManager::getInstance().addListener(
 			listener, EVENT_INPUT_STATE);
 
+		listener.bind<&test1Aux_Function3>();
+		EventManager::getInstance().addListener(
+			listener, EVENT_INPUT_CONTEXT);
+
 		Engine::getInstance().run();
 	}
 	else
@@ -100,7 +104,7 @@ void test1Aux_Function1(EventPtr e) {
 
 	switch (evnt->getValue()) {
 	case GameActions::TEST_ACTION:
-		std::cout << "TEST ACTION TRIGGERED";
+		std::cout << "TEST ACTION TRIGGERED\n";
 		break;
 	}
 }
@@ -110,8 +114,21 @@ void test1Aux_Function2(EventPtr e) {
 
 	switch (evnt->getValue()) {
 	case GameStates::TEST_STATE:
-		std::cout << "TEST STATE TRIGGERED";
+		std::cout << "TEST STATE TRIGGERED\n";
 		break;
+	}
+}
+
+void test1Aux_Function3(EventPtr e) {
+	auto evnt = std::static_pointer_cast<InputContextEvent>(e);
+
+	if (evnt->getState()) {
+		// Context pushed
+		std::cout << "CONTEXT PUSHED: " << evnt->getName() << std::endl;
+	}
+	else {
+		// Context popped
+		std::cout << "CONTEXT POPPED: " << evnt->getName() << std::endl;
 	}
 }
 
