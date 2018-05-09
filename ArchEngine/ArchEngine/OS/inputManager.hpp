@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 07/05/2018                                                 *
+ * Last Modified: 09/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -40,9 +40,9 @@
 #include <vector>
 
 
- //------------------------
- //--- Lua InputManager API
- //------------------------
+//------------------------
+//--- Lua InputManager API
+//------------------------
 extern "C" {
 	static int pushContext(lua_State* lua);
 	static int popContext(lua_State* lua);

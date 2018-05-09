@@ -30,11 +30,11 @@ using namespace OS;
 using namespace Utils;
 
 
-enum GameActions {
+enum GameInputActions {
 	TEST_ACTION
 };
 
-enum GameStates {
+enum GameInputStates {
 	TEST_STATE
 };
 
