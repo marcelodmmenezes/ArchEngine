@@ -22,6 +22,12 @@
     <Filter Include="OS">
       <UniqueIdentifier>{e19062f9-8273-4917-bb2e-9510b0f2e590}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{25d52a98-589c-45a9-b4c2-5f122d9fd8ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{87622cab-f821-46c6-af67-daf863d3461d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils\logger.hpp">
