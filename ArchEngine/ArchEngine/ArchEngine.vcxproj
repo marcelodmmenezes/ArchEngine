@@ -124,7 +124,6 @@
   <ItemGroup>
     <ClInclude Include="Config\engineMacros.hpp" />
     <ClInclude Include="Core\engine.hpp" />
-    <ClInclude Include="Core\concurrentEventQueue.hpp" />
     <ClInclude Include="Core\eventManager.hpp" />
     <ClInclude Include="ECS\component.hpp" />
     <ClInclude Include="ECS\ecsManager.hpp" />
@@ -141,7 +140,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\engine.cpp" />
-    <ClCompile Include="Core\concurrentEventQueue.cpp" />
     <ClInclude Include="Core\event.hpp" />
     <ClCompile Include="Core\event.cpp" />
     <ClCompile Include="Core\eventManager.cpp" />

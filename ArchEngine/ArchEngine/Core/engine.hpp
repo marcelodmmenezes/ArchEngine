@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 06/05/2018                                                 *
+ * Last Modified: 11/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -41,20 +41,6 @@
 
 
 namespace Core {
-	//----------------
-	//---- Core events
-	//----------------
-
-	class CoreQuitEvent : public IEvent {
-	public:
-		CoreQuitEvent();
-		~CoreQuitEvent();
-
-		EventType getType() const override;
-	};
-	//-------------------------------------------------------------------------
-
-
 	class Engine {
 	public:
 		~Engine();

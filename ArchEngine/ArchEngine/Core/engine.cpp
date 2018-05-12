@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 07/05/2018                                                 *
+ * Last Modified: 11/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -23,13 +23,10 @@ using namespace Utils;
 
 
 namespace Core {
-	//------------------------------------------------------------- Core events
-	CoreQuitEvent::CoreQuitEvent() : IEvent(EVENT_CORE_QUIT) {}
-	CoreQuitEvent::~CoreQuitEvent() {}
-	EventType CoreQuitEvent::getType() const { return m_type; }
-
 	//------------------------------------------------------------------ Engine
-	Engine::Engine() : m_initialized(false), m_running(false) {}
+	Engine::Engine() : m_initialized(false), m_running(false) {
+		startLoggingServices();
+	}
 
 	Engine::~Engine() {
 		m_window.destroy();
@@ -42,9 +39,8 @@ namespace Core {
 
 	bool Engine::initialize(const std::string& config_path) {
 		//------------------------------------------------- Initializing Logger
-		if (!m_initialized)
-			startLoggingServices();
-		else { // Prevents the engine to be initalized more than once
+		// Prevents the engine to be initalized more than once
+		if (m_initialized)  {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
 				"Trying to initialize the engine again");
@@ -65,7 +61,7 @@ namespace Core {
 		if (!loadConfigurations(config_path)) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
-				"Could not initialize SDL2");
+				"Could not load configurations");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			return false;
 		}
@@ -82,6 +78,7 @@ namespace Core {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
 		m_initialized = true;
+
 		return true;
 	}
 

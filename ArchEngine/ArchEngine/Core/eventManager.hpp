@@ -11,7 +11,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 05/05/2018                                                 *
+ * Last Modified: 11/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -20,7 +20,6 @@
 
 
 #include "event.hpp"
-#include "concurrentEventQueue.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/delegate.hpp"
 #include "../Utils/serviceLocator.hpp"
@@ -29,6 +28,7 @@
 #include <cassert>
 #include <limits>
 #include <map>
+#include <queue>
 #include <string>
 #include <vector>
 
@@ -52,9 +52,18 @@ namespace Core {
 		bool removeListener(const EventListener& listener,
 			EventType evnt);
 
+		// Gets this queue m_thread id
+		std::thread::id getQueueThreadId();
+
+		// Gets the id of the current executing thread
+		static std::thread::id getCurrentThreadId();
+
+		// Posts a message to the queue
+		// CAREFUL: Events are moved
+		bool postEvent(EventPtr& evnt);
+
 		// Skips queue and call listeners directly
 		bool triggerEvent(EventPtr& evnt);
-		bool postEvent(EventPtr& evnt);
 		void abortEvent(EventType type, bool all_of_type = false);
 
 	private:
@@ -66,19 +75,32 @@ namespace Core {
 
 		EventManager();
 
+		// Queue methods
+		void queueDaemon();
+		void timerDaemon();
+
 		// EventManager state
 		State m_state;
 
-		// Thread-safe realtime event queue.
-		// Acquires events from any thread.
-		ConcurrentEventQueue m_concurrent_queue;
+		// Listeners by event type
+		std::multimap<EventType, EventListener> m_event_listeners;
 
-		// Actual event queue
+		// Events to be dispatched
 		std::queue<EventPtr> m_event_queue;
 
-		// Listeners by event type
-		std::multimap<EventType, Utils::Delegate<void(EventPtr)>>
-			m_event_listeners;
+		// Concurrent event queue stores events from any thread.
+		std::queue<EventPtr> m_concurrent_queue;
+
+		// Concurrent queue control
+		std::thread* m_cq_thread;
+		std::string m_cq_thread_name;
+		std::mutex m_cq_mutex, m_eq_mutex;
+		std::condition_variable m_cq_cv;
+		std::atomic<bool> m_timer_exit;
+
+		// Amount of time in milliseconds the timerUpdate should wait
+		// before posting a message
+		unsigned m_timer_wait_duration;
 
 		// Event abortion flags
 		bool m_abort_event;

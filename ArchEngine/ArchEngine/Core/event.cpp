@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 06/05/2018                                                       *
- * Last Modified: 06/05/2018                                                 *
+ * Last Modified: 11/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -16,4 +16,15 @@
 namespace Core {
 	// Virtual pure destructor needs implementation
 	IEvent::~IEvent() {}
+
+	//------------------------------------------------------------- Core events
+	CoreQuitEvent::CoreQuitEvent() : IEvent(EVENT_CORE_QUIT) {}
+	CoreQuitEvent::~CoreQuitEvent() {}
+	EventType CoreQuitEvent::getType() const { return m_type; }
+
+	CoreTimerEvent::CoreTimerEvent(unsigned time) :
+		IEvent(EVENT_CORE_TIMER), m_time(time) {}
+	CoreTimerEvent::~CoreTimerEvent() {}
+	EventType CoreTimerEvent::getType() const { return m_type; }
+	unsigned CoreTimerEvent::getTime() const { return m_time; }
 }

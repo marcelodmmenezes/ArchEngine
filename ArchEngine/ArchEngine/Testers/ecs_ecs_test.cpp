@@ -103,7 +103,7 @@ void test1Aux_Function1(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputActionEvent>(e);
 
 	switch (evnt->getValue()) {
-	case GameActions::TEST_ACTION:
+	case GameInputActions::TEST_ACTION:
 		std::cout << "TEST ACTION TRIGGERED\n";
 		break;
 	}
@@ -113,7 +113,7 @@ void test1Aux_Function2(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputStateEvent>(e);
 
 	switch (evnt->getValue()) {
-	case GameStates::TEST_STATE:
+	case GameInputStates::TEST_STATE:
 		std::cout << "TEST STATE TRIGGERED\n";
 		break;
 	}

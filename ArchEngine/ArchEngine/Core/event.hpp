@@ -30,6 +30,7 @@ namespace Core {
 
 		//--- Core events
 		EVENT_CORE_QUIT,
+		EVENT_CORE_TIMER,
 
 		//--- Input events
 		EVENT_INPUT_ACTION,
@@ -60,6 +61,31 @@ namespace Core {
 	//---------------------------------------------------------------- Typedefs
 	typedef std::shared_ptr<IEvent> EventPtr;
 	typedef Utils::Delegate<void(EventPtr)> EventListener;
+
+
+	//----------------
+	//---- Core events
+	//----------------
+	class CoreQuitEvent : public IEvent {
+	public:
+		CoreQuitEvent();
+		~CoreQuitEvent();
+
+		EventType getType() const override;
+	};
+
+	class CoreTimerEvent : public IEvent {
+	public:
+		CoreTimerEvent(unsigned time);
+		~CoreTimerEvent();
+
+		EventType getType() const override;
+		unsigned getTime() const;
+
+	private:
+		unsigned m_time;
+	};
+	//-------------------------------------------------------------------------
 }
 
 
