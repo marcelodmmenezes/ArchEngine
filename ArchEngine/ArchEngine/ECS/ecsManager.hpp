@@ -3,7 +3,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 06/05/2018                                                       *
- * Last Modified: 06/05/2018                                                 *
+ * Last Modified: 11/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -21,7 +21,12 @@
 
 
 namespace ECS {
-	Components g_components;
+	class IProcess {
+	public:
+		// Evaluates the kind of entity this process needs
+		ComponentMask m_mask;
+		unsigned m_duration;
+	};
 
 	class ECSManager {
 	public:
@@ -46,17 +51,21 @@ namespace ECS {
 		// Returns an index to the m_entities position where
 		// the new entity was added.
 		unsigned addEntity(ComponentMask mask, int component_handles[]);
-		void removeEntity(unsigned entity_handle);
 
 	private:
+		typedef std::vector<Entity> Entities;
+		typedef std::vector<IProcess> Processes;
+
 		ECSManager();
+
+		Entities m_entities;
+		Components m_components;
+		Processes m_processes;
 
 		// Stores a list of entities per mask.
 		// The unsigned represents the index of the entity in m_entities list.
 		std::multimap<ComponentMask, unsigned, ComponentMaskComparer>
 			m_entities_per_mask;
-
-		std::vector<Entity> m_entities;
 	};
 
 	//----------------------------------- addComponent template specializations
@@ -70,24 +79,6 @@ namespace ECS {
 #ifndef	ARCH_ENGINE_REMOVE_ASSERTIONS
 		assert(false); // Should never get here
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
-	}
-
-	template<>
-	unsigned ECSManager::addComponent<ComponentTest1>(ComponentTest1& comp) {
-		g_components.m_test1.push_back(std::move(comp));
-		return g_components.m_test1.size() - 1;
-	}
-
-	template<>
-	unsigned ECSManager::addComponent<ComponentTest2>(ComponentTest2& comp) {
-		g_components.m_test2.push_back(std::move(comp));
-		return g_components.m_test2.size() - 1;
-	}
-
-	template<>
-	unsigned ECSManager::addComponent<ComponentTest3>(ComponentTest3& comp) {
-		g_components.m_test3.push_back(std::move(comp));
-		return g_components.m_test3.size() - 1;
 	}
 }
 
