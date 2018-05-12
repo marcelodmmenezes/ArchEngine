@@ -137,6 +137,8 @@
     <ClInclude Include="OS\inputContext.hpp" />
     <ClInclude Include="OS\inputManager.hpp" />
     <ClInclude Include="OS\window.hpp" />
+    <ClInclude Include="Physics\physicsManager.hpp" />
+    <ClInclude Include="Physics\world.hpp" />
     <ClInclude Include="Script\luaScript.hpp" />
     <ClInclude Include="Utils\delegate.hpp" />
     <ClInclude Include="Utils\fileWatcher.hpp" />
@@ -153,6 +155,8 @@
     <ClCompile Include="OS\inputContext.cpp" />
     <ClCompile Include="OS\inputManager.cpp" />
     <ClCompile Include="OS\window.cpp" />
+    <ClCompile Include="Physics\physicsManager.cpp" />
+    <ClCompile Include="Physics\world.cpp" />
     <ClCompile Include="Script\luaScript.cpp" />
     <ClCompile Include="Testers\test.cpp" />
     <ClCompile Include="Utils\fileWatcher.cpp" />

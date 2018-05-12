@@ -78,6 +78,12 @@
     <ClInclude Include="Utils\fileWatcher.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Physics\physicsManager.hpp">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\world.hpp">
+      <Filter>Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -115,6 +121,12 @@
     </ClCompile>
     <ClCompile Include="Testers\test.cpp">
       <Filter>Testers</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\physicsManager.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\world.cpp">
+      <Filter>Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
