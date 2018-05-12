@@ -35,6 +35,7 @@ namespace ECS {
 
 	unsigned ECSManager::addEntity(ComponentMask mask,
 		int component_handles[]) {
+		return 0;
 		// TODO
 	}
 }
