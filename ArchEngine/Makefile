@@ -11,6 +11,14 @@
 #*===========================================================================*/
 
 
+#------------------------------------------------------------- Additional paths
+
+CPLUS_INCLUDE_PATH = /usr/Bullet
+export CPLUS_INCLUDE_PATH
+
+LIBRARY_PATH = /usr/Bullet/lib
+export LIBRARY_PATH
+
 #---------------------------------------------------------------------- Folders
 
 OUTDIR = GCCOutput
@@ -27,8 +35,8 @@ UTILS = ArchEngine/Utils
 
 CXX = g++
 CXXFLAGS = -std=c++11 -I/usr/include/lua5.3
-LIBS = -pthread -lSDL2 -llua5.3
-VPATH = $(CORE):$(SCRIPT):$(TESTERS):$(UTILS)
+LIBS = -pthread -lSDL2 -llua5.3 -lBulletSoftBody -lBulletDynamics \
+	-lBulletCollision -lLinearMath
 
 #------------------------------------------------------------------------ Rules
 
