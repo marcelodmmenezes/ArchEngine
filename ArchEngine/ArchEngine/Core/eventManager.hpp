@@ -26,6 +26,7 @@
 #include "../Utils/timer.hpp"
 
 #include <cassert>
+#include <condition_variable>
 #include <limits>
 #include <map>
 #include <queue>
