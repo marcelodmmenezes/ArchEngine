@@ -50,6 +50,8 @@ namespace Core {
 
 		static Engine& getInstance();
 
+		static void startLoggingServices();
+
 		bool initialize(const std::string& config_path);
 		void run();
 		void exit();
@@ -66,7 +68,6 @@ namespace Core {
 	private:
 		Engine();
 
-		void startLoggingServices();
 		bool loadConfigurations(const std::string& config_path);
 
 		bool m_initialized;

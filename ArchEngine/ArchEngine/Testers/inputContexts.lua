@@ -14,7 +14,8 @@
 
 
 contexts = {
-	test = "../../ArchEngine/Testers/testContext.lua"
+	test1 = "../../ArchEngine/Testers/testContext.lua",
+	test2 = "../../ArchEngine/Testers/testContext2.lua"
 }
 
 hot_reload = true

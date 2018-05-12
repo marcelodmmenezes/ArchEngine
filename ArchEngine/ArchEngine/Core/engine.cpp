@@ -24,9 +24,7 @@ using namespace Utils;
 
 namespace Core {
 	//------------------------------------------------------------------ Engine
-	Engine::Engine() : m_initialized(false), m_running(false) {
-		startLoggingServices();
-	}
+	Engine::Engine() : m_initialized(false), m_running(false) {}
 
 	Engine::~Engine() {
 		m_window.destroy();

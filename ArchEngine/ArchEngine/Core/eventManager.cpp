@@ -77,6 +77,8 @@ namespace Core {
 		unsigned long max_ms = max_milliseconds == ULONG_MAX ?
 			ULONG_MAX : ticks + max_milliseconds;
 
+		m_eq_mutex.lock();
+
 		// Dipatches the events
 		while (!m_event_queue.empty()) {
 			// Gets event from queue
@@ -104,6 +106,8 @@ namespace Core {
 					"Could not process all frame's events");
 #endif	// ARCH_ENGINE_LOGGER_WARNING
 		}
+
+		m_eq_mutex.unlock();
 	}
 
 	void EventManager::destroy() {

@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Testers/core_input_context_test.cpp"                       *
+ * Arch Engine - "Testers/test.cpp"                                          *
  *                                                                           *
  * This is a tester file. It's purpose is to test some functionalities, thus *
  * should be removed from releases.                                          *
@@ -7,14 +7,13 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 07/05/2018                                                 *
+ * Last Modified: 11/05/2018                                                 *
  *===========================================================================*/
 
 
 #include "../Config/engineMacros.hpp"
 
- // Check if this tester is active
-#if defined(ARCH_ENGINE_ECS_ECS_TEST)
+#if defined(ARCH_ENGINE_TEST)
 
 #include "../Core/engine.hpp"
 #include "../OS/inputManager.hpp"
@@ -38,38 +37,17 @@ enum GameInputStates {
 	TEST_STATE
 };
 
+
 void test1(); // Tests File Watcher
 void test1Aux_Function1(EventPtr e);
 void test1Aux_Function2(EventPtr e);
 void test1Aux_Function3(EventPtr e);
-void startLoggingService();
 
 
 int main(int argc, char* argv[]) {
-	try {
-		startLoggingService();
-
-		ServiceLocator::getFileLogger()->log<LOG_INFO>("Started tests");
-
-		ServiceLocator::getFileLogger()->log<LOG_INFO>(
-			"Testing filewatcher");
-		test1();
-		ServiceLocator::getFileLogger()->log<LOG_INFO>(
-			"Finished first test\n\
-----------------------------------------------------------------------------");
-
-		ServiceLocator::getFileLogger()->log<LOG_INFO>("Finished tests");
-
-		return EXIT_SUCCESS;
-	}
-	catch (...) {
-		return EXIT_FAILURE;
-	}
-}
-
-
-void test1() {
 	std::stringstream ss;
+
+	Engine::startLoggingServices();
 
 	if (Engine::getInstance().initialize("../../ArchEngine/Testers/"
 		"core_engine_test_engine_config.lua")) {
@@ -97,6 +75,10 @@ void test1() {
 	Engine::getInstance().exit();
 
 	ServiceLocator::getFileLogger()->log<LOG_INFO>(ss);
+}
+
+
+void test1() {
 }
 
 void test1Aux_Function1(EventPtr e) {
@@ -132,24 +114,5 @@ void test1Aux_Function3(EventPtr e) {
 	}
 }
 
-void startLoggingService() {
-	std::shared_ptr<Logger<ConsoleLogPolicy>>
-		console_logger(new Logger<ConsoleLogPolicy>(""));
 
-	std::shared_ptr<Logger<FileLogPolicy>>
-		file_logger(new Logger<FileLogPolicy>("log.txt"));
-
-	console_logger->setThreadName("mainThread");
-	file_logger->setThreadName("mainThread");
-
-	ServiceLocator::provideConsoleLogger(console_logger);
-	ServiceLocator::provideFileLogger(file_logger);
-
-	ServiceLocator::getConsoleLogger()->log<LOG_INFO>(
-		"Logging Systems online...");
-	ServiceLocator::getFileLogger()->log<LOG_INFO>(
-		"Logging Systems online...");
-}
-
-
-#endif	// ARCH_ENGINE_ECS_ECS_TEST
+#endif	// ARCH_ENGINE_TEST

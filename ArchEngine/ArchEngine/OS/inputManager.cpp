@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 07/05/2018                                                 *
+ * Last Modified: 11/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -332,19 +332,24 @@ namespace OS {
 
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
 		assert(it != m_mapped_contexts.end());
-		assert(it->second < m_active_contexts.size());
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
 
-		// As the order doesn't matter, we can swap the desired active
-		// context with the last and remove the new last, to avoid
-		// unnecessary copies.
-		std::swap(m_active_contexts[it->second],
-			m_active_contexts[m_active_contexts.size() - 1]);
+		auto it2 = m_active_contexts.begin();
 
-		m_active_contexts.pop_back();
+		// Sees if the parameter context is active
+		while (it2 != m_active_contexts.end()) {
+			if (m_contexts[it->second] == m_contexts[*it2])
+				break;
 
-		EventPtr evnt(new InputContextEvent(context, false));
-		EventManager::getInstance().postEvent(evnt);
+			++it2;
+		}
+
+		if (it2 != m_active_contexts.end()) {
+			m_active_contexts.pop_back();
+
+			EventPtr evnt(new InputContextEvent(context, false));
+			EventManager::getInstance().postEvent(evnt);
+		}
 	}
 
 	void InputManager::setKeyState(SDL_Keycode key,

@@ -77,26 +77,14 @@
     <ClCompile Include="Utils\serviceLocator.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Testers\utils_logger_test.cpp">
-      <Filter>Testers</Filter>
-    </ClCompile>
     <ClCompile Include="Script\luaScript.cpp">
       <Filter>Script</Filter>
-    </ClCompile>
-    <ClCompile Include="Testers\script_lua_script_test.cpp">
-      <Filter>Testers</Filter>
     </ClCompile>
     <ClCompile Include="Utils\timer.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Testers\ecs_ecs_test.cpp">
-      <Filter>Testers</Filter>
-    </ClCompile>
     <ClCompile Include="Core\engine.cpp">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Testers\core_engine_test.cpp">
-      <Filter>Testers</Filter>
     </ClCompile>
     <ClCompile Include="Core\eventManager.cpp">
       <Filter>Core</Filter>
@@ -110,15 +98,6 @@
     <ClCompile Include="OS\window.cpp">
       <Filter>OS</Filter>
     </ClCompile>
-    <ClCompile Include="Testers\os_input_context_test.cpp">
-      <Filter>Testers</Filter>
-    </ClCompile>
-    <ClCompile Include="Testers\os_window_test.cpp">
-      <Filter>Testers</Filter>
-    </ClCompile>
-    <ClCompile Include="Testers\event_system_test.cpp">
-      <Filter>Testers</Filter>
-    </ClCompile>
     <ClCompile Include="ECS\ecsManager.cpp">
       <Filter>ECS</Filter>
     </ClCompile>
@@ -128,18 +107,12 @@
     <ClCompile Include="Utils\fileWatcher.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Testers\test.cpp">
+      <Filter>Testers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Testers\script_lua_script_test1.lua">
-      <Filter>Testers</Filter>
-    </None>
-    <None Include="Testers\script_lua_script_test2.lua">
-      <Filter>Testers</Filter>
-    </None>
-    <None Include="Testers\script_lua_script_test3.lua">
-      <Filter>Testers</Filter>
-    </None>
     <None Include="Testers\inputContexts.lua">
       <Filter>Testers</Filter>
     </None>

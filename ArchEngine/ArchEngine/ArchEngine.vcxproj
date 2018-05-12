@@ -148,13 +148,7 @@
     <ClCompile Include="OS\inputManager.cpp" />
     <ClCompile Include="OS\window.cpp" />
     <ClCompile Include="Script\luaScript.cpp" />
-    <ClCompile Include="Testers\event_system_test.cpp" />
-    <ClCompile Include="Testers\os_input_context_test.cpp" />
-    <ClCompile Include="Testers\core_engine_test.cpp" />
-    <ClCompile Include="Testers\os_window_test.cpp" />
-    <ClCompile Include="Testers\ecs_ecs_test.cpp" />
-    <ClCompile Include="Testers\script_lua_script_test.cpp" />
-    <ClCompile Include="Testers\utils_logger_test.cpp" />
+    <ClCompile Include="Testers\test.cpp" />
     <ClCompile Include="Utils\fileWatcher.cpp" />
     <ClCompile Include="Utils\serviceLocator.cpp" />
     <ClCompile Include="Utils\timer.cpp" />
@@ -165,9 +159,6 @@
     <None Include="Testers\engineConfig.lua" />
     <None Include="Testers\eventConfig.lua" />
     <None Include="Testers\inputContexts.lua" />
-    <None Include="Testers\script_lua_script_test1.lua" />
-    <None Include="Testers\script_lua_script_test2.lua" />
-    <None Include="Testers\script_lua_script_test3.lua" />
     <None Include="Testers\testContext.lua" />
     <None Include="Testers\testContext2.lua" />
     <None Include="Testers\windowConfig.lua" />
