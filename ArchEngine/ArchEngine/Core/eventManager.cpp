@@ -129,7 +129,7 @@ namespace Core {
 			std::lock_guard<std::mutex> lock(m_cq_mutex);
 
 			// Creates and post a detroy message to the messaging system
-			EventPtr evnt(new CoreQuitEvent());
+			EventPtr evnt = std::make_shared<CoreQuitEvent>(CoreQuitEvent());
 			m_concurrent_queue.push(evnt);
 
 			m_cq_cv.notify_one();
@@ -302,7 +302,8 @@ namespace Core {
 			std::unique_lock<std::mutex> lock(m_cq_mutex);
 
 			// Creates and post a detroy message to the messaging system
-			EventPtr evnt(new CoreTimerEvent(m_timer_wait_duration));
+			EventPtr evnt = std::make_shared<CoreTimerEvent>(
+				CoreTimerEvent(m_timer_wait_duration));
 			m_concurrent_queue.push(evnt);
 
 			m_cq_cv.notify_one();

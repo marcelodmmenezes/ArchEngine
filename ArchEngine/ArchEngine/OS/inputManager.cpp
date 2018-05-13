@@ -219,7 +219,7 @@ namespace OS {
 #if defined(ARCH_ENGINE_HOT_RELOAD_ON)
 		// Changes if the file is being watched according to parameters
 		if (m_watch_file != m_file_being_watched) {
-			Core::EventPtr evnt(new WatchFileEvent(
+			Core::EventPtr evnt = std::make_shared<WatchFileEvent>(WatchFileEvent(
 				m_config_file_path, m_watch_file));
 			Core::EventManager::getInstance().postEvent(evnt);
 			m_file_being_watched = !m_file_being_watched;
@@ -332,7 +332,8 @@ namespace OS {
 
 		m_active_contexts.push_back(it->second);
 
-		EventPtr evnt(new InputContextEvent(context, true));
+		EventPtr evnt = std::make_shared<InputContextEvent>(
+			InputContextEvent(context, true));
 		EventManager::getInstance().postEvent(evnt);
 	}
 
@@ -361,7 +362,8 @@ namespace OS {
 		if (it2 != m_active_contexts.end()) {
 			m_active_contexts.pop_back();
 
-			EventPtr evnt(new InputContextEvent(context, false));
+			EventPtr evnt = std::make_shared<InputContextEvent>(
+				InputContextEvent(context, false));
 			EventManager::getInstance().postEvent(evnt);
 		}
 	}
@@ -439,17 +441,20 @@ namespace OS {
 
 	void InputManager::dispatch() {
 		for (auto& it : m_current_input.m_actions) {
-			Core::EventPtr evnt(new InputActionEvent(it));
+			Core::EventPtr evnt = std::make_shared<InputActionEvent>(
+				InputActionEvent(it));
 			Core::EventManager::getInstance().postEvent(evnt);
 		}
 
 		for (auto& it : m_current_input.m_states) {
-			Core::EventPtr evnt(new InputStateEvent(it));
+			Core::EventPtr evnt = std::make_shared<InputStateEvent>(
+				InputStateEvent(it));
 			Core::EventManager::getInstance().postEvent(evnt);
 		}
 
 		for (auto& it : m_current_input.m_ranges) {
-			Core::EventPtr evnt(new InputRangeEvent(it));
+			Core::EventPtr evnt = std::make_shared<InputRangeEvent>(
+				InputRangeEvent(it));
 			Core::EventManager::getInstance().postEvent(evnt);
 		}
 

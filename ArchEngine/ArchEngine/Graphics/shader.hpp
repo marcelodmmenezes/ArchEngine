@@ -64,12 +64,12 @@ namespace Graphics {
 
 	private:
 		bool compileShader(const std::string& path, GLenum type);
-		void notifyDirty(UniformPtr uniform);
+		void notifyDirty(const std::string& uniform_name);
 
 		unsigned m_program_id;
 
 		// Stores the ids to dirty uniforms
-		std::vector<UniformPtr> m_dirty_uniforms;
+		std::vector<std::string> m_dirty_uniforms;
 		// References to the uniforms vector by name
 		std::map<std::string, UniformPtr> m_uniforms_by_name;
 	};

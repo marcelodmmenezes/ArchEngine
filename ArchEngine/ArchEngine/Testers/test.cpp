@@ -50,6 +50,13 @@ int main(int argc, char* argv[]) {
 	std::stringstream ss;
 
 	Engine::startLoggingServices();
+	
+	Shader shader;
+	shader.initialize("", "");
+	shader.setFloat("test", 123.123f);
+	shader.setFloat("test", 123.124f);
+	shader.setFloat("test", 123.122f);
+	shader.setFloat("test", 123.122f);
 
 	if (Engine::getInstance().initialize("../../ArchEngine/Testers/"
 		"core_engine_test_engine_config.lua")) {
@@ -76,6 +83,8 @@ int main(int argc, char* argv[]) {
 		ServiceLocator::getFileLogger()->log<LOG_ERROR>(
 			"Failed to initialize ArchEngine");
 
+	shader.update();
+
 	Engine::getInstance().exit();
 
 	ServiceLocator::getFileLogger()->log<LOG_INFO>(ss);
@@ -89,7 +98,7 @@ void test1Aux_Function1(EventPtr e) {
 		std::cout << "TEST ACTION TRIGGERED\n";
 		break;
 	case GameInputActions::QUIT_ACTION:
-		EventPtr quit_event(new CoreQuitEvent());
+		EventPtr quit_event = std::make_shared<CoreQuitEvent>(CoreQuitEvent());
 		EventManager::getInstance().postEvent(quit_event);
 		break;
 	}

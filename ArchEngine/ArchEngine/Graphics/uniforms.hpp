@@ -25,6 +25,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <memory>
+#include <string>
 
 
 namespace Graphics {
@@ -34,11 +35,11 @@ namespace Graphics {
 
 	// For observer pattern
 	// The unsigned is the uniform's id in it's shader program
-	typedef Utils::Delegate<void(UniformPtr)> DirtyObserver;
+	typedef Utils::Delegate<void(const std::string&)> DirtyObserver;
 
 	class IUniform {
 	public:
-		IUniform(unsigned id, unsigned location,
+		IUniform(const std::string& name, unsigned location,
 			const DirtyObserver& observer);
 
 		virtual ~IUniform() = 0;
@@ -47,7 +48,7 @@ namespace Graphics {
 		virtual void update() = 0;
 
 	protected:
-		unsigned m_id;
+		std::string m_name;
 		unsigned m_location;
 		bool m_dirty;
 
@@ -58,7 +59,7 @@ namespace Graphics {
 	template<typename T>
 	class Uniform : public IUniform {
 	public:
-		Uniform(unsigned id, unsigned location,
+		Uniform(const std::string& name, unsigned location,
 			const DirtyObserver& observer);
 
 		~Uniform() override;
@@ -73,45 +74,45 @@ namespace Graphics {
 	};
 
 	template<typename T>
-	Uniform::Uniform(unsigned id, unsigned location,
-		const DirtyObserver& observer) : IUniform(id, location, observer) {}
+	Uniform<T>::Uniform(const std::string& name, unsigned location,
+		const DirtyObserver& observer) : IUniform(name, location, observer) {}
 
 	template<typename T>
-	Uniform::~Uniform() {}
+	Uniform<T>::~Uniform() {}
 
 	//----------------------------------------- update template specializations
 	template<>
-	void Uniform<bool>::update() {
+	inline void Uniform<bool>::update() {
 		glUniform1i(m_location, m_value);
 		m_dirty = false;
 	}
 
 	template<>
-	void Uniform<int>::update() {
+	inline void Uniform<int>::update() {
 		glUniform1i(m_location, m_value);
 		m_dirty = false;
 	}
 
 	template<>
-	void Uniform<float>::update() {
+	inline void Uniform<float>::update() {
 		glUniform1f(m_location, m_value);
 		m_dirty = false;
 	}
 
 	template<>
-	void Uniform<glm::vec3>::update() {
+	inline void Uniform<glm::vec3>::update() {
 		glUniform3f(m_location, m_value.x, m_value.y, m_value.z);
 		m_dirty = false;
 	}
 
 	template<>
-	void Uniform<glm::mat3>::update() {
+	inline void Uniform<glm::mat3>::update() {
 		glUniformMatrix3fv(m_location, 1, GL_FALSE, glm::value_ptr(m_value));
 		m_dirty = false;
 	}
 
 	template<>
-	void Uniform<glm::mat4>::update() {
+	inline void Uniform<glm::mat4>::update() {
 		glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(m_value));
 		m_dirty = false;
 	}
@@ -119,17 +120,17 @@ namespace Graphics {
 	//-------------------------------------------------------------------------
 
 	template<typename T>
-	void Uniform::setValue(T value) {
+	void Uniform<T>::setValue(const T& value) {
 		if (!m_dirty && m_value != value) {
 			m_dirty = true;
-			m_observer.invoke(Uniform(this));
+			m_observer.invoke(m_name);
 		}
 
 		m_value = value;
 	}
 
 	template<typename T>
-	float Uniform::getValue() {
+	T Uniform<T>::getValue() {
 		return m_value;
 	}
 }
