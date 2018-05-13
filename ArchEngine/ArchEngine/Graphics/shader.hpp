@@ -14,9 +14,11 @@
 
 
 #include "../Config/engineMacros.hpp"
+#include "../Core/eventManager.hpp"
 #include "glad_3_3_core.hpp"
 #include "uniforms.hpp"
 #include "../Script/luaScript.hpp"
+#include "../Utils/fileWatcher.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 #include <glm/glm.hpp>
@@ -45,13 +47,17 @@ namespace Graphics {
 			const std::string& gs_path,
 			const std::string& fs_path);
 
-		void destroy();
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		void onFileModifiedEvent(Core::EventPtr e);
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
 		void bind();
 		static void unbindShaders();
 
 		// Sends values to GPU
 		void update();
+
+		void destroy();
 
 		unsigned getProgramId();
 
@@ -80,6 +86,13 @@ namespace Graphics {
 		std::vector<std::string> m_dirty_uniforms;
 		// References to the uniforms vector by name
 		std::map<std::string, UniformPtr> m_uniforms_by_name;
+
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		// Hot-reloading configuration
+		std::string m_vs_path, m_gs_path, m_fs_path;
+		bool m_watch_file;
+		Core::EventListener m_file_modified_listener;
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 	};
 }
 

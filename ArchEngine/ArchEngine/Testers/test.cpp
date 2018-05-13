@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
 		Shader shader;
 		shader.initialize("../../ArchEngine/Testers/objvs.glsl",
 			"../../ArchEngine/Testers/objfs.glsl");
-
+		
 		EventListener listener;
 
 		listener.bind<&test1Aux_Function1>();

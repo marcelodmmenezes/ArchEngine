@@ -85,6 +85,9 @@ namespace Utils {
 	}
 
 	bool FileWatcher::addFile(const std::string& path) {
+		if (path == "")
+			return false;
+
 		struct ARCH_ENGINE_FILE_WATCHER_STAT result;
 		time_t mod_time;
 

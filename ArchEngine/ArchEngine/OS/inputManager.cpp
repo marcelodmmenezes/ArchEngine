@@ -123,7 +123,7 @@ namespace OS {
 
 	//------------------------------------------------------------ InputManager
 	InputManager::InputManager() : m_mouse_first(true),
-		m_mouse_last_x(0), m_mouse_last_y(0), m_file_being_watched(false) {
+		m_mouse_last_x(0), m_mouse_last_y(0) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Input Manager constructor");
@@ -167,6 +167,8 @@ namespace OS {
 		}
 
 #if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		m_file_being_watched = false;
+
 		if (lua_context.get<bool>("hot_reload")) {
 			m_watch_file = true;
 

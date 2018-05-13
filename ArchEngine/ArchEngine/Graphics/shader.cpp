@@ -18,6 +18,10 @@ using namespace Utils;
 
 namespace Graphics {
 	Shader::Shader() {
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		m_watch_file = true;
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
+
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Shader constructor");
@@ -37,6 +41,10 @@ namespace Graphics {
 	bool Shader::initialize(
 		const std::string& vs_path,
 		const std::string& fs_path) {
+		m_vs_path = vs_path;
+		m_gs_path = "";
+		m_fs_path = fs_path;
+
 		unsigned vs, fs;
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
@@ -56,6 +64,30 @@ namespace Graphics {
 		getAttributes();
 		getUniforms();
 
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		if (m_watch_file) {
+			// Register for hot reload
+			m_file_modified_listener.bind
+				<Shader, &Shader::onFileModifiedEvent>(this);
+			Core::EventManager::getInstance().addListener(
+				m_file_modified_listener, Core::EVENT_FILE_MODIFIED);
+
+			Core::EventPtr evnt = std::make_shared<WatchFileEvent>(
+				WatchFileEvent(m_vs_path, true));
+			Core::EventManager::getInstance().postEvent(evnt);
+
+			evnt = std::make_shared<WatchFileEvent>(
+				WatchFileEvent(m_gs_path, true));
+			Core::EventManager::getInstance().postEvent(evnt);
+
+			evnt = std::make_shared<WatchFileEvent>(
+				WatchFileEvent(m_fs_path, true));
+			Core::EventManager::getInstance().postEvent(evnt);
+
+			m_watch_file = false;
+		}
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
+
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"\n\n---------------------------------------------\n");
@@ -68,6 +100,10 @@ namespace Graphics {
 		const std::string& vs_path,
 		const std::string& gs_path,
 		const std::string& fs_path) {
+		m_vs_path = vs_path;
+		m_gs_path = gs_path;
+		m_fs_path = fs_path;
+
 		unsigned vs, gs, fs;
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
@@ -90,6 +126,30 @@ namespace Graphics {
 		getAttributes();
 		getUniforms();
 
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+		if (m_watch_file) {
+			// Register for hot reload
+			m_file_modified_listener.bind
+				<Shader, &Shader::onFileModifiedEvent>(this);
+			Core::EventManager::getInstance().addListener(
+				m_file_modified_listener, Core::EVENT_FILE_MODIFIED);
+
+			Core::EventPtr evnt = std::make_shared<WatchFileEvent>(
+				WatchFileEvent(m_vs_path, true));
+			Core::EventManager::getInstance().postEvent(evnt);
+
+			evnt = std::make_shared<WatchFileEvent>(
+				WatchFileEvent(m_gs_path, true));
+			Core::EventManager::getInstance().postEvent(evnt);
+
+			evnt = std::make_shared<WatchFileEvent>(
+				WatchFileEvent(m_fs_path, true));
+			Core::EventManager::getInstance().postEvent(evnt);
+
+			m_watch_file = false;
+		}
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
+
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"\n\n---------------------------------------------\n");
@@ -98,10 +158,33 @@ namespace Graphics {
 		return true;
 	}
 
-	void Shader::destroy() {
+#if defined(ARCH_ENGINE_HOT_RELOAD_ON)
+	void Shader::onFileModifiedEvent(Core::EventPtr e) {
+		auto evnt = std::static_pointer_cast<FileModifiedEvent>(e);
+
+		// See if the modified file was one of this shader files
+		if (evnt->getPath() != m_vs_path &&
+			evnt->getPath() != m_gs_path &&
+			evnt->getPath() != m_fs_path)
+			return;
+
 		if (glIsProgram(m_program_id))
 			glDeleteProgram(m_program_id);
+
+		m_dirty_uniforms.clear();
+		m_uniforms_by_name.clear();
+
+		if (m_gs_path == "")
+			initialize(m_vs_path, m_fs_path);
+		else
+			initialize(m_vs_path, m_gs_path, m_fs_path);
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Shader onFileModifiedEvent");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 	}
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
 	void Shader::bind() {
 		glUseProgram(m_program_id);
@@ -116,6 +199,11 @@ namespace Graphics {
 			m_uniforms_by_name[it]->update();
 
 		m_dirty_uniforms.clear();
+	}
+
+	void Shader::destroy() {
+		if (glIsProgram(m_program_id))
+			glDeleteProgram(m_program_id);
 	}
 	
 	unsigned Shader::getProgramId() {
@@ -316,7 +404,26 @@ namespace Graphics {
 	}
 
 	void Shader::getAttributes() {
-		// TODO
+		int count, size;
+		GLenum type;
+
+		const int BUF_SIZE = 32;
+		char name[BUF_SIZE];
+		int name_length;
+
+		glGetProgramiv(m_program_id, GL_ACTIVE_ATTRIBUTES, &count);
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Found " + std::to_string(count) + " attributes");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+		for (unsigned i = 0; (unsigned)i < count; i++) {
+			glGetActiveAttrib(m_program_id, i, BUF_SIZE,
+				&name_length, &size, &type, name);
+
+			// TODO
+		}
 	}
 
 	void Shader::getUniforms() {
@@ -349,31 +456,37 @@ namespace Graphics {
 					name, std::make_shared<Uniform<bool>>(
 						name, location, observer)));
 				break;
+
 			case GL_INT:
 				m_uniforms_by_name.insert(std::make_pair(
 					name, std::make_shared<Uniform<int>>(
 						name, location, observer)));
 				break;
+
 			case GL_FLOAT:
 				m_uniforms_by_name.insert(std::make_pair(
 					name, std::make_shared<Uniform<float>>(
 						name, location, observer)));
 				break;
+
 			case GL_FLOAT_VEC3:
 				m_uniforms_by_name.insert(std::make_pair(
 					name, std::make_shared<Uniform<glm::vec3>>(
 						name, location, observer)));
 				break;
+
 			case GL_FLOAT_MAT3:
 				m_uniforms_by_name.insert(std::make_pair(
 					name, std::make_shared<Uniform<glm::mat3>>(
 						name, location, observer)));
 				break;
+
 			case GL_FLOAT_MAT4:
 				m_uniforms_by_name.insert(std::make_pair(
 					name, std::make_shared<Uniform<glm::mat4>>(
 						name, location, observer)));
 				break;
+
 			case GL_SAMPLER_2D:
 				m_uniforms_by_name.insert(std::make_pair(
 					name, std::make_shared<Uniform<int>>(
