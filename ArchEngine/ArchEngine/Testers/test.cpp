@@ -30,7 +30,8 @@ using namespace Utils;
 
 
 enum GameInputActions {
-	TEST_ACTION
+	TEST_ACTION,
+	QUIT_ACTION = 2
 };
 
 enum GameInputStates {
@@ -38,7 +39,6 @@ enum GameInputStates {
 };
 
 
-void test1(); // Tests File Watcher
 void test1Aux_Function1(EventPtr e);
 void test1Aux_Function2(EventPtr e);
 void test1Aux_Function3(EventPtr e);
@@ -77,16 +77,16 @@ int main(int argc, char* argv[]) {
 	ServiceLocator::getFileLogger()->log<LOG_INFO>(ss);
 }
 
-
-void test1() {
-}
-
 void test1Aux_Function1(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputActionEvent>(e);
 
 	switch (evnt->getValue()) {
 	case GameInputActions::TEST_ACTION:
 		std::cout << "TEST ACTION TRIGGERED\n";
+		break;
+	case GameInputActions::QUIT_ACTION:
+		EventPtr quit_event(new CoreQuitEvent());
+		EventManager::getInstance().postEvent(quit_event);
 		break;
 	}
 }

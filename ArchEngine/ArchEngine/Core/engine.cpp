@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 11/05/2018                                                 *
+ * Last Modified: 12/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -28,6 +28,11 @@ namespace Core {
 
 	Engine::~Engine() {
 		m_window.destroy();
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
+			"ArchEngine destructor");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
 	Engine& Engine::getInstance() {

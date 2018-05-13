@@ -11,7 +11,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 11/05/2018                                                 *
+ * Last Modified: 12/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -259,6 +259,19 @@ namespace Core {
 				m_concurrent_queue.pop();
 			}
 
+			if (evnt->getType() == EVENT_CORE_TIMER) {
+				auto e = std::static_pointer_cast<CoreTimerEvent>(evnt);
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+				ServiceLocator::getFileLogger()->log<LOG_INFO>(
+					std::to_string(e->getTime()));
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+			}
+			else {
+				m_eq_mutex.lock();
+				m_event_queue.push(evnt);
+				m_eq_mutex.unlock();
+			}
+
 			if (evnt->getType() == EVENT_CORE_QUIT) {
 				m_timer_exit = true;
 				timer_thread.join();
@@ -275,18 +288,6 @@ namespace Core {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
 				return; // Quits daemon
-			}
-			else if (evnt->getType() == EVENT_CORE_TIMER) {
-				auto e = std::static_pointer_cast<CoreTimerEvent>(evnt);
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-				ServiceLocator::getFileLogger()->log<LOG_INFO>(
-					std::to_string(e->getTime()));
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-			}
-			else {
-				m_eq_mutex.lock();
-				m_event_queue.push(evnt);
-				m_eq_mutex.unlock();
 			}
 		}
 	}
