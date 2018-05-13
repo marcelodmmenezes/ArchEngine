@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 06/05/2018                                                       *
- * Last Modified: 11/05/2018                                                 *
+ * Last Modified: 13/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -14,6 +14,7 @@
 
 
 namespace Core {
+	IEvent::IEvent(EventType type) : m_type(type) {}
 	// Virtual pure destructor needs implementation
 	IEvent::~IEvent() {}
 

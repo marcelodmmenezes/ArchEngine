@@ -16,6 +16,7 @@
 #if defined(ARCH_ENGINE_TEST)
 
 #include "../Core/engine.hpp"
+#include "../Graphics/shader.hpp"
 #include "../OS/inputManager.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -25,6 +26,7 @@
 
 
 using namespace Core;
+using namespace Graphics;
 using namespace OS;
 using namespace Utils;
 

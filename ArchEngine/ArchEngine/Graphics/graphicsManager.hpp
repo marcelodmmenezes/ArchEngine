@@ -18,6 +18,8 @@
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
+#include <glm/glm.hpp>
+
 #include <string>
 
 
@@ -31,7 +33,7 @@ namespace Graphics {
 
 		static GraphicsManager& getInstance();
 
-		bool initialize();
+		bool initialize(const glm::vec4& color);
 		bool initializeFromConfigFile(const std::string& path);
 
 		void update(float delta_time);

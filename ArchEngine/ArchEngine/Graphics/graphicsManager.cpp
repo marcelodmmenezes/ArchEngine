@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 12/05/2018                                                 *
+ * Last Modified: 13/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -36,15 +36,15 @@ namespace Graphics {
 		return instance;
 	}
 
-	bool GraphicsManager::initialize() {
+	bool GraphicsManager::initialize(const glm::vec4& color) {
 		// TODO
-		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+		glClearColor(color.r, color.g, color.b, color.a);
 		return true;
 	}
 
 	bool GraphicsManager::initializeFromConfigFile(const std::string& path) {
 		// TODO
-		return initialize();
+		return initialize(glm::vec4(0.05f, 0.08f, 0.07f, 1.0f));
 	}
 
 	void GraphicsManager::update(float delta_time) {

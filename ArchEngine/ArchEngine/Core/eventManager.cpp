@@ -11,7 +11,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 12/05/2018                                                 *
+ * Last Modified: 13/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -260,11 +260,13 @@ namespace Core {
 			}
 
 			if (evnt->getType() == EVENT_CORE_TIMER) {
+				/*
 				auto e = std::static_pointer_cast<CoreTimerEvent>(evnt);
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 				ServiceLocator::getFileLogger()->log<LOG_INFO>(
 					std::to_string(e->getTime()));
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+				*/
 			}
 			else {
 				m_eq_mutex.lock();

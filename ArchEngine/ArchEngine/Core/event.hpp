@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 05/05/2018                                                 *
+ * Last Modified: 13/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -49,7 +49,7 @@ namespace Core {
 	//--------------------------------------------------------- Event interface
 	class IEvent {
 	public:
-		IEvent(EventType type) : m_type(type) {}
+		IEvent(EventType type);
 		virtual ~IEvent() = 0;
 		
 		virtual EventType getType() const = 0;
