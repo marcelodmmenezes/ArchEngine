@@ -136,6 +136,7 @@
     <ClInclude Include="ECS\entity.hpp" />
     <ClInclude Include="Graphics\glad_3_3_core.hpp" />
     <ClInclude Include="Graphics\graphicsManager.hpp" />
+    <ClInclude Include="Graphics\stb_image.hpp" />
     <ClInclude Include="OS\inputContext.hpp" />
     <ClInclude Include="OS\inputManager.hpp" />
     <ClInclude Include="OS\window.hpp" />
@@ -156,6 +157,7 @@
     <ClCompile Include="ECS\ecsManager.cpp" />
     <ClCompile Include="Graphics\glad_3_3_core.cpp" />
     <ClCompile Include="Graphics\graphicsManager.cpp" />
+    <ClCompile Include="Graphics\stb_image.cpp" />
     <ClCompile Include="OS\inputContext.cpp" />
     <ClCompile Include="OS\inputManager.cpp" />
     <ClCompile Include="OS\window.cpp" />
