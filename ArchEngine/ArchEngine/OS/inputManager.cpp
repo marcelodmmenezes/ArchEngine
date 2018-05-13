@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 11/05/2018                                                 *
+ * Last Modified: 12/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -151,7 +151,11 @@ namespace OS {
 		// Reads the input contexts
 		LuaScript lua_context;
 
-		if (!lua_context.initialize(path))
+		LuaFunctions functions;
+		functions.push_back(std::make_pair("pushContext", ::pushContext));
+		functions.push_back(std::make_pair("popContext", ::popContext));
+		
+		if (!lua_context.initialize(m_config_file_path, functions))
 			return false;
 
 		auto input_contexts = lua_context.getTablePairs("contexts");
@@ -312,9 +316,14 @@ namespace OS {
 	void InputManager::pushContext(const std::string& context) {
 		auto it = m_mapped_contexts.find(context);
 
-#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
-		assert(it != m_mapped_contexts.end());
-#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+		if (it == m_mapped_contexts.end()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				context + " wasn't mapped");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+
+			return;
+		}
 		
 		for (auto it2 = m_active_contexts.begin();
 			it2 != m_active_contexts.end(); ++it2)
@@ -330,9 +339,14 @@ namespace OS {
 	void InputManager::popContext(const std::string& context) {
 		auto it = m_mapped_contexts.find(context);
 
-#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
-		assert(it != m_mapped_contexts.end());
-#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+		if (it == m_mapped_contexts.end()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				context + " wasn't mapped");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+
+			return;
+		}
 
 		auto it2 = m_active_contexts.begin();
 

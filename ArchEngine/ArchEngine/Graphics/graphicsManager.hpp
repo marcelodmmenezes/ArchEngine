@@ -14,8 +14,11 @@
 
 
 #include "../Config/engineMacros.hpp"
+#include "glad_3_3_core.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
+
+#include <string>
 
 
 namespace Graphics {
@@ -28,7 +31,22 @@ namespace Graphics {
 
 		static GraphicsManager& getInstance();
 
+		bool initialize();
+		bool initializeFromConfigFile(const std::string& path);
+
+		void update(float delta_time);
+
+		void destroy();
+
 	private:
+		enum State {
+			CONSTRUCTED,
+			INITIALIZED,
+			SAFE_TO_DESTROY
+		};
+
+		State m_state;
+
 		GraphicsManager();
 	};
 }

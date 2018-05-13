@@ -3,7 +3,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 06/05/2018                                                 *
+ * Last Modified: 12/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -11,15 +11,35 @@
 #define ECS_COMPONENT_HPP
 
 
+#include "../Graphics/shader.hpp"
+
 #include <bitset>
 #include <string>
 #include <vector>
+
+
+using namespace Graphics;
 
 
 namespace ECS {
 	// ArchEngine component types
 	enum ComponentType {
 		COMPONENT_NONE,
+
+		// General components
+		COMPONENT_TRANSFORMATION_MATRIX,
+
+		// Graphics components
+		COMPONENT_GRAPHICS_SHADER,
+		COMPONENT_GRAPHICS_VAO,
+		COMPONENT_GRAPHICS_TEXTURES,
+		COMPONENT_GRAPHICS_DIRECTIONAL_LIGHT,
+		COMPONENT_GRAPHICS_POINT_LIGHT,
+		COMPONENT_GRAPHICS_SPOT_LIGHT,
+
+		// Physics components
+		COMPONENT_PHYSICS_RIGID_BODY,
+		COMPONENT_PHYSICS_VELOCITY,
 
 		NUMBER_OF_DEFAULT_COMPONENTS
 	};
@@ -37,14 +57,9 @@ namespace ECS {
 		}
 	};
 
-	//----------------------------------------------- Component implementations
-
-	/* Components should be plain old data structs,
-	 * but when using third party libraries this may not always be true.
-	 */
-
 	//---------------------------------------------------- Arrays of components
 	struct Components {
+		std::vector<Shader> shaders;
 	};
 }
 

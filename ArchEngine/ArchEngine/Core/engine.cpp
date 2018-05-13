@@ -17,6 +17,7 @@
 #include "engine.hpp"
 
 
+using namespace Graphics;
 using namespace OS;
 using namespace Script;
 using namespace Utils;
@@ -135,6 +136,7 @@ namespace Core {
 				next_game_tick) / (float)m_skip_ticks;
 
 			// TODO: render scene
+			GraphicsManager::getInstance().update(interpolation);
 
 			m_window.update();
 		}
@@ -223,6 +225,13 @@ namespace Core {
 
 		engine_config.destroy();
 
+		//------------------------------------------- Window configuration file
+		if (!m_window.initializeFromConfigFile(
+			lua_context.get<std::string>("files.windowConfig"))) {
+			lua_context.destroy();
+			return false;
+		}
+
 		//------------------------------------- Event system configuration file
 		if (!EventManager::getInstance().initialize(
 			lua_context.get<std::string>("files.eventConfig"))) {
@@ -230,16 +239,13 @@ namespace Core {
 			return false;
 		}
 
+		//---------------------------------- Graphics system configuration file
+		// TODO
+		GraphicsManager::getInstance().initializeFromConfigFile("");
+
 		//------------------------------------ Input systems configuration file
 		if (!InputManager::getInstance().initialize(
 			lua_context.get<std::string>("files.inputContexts"))) {
-			lua_context.destroy();
-			return false;
-		}
-
-		//------------------------------------------- Window configuration file
-		if (!m_window.initializeFromConfigFile(
-			lua_context.get<std::string>("files.windowConfig"))) {
 			lua_context.destroy();
 			return false;
 		}

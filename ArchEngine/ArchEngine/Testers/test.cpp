@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 11/05/2018                                                 *
+ * Last Modified: 12/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -65,6 +65,8 @@ int main(int argc, char* argv[]) {
 		listener.bind<&test1Aux_Function3>();
 		EventManager::getInstance().addListener(
 			listener, EVENT_INPUT_CONTEXT);
+
+		InputManager::getInstance().pushContext("test1");
 
 		Engine::getInstance().run();
 	}

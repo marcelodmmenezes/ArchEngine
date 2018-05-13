@@ -20,6 +20,7 @@
 
 #include "event.hpp"
 #include "../Config/engineMacros.hpp"
+#include "../Graphics/graphicsManager.hpp"
 #include "../OS/inputManager.hpp"
 #include "../OS/window.hpp"
 #include "../Script/luaScript.hpp"

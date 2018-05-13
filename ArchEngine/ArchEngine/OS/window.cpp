@@ -97,7 +97,7 @@ namespace OS {
 
 		m_window = SDL_CreateWindow(m_title.c_str(),
 			m_pos_x, m_pos_y, m_width, m_height,
-			m_fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0 | sdl_flags);
+			(m_fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0) | sdl_flags);
 
 		if (!m_window) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
@@ -244,6 +244,11 @@ namespace OS {
 			pos_y = SDL_WINDOWPOS_CENTERED;
 
 		setPosition(pos_x, pos_y);
+
+		if (lua_context.get<bool>("fullscreen"))
+			fullscreen(true);
+		else
+			fullscreen(false);
 
 		m_watch_file = lua_context.get<bool>("hot_reload");
 
