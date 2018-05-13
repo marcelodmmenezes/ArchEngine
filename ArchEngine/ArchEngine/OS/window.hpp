@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 07/05/2018                                                 *
+ * Last Modified: 12/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -15,8 +15,9 @@
 #define OS_WINDOW_HPP
 
 
-#include "../Core/eventManager.hpp"
 #include "../Config/engineMacros.hpp"
+#include "../Core/eventManager.hpp"
+#include "../Graphics/glad_3_3_core.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/fileWatcher.hpp"
 #include "../Utils/serviceLocator.hpp"

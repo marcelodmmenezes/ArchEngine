@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Physics/physicsManager.cpp"                                *
+ * Arch Engine - "Graphics/graphicsManager.cpp"                              *
  *                                                                           *
  * TODO: description                                                         *
  *                                                                           *
@@ -9,30 +9,30 @@
  *===========================================================================*/
 
 
-#include "physicsManager.hpp"
+#include "graphicsManager.hpp"
 
 
 using namespace Script;
 using namespace Utils;
 
 
-namespace Physics {
-	PhysicsManager::PhysicsManager() {
+namespace Graphics {
+	GraphicsManager::GraphicsManager() {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
-			"PhysicsManager constructor");
+			"GraphicsManager constructor");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
-	PhysicsManager::~PhysicsManager() {
+	GraphicsManager::~GraphicsManager() {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
-			"PhysicsManager destructor");
+			"GraphicsManager constructor");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
-	PhysicsManager& PhysicsManager::getInstance() {
-		static PhysicsManager instance;
+	GraphicsManager& GraphicsManager::getInstance() {
+		static GraphicsManager instance;
 		return instance;
 	}
 }

@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Physics/world.hpp"                                         *
+ * Arch Engine - "Physics/world.cpp"                                         *
  *                                                                           *
  * Class responsible for representing the physics world.                     *
  * All physics objects, collisions and simulations are contained and         *

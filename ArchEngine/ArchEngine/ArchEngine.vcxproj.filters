@@ -84,6 +84,12 @@
     <ClInclude Include="Physics\world.hpp">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\glad_3_3_core.hpp">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\graphicsManager.hpp">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -127,6 +133,12 @@
     </ClCompile>
     <ClCompile Include="Physics\world.cpp">
       <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\glad_3_3_core.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\graphicsManager.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

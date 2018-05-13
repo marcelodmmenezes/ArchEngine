@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 07/05/2018                                                 *
+ * Last Modified: 12/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -108,6 +108,17 @@ namespace OS {
 		}
 
 		m_gl_context = SDL_GL_CreateContext(m_window);
+
+		if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
+			SDL_GL_DeleteContext(this->m_gl_context);
+			SDL_DestroyWindow(this->m_window);
+			m_window = nullptr;
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
+				"Failed to load OpenGL");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			return false;
+		}
 
 		m_state = INITIALIZED;
 
