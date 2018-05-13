@@ -179,6 +179,8 @@
     <None Include="Testers\engineConfig.lua" />
     <None Include="Testers\eventConfig.lua" />
     <None Include="Testers\inputContexts.lua" />
+    <None Include="Testers\objfs.glsl" />
+    <None Include="Testers\objvs.glsl" />
     <None Include="Testers\testContext.lua" />
     <None Include="Testers\testContext2.lua" />
     <None Include="Testers\windowConfig.lua" />

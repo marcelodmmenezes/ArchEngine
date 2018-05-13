@@ -182,5 +182,11 @@
     <None Include="Testers\testContext2.lua">
       <Filter>Testers</Filter>
     </None>
+    <None Include="Testers\objfs.glsl">
+      <Filter>Testers</Filter>
+    </None>
+    <None Include="Testers\objvs.glsl">
+      <Filter>Testers</Filter>
+    </None>
   </ItemGroup>
 </Project>

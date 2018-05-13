@@ -50,16 +50,13 @@ int main(int argc, char* argv[]) {
 	std::stringstream ss;
 
 	Engine::startLoggingServices();
-	
-	Shader shader;
-	shader.initialize("", "");
-	shader.setFloat("test", 123.123f);
-	shader.setFloat("test", 123.124f);
-	shader.setFloat("test", 123.122f);
-	shader.setFloat("test", 123.122f);
 
 	if (Engine::getInstance().initialize("../../ArchEngine/Testers/"
 		"core_engine_test_engine_config.lua")) {
+
+		Shader shader;
+		shader.initialize("../../ArchEngine/Testers/objvs.glsl",
+			"../../ArchEngine/Testers/objfs.glsl");
 
 		EventListener listener;
 
@@ -82,8 +79,6 @@ int main(int argc, char* argv[]) {
 	else
 		ServiceLocator::getFileLogger()->log<LOG_ERROR>(
 			"Failed to initialize ArchEngine");
-
-	shader.update();
 
 	Engine::getInstance().exit();
 

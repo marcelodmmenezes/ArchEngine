@@ -1,0 +1,25 @@
+#version 330 core
+
+layout (location = 0) in vec3 v_position;
+layout (location = 1) in vec3 v_normal;
+layout (location = 2) in vec2 v_texture_coords;
+
+uniform mat4 u_model;
+uniform mat4 u_view;
+uniform mat4 u_projection;
+uniform mat3 u_trn_inv_up_model;
+
+out vec3 f_normal;
+out vec3 f_frag_pos;
+out vec2 f_texture_coords;
+
+void main() {
+	vec4 world_position = u_model * vec4(v_position, 1.0f);
+
+	gl_Position = u_projection * u_view * world_position;
+
+	f_normal = u_trn_inv_up_model * v_normal;
+	f_frag_pos = vec3(world_position);
+
+	f_texture_coords = vec2(v_texture_coords.x, 1.0f - v_texture_coords.y);
+}

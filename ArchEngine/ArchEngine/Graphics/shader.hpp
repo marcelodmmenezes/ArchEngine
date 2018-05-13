@@ -63,7 +63,15 @@ namespace Graphics {
 		void setMat4(const std::string& name, const glm::mat4& matrix);
 
 	private:
-		bool compileShader(const std::string& path, GLenum type);
+		bool compileShader(const std::string& path,
+			GLenum type, unsigned& shader_handle);
+
+		bool linkProgram(unsigned vs, unsigned fs);
+		bool linkProgram(unsigned vs, unsigned gs, unsigned fs);
+
+		void getAttributes();
+		void getUniforms();
+
 		void notifyDirty(const std::string& uniform_name);
 
 		unsigned m_program_id;
