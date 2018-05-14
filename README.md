@@ -1,4 +1,4 @@
-# TCC
+# ArchEngine
 
 ## Developing a minimalist game engine for learning purposes
 

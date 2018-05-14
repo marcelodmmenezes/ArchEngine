@@ -34,7 +34,7 @@ namespace Graphics {
 	typedef std::shared_ptr<IUniform> UniformPtr;
 
 	// For observer pattern
-	// The unsigned is the uniform's id in it's shader program
+	// The string represents the uniform`s name
 	typedef Utils::Delegate<void(const std::string&)> DirtyObserver;
 
 	class IUniform {
