@@ -29,9 +29,6 @@ namespace Graphics {
 	}
 
 	Shader::~Shader() {
-		m_dirty_uniforms.clear();
-		m_uniforms_by_name.clear();
-
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Shader destructor");
