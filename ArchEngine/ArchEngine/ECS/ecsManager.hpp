@@ -72,7 +72,7 @@ namespace ECS {
 	template<typename T>
 	unsigned ECSManager::addComponent(T& comp) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-		Utils::ServiceLocator.getFileLogger()->log<Utils::LOG_WARNING>(
+		Utils::ServiceLocator::getFileLogger()->log<Utils::LOG_WARNING>(
 			"Component type does not exist");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 

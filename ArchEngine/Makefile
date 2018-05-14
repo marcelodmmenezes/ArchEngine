@@ -26,7 +26,9 @@ OBJDIR = GCCOutput/Intermediate
 
 CORE = ArchEngine/Core
 ECS = ArchEngine/ECS
+GRAPHICS = ArchEngine/Graphics
 OS = ArchEngine/OS
+PHYSICS = ArchEngine/Physics
 SCRIPT = ArchEngine/Script
 TESTERS = ArchEngine/Testers
 UTILS = ArchEngine/Utils
@@ -35,7 +37,7 @@ UTILS = ArchEngine/Utils
 
 CXX = g++
 CXXFLAGS = -std=c++11 -I/usr/include/lua5.3
-LIBS = -pthread -lSDL2 -llua5.3 -lBulletSoftBody -lBulletDynamics \
+LIBS = -pthread -ldl -lSDL2 -llua5.3 -lBulletSoftBody -lBulletDynamics \
 	-lBulletCollision -lLinearMath
 
 #------------------------------------------------------------------------ Rules
@@ -57,6 +59,20 @@ $(OBJDIR)/$(CORE)/event.o : $(CORE)/event.cpp
 $(OBJDIR)/$(CORE)/eventManager.o : $(CORE)/eventManager.cpp
 	$(COMPILEOBJ)
 
+$(OBJDIR)/$(ECS)/ecsManager.o : $(ECS)/ecsManager.cpp
+	$(COMPILEOBJ)
+
+$(OBJDIR)/$(GRAPHICS)/glad_3_3_core.o : $(GRAPHICS)/glad_3_3_core.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(GRAPHICS)/graphicsManager.o : $(GRAPHICS)/graphicsManager.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(GRAPHICS)/shader.o : $(GRAPHICS)/shader.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(GRAPHICS)/stb_image.o : $(GRAPHICS)/stb_image.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(GRAPHICS)/uniforms.o : $(GRAPHICS)/uniforms.cpp
+	$(COMPILEOBJ)
+
 $(OBJDIR)/$(OS)/inputContext.o : $(OS)/inputContext.cpp
 	$(COMPILEOBJ)
 $(OBJDIR)/$(OS)/inputManager.o : $(OS)/inputManager.cpp
@@ -64,6 +80,11 @@ $(OBJDIR)/$(OS)/inputManager.o : $(OS)/inputManager.cpp
 $(OBJDIR)/$(OS)/systemManager.o : $(OS)/systemManager.cpp
 	$(COMPILEOBJ)
 $(OBJDIR)/$(OS)/window.o : $(OS)/window.cpp
+	$(COMPILEOBJ)
+
+$(OBJDIR)/$(PHYSICS)/physicsManager.o : $(PHYSICS)/physicsManager.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(PHYSICS)/world.o : $(PHYSICS)/world.cpp
 	$(COMPILEOBJ)
 
 $(OBJDIR)/$(SCRIPT)/luaScript.o : $(SCRIPT)/luaScript.cpp
@@ -81,10 +102,12 @@ $(OBJDIR)/$(UTILS)/timer.o : $(UTILS)/timer.cpp
 	$(COMPILEOBJ)
 
 _OBJ = $(CORE)/engine.o $(CORE)/event.o \
-	$(CORE)/eventManager.o $(OS)/inputContext.o $(OS)/inputManager.o \
-	$(OS)/window.o $(SCRIPT)/luaScript.o $(TESTERS)/core_engine_test.o \
-	$(TESTERS)/test.o $(UTILS)/fileWatcher.o $(UTILS)/serviceLocator.o \
-	$(UTILS)/timer.o
+	$(CORE)/eventManager.o $(ECS)/ecsManager.o $(GRAPHICS)/glad_3_3_core.o \
+	$(GRAPHICS)/graphicsManager.o $(GRAPHICS)/shader.o \
+	$(GRAPHICS)/stb_image.o $(GRAPHICS)/uniforms.o $(OS)/inputContext.o \
+	$(OS)/inputManager.o $(OS)/window.o $(PHYSICS)/physicsManager.o \
+	$(PHYSICS)/world.o $(SCRIPT)/luaScript.o $(TESTERS)/test.o \
+	$(UTILS)/fileWatcher.o $(UTILS)/serviceLocator.o $(UTILS)/timer.o
 OBJ = $(patsubst %, $(OBJDIR)/%, $(_OBJ))
 
 build: $(OBJ)
@@ -103,8 +126,12 @@ create_directories:
 		mkdir GCCOutput/Intermediate/$(CORE); fi
 	if [ ! -d GCCOutput/Intermediate/$(ECS) ]; then \
 		mkdir GCCOutput/Intermediate/$(ECS); fi
+	if [ ! -d GCCOutput/Intermediate/$(GRAPHICS) ]; then \
+		mkdir GCCOutput/Intermediate/$(GRAPHICS); fi
 	if [ ! -d GCCOutput/Intermediate/$(OS) ]; then \
 		mkdir GCCOutput/Intermediate/$(OS); fi
+	if [ ! -d GCCOutput/Intermediate/$(PHYSICS) ]; then \
+		mkdir GCCOutput/Intermediate/$(PHYSICS); fi
 	if [ ! -d GCCOutput/Intermediate/$(SCRIPT) ]; then \
 		mkdir GCCOutput/Intermediate/$(SCRIPT); fi
 	if [ ! -d GCCOutput/Intermediate/$(TESTERS) ]; then \
@@ -118,6 +145,8 @@ install_dependencies:
 		sudo apt-get install libsdl2-dev; fi
 	if ! locate liblua5.3-dev; then \
 		sudo apt-get install liblua5.3-dev; fi
+	if ! locate libglm-dev; then \
+		sudo apt-get install libglm-dev; fi
 
 .PHONY: clean
 
