@@ -415,7 +415,7 @@ namespace Graphics {
 			"Found " + std::to_string(count) + " attributes");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
-		for (unsigned i = 0; (unsigned)i < count; i++) {
+		for (unsigned i = 0; i < (unsigned)count; i++) {
 			glGetActiveAttrib(m_program_id, i, BUF_SIZE,
 				&name_length, &size, &type, name);
 
