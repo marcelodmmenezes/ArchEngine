@@ -102,10 +102,13 @@
     <ClInclude Include="Graphics\assimpLoader.hpp">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\light.hpp">
+    <ClInclude Include="Graphics\debugCamera.hpp">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\debugCamera.hpp">
+    <ClInclude Include="Graphics\mesh.hpp">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\primitives.hpp">
       <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>
@@ -171,6 +174,9 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\debugCamera.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\mesh.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
