@@ -57,5 +57,7 @@ namespace Graphics {
 		glm::vec3 ambient;
 		glm::vec3 diffuse;
 		glm::vec3 specular;
+
+		bool emit_shadows;
 	};
 }
