@@ -47,8 +47,6 @@ void test1Aux_Function3(EventPtr e);
 
 
 int main(int argc, char* argv[]) {
-	std::stringstream ss;
-
 	Engine::startLoggingServices();
 
 	if (Engine::getInstance().initialize("../../ArchEngine/Testers/"
@@ -71,13 +69,14 @@ int main(int argc, char* argv[]) {
 
 		Engine::getInstance().run();
 	}
-	else
+	else {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		ServiceLocator::getFileLogger()->log<LOG_ERROR>(
 			"Failed to initialize ArchEngine");
-
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+	}
+		
 	Engine::getInstance().exit();
-
-	ServiceLocator::getFileLogger()->log<LOG_INFO>(ss);
 }
 
 void test1Aux_Function1(EventPtr e) {
@@ -96,12 +95,12 @@ void test1Aux_Function1(EventPtr e) {
 
 void test1Aux_Function2(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputStateEvent>(e);
-
+	/*
 	switch (evnt->getValue()) {
 	case GameInputStates::TEST_STATE:
 		std::cout << "TEST STATE TRIGGERED\n";
 		break;
-	}
+	}*/
 }
 
 void test1Aux_Function3(EventPtr e) {

@@ -14,6 +14,7 @@
 
 
 #include "../Config/engineMacros.hpp"
+#include "debugCamera.hpp"
 #include "glad_3_3_core.hpp"
 #include "mesh.hpp"
 #include "shader.hpp"
@@ -55,6 +56,7 @@ namespace Graphics {
 		//---------------------------------------------------------------- TEST
 		Mesh mesh;
 		Shader shader;
+		DebugCamera camera;
 		//---------------------------------------------------------------------
 
 		GraphicsManager();

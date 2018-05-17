@@ -15,8 +15,13 @@
 #define GRAPHICS_DEBUG_CAMERA_HPP
 
 
+#include "../Core/eventManager.hpp"
+#include "../OS/inputManager.hpp"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include <queue>
 
 
 namespace Graphics {
@@ -26,7 +31,7 @@ namespace Graphics {
 		CAMERA_LEFT,
 		CAMERA_RIGHT,
 		CAMERA_UP,
-		CAMER_DOWN
+		CAMERA_DOWN
 	};
 
 	static const float YAW = 0.0f;
@@ -49,9 +54,15 @@ namespace Graphics {
 		glm::vec3 getPosition() const;
 		glm::vec3 getFront() const;
 		glm::mat4 getViewMatrix() const;
-		void processKeyboard(CameraMovement direction, float delta_time);
+		void processKeyboard(CameraMovement direction);
 		void processMouseMovement(float x_offset, float y_offset);
 		void processMouseScroll(float y_offset);
+
+		void onInputActionEvent(Core::EventPtr e);
+		void onInputStateEvent(Core::EventPtr e);
+		void onInputRangeEvent(Core::EventPtr e);
+
+		float m_delta_time;
 
 	private:
 		glm::vec3 m_position;

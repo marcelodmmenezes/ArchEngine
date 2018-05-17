@@ -194,8 +194,8 @@ namespace OS {
 		else if (value > m_max_input)
 			value = m_max_input;
 
-		m_value = (((value - m_min_input) / (m_max_input - m_min_input)
-			* (m_max_output - m_min_output)) + m_min_output) * m_sensitivity;
+		m_value = (((value - m_min_input) / (m_max_input - m_min_input))
+			* (m_max_output - m_min_output) + m_min_output) * m_sensitivity;
 	}
 
 	//------------------------------------------------------------ InputContext

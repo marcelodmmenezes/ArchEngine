@@ -138,6 +138,8 @@ namespace Core {
 			// TODO: render scene
 			GraphicsManager::getInstance().update(interpolation);
 
+			std::cout << m_timer.getFrameRate() << "\r";
+
 			m_window.update();
 		}
 	}
