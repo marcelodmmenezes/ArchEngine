@@ -72,17 +72,26 @@ namespace Graphics {
 
 	//------------------------------------------------------------------ Vertex
 
+	// Shader attribute location
+	const unsigned VERTEX_POSITION_LOCATION        = 0;
+	const unsigned VERTEX_NORMAL_LOCATION          = 1;
+	const unsigned VERTEX_TEXTURE_COORDS_LOCATION  = 2;
+	const unsigned VERTEX_TANGENT_LOCATION         = 3;
+	const unsigned VERTEX_BONE_IDS_LOCATION        = 4;
+	const unsigned VERTEX_BONE_WEIGHT_LOCATION     = 5;
+	const unsigned VERTEX_INSTANCE_MATRIX_LOCATION = 6;
+
 	// Assigns a bit to represent each vertex attribute.
 	// If the vertex contains the related attribute it's bit will be 1,
 	// otherwise, false
 	enum VertexAttributes {
-		VERTEX_POSITION         = 1 << 0,
-		VERTEX_NORMAL           = 1 << 1,
-		VERTEX_TEXTURE_COORDS   = 1 << 2,
-		VERTEX_TANGENT          = 1 << 3,
-		VERTEX_BONE_IDS         = 1 << 4,
-		VERTEX_BONE_WEIGHT      = 1 << 5,
-		VERTEX_INSTANCE_MATRIX  = 1 << 6
+		VERTEX_POSITION        = 1 << 0,
+		VERTEX_NORMAL          = 1 << 1,
+		VERTEX_TEXTURE_COORDS  = 1 << 2,
+		VERTEX_TANGENT         = 1 << 3,
+		VERTEX_BONE_IDS        = 1 << 4,
+		VERTEX_BONE_WEIGHT     = 1 << 5,
+		VERTEX_INSTANCE_MATRIX = 1 << 6
 	};
 
 	// Bit mask for fast checking for vertex attributes
