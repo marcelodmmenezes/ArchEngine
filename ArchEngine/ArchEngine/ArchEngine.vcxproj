@@ -188,6 +188,8 @@
     <None Include="Testers\inputContexts.lua" />
     <None Include="Testers\objfs.glsl" />
     <None Include="Testers\objvs.glsl" />
+    <None Include="Testers\simplefs.glsl" />
+    <None Include="Testers\simplevs.glsl" />
     <None Include="Testers\testContext.lua" />
     <None Include="Testers\testContext2.lua" />
     <None Include="Testers\windowConfig.lua" />

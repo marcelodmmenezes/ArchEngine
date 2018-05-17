@@ -209,5 +209,11 @@
     <None Include="Testers\objvs.glsl">
       <Filter>Testers</Filter>
     </None>
+    <None Include="Testers\simplefs.glsl">
+      <Filter>Testers</Filter>
+    </None>
+    <None Include="Testers\simplevs.glsl">
+      <Filter>Testers</Filter>
+    </None>
   </ItemGroup>
 </Project>

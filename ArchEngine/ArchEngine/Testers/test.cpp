@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 12/05/2018                                                 *
+ * Last Modified: 16/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -52,12 +52,7 @@ int main(int argc, char* argv[]) {
 	Engine::startLoggingServices();
 
 	if (Engine::getInstance().initialize("../../ArchEngine/Testers/"
-		"core_engine_test_engine_config.lua")) {
-
-		Shader shader;
-		shader.initialize("../../ArchEngine/Testers/objvs.glsl",
-			"../../ArchEngine/Testers/objfs.glsl");
-		
+		"core_engine_test_engine_config.lua")) {		
 		EventListener listener;
 
 		listener.bind<&test1Aux_Function1>();
