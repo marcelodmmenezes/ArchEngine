@@ -272,7 +272,7 @@ namespace OS {
 		if (m_watch_file != m_file_being_watched) {
 			Core::EventPtr evnt = std::make_shared<WatchFileEvent>(
 				WatchFileEvent(m_config_file_path, m_watch_file));
-			Core::EventManager::getInstance().postEvent(evnt);
+			Core::EventManager::getInstance().sendEvent(evnt);
 			m_file_being_watched = !m_file_being_watched;
 		}
 #endif	// ARCH_ENGINE_HOT_RELOAD_ON

@@ -184,7 +184,6 @@
     <None Include="packages.config" />
     <None Include="Testers\core_engine_test_engine_config.lua" />
     <None Include="Testers\engineConfig.lua" />
-    <None Include="Testers\eventConfig.lua" />
     <None Include="Testers\inputContexts.lua" />
     <None Include="Testers\objfs.glsl" />
     <None Include="Testers\objvs.glsl" />

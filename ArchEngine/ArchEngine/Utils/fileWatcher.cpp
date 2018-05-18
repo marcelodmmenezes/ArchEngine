@@ -68,7 +68,7 @@ namespace Utils {
 					// File was modified
 					Core::EventPtr evnt = std::make_shared<FileModifiedEvent>(
 						FileModifiedEvent(it.first));
-					Core::EventManager::getInstance().postEvent(evnt);
+					Core::EventManager::getInstance().sendEvent(evnt);
 					it.second = mod_time;
 				}
 			}

@@ -197,9 +197,6 @@
     <None Include="Testers\core_engine_test_engine_config.lua">
       <Filter>Testers</Filter>
     </None>
-    <None Include="Testers\eventConfig.lua">
-      <Filter>Testers</Filter>
-    </None>
     <None Include="Testers\testContext2.lua">
       <Filter>Testers</Filter>
     </None>

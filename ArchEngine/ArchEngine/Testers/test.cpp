@@ -88,7 +88,7 @@ void test1Aux_Function1(EventPtr e) {
 		break;
 	case GameInputActions::QUIT_ACTION:
 		EventPtr quit_event = std::make_shared<CoreQuitEvent>(CoreQuitEvent());
-		EventManager::getInstance().postEvent(quit_event);
+		EventManager::getInstance().sendEvent(quit_event);
 		break;
 	}
 }

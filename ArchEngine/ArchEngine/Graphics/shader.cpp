@@ -71,15 +71,15 @@ namespace Graphics {
 
 			Core::EventPtr evnt = std::make_shared<WatchFileEvent>(
 				WatchFileEvent(m_vs_path, true));
-			Core::EventManager::getInstance().postEvent(evnt);
+			Core::EventManager::getInstance().sendEvent(evnt);
 
 			evnt = std::make_shared<WatchFileEvent>(
 				WatchFileEvent(m_gs_path, true));
-			Core::EventManager::getInstance().postEvent(evnt);
+			Core::EventManager::getInstance().sendEvent(evnt);
 
 			evnt = std::make_shared<WatchFileEvent>(
 				WatchFileEvent(m_fs_path, true));
-			Core::EventManager::getInstance().postEvent(evnt);
+			Core::EventManager::getInstance().sendEvent(evnt);
 
 			m_watch_file = false;
 		}
@@ -133,15 +133,15 @@ namespace Graphics {
 
 			Core::EventPtr evnt = std::make_shared<WatchFileEvent>(
 				WatchFileEvent(m_vs_path, true));
-			Core::EventManager::getInstance().postEvent(evnt);
+			Core::EventManager::getInstance().sendEvent(evnt);
 
 			evnt = std::make_shared<WatchFileEvent>(
 				WatchFileEvent(m_gs_path, true));
-			Core::EventManager::getInstance().postEvent(evnt);
+			Core::EventManager::getInstance().sendEvent(evnt);
 
 			evnt = std::make_shared<WatchFileEvent>(
 				WatchFileEvent(m_fs_path, true));
-			Core::EventManager::getInstance().postEvent(evnt);
+			Core::EventManager::getInstance().sendEvent(evnt);
 
 			m_watch_file = false;
 		}
