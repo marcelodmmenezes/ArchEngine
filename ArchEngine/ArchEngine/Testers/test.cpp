@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
 
 		listener.bind<&onInputRangeEvent>();
 		EventManager::getInstance().addListener(
-			listener, EVENT_INPUT_STATE);
+			listener, EVENT_INPUT_RANGE);
 
 		InputManager::getInstance().pushContext("test1");
 
@@ -195,19 +195,18 @@ void onInputStateEvent(EventPtr e) {
 }
 
 void onInputRangeEvent(EventPtr e) {
-	/*
 	auto evnt = std::static_pointer_cast<InputRangeEvent>(e);
 
-	std::cout << "                                  " << evnt->getValue().m_range << " " << evnt->getValue().m_value << "\r";
+	auto& camera = GraphicsManager::getInstance().m_camera;
 
 	switch (evnt->getValue().m_range) {
 	case 0:
-		processMouseMovement(evnt->getValue().m_value, 0.0f);
+		camera.look(evnt->getValue().m_value, 0.0f);
 		break;
 	case 1:
-		processMouseMovement(0.0f, evnt->getValue().m_value);
+		camera.look(0.0f, evnt->getValue().m_value);
 		break;
-	}*/
+	}
 }
 
 

@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 12/05/2018                                                 *
+ * Last Modified: 17/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -233,9 +233,18 @@ namespace OS {
 				}
 				else {
 					SDL_GetMouseState(&x, &y);
-					setAxisValue(MOUSE_AXIS_X, -x);
-					setAxisValue(MOUSE_AXIS_Y, -y);
+
+					if (m_mouse_first)
+						m_mouse_first = false;
+					else {
+						setAxisValue(MOUSE_AXIS_X, m_mouse_last_x - x);
+						setAxisValue(MOUSE_AXIS_Y, m_mouse_last_y - y);
+					}
 				}
+
+				m_mouse_last_x = x;
+				m_mouse_last_y = y;
+
 				break;
 
 			case SDL_MOUSEWHEEL:
