@@ -201,10 +201,10 @@ void onInputRangeEvent(EventPtr e) {
 
 	switch (evnt->getValue().m_range) {
 	case 0:
-		camera.look(evnt->getValue().m_value, 0.0f);
+		camera.look((float)evnt->getValue().m_value, 0.0f);
 		break;
 	case 1:
-		camera.look(0.0f, evnt->getValue().m_value);
+		camera.look(0.0f, (float)evnt->getValue().m_value);
 		break;
 	}
 }

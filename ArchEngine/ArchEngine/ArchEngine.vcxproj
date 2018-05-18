@@ -148,6 +148,7 @@
     <ClInclude Include="OS\window.hpp" />
     <ClInclude Include="Physics\physicsManager.hpp" />
     <ClInclude Include="Physics\world.hpp" />
+    <ClInclude Include="Script\engineLuaAPI.hpp" />
     <ClInclude Include="Script\luaScript.hpp" />
     <ClInclude Include="Utils\delegate.hpp" />
     <ClInclude Include="Utils\fileWatcher.hpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="OS\window.cpp" />
     <ClCompile Include="Physics\physicsManager.cpp" />
     <ClCompile Include="Physics\world.cpp" />
+    <ClCompile Include="Script\engineLuaAPI.cpp" />
     <ClCompile Include="Script\luaScript.cpp" />
     <ClCompile Include="Testers\test.cpp" />
     <ClCompile Include="Utils\fileWatcher.cpp" />
@@ -185,6 +187,7 @@
     <None Include="Testers\core_engine_test_engine_config.lua" />
     <None Include="Testers\engineConfig.lua" />
     <None Include="Testers\inputContexts.lua" />
+    <None Include="Testers\luaAPI.lua" />
     <None Include="Testers\objfs.glsl" />
     <None Include="Testers\objvs.glsl" />
     <None Include="Testers\simplefs.glsl" />

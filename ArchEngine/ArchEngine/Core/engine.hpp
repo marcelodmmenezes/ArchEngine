@@ -23,6 +23,7 @@
 #include "../Graphics/graphicsManager.hpp"
 #include "../OS/inputManager.hpp"
 #include "../OS/window.hpp"
+#include "../Script/engineLuaAPI.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 #include "../Utils/timer.hpp"
@@ -42,6 +43,16 @@
 #include <string>
 
 
+ //------------------------
+ //--------- Lua Engine API
+ //------------------------
+extern "C" {
+	int captureMouse(lua_State* lua);
+	int releaseMouse(lua_State* lua);
+}
+//-------------------------------------------------------------------------
+
+
 namespace Core {
 	class Engine {
 	public:
@@ -57,6 +68,9 @@ namespace Core {
 		bool initialize(const std::string& config_path);
 		void run();
 		void exit();
+
+		void captureMouse();
+		void releaseMouse();
 
 		void handleEvents(EventPtr evnt);
 

@@ -44,8 +44,8 @@
 //--- Lua InputManager API
 //------------------------
 extern "C" {
-	static int pushContext(lua_State* lua);
-	static int popContext(lua_State* lua);
+	int pushContext(lua_State* lua);
+	int popContext(lua_State* lua);
 }
 //-------------------------------------------------------------------------
 

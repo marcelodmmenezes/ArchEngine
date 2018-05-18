@@ -23,6 +23,45 @@ using namespace Script;
 using namespace Utils;
 
 
+//-------------------------------------------------------------- Lua Engine API
+int captureMouse(lua_State* lua) {
+	int argc = lua_gettop(lua);
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+	ServiceLocator::getFileLogger()->log<LOG_INFO>(
+		"Lua capturing mouse with " + std::to_string(argc) + " arguments");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+	assert(argc == 0);
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+	Core::Engine::getInstance().captureMouse();
+
+	// No values returned to Lua
+	return 0;
+}
+
+int releaseMouse(lua_State* lua) {
+	int argc = lua_gettop(lua);
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+	ServiceLocator::getFileLogger()->log<LOG_INFO>(
+		"Lua releasing mouse with " + std::to_string(argc) + " arguments");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+	assert(argc == 0);
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+	Core::Engine::getInstance().releaseMouse();
+
+	// No values returned to Lua
+	return 0;
+}
+//-----------------------------------------------------------------------------
+
+
 namespace Core {
 	//------------------------------------------------------------------ Engine
 	Engine::Engine() : m_initialized(false), m_running(false) {}
@@ -42,6 +81,8 @@ namespace Core {
 	}
 
 	bool Engine::initialize(const std::string& config_path) {
+		m_window.captureMouse();
+
 		//------------------------------------------------- Initializing Logger
 		// Prevents the engine to be initalized more than once
 		if (m_initialized)  {
@@ -148,6 +189,14 @@ namespace Core {
 		m_initialized = false;
 	}
 
+	void Engine::captureMouse() {
+		m_window.captureMouse();
+	}
+
+	void Engine::releaseMouse() {
+		m_window.releaseMouse();
+	}
+
 	void Engine::handleEvents(EventPtr evnt) {
 		switch (evnt->getType()) {
 		case EVENT_CORE_QUIT:
@@ -229,6 +278,13 @@ namespace Core {
 		//------------------------------------ Input systems configuration file
 		if (!InputManager::getInstance().initialize(
 			lua_context.get<std::string>("files.inputContexts"))) {
+			lua_context.destroy();
+			return false;
+		}
+
+		//------------------------------------------ Lua API configuration file
+		if (!EngineLuaAPI::getInstance().initialize(
+			lua_context.get<std::string>("files.luaAPI"))) {
 			lua_context.destroy();
 			return false;
 		}

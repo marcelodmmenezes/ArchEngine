@@ -111,6 +111,9 @@
     <ClInclude Include="Graphics\primitives.hpp">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Script\engineLuaAPI.hpp">
+      <Filter>Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -179,6 +182,9 @@
     <ClCompile Include="Graphics\mesh.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Script\engineLuaAPI.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -210,6 +216,9 @@
       <Filter>Testers</Filter>
     </None>
     <None Include="Testers\simplevs.glsl">
+      <Filter>Testers</Filter>
+    </None>
+    <None Include="Testers\luaAPI.lua">
       <Filter>Testers</Filter>
     </None>
   </ItemGroup>
