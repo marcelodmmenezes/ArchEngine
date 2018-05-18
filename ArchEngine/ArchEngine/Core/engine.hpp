@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 11/05/2018                                                 *
+ * Last Modified: 17/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -37,6 +37,7 @@
 #include <SDL.h>
 #endif
 
+#include <iomanip>
 #include <memory>
 #include <string>
 

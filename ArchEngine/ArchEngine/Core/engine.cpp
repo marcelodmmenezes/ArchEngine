@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 12/05/2018                                                 *
+ * Last Modified: 17/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -102,8 +102,6 @@ namespace Core {
 		int next_game_tick = m_timer.getCurrentTicks();
 		// Game update loop counter
 		int update_loops;
-		// Value for rendering calculations
-		float interpolation; 
 		
 		while (m_running) {
 			//---------------------------------------------------- Time control
@@ -129,13 +127,12 @@ namespace Core {
 			}
 
 			//------------------------------------------------- Scene rendering
-			interpolation = (float)(m_timer.getCurrentTicks() + m_skip_ticks -
-				next_game_tick) / (float)m_skip_ticks;
+			GraphicsManager::getInstance().update(
+				(float)m_timer.getDeltaTime());
 
-			// TODO: render scene
-			GraphicsManager::getInstance().update(interpolation);
-
-			std::cout << m_timer.getFrameRate() << "\r";
+			std::cout << "Seconds between frames: " <<
+				std::setprecision(6) << m_timer.getDeltaTime() << " - FPS: " <<
+				std::setprecision(3) << m_timer.getFrameRate() << "      \r";
 
 			m_window.update();
 		}

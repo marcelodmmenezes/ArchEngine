@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/05/2018                                                       *
- * Last Modified: 16/05/2018                                                 *
+ * Last Modified: 17/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -19,6 +19,12 @@ using namespace OS;
 
 
 namespace Graphics {
+	const float DebugCamera::YAW = 0.0f;
+	const float DebugCamera::PITCH = 0.0f;
+	const float DebugCamera::SPEED = 5.0f;
+	const float DebugCamera::SENSITIVITY = 0.15f;
+	const float DebugCamera::ZOOM = 45.0f;
+
 	DebugCamera::DebugCamera(glm::vec3 position, glm::vec3 front,
 		glm::vec3 up, float yaw, float pitch) :
 		m_front(front), m_movement_speed(SPEED),
@@ -27,14 +33,6 @@ namespace Graphics {
 		m_world_up = up;
 		m_yaw = yaw;
 		m_pitch = pitch;
-
-		EventListener listener;
-		listener.bind<DebugCamera, &DebugCamera::onInputStateEvent>(this);
-		EventManager::getInstance().addListener(listener, EVENT_INPUT_STATE);
-
-		listener.bind<DebugCamera, &DebugCamera::onInputRangeEvent>(this);
-		EventManager::getInstance().addListener(listener, EVENT_INPUT_RANGE);
-
 		updateCameraVectors();
 	}
 
@@ -61,8 +59,16 @@ namespace Graphics {
 		return glm::lookAt(m_position, m_position + m_front, m_up);
 	}
 
-	void DebugCamera::processKeyboard(CameraMovement direction) {
-		float velocity = m_movement_speed * m_delta_time / 10.0f;
+	void DebugCamera::setSpeed(float speed) {
+		m_movement_speed = speed;
+	}
+
+	float DebugCamera::getSpeed() {
+		return m_movement_speed;
+	}
+
+	void DebugCamera::move(CameraMovement direction) {
+		float velocity = m_movement_speed * m_delta_time;
 
 		if (direction == CAMERA_FORWARD)
 			m_position += m_front * velocity;
@@ -78,7 +84,7 @@ namespace Graphics {
 			m_position.y -= 1.0f * velocity;
 	}
 
-	void DebugCamera::processMouseMovement(float x_offset, float y_offset) {
+	void DebugCamera::look(float x_offset, float y_offset) {
 		m_yaw += x_offset * m_mouse_sensitivity;
 		m_pitch += y_offset * m_mouse_sensitivity;
 
@@ -95,7 +101,7 @@ namespace Graphics {
 		updateCameraVectors();
 	}
 
-	void DebugCamera::processMouseScroll(float y_offset) {
+	void DebugCamera::zoom(float y_offset) {
 		if (m_zoom >= 1.0f && m_zoom <= 45.0f)
 			m_zoom -= y_offset;
 
@@ -103,52 +109,6 @@ namespace Graphics {
 			m_zoom = 1.0f;
 		else if (m_zoom >= 45.0f)
 			m_zoom = 45.0f;
-	}
-
-	void DebugCamera::onInputActionEvent(EventPtr e) {
-		auto evnt = std::static_pointer_cast<InputActionEvent>(e);
-
-		// TODO
-	}
-
-	void DebugCamera::onInputStateEvent(EventPtr e) {
-		auto evnt = std::static_pointer_cast<InputStateEvent>(e);
-
-		switch (evnt->getValue()) {
-		case 0:
-			processKeyboard(CAMERA_FORWARD);
-			break;
-		case 1:
-			processKeyboard(CAMERA_BACKWARD);
-			break;
-		case 2:
-			processKeyboard(CAMERA_LEFT);
-			break;
-		case 3:
-			processKeyboard(CAMERA_RIGHT);
-			break;
-		case 4:
-			processKeyboard(CAMERA_UP);
-			break;
-		case 5:
-			processKeyboard(CAMERA_DOWN);
-			break;
-		}
-	}
-
-	void DebugCamera::onInputRangeEvent(EventPtr e) {/*
-		auto evnt = std::static_pointer_cast<InputRangeEvent>(e);
-
-		std::cout << "                                  " << evnt->getValue().m_range << " " << evnt->getValue().m_value << "\r";
-
-		switch (evnt->getValue().m_range) {
-		case 0:
-			processMouseMovement(evnt->getValue().m_value, 0.0f);
-			break;
-		case 1:
-			processMouseMovement(0.0f, evnt->getValue().m_value);
-			break;
-		}*/
 	}
 
 	void DebugCamera::updateCameraVectors() {

@@ -44,6 +44,12 @@ namespace Graphics {
 
 		void destroy();
 
+		//---------------------------------------------------------------- TEST
+		Mesh m_mesh;
+		Shader m_shader;
+		DebugCamera m_camera;
+		//---------------------------------------------------------------------
+
 	private:
 		enum State {
 			CONSTRUCTED,
@@ -52,12 +58,6 @@ namespace Graphics {
 		};
 
 		State m_state;
-
-		//---------------------------------------------------------------- TEST
-		Mesh mesh;
-		Shader shader;
-		DebugCamera camera;
-		//---------------------------------------------------------------------
 
 		GraphicsManager();
 	};

@@ -40,48 +40,6 @@ namespace Graphics {
 		// TODO
 		glClearColor(color.r, color.g, color.b, color.a);
 
-		//---------------------------------------------------------------- TEST
-		std::vector<Vertex> vertices;
-		Vertex vertex;
-
-		vertex.position = glm::vec3(-1.0f, -1.0f,  1.0f);
-		vertices.push_back(vertex);
-		vertex.position = glm::vec3( 1.0f, -1.0f,  1.0f);
-		vertices.push_back(vertex);
-		vertex.position = glm::vec3( 1.0f,  1.0f,  1.0f);
-		vertices.push_back(vertex);
-		vertex.position = glm::vec3(-1.0f,  1.0f,  1.0f);
-		vertices.push_back(vertex);
-		vertex.position = glm::vec3(-1.0f, -1.0f, -1.0f);
-		vertices.push_back(vertex);
-		vertex.position = glm::vec3( 1.0f, -1.0f, -1.0f);
-		vertices.push_back(vertex);
-		vertex.position = glm::vec3( 1.0f,  1.0f, -1.0f);
-		vertices.push_back(vertex);
-		vertex.position = glm::vec3(-1.0f,  1.0f, -1.0f);
-		vertices.push_back(vertex);
-
-		std::vector<unsigned> indices = {
-			0, 1, 2,
-			2, 3, 0,
-			3, 2, 6,
-			6, 7, 3,
-			7, 6, 5,
-			5, 4, 7,
-			4, 5, 1,
-			1, 0, 4,
-			4, 0, 3,
-			3, 7, 4,
-			1, 5, 6,
-			6, 2, 1,
-		};
-
-		mesh.create(VERTEX_POSITION, vertices, indices, 0);
-
-		shader.initialize("../../ArchEngine/Testers/simplevs.glsl",
-			"../../ArchEngine/Testers/simplefs.glsl");
-		//---------------------------------------------------------------------
-
 		return true;
 	}
 
@@ -95,19 +53,17 @@ namespace Graphics {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//---------------------------------------------------------------- TEST
-		camera.m_delta_time = delta_time;
+		m_camera.m_delta_time = delta_time;
 
-		std::cout << "           " << delta_time << "\r";
+		m_shader.bind();
 
-		shader.bind();
-
-		shader.setMat4("u_model", glm::mat4(1.0f));
-		shader.setMat4("u_view", camera.getViewMatrix());
-		shader.setMat4("u_projection", glm::perspective(
+		m_shader.setMat4("u_model", glm::mat4(1.0f));
+		m_shader.setMat4("u_view", m_camera.getViewMatrix());
+		m_shader.setMat4("u_projection", glm::perspective(
 			glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f));
-		shader.update();
+		m_shader.update();
 
-		mesh.draw();
+		m_mesh.draw();
 		Shader::unbindShaders();
 		//---------------------------------------------------------------------
 	}

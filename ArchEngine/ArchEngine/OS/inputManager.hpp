@@ -62,9 +62,7 @@ namespace OS {
 		~InputActionEvent();
 
 		Core::EventType getType() const override;
-
 		InputAction getValue() const;
-		void setValue(InputAction value);
 
 	private:
 		InputAction m_value;
@@ -73,16 +71,16 @@ namespace OS {
 	class InputStateEvent : public Core::IEvent {
 	public:
 		InputStateEvent();
-		InputStateEvent(InputState value);
+		InputStateEvent(InputState value, bool over = false);
 		~InputStateEvent();
 
 		Core::EventType getType() const override;
-
 		InputState getValue() const;
-		void setValue(InputState value);
+		bool isOver() const;
 
 	private:
 		InputState m_value;
+		bool m_over;
 	};
 
 	class InputRangeEvent : public Core::IEvent {
@@ -92,9 +90,7 @@ namespace OS {
 		~InputRangeEvent();
 
 		Core::EventType getType() const override;
-
 		RangeInfo getValue() const;
-		void setValue(const RangeInfo& value);
 
 	private:
 		RangeInfo m_value;
@@ -125,11 +121,8 @@ namespace OS {
 		// Sets for O(log(n)) access
 		std::set<InputAction> m_actions;
 		std::set<InputState> m_states;
+		std::vector<InputState> m_over_states;
 		std::set<RangeInfo> m_ranges;
-
-		void removeAction(InputAction action);
-		void removeState(InputState state);
-		void removeRange(RangeInfo range);
 	};
 
 	class InputManager {
@@ -158,12 +151,11 @@ namespace OS {
 	private:
 		InputManager();
 
-		// Input gathering and clearing
+		// Input gathering
 		void setKeyState(SDL_Keycode key, bool pressed, bool prev_pressed);
 		void setModState(SDL_Keymod mod, bool pressed, bool prev_pressed);
 		void setMBState(MouseButton mb, bool pressed, bool prev_pressed);
 		void setAxisValue(ControllerAxis axis, double value);
-		void clearInput();
 
 		// Sends the CurrentInput configuration to the engine
 		void dispatch();
@@ -176,10 +168,6 @@ namespace OS {
 		bool triggerKeyState(SDL_Keycode key, InputState& state);
 		bool triggerModState(SDL_Keymod mod, InputState& state);
 		bool triggerMBState(MouseButton mb, InputState& state);
-
-		void consumeKey(SDL_Keycode key);
-		void consumeMod(SDL_Keymod mod);
-		void consumeMB(MouseButton mb);
 
 		// Force actions, states or ranges to happen
 		void forceAction(InputAction action);

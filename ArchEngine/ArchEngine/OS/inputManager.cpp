@@ -78,15 +78,14 @@ namespace OS {
 	InputActionEvent::~InputActionEvent() {}
 	EventType InputActionEvent::getType() const { return m_type; }
 	InputAction InputActionEvent::getValue() const { return m_value; }
-	void InputActionEvent::setValue(InputAction value) { m_value = value; }
 
 	InputStateEvent::InputStateEvent() : IEvent(EVENT_INPUT_STATE) {}
-	InputStateEvent::InputStateEvent(InputState value) :
-		IEvent(EVENT_INPUT_STATE), m_value(value) {}
+	InputStateEvent::InputStateEvent(InputState value, bool over) :
+		IEvent(EVENT_INPUT_STATE), m_value(value), m_over(over) {}
 	InputStateEvent::~InputStateEvent() {}
 	EventType InputStateEvent::getType() const { return m_type; }
 	InputState InputStateEvent::getValue() const { return m_value; }
-	void InputStateEvent::setValue(InputState value) { m_value = value; }
+	bool InputStateEvent::isOver() const { return m_over; }
 
 	InputRangeEvent::InputRangeEvent() : IEvent(EVENT_INPUT_RANGE) {}
 	InputRangeEvent::InputRangeEvent(const RangeInfo& value) :
@@ -94,7 +93,6 @@ namespace OS {
 	InputRangeEvent::~InputRangeEvent() {}
 	EventType InputRangeEvent::getType() const { return m_type; }
 	RangeInfo InputRangeEvent::getValue() const { return m_value; }
-	void InputRangeEvent::setValue(const RangeInfo& value) { m_value = value; }
 
 	InputContextEvent::InputContextEvent() : IEvent(EVENT_INPUT_CONTEXT) {}
 	InputContextEvent::InputContextEvent(const std::string& name, bool state) :
@@ -105,20 +103,6 @@ namespace OS {
 	void InputContextEvent::setName(const std::string& name) { m_name = name; }
 	bool InputContextEvent::getState() const { return m_state; }
 	void InputContextEvent::setState(bool state) { m_state = state; }
-
-	
-	//------------------------------------------------------------ CurrentInput
-	void CurrentInput::removeAction(InputAction action) {
-		m_actions.erase(action);
-	}
-
-	void CurrentInput::removeState(InputState state) {
-		m_states.erase(state);
-	}
-
-	void CurrentInput::removeRange(RangeInfo range) {
-		m_ranges.erase(range);
-	}
 
 
 	//------------------------------------------------------------ InputManager
@@ -375,17 +359,26 @@ namespace OS {
 		InputAction action;
 		InputState state;
 
-		if (pressed && !prev_pressed && triggerKeyAction(key, action)) {
+		bool is_action = triggerKeyAction(key, action);
+		bool is_state = triggerKeyState(key, state);
+
+		if (pressed && !prev_pressed && is_action) {
 			m_current_input.m_actions.insert(action);
 			return;
 		}
 
-		if (pressed && triggerKeyState(key, state)) {
+		if (pressed && is_state) {
 			m_current_input.m_states.insert(state);
 			return;
 		}
 
-		consumeKey(key);
+		if (is_action)
+			m_current_input.m_actions.erase(action);
+
+		if (is_state) {
+			m_current_input.m_states.erase(state);
+			m_current_input.m_over_states.push_back(state);
+		}
 	}
 
 	void InputManager::setModState(SDL_Keymod mod,
@@ -393,17 +386,26 @@ namespace OS {
 		InputAction action;
 		InputState state;
 
-		if (pressed && !prev_pressed && triggerModAction(mod, action)) {
+		bool is_action = triggerModAction(mod, action);
+		bool is_state = triggerModState(mod, state);
+
+		if (pressed && !prev_pressed && is_action) {
 			m_current_input.m_actions.insert(action);
 			return;
 		}
 
-		if (pressed && triggerModState(mod, state)) {
+		if (pressed && is_state) {
 			m_current_input.m_states.insert(state);
 			return;
 		}
 
-		consumeMod(mod);
+		if (is_action)
+			m_current_input.m_actions.erase(action);
+
+		if (is_state) {
+			m_current_input.m_states.erase(state);
+			m_current_input.m_over_states.push_back(state);
+		}
 	}
 
 	void InputManager::setMBState(MouseButton mb,
@@ -411,17 +413,26 @@ namespace OS {
 		InputAction action;
 		InputState state;
 
-		if (pressed && !prev_pressed && triggerMBAction(mb, action)) {
+		bool is_action = triggerMBAction(mb, action);
+		bool is_state = triggerMBState(mb, state);
+
+		if (pressed && !prev_pressed && is_action) {
 			m_current_input.m_actions.insert(action);
 			return;
 		}
 
-		if (pressed && triggerMBState(mb, state)) {
+		if (pressed && is_state) {
 			m_current_input.m_states.insert(state);
 			return;
 		}
 
-		consumeMB(mb);
+		if (is_action)
+			m_current_input.m_actions.erase(action);
+
+		if (is_state) {
+			m_current_input.m_states.erase(state);
+			m_current_input.m_over_states.push_back(state);
+		}
 	}
 
 	void InputManager::setAxisValue(ControllerAxis axis, double value) {
@@ -436,31 +447,34 @@ namespace OS {
 		}
 	}
 
-	void InputManager::clearInput() {
-		m_current_input.m_actions.clear();
-		m_current_input.m_ranges.clear();
-	}
-
 	void InputManager::dispatch() {
 		for (auto& it : m_current_input.m_actions) {
-			Core::EventPtr evnt = std::make_shared<InputActionEvent>(
+			EventPtr evnt = std::make_shared<InputActionEvent>(
 				InputActionEvent(it));
-			Core::EventManager::getInstance().sendEvent(evnt);
+			EventManager::getInstance().sendEvent(evnt);
 		}
 
 		for (auto& it : m_current_input.m_states) {
-			Core::EventPtr evnt = std::make_shared<InputStateEvent>(
+			EventPtr evnt = std::make_shared<InputStateEvent>(
 				InputStateEvent(it));
-			Core::EventManager::getInstance().sendEvent(evnt);
+			EventManager::getInstance().sendEvent(evnt);
+		}
+
+		for (auto& it : m_current_input.m_over_states) {
+			EventPtr evnt = std::make_shared<InputStateEvent>(
+				InputStateEvent(it, true));
+			EventManager::getInstance().sendEvent(evnt);
 		}
 
 		for (auto& it : m_current_input.m_ranges) {
-			Core::EventPtr evnt = std::make_shared<InputRangeEvent>(
+			EventPtr evnt = std::make_shared<InputRangeEvent>(
 				InputRangeEvent(it));
-			Core::EventManager::getInstance().sendEvent(evnt);
+			EventManager::getInstance().sendEvent(evnt);
 		}
 
-		clearInput();
+		m_current_input.m_actions.clear();
+		m_current_input.m_over_states.clear();
+		m_current_input.m_ranges.clear();
 	}
 
 	//--- Action triggers
@@ -511,40 +525,6 @@ namespace OS {
 				return true;
 
 		return false;
-	}
-
-	//--- Trigger & Consume
-	void InputManager::consumeKey(SDL_Keycode key) {
-		InputAction action;
-		InputState state;
-
-		if (triggerKeyAction(key, action))
-			m_current_input.removeAction(action);
-
-		if (triggerKeyState(key, state))
-			m_current_input.removeState(state);
-	}
-
-	void InputManager::consumeMod(SDL_Keymod mod) {
-		InputAction action;
-		InputState state;
-
-		if (triggerModAction(mod, action))
-			m_current_input.removeAction(action);
-
-		if (triggerModState(mod, state))
-			m_current_input.removeState(state);
-	}
-
-	void InputManager::consumeMB(MouseButton mb) {
-		InputAction action;
-		InputState state;
-
-		if (triggerMBAction(mb, action))
-			m_current_input.removeAction(action);
-
-		if (triggerMBState(mb, state))
-			m_current_input.removeState(state);
 	}
 
 	// Force actions, states or ranges to happen
