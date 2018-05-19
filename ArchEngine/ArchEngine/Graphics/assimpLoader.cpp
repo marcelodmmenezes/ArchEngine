@@ -17,12 +17,11 @@ using namespace Utils;
 
 
 namespace Graphics {
-	bool AssimpLoader::importScene(const std::string& path) {
+	bool AssimpLoader::importScene(const std::string& path,
+		aiPostProcessSteps flags) {
 		Assimp::Importer importer;
 
-		const aiScene* scene = importer.ReadFile(path,
-			aiProcess_CalcTangentSpace | aiProcess_Triangulate |
-			aiProcess_JoinIdenticalVertices | aiProcess_SortByPType);
+		const aiScene* scene = importer.ReadFile(path, flags);
 
 		if (!scene) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR

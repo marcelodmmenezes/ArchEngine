@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/05/2018                                                       *
- * Last Modified: 16/05/2018                                                 *
+ * Last Modified: 19/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -15,6 +15,8 @@
 
 
 #include <glm/glm.hpp>
+
+#include <string>
 
 
 namespace Graphics {
@@ -111,8 +113,25 @@ namespace Graphics {
 
 	//---------------------------------------------------------------- Material
 
-	struct Material {
+	enum TextureType {
+		TEXTURE_DIFFUSE,
+		TEXTURE_SPECULAR,
+		TEXTURE_AMBIENT,
+		TEXTURE_EMISSIVE,
+		TEXTURE_HEIGHT,
+		TEXTURE_NORMALS,
+		TEXTURE_DISPLACEMENT,
+		NUMBER_OF_TEXTURE_TYPES
+	};
 
+	struct Texture {
+		unsigned handle;
+		TextureType type;
+		std::string path;
+	};
+
+	struct Material {
+		Texture textures[NUMBER_OF_TEXTURE_TYPES];
 	};
 
 	//-------------------------------------------------------------------------

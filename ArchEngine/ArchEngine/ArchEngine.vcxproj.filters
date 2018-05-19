@@ -16,9 +16,6 @@
     <Filter Include="Config">
       <UniqueIdentifier>{735bb79e-983a-4ca9-9db7-709519818e22}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ECS">
-      <UniqueIdentifier>{e735e134-4ae6-42a4-9dca-0fec528ed375}</UniqueIdentifier>
-    </Filter>
     <Filter Include="OS">
       <UniqueIdentifier>{e19062f9-8273-4917-bb2e-9510b0f2e590}</UniqueIdentifier>
     </Filter>
@@ -65,15 +62,6 @@
     </ClInclude>
     <ClInclude Include="Core\event.hpp">
       <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="ECS\component.hpp">
-      <Filter>ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="ECS\entity.hpp">
-      <Filter>ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="ECS\ecsManager.hpp">
-      <Filter>ECS</Filter>
     </ClInclude>
     <ClInclude Include="Utils\fileWatcher.hpp">
       <Filter>Utils</Filter>
@@ -139,9 +127,6 @@
     </ClCompile>
     <ClCompile Include="OS\window.cpp">
       <Filter>OS</Filter>
-    </ClCompile>
-    <ClCompile Include="ECS\ecsManager.cpp">
-      <Filter>ECS</Filter>
     </ClCompile>
     <ClCompile Include="Core\event.cpp">
       <Filter>Core</Filter>

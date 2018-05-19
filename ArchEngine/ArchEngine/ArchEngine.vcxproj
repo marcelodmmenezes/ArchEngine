@@ -131,9 +131,6 @@
     <ClInclude Include="Config\engineMacros.hpp" />
     <ClInclude Include="Core\engine.hpp" />
     <ClInclude Include="Core\eventManager.hpp" />
-    <ClInclude Include="ECS\component.hpp" />
-    <ClInclude Include="ECS\ecsManager.hpp" />
-    <ClInclude Include="ECS\entity.hpp" />
     <ClInclude Include="Graphics\assimpLoader.hpp" />
     <ClInclude Include="Graphics\debugCamera.hpp" />
     <ClInclude Include="Graphics\glad_3_3_core.hpp" />
@@ -161,7 +158,6 @@
     <ClInclude Include="Core\event.hpp" />
     <ClCompile Include="Core\event.cpp" />
     <ClCompile Include="Core\eventManager.cpp" />
-    <ClCompile Include="ECS\ecsManager.cpp" />
     <ClCompile Include="Graphics\assimpLoader.cpp" />
     <ClCompile Include="Graphics\debugCamera.cpp" />
     <ClCompile Include="Graphics\glad_3_3_core.cpp" />

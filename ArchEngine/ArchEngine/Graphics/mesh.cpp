@@ -31,7 +31,7 @@ namespace Graphics {
 	}
 
 	void Mesh::create(VertexMask mask, const std::vector<Vertex>& vertices,
-		const std::vector<unsigned> indices, unsigned material_id) {
+		const std::vector<unsigned>& indices, unsigned material_id) {
 		m_number_of_indices = indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);

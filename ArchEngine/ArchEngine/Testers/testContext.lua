@@ -8,7 +8,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 18/05/2018                                                 *
  *===========================================================================*/
 ]]
 
@@ -45,7 +45,7 @@ context = {
 			max_input = 1000,
 			min_output = -1,
 			max_output = 1,
-			sensitivity = 100
+			sensitivity = 250
 		},
 		MOUSE_AXIS_Y = {
 			range = 1,
@@ -53,7 +53,7 @@ context = {
 			max_input = 1000,
 			min_output = -1,
 			max_output = 1,
-			sensitivity = 100
+			sensitivity = 250
 		},
 		MOUSE_WHEEL = {
 			range = 2,

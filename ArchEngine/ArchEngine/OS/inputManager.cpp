@@ -229,8 +229,6 @@ namespace OS {
 					else {
 						setAxisValue(MOUSE_AXIS_X, -x);
 						setAxisValue(MOUSE_AXIS_Y, -y);
-
-std::cout << -x << " " << -y << "           \r";
 					}
 				}
 				else {
@@ -241,8 +239,6 @@ std::cout << -x << " " << -y << "           \r";
 					else {
 						setAxisValue(MOUSE_AXIS_X, m_mouse_last_x - x);
 						setAxisValue(MOUSE_AXIS_Y, m_mouse_last_y - y);
-
-std::cout << m_mouse_last_x - x << " " << m_mouse_last_y - y << "       \r";
 					}
 				}
 

@@ -88,47 +88,9 @@ int main(int argc, char* argv[]) {
 }
 
 void loadData() {
-	std::vector<Vertex> vertices;
-	Vertex vertex;
-
-	vertex.position = glm::vec3(-1.0f, -1.0f, 1.0f);
-	vertices.push_back(vertex);
-	vertex.position = glm::vec3(1.0f, -1.0f, 1.0f);
-	vertices.push_back(vertex);
-	vertex.position = glm::vec3(1.0f, 1.0f, 1.0f);
-	vertices.push_back(vertex);
-	vertex.position = glm::vec3(-1.0f, 1.0f, 1.0f);
-	vertices.push_back(vertex);
-	vertex.position = glm::vec3(-1.0f, -1.0f, -1.0f);
-	vertices.push_back(vertex);
-	vertex.position = glm::vec3(1.0f, -1.0f, -1.0f);
-	vertices.push_back(vertex);
-	vertex.position = glm::vec3(1.0f, 1.0f, -1.0f);
-	vertices.push_back(vertex);
-	vertex.position = glm::vec3(-1.0f, 1.0f, -1.0f);
-	vertices.push_back(vertex);
-
-	std::vector<unsigned> indices = {
-		0, 1, 2,
-		2, 3, 0,
-		3, 2, 6,
-		6, 7, 3,
-		7, 6, 5,
-		5, 4, 7,
-		4, 5, 1,
-		1, 0, 4,
-		4, 0, 3,
-		3, 7, 4,
-		1, 5, 6,
-		6, 2, 1,
-	};
-
-	GraphicsManager::getInstance().m_mesh.create(
-		VERTEX_POSITION, vertices, indices, 0);
-
-	GraphicsManager::getInstance().m_shader.initialize(
+	/*GraphicsManager::getInstance().m_shader.initialize(
 		"../../ArchEngine/Testers/simplevs.glsl",
-		"../../ArchEngine/Testers/simplefs.glsl");
+		"../../ArchEngine/Testers/simplefs.glsl");*/
 }
 
 void onContextEvent(EventPtr e) {
@@ -163,7 +125,7 @@ void onInputActionEvent(EventPtr e) {
 
 void onInputStateEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputStateEvent>(e);
-
+	/*
 	auto& camera = GraphicsManager::getInstance().m_camera;
 
 	switch (evnt->getValue()) {
@@ -191,12 +153,12 @@ void onInputStateEvent(EventPtr e) {
 		else
 			camera.setSpeed(25.0f);
 		break;
-	}
+	}*/
 }
 
 void onInputRangeEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputRangeEvent>(e);
-
+	/*
 	auto& camera = GraphicsManager::getInstance().m_camera;
 
 	switch (evnt->getValue().m_range) {
@@ -206,7 +168,7 @@ void onInputRangeEvent(EventPtr e) {
 	case 1:
 		camera.look(0.0f, (float)evnt->getValue().m_value);
 		break;
-	}
+	}*/
 }
 
 

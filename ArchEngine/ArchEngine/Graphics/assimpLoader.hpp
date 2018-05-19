@@ -27,7 +27,7 @@
 namespace Graphics {
 	class AssimpLoader {
 	public:
-		bool importScene(const std::string& path);
+		bool importScene(const std::string& path, aiPostProcessSteps flags);
 
 
 

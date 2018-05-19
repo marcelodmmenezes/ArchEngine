@@ -28,7 +28,7 @@ namespace Graphics {
 		~Mesh();
 
 		void create(VertexMask mask, const std::vector<Vertex>& vertices,
-			const std::vector<unsigned> indices, unsigned material_id);
+			const std::vector<unsigned>& indices, unsigned material_id);
 
 		void draw();
 		void instancedDraw(int amount);
