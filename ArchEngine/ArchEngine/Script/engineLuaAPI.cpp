@@ -39,10 +39,12 @@ namespace Script {
 		LuaScript lua_context;
 
 		LuaFunctions functions;
-		functions.push_back(std::make_pair("pushContext", ::pushContext));
-		functions.push_back(std::make_pair("popContext", ::popContext));
 		functions.push_back(std::make_pair("captureMouse", ::captureMouse));
 		functions.push_back(std::make_pair("releaseMouse", ::releaseMouse));
+		functions.push_back(std::make_pair("addMesh", ::addMesh));
+		functions.push_back(std::make_pair("removeMesh", ::removeMesh));
+		functions.push_back(std::make_pair("pushContext", ::pushContext));
+		functions.push_back(std::make_pair("popContext", ::popContext));
 
 		if (!lua_context.initialize(config_path, functions))
 			return false;
@@ -81,6 +83,8 @@ namespace Script {
 		LuaFunctions functions;
 		functions.push_back(std::make_pair("pushContext", ::pushContext));
 		functions.push_back(std::make_pair("popContext", ::popContext));
+		functions.push_back(std::make_pair("addMesh", ::addMesh));
+		functions.push_back(std::make_pair("removeMesh", ::removeMesh));
 		functions.push_back(std::make_pair("captureMouse", ::captureMouse));
 		functions.push_back(std::make_pair("releaseMouse", ::releaseMouse));
 

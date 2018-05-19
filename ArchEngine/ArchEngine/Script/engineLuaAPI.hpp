@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 17/05/2018                                                       *
- * Last Modified: 17/05/2018                                                 *
+ * Last Modified: 19/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -15,6 +15,7 @@
 
 #include "../Core/engine.hpp"
 #include "../Core/eventManager.hpp"
+#include "../Graphics/graphicsManager.hpp"
 #include "../OS/inputManager.hpp"
 #include "luaScript.hpp"
 #include "../Utils/fileWatcher.hpp"

@@ -30,6 +30,16 @@
 #include <vector>
 
 
+ //--------------------------
+ //--------- Lua Graphics API
+ //--------------------------
+extern "C" {
+	int addMesh(lua_State* lua);
+	int removeMesh(lua_State* lua);
+}
+//-------------------------------------------------------------------------
+
+
 namespace Graphics {
 	class GraphicsManager {
 	public:

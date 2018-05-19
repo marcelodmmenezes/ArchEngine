@@ -16,6 +16,53 @@ using namespace Script;
 using namespace Utils;
 
 
+//------------------------------------------------------------ Lua Graphics API
+int addMesh(lua_State* lua) {
+	int argc = lua_gettop(lua);
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+	ServiceLocator::getFileLogger()->log<LOG_INFO>(
+		"Lua pushing context with " + std::to_string(argc) + " arguments");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+	assert(argc == 1);
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+	std::string path(lua_tostring(lua, lua_gettop(lua)));
+	lua_pop(lua, 1);
+
+	unsigned handle = Graphics::GraphicsManager::getInstance().addMesh(path);
+
+	lua_pushnumber(lua, handle);
+
+	// No values returned to Lua
+	return 1;
+}
+
+int removeMesh(lua_State* lua) {
+	int argc = lua_gettop(lua);
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+	ServiceLocator::getFileLogger()->log<LOG_INFO>(
+		"Lua popping context with " + std::to_string(argc) + " arguments");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+	assert(argc == 1);
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
+	unsigned handle = (lua_tonumber(lua, lua_gettop(lua)));
+	lua_pop(lua, 1);
+
+	Graphics::GraphicsManager::getInstance().removeMesh(handle);
+
+	// No values returned to Lua
+	return 0;
+}
+//-------------------------------------------------------------------------
+
+
 namespace Graphics {
 	GraphicsManager::GraphicsManager() : m_state(CONSTRUCTED) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
@@ -63,11 +110,12 @@ namespace Graphics {
 			it.setMat4("u_view", m_cameras[0].getViewMatrix());
 
 			for (int i = 0; i < (int)m_meshes.size(); i++) {
-				auto vec = glm::vec3((i - ((int)m_meshes.size() / 2)) * 5, 0.0f, 0.0f);
-				it.setMat4("u_model", glm::translate(glm::mat4(1.0f), vec));
-				//it.setMat4("u_model", glm::mat4(1.0f));
-				it.update();
-				m_meshes[i].first.draw();
+				if (m_meshes[i].second > 0) {
+					it.setMat4("u_model", glm::translate(glm::mat4(1.0f),
+						glm::vec3((i - ((int)m_meshes.size() / 2)) * 5, 0.0f, 0.0f)));
+					it.update();
+					m_meshes[i].first.draw();
+				}
 			}
 		}
 
