@@ -83,23 +83,10 @@ namespace Graphics {
 	const unsigned VERTEX_BONE_WEIGHT_LOCATION     = 5;
 	const unsigned VERTEX_INSTANCE_MATRIX_LOCATION = 6;
 
-	// Assigns a bit to represent each vertex attribute.
-	// If the vertex contains the related attribute it's bit will be 1,
-	// otherwise, false
-	enum VertexAttributes {
-		VERTEX_POSITION        = 1 << 0,
-		VERTEX_NORMAL          = 1 << 1,
-		VERTEX_TEXTURE_COORDS  = 1 << 2,
-		VERTEX_TANGENT         = 1 << 3,
-		VERTEX_BONE_IDS        = 1 << 4,
-		VERTEX_BONE_WEIGHT     = 1 << 5,
-		VERTEX_INSTANCE_MATRIX = 1 << 6
-	};
-
-	// Bit mask for fast checking for vertex attributes
-	typedef short int VertexMask;
-
-	struct Vertex {
+	// All types of vertices have their own struct in order to
+	// easily specify OpenGL vertex attributes in packed arrays.
+	
+	struct CompleteVertex {
 		glm::vec3 position;          // Coordinates in model space
 		glm::vec3 normal;            // Normal vector
 		glm::vec2 texture_coords;    // UV coordinates
@@ -107,6 +94,60 @@ namespace Graphics {
 		glm::ivec4 bone_ids;         // Ids for bones (maximum of 4)
 		glm::vec4 bone_weights;      // Weight of each bone upon this vertex
 		glm::mat4 instance_matrix;   // Model matrix for instanced rendering
+	};
+
+	struct BasicVertex {
+		glm::vec3 position;
+		glm::vec3 normal;
+		glm::vec2 texture_coords;
+	};
+
+	struct NormalMappedVertex {
+		glm::vec3 position;
+		glm::vec3 normal;
+		glm::vec2 texture_coords;
+		glm::vec3 tangent;
+	};
+
+	struct AnimatedVertex {
+		glm::vec3 position;
+		glm::vec3 normal;
+		glm::vec2 texture_coords;
+		glm::ivec4 bone_ids;
+		glm::vec4 bone_weights;
+	};
+
+	struct InstancedVertex {
+		glm::vec3 position;
+		glm::vec3 normal;
+		glm::vec2 texture_coords;
+		glm::mat4 instance_matrix;
+	};
+
+	struct AnimatedNormalMappedVertex {
+		glm::vec3 position;
+		glm::vec3 normal;
+		glm::vec2 texture_coords;
+		glm::vec3 tangent;
+		glm::ivec4 bone_ids;
+		glm::vec4 bone_weights;
+	};
+
+	struct InstancedNormalMappedVertex {
+		glm::vec3 position;
+		glm::vec3 normal;
+		glm::vec2 texture_coords;
+		glm::vec3 tangent;
+		glm::mat4 instance_matrix;
+	};
+
+	struct InstancedAnimatedVertex {
+		glm::vec3 position;
+		glm::vec3 normal;
+		glm::vec2 texture_coords;
+		glm::ivec4 bone_ids;
+		glm::vec4 bone_weights;
+		glm::mat4 instance_matrix;
 	};
 
 	//-------------------------------------------------------------------------

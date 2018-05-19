@@ -160,8 +160,8 @@ namespace Graphics {
 			// TODO: create mesh
 
 			//------------------------------------------------------------ TEST
-			std::vector<Vertex> vertices;
-			Vertex vertex;
+			std::vector<BasicVertex> vertices;
+			BasicVertex vertex;
 
 			vertex.position = glm::vec3(-1.0f, -1.0f, 1.0f);
 			vertex.normal = vertex.position;
@@ -203,7 +203,7 @@ namespace Graphics {
 				6, 2, 1,
 			};
 
-			mesh.create(VERTEX_POSITION | VERTEX_NORMAL, vertices, indices, 0);
+			mesh.create(vertices, indices, 0);
 			//-----------------------------------------------------------------
 
 			unsigned handle;

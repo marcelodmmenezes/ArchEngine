@@ -30,17 +30,8 @@ namespace Graphics {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
-	void Mesh::create(VertexMask mask, const std::vector<Vertex>& vertices,
+	void Mesh::create(const std::vector<CompleteVertex>& vertices,
 		const std::vector<unsigned>& indices, unsigned material_id) {
-		// Calculates each vertex based on this mesh attributes
-		unsigned block_size =
-			((mask & VERTEX_POSITION) ? 1 : 0) * sizeof(glm::vec3) +
-			((mask & VERTEX_NORMAL) ? 1 : 0) * sizeof(glm::vec3) +
-			((mask & VERTEX_TEXTURE_COORDS) ? 1 : 0) * sizeof(glm::vec2) +
-			((mask & VERTEX_TANGENT) ? 1 : 0) * sizeof(glm::vec3) +
-			((mask & VERTEX_BONE_IDS) ? 1 : 0) * sizeof(glm::ivec4) +
-			((mask & VERTEX_BONE_WEIGHT) ? 1 : 0) * sizeof(glm::vec4) +
-			((mask & VERTEX_INSTANCE_MATRIX) ? 1 : 0) * sizeof(glm::mat4);
 
 		m_number_of_indices = indices.size();
 
@@ -50,81 +41,207 @@ namespace Graphics {
 		glGenBuffers(1, &m_vbo_id);
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() *
-			sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+			sizeof(CompleteVertex), &vertices[0], GL_STATIC_DRAW);
 
 		glGenBuffers(1, &m_ebo_id);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo_id);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
 			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
 
-		if ((mask & VERTEX_POSITION) == VERTEX_POSITION) {
-			glEnableVertexAttribArray(VERTEX_POSITION_LOCATION);
-			glVertexAttribPointer(VERTEX_POSITION_LOCATION, 3, GL_FLOAT,
-				GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
-		}
+		specifyPosition<CompleteVertex>();
+		specifyNormal<CompleteVertex>();
+		specifyTextureCoords<CompleteVertex>();
+		specifyTangent<CompleteVertex>();
+		specifyBoneIds<CompleteVertex>();
+		specifyBoneWeights<CompleteVertex>();
+		specifyInstancedMatrix<CompleteVertex>();
 
-		if ((mask & VERTEX_NORMAL) == VERTEX_NORMAL) {
-			glEnableVertexAttribArray(VERTEX_NORMAL_LOCATION);
-			glVertexAttribPointer(VERTEX_NORMAL_LOCATION, 3, GL_FLOAT,
-				GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
-		}
+		glBindVertexArray(0);
+	}
 
-		if ((mask & VERTEX_TEXTURE_COORDS) == VERTEX_TEXTURE_COORDS) {
-			glEnableVertexAttribArray(VERTEX_TEXTURE_COORDS_LOCATION);
-			glVertexAttribPointer(VERTEX_TEXTURE_COORDS_LOCATION, 2, GL_FLOAT,
-				GL_FALSE, sizeof(Vertex),
-				(void*)offsetof(Vertex, texture_coords));
-		}
+	void Mesh::create(const std::vector<BasicVertex>& vertices,
+		const std::vector<unsigned>& indices, unsigned material_id) {
 
-		if ((mask & VERTEX_TANGENT) == VERTEX_TANGENT) {
-			glEnableVertexAttribArray(VERTEX_TANGENT_LOCATION);
-			glVertexAttribPointer(VERTEX_TANGENT_LOCATION, 3, GL_FLOAT,
-				GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
-		}
+		m_number_of_indices = indices.size();
 
-		if ((mask & VERTEX_BONE_IDS) == VERTEX_BONE_IDS) {
-			glEnableVertexAttribArray(VERTEX_BONE_IDS_LOCATION);
-			glVertexAttribIPointer(VERTEX_BONE_IDS_LOCATION, 4, GL_INT,
-				sizeof(Vertex), (void*)offsetof(Vertex, bone_ids));
-		}
+		glGenVertexArrays(1, &m_vao_id);
+		glBindVertexArray(m_vao_id);
 
-		if ((mask & VERTEX_BONE_WEIGHT) == VERTEX_BONE_WEIGHT) {
-			glEnableVertexAttribArray(VERTEX_BONE_WEIGHT_LOCATION);
-			glVertexAttribPointer(VERTEX_BONE_WEIGHT_LOCATION, 4, GL_FLOAT,
-				GL_FALSE, sizeof(Vertex),
-				(void*)offsetof(Vertex, bone_weights));
-		}
+		glGenBuffers(1, &m_vbo_id);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() *
+			sizeof(BasicVertex), &vertices[0], GL_STATIC_DRAW);
 
-		if ((mask & VERTEX_INSTANCE_MATRIX) == VERTEX_INSTANCE_MATRIX) {
-			glEnableVertexAttribArray(VERTEX_INSTANCE_MATRIX);
-			glVertexAttribPointer(VERTEX_INSTANCE_MATRIX, 4, GL_FLOAT,
-				GL_FALSE, sizeof(Vertex),
-				(void*)offsetof(Vertex, instance_matrix));
+		glGenBuffers(1, &m_ebo_id);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo_id);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
+			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
 
-			glEnableVertexAttribArray(VERTEX_INSTANCE_MATRIX + 1);
-			glVertexAttribPointer(VERTEX_INSTANCE_MATRIX + 1, 4, GL_FLOAT,
-				GL_FALSE, sizeof(Vertex),
-				(void*)(offsetof(Vertex, instance_matrix) +
-					sizeof(glm::vec4)));
+		specifyPosition<BasicVertex>();
+		specifyNormal<BasicVertex>();
+		specifyTextureCoords<BasicVertex>();
 
-			glEnableVertexAttribArray(VERTEX_INSTANCE_MATRIX + 2);
-			glVertexAttribPointer(VERTEX_INSTANCE_MATRIX + 2, 4, GL_FLOAT,
-				GL_FALSE, sizeof(Vertex),
-				(void*)(offsetof(Vertex, instance_matrix) +
-					2 * sizeof(glm::vec4)));
+		glBindVertexArray(0);
+	}
 
-			glEnableVertexAttribArray(VERTEX_INSTANCE_MATRIX + 3);
-			glVertexAttribPointer(VERTEX_INSTANCE_MATRIX + 3, 4, GL_FLOAT,
-				GL_FALSE, sizeof(Vertex),
-				(void*)(offsetof(Vertex, instance_matrix) +
-					3 * sizeof(glm::vec4)));
+	void Mesh::create(const std::vector<NormalMappedVertex>& vertices,
+		const std::vector<unsigned>& indices, unsigned material_id) {
 
-			glVertexAttribDivisor(VERTEX_INSTANCE_MATRIX, 1);
-			glVertexAttribDivisor(VERTEX_INSTANCE_MATRIX + 1, 1);
-			glVertexAttribDivisor(VERTEX_INSTANCE_MATRIX + 2, 1);
-			glVertexAttribDivisor(VERTEX_INSTANCE_MATRIX + 3, 1);
-			glVertexAttribDivisor(VERTEX_INSTANCE_MATRIX + 3, 1);
-		}
+		m_number_of_indices = indices.size();
+
+		glGenVertexArrays(1, &m_vao_id);
+		glBindVertexArray(m_vao_id);
+
+		glGenBuffers(1, &m_vbo_id);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() *
+			sizeof(NormalMappedVertex), &vertices[0], GL_STATIC_DRAW);
+
+		glGenBuffers(1, &m_ebo_id);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo_id);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
+			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
+
+		specifyPosition<NormalMappedVertex>();
+		specifyNormal<NormalMappedVertex>();
+		specifyTextureCoords<NormalMappedVertex>();
+		specifyTangent<NormalMappedVertex>();
+
+		glBindVertexArray(0);
+	}
+
+	void Mesh::create(const std::vector<AnimatedVertex>& vertices,
+		const std::vector<unsigned>& indices, unsigned material_id) {
+
+		m_number_of_indices = indices.size();
+
+		glGenVertexArrays(1, &m_vao_id);
+		glBindVertexArray(m_vao_id);
+
+		glGenBuffers(1, &m_vbo_id);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() *
+			sizeof(AnimatedVertex), &vertices[0], GL_STATIC_DRAW);
+
+		glGenBuffers(1, &m_ebo_id);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo_id);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
+			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
+
+		specifyPosition<AnimatedVertex>();
+		specifyNormal<AnimatedVertex>();
+		specifyTextureCoords<AnimatedVertex>();
+		specifyBoneIds<AnimatedVertex>();
+		specifyBoneWeights<AnimatedVertex>();
+
+		glBindVertexArray(0);
+	}
+
+	void Mesh::create(const std::vector<InstancedVertex>& vertices,
+		const std::vector<unsigned>& indices, unsigned material_id) {
+
+		m_number_of_indices = indices.size();
+
+		glGenVertexArrays(1, &m_vao_id);
+		glBindVertexArray(m_vao_id);
+
+		glGenBuffers(1, &m_vbo_id);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() *
+			sizeof(InstancedVertex), &vertices[0], GL_STATIC_DRAW);
+
+		glGenBuffers(1, &m_ebo_id);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo_id);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
+			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
+
+		specifyPosition<InstancedVertex>();
+		specifyNormal<InstancedVertex>();
+		specifyTextureCoords<InstancedVertex>();
+		specifyInstancedMatrix<InstancedVertex>();
+
+		glBindVertexArray(0);
+	}
+
+	void Mesh::create(const std::vector<AnimatedNormalMappedVertex>& vertices,
+		const std::vector<unsigned>& indices, unsigned material_id) {
+
+		m_number_of_indices = indices.size();
+
+		glGenVertexArrays(1, &m_vao_id);
+		glBindVertexArray(m_vao_id);
+
+		glGenBuffers(1, &m_vbo_id);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() *
+			sizeof(AnimatedNormalMappedVertex), &vertices[0], GL_STATIC_DRAW);
+
+		glGenBuffers(1, &m_ebo_id);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo_id);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
+			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
+
+		specifyPosition<AnimatedNormalMappedVertex>();
+		specifyNormal<AnimatedNormalMappedVertex>();
+		specifyTextureCoords<AnimatedNormalMappedVertex>();
+		specifyTangent<AnimatedNormalMappedVertex>();
+		specifyBoneIds<AnimatedNormalMappedVertex>();
+		specifyBoneWeights<AnimatedNormalMappedVertex>();
+
+		glBindVertexArray(0);
+	}
+
+	void Mesh::create(const std::vector<InstancedNormalMappedVertex>& vertices,
+		const std::vector<unsigned>& indices, unsigned material_id) {
+
+		m_number_of_indices = indices.size();
+
+		glGenVertexArrays(1, &m_vao_id);
+		glBindVertexArray(m_vao_id);
+
+		glGenBuffers(1, &m_vbo_id);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() *
+			sizeof(InstancedNormalMappedVertex), &vertices[0], GL_STATIC_DRAW);
+
+		glGenBuffers(1, &m_ebo_id);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo_id);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
+			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
+
+		specifyPosition<InstancedNormalMappedVertex>();
+		specifyNormal<InstancedNormalMappedVertex>();
+		specifyTextureCoords<InstancedNormalMappedVertex>();
+		specifyTangent<InstancedNormalMappedVertex>();
+		specifyInstancedMatrix<InstancedNormalMappedVertex>();
+
+		glBindVertexArray(0);
+	}
+
+	void Mesh::create(const std::vector<InstancedAnimatedVertex>& vertices,
+		const std::vector<unsigned>& indices, unsigned material_id) {
+
+		m_number_of_indices = indices.size();
+
+		glGenVertexArrays(1, &m_vao_id);
+		glBindVertexArray(m_vao_id);
+
+		glGenBuffers(1, &m_vbo_id);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo_id);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() *
+			sizeof(InstancedAnimatedVertex), &vertices[0], GL_STATIC_DRAW);
+
+		glGenBuffers(1, &m_ebo_id);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo_id);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
+			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
+
+		specifyPosition<InstancedAnimatedVertex>();
+		specifyNormal<InstancedAnimatedVertex>();
+		specifyTextureCoords<InstancedAnimatedVertex>();
+		specifyBoneIds<InstancedAnimatedVertex>();
+		specifyBoneWeights<InstancedAnimatedVertex>();
+		specifyInstancedMatrix<InstancedAnimatedVertex>();
 
 		glBindVertexArray(0);
 	}
