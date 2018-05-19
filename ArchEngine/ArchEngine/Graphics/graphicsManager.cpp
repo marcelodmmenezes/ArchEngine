@@ -52,7 +52,7 @@ int removeMesh(lua_State* lua) {
 	assert(argc == 1);
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
-	unsigned handle = (lua_tonumber(lua, lua_gettop(lua)));
+	unsigned handle = (unsigned)(lua_tointeger(lua, lua_gettop(lua)));
 	lua_pop(lua, 1);
 
 	Graphics::GraphicsManager::getInstance().removeMesh(handle);
@@ -92,6 +92,8 @@ namespace Graphics {
 
 	bool GraphicsManager::initializeFromConfigFile(const std::string& path) {
 		// TODO
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
 		return initialize(glm::vec4(0.05f, 0.08f, 0.07f, 1.0f));
 	}
 
@@ -162,20 +164,28 @@ namespace Graphics {
 			Vertex vertex;
 
 			vertex.position = glm::vec3(-1.0f, -1.0f, 1.0f);
+			vertex.normal = vertex.position;
 			vertices.push_back(vertex);
 			vertex.position = glm::vec3(1.0f, -1.0f, 1.0f);
+			vertex.normal = vertex.position;
 			vertices.push_back(vertex);
 			vertex.position = glm::vec3(1.0f, 1.0f, 1.0f);
+			vertex.normal = vertex.position;
 			vertices.push_back(vertex);
 			vertex.position = glm::vec3(-1.0f, 1.0f, 1.0f);
+			vertex.normal = vertex.position;
 			vertices.push_back(vertex);
 			vertex.position = glm::vec3(-1.0f, -1.0f, -1.0f);
+			vertex.normal = vertex.position;
 			vertices.push_back(vertex);
 			vertex.position = glm::vec3(1.0f, -1.0f, -1.0f);
+			vertex.normal = vertex.position;
 			vertices.push_back(vertex);
 			vertex.position = glm::vec3(1.0f, 1.0f, -1.0f);
+			vertex.normal = vertex.position;
 			vertices.push_back(vertex);
 			vertex.position = glm::vec3(-1.0f, 1.0f, -1.0f);
+			vertex.normal = vertex.position;
 			vertices.push_back(vertex);
 
 			std::vector<unsigned> indices = {
@@ -193,7 +203,7 @@ namespace Graphics {
 				6, 2, 1,
 			};
 
-			mesh.create(VERTEX_POSITION, vertices, indices, 0);
+			mesh.create(VERTEX_POSITION | VERTEX_NORMAL, vertices, indices, 0);
 			//-----------------------------------------------------------------
 
 			unsigned handle;
