@@ -18,12 +18,8 @@
 
 
 namespace Graphics {
-	IUniform::IUniform(const std::string& name, unsigned location,
-		const DirtyObserver& observer) :
-		m_name(name), m_location(location),
-		m_dirty(true), m_observer(observer) {
-		m_observer.invoke(m_name);
-	}
+	IUniform::IUniform(const std::string& name, unsigned location) :
+		m_name(name), m_location(location), m_dirty(false) {}
 
 	IUniform::~IUniform() {}
 }

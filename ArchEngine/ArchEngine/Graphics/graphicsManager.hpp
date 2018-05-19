@@ -85,8 +85,10 @@ namespace Graphics {
 		State m_state;
 
 		//------------------------------------------------------------- Cameras
+	public:
 		std::vector<DebugCamera> m_cameras;
 
+	private:
 		//------------------------------------------------------------- Shaders
 		// The shader programs are stored here.
 		std::vector<Shader> m_shaders;

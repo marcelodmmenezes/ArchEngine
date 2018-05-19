@@ -91,8 +91,6 @@ namespace Graphics {
 		void getAttributes();
 		void getUniforms();
 
-		void notifyDirty(const std::string& uniform_name);
-
 		unsigned m_program_id;
 
 		// Stores the ids to dirty uniforms

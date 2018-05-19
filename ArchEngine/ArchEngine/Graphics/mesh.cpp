@@ -32,6 +32,16 @@ namespace Graphics {
 
 	void Mesh::create(VertexMask mask, const std::vector<Vertex>& vertices,
 		const std::vector<unsigned>& indices, unsigned material_id) {
+		// Calculates each vertex based on this mesh attributes
+		unsigned block_size =
+			((mask & VERTEX_POSITION) ? 1 : 0) * sizeof(glm::vec3) +
+			((mask & VERTEX_NORMAL) ? 1 : 0) * sizeof(glm::vec3) +
+			((mask & VERTEX_TEXTURE_COORDS) ? 1 : 0) * sizeof(glm::vec2) +
+			((mask & VERTEX_TANGENT) ? 1 : 0) * sizeof(glm::vec3) +
+			((mask & VERTEX_BONE_IDS) ? 1 : 0) * sizeof(glm::ivec4) +
+			((mask & VERTEX_BONE_WEIGHT) ? 1 : 0) * sizeof(glm::vec4) +
+			((mask & VERTEX_INSTANCE_MATRIX) ? 1 : 0) * sizeof(glm::mat4);
+
 		m_number_of_indices = indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);

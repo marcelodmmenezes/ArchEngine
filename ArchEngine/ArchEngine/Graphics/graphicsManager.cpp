@@ -53,6 +53,24 @@ namespace Graphics {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//---------------------------------------------------------------- TEST
+
+		m_cameras[0].m_delta_time = delta_time;
+
+		for (auto& it : m_shaders) {
+			it.bind();
+			it.setMat4("u_projection", glm::perspective(
+				glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f));
+			it.setMat4("u_view", m_cameras[0].getViewMatrix());
+
+			for (int i = 0; i < (int)m_meshes.size(); i++) {
+				auto vec = glm::vec3((i - ((int)m_meshes.size() / 2)) * 5, 0.0f, 0.0f);
+				it.setMat4("u_model", glm::translate(glm::mat4(1.0f), vec));
+				//it.setMat4("u_model", glm::mat4(1.0f));
+				it.update();
+				m_meshes[i].first.draw();
+			}
+		}
+
 		//---------------------------------------------------------------------
 	}
 
@@ -230,6 +248,7 @@ namespace Graphics {
 			return;
 		}
 
+		m_shaders[handle].destroy();
 		m_shaders.erase(m_shaders.begin() + handle);
 	}
 
@@ -252,6 +271,8 @@ namespace Graphics {
 
 		// If no one references the mesh anymore
 		if (m_meshes[handle].second == 0) {
+			m_meshes[handle].first.destroy();
+
 			// Remove reference from map
 			for (auto it = m_mesh_path_to_handle.begin();
 				it != m_mesh_path_to_handle.end(); ++it) {

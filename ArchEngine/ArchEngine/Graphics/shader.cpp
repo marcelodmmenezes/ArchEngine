@@ -211,42 +211,48 @@ namespace Graphics {
 		auto uniform = std::static_pointer_cast<Uniform<bool>>(
 			m_uniforms_by_name[name]);
 
-		uniform->setValue(value);
+		if (uniform->setValue(value))
+			m_dirty_uniforms.push_back(name);
 	}
 
 	void Shader::setInt(const std::string& name, int value) {
 		auto uniform = std::static_pointer_cast<Uniform<int>>(
 			m_uniforms_by_name[name]);
 
-		uniform->setValue(value);
+		if (uniform->setValue(value))
+			m_dirty_uniforms.push_back(name);
 	}
 
 	void Shader::setFloat(const std::string& name, float value) {
 		auto uniform = std::static_pointer_cast<Uniform<float>>(
 			m_uniforms_by_name[name]);
 
-		uniform->setValue(value);
+		if (uniform->setValue(value))
+			m_dirty_uniforms.push_back(name);
 	}
 
 	void Shader::setVec3(const std::string& name, const glm::vec3& vec) {
 		auto uniform = std::static_pointer_cast<Uniform<glm::vec3>>(
 			m_uniforms_by_name[name]);
 
-		uniform->setValue(vec);
+		if (uniform->setValue(vec))
+			m_dirty_uniforms.push_back(name);
 	}
 
 	void Shader::setMat3(const std::string& name, const glm::mat3& matrix) {
 		auto uniform = std::static_pointer_cast<Uniform<glm::mat3>>(
 			m_uniforms_by_name[name]);
 
-		uniform->setValue(matrix);
+		if (uniform->setValue(matrix))
+			m_dirty_uniforms.push_back(name);
 	}
 
 	void Shader::setMat4(const std::string& name, const glm::mat4& matrix) {
 		auto uniform = std::static_pointer_cast<Uniform<glm::mat4>>(
 			m_uniforms_by_name[name]);
 
-		uniform->setValue(matrix);
+		if (uniform->setValue(matrix))
+			m_dirty_uniforms.push_back(name);
 	}
 
 	bool Shader::compileShader(const std::string& path,
@@ -424,9 +430,6 @@ namespace Graphics {
 	}
 
 	void Shader::getUniforms() {
-		DirtyObserver observer;
-		observer.bind<Shader, &Shader::notifyDirty>(this);
-
 		int count, size;
 		GLenum type;
 
@@ -447,53 +450,44 @@ namespace Graphics {
 
 			int location = glGetUniformLocation(m_program_id, name);
 
+			m_dirty_uniforms.push_back(name);
+
 			switch (type) {
 			case GL_BOOL:
 				m_uniforms_by_name.insert(std::make_pair(
-					name, std::make_shared<Uniform<bool>>(
-						name, location, observer)));
+					name, std::make_shared<Uniform<bool>>(name, location)));
 				break;
 
 			case GL_INT:
 				m_uniforms_by_name.insert(std::make_pair(
-					name, std::make_shared<Uniform<int>>(
-						name, location, observer)));
+					name, std::make_shared<Uniform<int>>(name, location)));
 				break;
 
 			case GL_FLOAT:
 				m_uniforms_by_name.insert(std::make_pair(
-					name, std::make_shared<Uniform<float>>(
-						name, location, observer)));
+					name, std::make_shared<Uniform<float>>(name, location)));
 				break;
 
 			case GL_FLOAT_VEC3:
 				m_uniforms_by_name.insert(std::make_pair(
-					name, std::make_shared<Uniform<glm::vec3>>(
-						name, location, observer)));
+					name, std::make_shared<Uniform<glm::vec3>>(name, location)));
 				break;
 
 			case GL_FLOAT_MAT3:
 				m_uniforms_by_name.insert(std::make_pair(
-					name, std::make_shared<Uniform<glm::mat3>>(
-						name, location, observer)));
+					name, std::make_shared<Uniform<glm::mat3>>(name, location)));
 				break;
 
 			case GL_FLOAT_MAT4:
 				m_uniforms_by_name.insert(std::make_pair(
-					name, std::make_shared<Uniform<glm::mat4>>(
-						name, location, observer)));
+					name, std::make_shared<Uniform<glm::mat4>>(name, location)));
 				break;
 
 			case GL_SAMPLER_2D:
 				m_uniforms_by_name.insert(std::make_pair(
-					name, std::make_shared<Uniform<int>>(
-						name, location, observer)));
+					name, std::make_shared<Uniform<int>>(name, location)));
 				break;
 			}
 		}
-	}
-
-	void Shader::notifyDirty(const std::string& uniform_name) {
-		m_dirty_uniforms.push_back(uniform_name);
 	}
 }

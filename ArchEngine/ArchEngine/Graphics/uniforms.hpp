@@ -29,18 +29,9 @@
 
 
 namespace Graphics {
-	class IUniform;
-
-	typedef std::shared_ptr<IUniform> UniformPtr;
-
-	// For observer pattern
-	// The string represents the uniform`s name
-	typedef Utils::Delegate<void(const std::string&)> DirtyObserver;
-
 	class IUniform {
 	public:
-		IUniform(const std::string& name, unsigned location,
-			const DirtyObserver& observer);
+		IUniform(const std::string& name, unsigned location);
 
 		virtual ~IUniform() = 0;
 
@@ -51,22 +42,21 @@ namespace Graphics {
 		std::string m_name;
 		unsigned m_location;
 		bool m_dirty;
-
-		DirtyObserver m_observer;
 	};
+
+	typedef std::shared_ptr<IUniform> UniformPtr;
 
 	//----------------------------------------------------------------- Uniform
 	template<typename T>
 	class Uniform : public IUniform {
 	public:
-		Uniform(const std::string& name, unsigned location,
-			const DirtyObserver& observer);
+		Uniform(const std::string& name, unsigned location);
 
 		~Uniform() override;
 
 		void update() override;
 
-		void setValue(const T& value);
+		bool setValue(const T& value);
 		T getValue();
 
 	private:
@@ -74,8 +64,8 @@ namespace Graphics {
 	};
 
 	template<typename T>
-	Uniform<T>::Uniform(const std::string& name, unsigned location,
-		const DirtyObserver& observer) : IUniform(name, location, observer) {}
+	Uniform<T>::Uniform(const std::string& name, unsigned location) :
+		IUniform(name, location) {}
 
 	template<typename T>
 	Uniform<T>::~Uniform() {}
@@ -120,13 +110,17 @@ namespace Graphics {
 	//-------------------------------------------------------------------------
 
 	template<typename T>
-	void Uniform<T>::setValue(const T& value) {
+	bool Uniform<T>::setValue(const T& value) {
+		bool became_dirty = false;
+
 		if (!m_dirty && m_value != value) {
 			m_dirty = true;
-			m_observer.invoke(m_name);
+			became_dirty = true;
 		}
 
 		m_value = value;
+		
+		return became_dirty;
 	}
 
 	template<typename T>

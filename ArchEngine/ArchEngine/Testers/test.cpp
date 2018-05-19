@@ -88,16 +88,16 @@ int main(int argc, char* argv[]) {
 }
 
 void loadData() {
-	unsigned teste1, teste2, teste3, teste4;
-	teste1 = GraphicsManager::getInstance().addMesh("teste1");
-	teste2 = GraphicsManager::getInstance().addMesh("teste2");
-	teste3 = GraphicsManager::getInstance().addMesh("teste3");
-	GraphicsManager::getInstance().removeMesh(teste2);
-	teste4 = GraphicsManager::getInstance().addMesh("teste4");
+	DebugCamera camera(glm::vec3(0.0f, 0.0f, 5.0f));
+	GraphicsManager::getInstance().addCamera(camera);
 
-	/*GraphicsManager::getInstance().m_shader.initialize(
+	GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Testers/simplevs.glsl",
-		"../../ArchEngine/Testers/simplefs.glsl");*/
+		"../../ArchEngine/Testers/simplefs.glsl");
+
+	GraphicsManager::getInstance().addMesh("teste");
+	GraphicsManager::getInstance().addMesh("teste2");
+	GraphicsManager::getInstance().addMesh("teste3");
 }
 
 void onContextEvent(EventPtr e) {
@@ -132,8 +132,8 @@ void onInputActionEvent(EventPtr e) {
 
 void onInputStateEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputStateEvent>(e);
-	/*
-	auto& camera = GraphicsManager::getInstance().m_camera;
+
+	auto& camera = GraphicsManager::getInstance().m_cameras[0];
 
 	switch (evnt->getValue()) {
 	case 0:
@@ -160,13 +160,13 @@ void onInputStateEvent(EventPtr e) {
 		else
 			camera.setSpeed(25.0f);
 		break;
-	}*/
+	}
 }
 
 void onInputRangeEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputRangeEvent>(e);
-	/*
-	auto& camera = GraphicsManager::getInstance().m_camera;
+
+	auto& camera = GraphicsManager::getInstance().m_cameras[0];
 
 	switch (evnt->getValue().m_range) {
 	case 0:
@@ -175,7 +175,7 @@ void onInputRangeEvent(EventPtr e) {
 	case 1:
 		camera.look(0.0f, (float)evnt->getValue().m_value);
 		break;
-	}*/
+	}
 }
 
 
