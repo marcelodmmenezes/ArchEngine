@@ -210,15 +210,45 @@ namespace Graphics {
 
 	//-------------------------------------------------------- Remove functions
 	void GraphicsManager::removeCamera(unsigned handle) {
+		if (handle >= m_cameras.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
 		m_cameras.erase(m_cameras.begin() + handle);
 	}
 
 	void GraphicsManager::removeShader(unsigned handle) {
+		if (handle >= m_shaders.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
 		m_shaders.erase(m_shaders.begin() + handle);
 	}
 
 	void GraphicsManager::removeMesh(unsigned handle) {
-		m_meshes[handle].second--;
+		if (handle >= m_meshes.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
+		if (m_meshes[handle].second > 0)
+			m_meshes[handle].second--;
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+		else
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh with 0 references");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 
 		// If no one references the mesh anymore
 		if (m_meshes[handle].second == 0) {
@@ -236,7 +266,21 @@ namespace Graphics {
 	}
 
 	void GraphicsManager::removeMaterial(unsigned handle) {
-		m_materials[handle].second--;
+		if (handle >= m_materials.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
+		if (m_materials[handle].second > 0)
+			m_materials[handle].second--;
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+		else
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Material with 0 references");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 
 		// If no one references the mesh anymore
 		if (m_materials[handle].second == 0) {
@@ -254,14 +298,38 @@ namespace Graphics {
 	}
 
 	void GraphicsManager::removeDirectionalLight(unsigned handle) {
+		if (handle >= m_directional_lights.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
 		m_directional_lights.erase(m_directional_lights.begin() + handle);
 	}
 
 	void GraphicsManager::removePointLight(unsigned handle) {
+		if (handle >= m_point_lights.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
 		m_point_lights.erase(m_point_lights.begin() + handle);
 	}
 
 	void GraphicsManager::removeSpotLight(unsigned handle) {
+		if (handle >= m_spot_lights.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
 		m_spot_lights.erase(m_spot_lights.begin() + handle);
 	}
 }

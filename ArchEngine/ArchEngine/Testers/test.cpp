@@ -88,6 +88,13 @@ int main(int argc, char* argv[]) {
 }
 
 void loadData() {
+	unsigned teste1, teste2, teste3, teste4;
+	teste1 = GraphicsManager::getInstance().addMesh("teste1");
+	teste2 = GraphicsManager::getInstance().addMesh("teste2");
+	teste3 = GraphicsManager::getInstance().addMesh("teste3");
+	GraphicsManager::getInstance().removeMesh(teste2);
+	teste4 = GraphicsManager::getInstance().addMesh("teste4");
+
 	/*GraphicsManager::getInstance().m_shader.initialize(
 		"../../ArchEngine/Testers/simplevs.glsl",
 		"../../ArchEngine/Testers/simplefs.glsl");*/
