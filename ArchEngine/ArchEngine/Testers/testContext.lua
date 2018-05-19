@@ -45,7 +45,7 @@ context = {
 			max_input = 1000,
 			min_output = -1,
 			max_output = 1,
-			sensitivity = 1000
+			sensitivity = 100
 		},
 		MOUSE_AXIS_Y = {
 			range = 1,
@@ -53,7 +53,7 @@ context = {
 			max_input = 1000,
 			min_output = -1,
 			max_output = 1,
-			sensitivity = 1000
+			sensitivity = 100
 		},
 		MOUSE_WHEEL = {
 			range = 2,

@@ -81,8 +81,6 @@ namespace Core {
 	}
 
 	bool Engine::initialize(const std::string& config_path) {
-		m_window.captureMouse();
-
 		//------------------------------------------------- Initializing Logger
 		// Prevents the engine to be initalized more than once
 		if (m_initialized)  {

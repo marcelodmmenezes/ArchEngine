@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/05/2018                                                       *
- * Last Modified: 17/05/2018                                                 *
+ * Last Modified: 18/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -22,13 +22,11 @@ namespace Graphics {
 	const float DebugCamera::YAW = 0.0f;
 	const float DebugCamera::PITCH = 0.0f;
 	const float DebugCamera::SPEED = 5.0f;
-	const float DebugCamera::SENSITIVITY = 0.15f;
 	const float DebugCamera::ZOOM = 45.0f;
 
 	DebugCamera::DebugCamera(glm::vec3 position, glm::vec3 front,
 		glm::vec3 up, float yaw, float pitch) :
-		m_front(front), m_movement_speed(SPEED),
-		m_mouse_sensitivity(SENSITIVITY), m_zoom(ZOOM) {
+		m_front(front), m_movement_speed(SPEED), m_zoom(ZOOM) {
 		m_position = position;
 		m_world_up = up;
 		m_yaw = yaw;
@@ -38,8 +36,8 @@ namespace Graphics {
 
 	DebugCamera::DebugCamera(float pos_x, float pos_y, float pos_z, float up_x,
 		float up_y, float up_z, float yaw, float pitch) :
-		m_front(glm::vec3(0.0f, 0.0f, -1.0f)), m_movement_speed(SPEED),
-		m_mouse_sensitivity(SENSITIVITY), m_zoom(ZOOM) {
+		m_front(glm::vec3(0.0f, 0.0f, -1.0f)),
+		m_movement_speed(SPEED), m_zoom(ZOOM) {
 		m_position = glm::vec3(pos_x, pos_y, pos_z);
 		m_world_up = glm::vec3(up_x, up_y, up_z);
 		m_yaw = yaw;
@@ -85,8 +83,8 @@ namespace Graphics {
 	}
 
 	void DebugCamera::look(float x_offset, float y_offset) {
-		m_yaw += x_offset * m_mouse_sensitivity;
-		m_pitch += y_offset * m_mouse_sensitivity;
+		m_yaw += x_offset;
+		m_pitch += y_offset;
 
 		if (m_yaw > 360.0f)
 			m_yaw -= 360.0f;

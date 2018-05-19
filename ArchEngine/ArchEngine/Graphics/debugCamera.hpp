@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/05/2018                                                       *
- * Last Modified: 17/05/2018                                                 *
+ * Last Modified: 18/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -60,7 +60,6 @@ namespace Graphics {
 		static const float YAW;
 		static const float PITCH;
 		static const float SPEED;
-		static const float SENSITIVITY;
 		static const float ZOOM;
 
 		glm::vec3 m_position;
@@ -72,7 +71,6 @@ namespace Graphics {
 		float m_yaw;
 		float m_pitch;
 		float m_movement_speed;
-		float m_mouse_sensitivity;
 		float m_zoom;
 
 		void updateCameraVectors();

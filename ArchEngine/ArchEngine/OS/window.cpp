@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 17/05/2018                                                 *
+ * Last Modified: 18/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -43,6 +43,7 @@ namespace OS {
 		int pos_y,
 		int width,
 		int height,
+		bool capture_mouse,
 		unsigned r_size,
 		unsigned g_size,
 		unsigned b_size,
@@ -119,6 +120,9 @@ namespace OS {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			return false;
 		}
+
+		if (capture_mouse)
+			captureMouse();
 
 		m_state = INITIALIZED;
 
@@ -206,6 +210,7 @@ namespace OS {
 			pos_y,
 			lua_context.get<int>("width"),
 			lua_context.get<int>("height"),
+			lua_context.get<bool>("capture_mouse"),
 			lua_context.get<int>("r_size"),
 			lua_context.get<int>("g_size"),
 			lua_context.get<int>("b_size"),

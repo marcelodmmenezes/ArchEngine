@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 17/05/2018                                                 *
+ * Last Modified: 18/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -53,6 +53,7 @@ namespace OS {
 			int pos_y = SDL_WINDOWPOS_CENTERED,
 			int width = 800,
 			int height = 600,
+			bool capture_mouse = false,
 			unsigned r_size = 8u,
 			unsigned g_size = 8u,
 			unsigned b_size = 8u,
