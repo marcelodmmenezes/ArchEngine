@@ -14,6 +14,7 @@
 #include "window.hpp"
 
 
+using namespace Core;
 using namespace Script;
 using namespace Utils;
 
@@ -182,7 +183,7 @@ namespace OS {
 
 			m_file_modified_listener.bind
 				<Window, &Window::onFileModifiedEvent>(this);
-			Core::EventManager::getInstance().addListener(
+			EventManager::getInstance().addListener(
 				m_file_modified_listener, Core::EVENT_FILE_MODIFIED);
 		}
 #endif	// ARCH_ENGINE_HOT_RELOAD_ON
@@ -229,7 +230,7 @@ namespace OS {
 	}
 
 #if defined(ARCH_ENGINE_HOT_RELOAD_ON)
-	void Window::onFileModifiedEvent(Core::EventPtr e) {
+	void Window::onFileModifiedEvent(EventPtr e) {
 		auto evnt = std::static_pointer_cast<FileModifiedEvent>(e);
 
 		// See if the modified file was the window configuration
@@ -275,9 +276,9 @@ namespace OS {
 #if defined(ARCH_ENGINE_HOT_RELOAD_ON)
 		// Changes if the file is being watched according to parameters
 		if (m_watch_file != m_file_being_watched) {
-			Core::EventPtr evnt = std::make_shared<WatchFileEvent>(
+			EventPtr evnt = std::make_shared<WatchFileEvent>(
 				WatchFileEvent(m_config_file_path, m_watch_file));
-			Core::EventManager::getInstance().sendEvent(evnt);
+			EventManager::getInstance().sendEvent(evnt);
 			m_file_being_watched = !m_file_being_watched;
 		}
 #endif	// ARCH_ENGINE_HOT_RELOAD_ON
@@ -295,8 +296,8 @@ namespace OS {
 			m_window = nullptr;
 		}
 
-		Core::EventManager::getInstance().removeListener(
-			m_file_modified_listener, Core::EVENT_FILE_MODIFIED);
+		EventManager::getInstance().removeListener(
+			m_file_modified_listener, EVENT_FILE_MODIFIED);
 
 		m_state = SAFE_TO_DESTROY;
 
@@ -336,9 +337,16 @@ namespace OS {
 	void Window::fullscreen(bool state) {
 		m_fullscreen = state;
 
-		if (m_state == INITIALIZED)
+		if (m_state == INITIALIZED) {
 			SDL_SetWindowFullscreen(this->m_window,
 				m_fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+
+			int w, h;
+			SDL_GetWindowSize(m_window, &w, &h);
+			EventPtr evnt = std::make_shared<WindowResizeEvent>(
+				WindowResizeEvent(w, h));
+			EventManager::getInstance().sendEvent(evnt);
+		}
 	}
 
 	void Window::captureMouse() {

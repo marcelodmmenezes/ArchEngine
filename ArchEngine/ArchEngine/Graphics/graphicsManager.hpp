@@ -14,6 +14,7 @@
 
 
 #include "../Config/engineMacros.hpp"
+#include "../Core/eventManager.hpp"
 #include "debugCamera.hpp"
 #include "glad_3_3_core.hpp"
 #include "mesh.hpp"
@@ -51,12 +52,14 @@ namespace Graphics {
 
 		static GraphicsManager& getInstance();
 
-		bool initialize(const glm::vec4& color);
+		bool initialize(const glm::vec4& color, int width, int height);
 		bool initializeFromConfigFile(const std::string& path);
 
 		void update(float delta_time);
 
 		void destroy();
+
+		void onWindowResizeEvent(Core::EventPtr e);
 
 		// The functions below receives the path of the files which
 		// describes the entity to be added and returns the added component
@@ -91,6 +94,9 @@ namespace Graphics {
 		GraphicsManager();
 
 		State m_state;
+
+		Core::EventListener m_window_size_listener;
+		glm::mat4 m_projection; // test
 
 		//------------------------------------------------------------- Cameras
 	public:

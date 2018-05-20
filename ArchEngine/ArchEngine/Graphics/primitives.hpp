@@ -16,6 +16,7 @@
 
 #include <glm/glm.hpp>
 
+#include <climits>
 #include <string>
 
 
@@ -162,6 +163,11 @@ namespace Graphics {
 	};
 
 	struct Material {
+		Material() {
+			for (unsigned i = 0; i < NUMBER_OF_TEXTURE_TYPES; i++)
+				textures[i] = UINT_MAX; // Unitialized
+		}
+
 		// Each position is a handle to MaterialManager's m_textures vector
 		unsigned textures[NUMBER_OF_TEXTURE_TYPES];
 	};

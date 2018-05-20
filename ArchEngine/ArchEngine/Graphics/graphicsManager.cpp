@@ -12,6 +12,7 @@
 #include "graphicsManager.hpp"
 
 
+using namespace Core;
 using namespace Script;
 using namespace Utils;
 
@@ -86,8 +87,20 @@ namespace Graphics {
 		return instance;
 	}
 
-	bool GraphicsManager::initialize(const glm::vec4& color) {
+	bool GraphicsManager::initialize(const glm::vec4& color,
+		int width, int height) {
 		// TODO
+
+		m_window_size_listener.bind
+			<GraphicsManager, &GraphicsManager::onWindowResizeEvent>(this);
+		EventManager::getInstance().addListener(
+			m_window_size_listener, EVENT_WINDOW_RESIZE);
+		
+		//---------------------------------------------------------------- TEST
+		m_projection = glm::perspective(
+			glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
+		//---------------------------------------------------------------------
+
 		glClearColor(color.r, color.g, color.b, color.a);
 
 		return true;
@@ -97,7 +110,7 @@ namespace Graphics {
 		// TODO
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
-		return initialize(glm::vec4(0.05f, 0.08f, 0.07f, 1.0f));
+		return initialize(glm::vec4(0.05f, 0.08f, 0.07f, 1.0f), 800, 600);
 	}
 
 	void GraphicsManager::update(float delta_time) {
@@ -110,19 +123,23 @@ namespace Graphics {
 
 		for (auto& it : m_shaders) {
 			it.bind();
-			it.setMat4("u_projection", glm::perspective(
-				glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f));
+			it.setMat4("u_projection", m_projection);
 			it.setMat4("u_view", m_cameras[0].getViewMatrix());
 			it.setVec3("u_view_pos", m_cameras[0].getPosition());
 
-			for (int i = 0; i < (int)m_meshes.size(); i++) {
-				if (m_meshes[i].second > 0) {
-					glm::mat4 model = glm::translate(glm::mat4(1.0f),
-						glm::vec3((i - ((int)m_meshes.size() / 2)) * 5, 0.0f, 0.0f));
-					it.setMat4("u_model", model);
-					it.setMat3("u_trn_inv_up_model", glm::transpose(glm::inverse(glm::mat3(model))));
-					it.update();
-					m_meshes[i].first.draw();
+			for (int k = -3; k < 4; k++) {
+				for (int j = -3; j < 4; j++) {
+					for (int i = 0; i < (int)m_meshes.size(); i++) {
+						if (m_meshes[i].second > 0) {
+							glm::mat4 model = glm::translate(glm::mat4(1.0f),
+								glm::vec3(j * 10.0f, 0.0f, k * 10.0f));
+							it.setMat4("u_model", model);
+							it.setMat3("u_trn_inv_up_model",
+								glm::transpose(glm::inverse(glm::mat3(model))));
+							it.update();
+							m_meshes[i].first.draw();
+						}
+					}
 				}
 			}
 		}
@@ -134,6 +151,25 @@ namespace Graphics {
 		// TODO
 	}
 
+	void GraphicsManager::onWindowResizeEvent(EventPtr e) {
+		auto evnt = std::static_pointer_cast<WindowResizeEvent>(e);
+
+		int w, h;
+		evnt->getSize(w, h);
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
+			"Window size: " + std::to_string(w) + " " + std::to_string(h));
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+
+		//---------------------------------------------------------------- TEST
+		m_projection = glm::perspective(
+			glm::radians(45.0f), (float)w / (float)h, 0.1f, 100.0f);
+		//---------------------------------------------------------------------
+
+		glViewport(0, 0, w, h);
+	}
+
 	//----------------------------------------------------------- Add functions
 	unsigned GraphicsManager::addCamera(const DebugCamera& camera) {
 		m_cameras.push_back(camera);
@@ -142,7 +178,8 @@ namespace Graphics {
 
 	unsigned GraphicsManager::addShader(const std::string& vs_path,
 		const std::string& fs_path) {
-		// Shader must be initialized after push_back to keep the instance reference
+		// Shader must be initialized after push_back
+		// to keep the instance reference
 		Shader shader;
 		m_shaders.push_back(shader);
 		m_shaders[m_shaders.size() - 1].initialize(vs_path, fs_path);
@@ -151,7 +188,8 @@ namespace Graphics {
 
 	unsigned GraphicsManager::addShader(const std::string& vs_path,
 		const std::string& gs_path, const std::string& fs_path) {
-		// Shader must be initialized after push_back to keep the instance reference
+		// Shader must be initialized after push_back
+		// to keep the instance reference
 		Shader shader;
 		m_shaders.push_back(shader);
 		m_shaders[m_shaders.size() - 1].initialize(vs_path, gs_path, fs_path);

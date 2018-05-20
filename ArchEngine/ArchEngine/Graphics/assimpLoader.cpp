@@ -73,21 +73,59 @@ namespace Graphics {
 			if (scene->mMeshes[i]->HasTangentsAndBitangents() &&
 				scene->mMeshes[i]->HasBones())
 				animatedNormalMappedVertexMesh(scene->mMeshes[i],
-					scene->mMeshes[i]->mMaterialIndex);
+					i, scene->mMeshes[i]->mMaterialIndex);
 			else if (scene->mMeshes[i]->HasTangentsAndBitangents())
 				normalMappedVertexMesh(scene->mMeshes[i],
-					scene->mMeshes[i]->mMaterialIndex);
+					i, scene->mMeshes[i]->mMaterialIndex);
 			else if (scene->mMeshes[i]->HasBones())
 				animatedVertexMesh(scene->mMeshes[i],
-					scene->mMeshes[i]->mMaterialIndex);
+					i, scene->mMeshes[i]->mMaterialIndex);
 			else
 				basicVertexMesh(scene->mMeshes[i],
-					scene->mMeshes[i]->mMaterialIndex);
+					i, scene->mMeshes[i]->mMaterialIndex);
 		}
 	}
 
 	void AssimpLoader::loadMaterials(const aiScene* scene) {
-		// TODO
+		std::string str;
+		std::vector<std::pair<std::string, TextureType>> materials;
+		materials.reserve(NUMBER_OF_TEXTURE_TYPES);
+
+		for (unsigned i = 0; i < scene->mNumMaterials; i++) {
+			if (loadMaterials(scene->mMaterials[i],
+				aiTextureType_DIFFUSE, str))
+				materials.push_back(std::make_pair(str, TEXTURE_DIFFUSE));
+
+			if (loadMaterials(scene->mMaterials[i],
+				aiTextureType_SPECULAR, str))
+				materials.push_back(std::make_pair(str, TEXTURE_SPECULAR));
+
+			if (loadMaterials(scene->mMaterials[i],
+				aiTextureType_AMBIENT, str))
+			materials.push_back(std::make_pair(str, TEXTURE_AMBIENT));
+
+			if (loadMaterials(scene->mMaterials[i],
+				aiTextureType_EMISSIVE, str))
+			materials.push_back(std::make_pair(str, TEXTURE_EMISSIVE));
+
+			if (loadMaterials(scene->mMaterials[i],
+				aiTextureType_HEIGHT, str))
+			materials.push_back(std::make_pair(str, TEXTURE_HEIGHT));
+
+			if (loadMaterials(scene->mMaterials[i],
+				aiTextureType_NORMALS, str))
+			materials.push_back(std::make_pair(str, TEXTURE_NORMALS));
+
+			if (loadMaterials(scene->mMaterials[i],
+				aiTextureType_DISPLACEMENT, str))
+			materials.push_back(std::make_pair(str, TEXTURE_DISPLACEMENT));
+
+			GraphicsManager::getInstance().addMaterial(
+				MaterialManager::getInstance().buildMaterial(
+					materials));
+
+			materials.clear();
+		}
 	}
 
 	void AssimpLoader::loadAnimations(const aiScene* scene) {
@@ -99,7 +137,7 @@ namespace Graphics {
 	}
 
 	void AssimpLoader::basicVertexMesh(const aiMesh* mesh,
-		unsigned material_id) {
+		unsigned mesh_id, unsigned material_id) {
 		std::vector<BasicVertex> vertices;
 		std::vector<unsigned int> indices;
 
@@ -128,13 +166,18 @@ namespace Graphics {
 		}
 
 		Mesh arch_mesh;
-		arch_mesh.create(mesh->mName.C_Str(), material_id, vertices, indices);
+
+		// Case mesh doesn't have a name
+		if (mesh->mName.length == 0)
+			arch_mesh.m_name = m_path + std::to_string(mesh_id);
+
+		arch_mesh.create(arch_mesh.m_name, material_id, vertices, indices);
 
 		GraphicsManager::getInstance().addMesh(arch_mesh);
 	}
 
 	void AssimpLoader::normalMappedVertexMesh(const aiMesh* mesh,
-		unsigned material_id) {
+		unsigned mesh_id, unsigned material_id) {
 		std::vector<NormalMappedVertex> vertices;
 		std::vector<unsigned int> indices;
 
@@ -167,18 +210,48 @@ namespace Graphics {
 		}
 
 		Mesh arch_mesh;
-		arch_mesh.create(mesh->mName.C_Str(), material_id, vertices, indices);
+
+		// Case mesh doesn't have a name
+		if (mesh->mName.length == 0)
+			arch_mesh.m_name = m_path + std::to_string(mesh_id);
+
+		arch_mesh.create(arch_mesh.m_name, material_id, vertices, indices);
 
 		GraphicsManager::getInstance().addMesh(arch_mesh);
 	}
 
 	void AssimpLoader::animatedVertexMesh(const aiMesh* mesh,
-		unsigned material_id) {
+		unsigned mesh_id, unsigned material_id) {
 		// TODO
 	}
 
 	void AssimpLoader::animatedNormalMappedVertexMesh(const aiMesh* mesh,
-		unsigned material_id) {
+		unsigned mesh_id, unsigned material_id) {
 		// TODO
+	}
+
+	bool AssimpLoader::loadMaterials(const aiMaterial* material,
+		aiTextureType type, std::string& path) {
+		// TODO
+		// Loading only one texture by type. Improve later.
+		if (material->GetTextureCount(type) > 0) {
+			aiString str;
+			material->GetTexture(type, 0, &str);
+
+			path = str.C_Str();
+
+			int index = path.find_last_of('.');
+
+			// TODO
+			// Stbi is failing to load tga images.
+			// Transform all tga to jpg before loading the mesh
+			// Fix this later
+			if (path.substr(index + 1) == "tga" || path.substr(index + 1) == "TGA")
+				path = path.substr(0, index) + ".jpg";
+
+			return true;
+		}
+
+		return false;
 	}
 }

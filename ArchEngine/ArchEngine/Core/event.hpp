@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 13/05/2018                                                 *
+ * Last Modified: 20/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -31,6 +31,9 @@ namespace Core {
 		//--- Core events
 		EVENT_CORE_QUIT,
 		EVENT_CORE_TIMER,
+
+		//--- Window events
+		EVENT_WINDOW_RESIZE,
 
 		//--- Input events
 		EVENT_INPUT_ACTION,
@@ -84,6 +87,23 @@ namespace Core {
 
 	private:
 		unsigned m_time;
+	};
+	//-------------------------------------------------------------------------
+
+	//------------------
+	//---- Window events
+	//------------------
+	class WindowResizeEvent : public IEvent {
+	public:
+		WindowResizeEvent(int width, int height);
+		~WindowResizeEvent();
+
+		EventType getType() const override;
+		void getSize(int& width, int& height);
+
+	private:
+		int m_width;
+		int m_height;
 	};
 	//-------------------------------------------------------------------------
 }

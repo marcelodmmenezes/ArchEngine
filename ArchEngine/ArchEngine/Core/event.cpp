@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 06/05/2018                                                       *
- * Last Modified: 13/05/2018                                                 *
+ * Last Modified: 20/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -28,4 +28,14 @@ namespace Core {
 	CoreTimerEvent::~CoreTimerEvent() {}
 	EventType CoreTimerEvent::getType() const { return m_type; }
 	unsigned CoreTimerEvent::getTime() const { return m_time; }
+
+	//----------------------------------------------------------- Window events
+	WindowResizeEvent::WindowResizeEvent(int width, int height) :
+		IEvent(EVENT_WINDOW_RESIZE), m_width(width), m_height(height) {}
+	WindowResizeEvent::~WindowResizeEvent() {}
+	EventType WindowResizeEvent::getType() const { return m_type; }
+	void WindowResizeEvent::getSize(int& width, int& height) {
+		width = m_width;
+		height = m_height;
+	}
 }

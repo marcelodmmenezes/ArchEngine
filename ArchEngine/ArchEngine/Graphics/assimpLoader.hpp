@@ -15,6 +15,7 @@
 
 
 #include "graphicsManager.hpp"
+#include "materialManager.hpp"
 #include "primitives.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -24,6 +25,7 @@
 
 #include <fstream>
 #include <string>
+#include <vector>
 
 
 namespace Graphics {
@@ -41,11 +43,21 @@ namespace Graphics {
 		// Helpers to load meshes based on it's properties.
 		// Instanced meshes are exported by the level editor, therefore
 		// not loaded by assimp, but by a custom format loader.
-		void basicVertexMesh(const aiMesh* mesh, unsigned material_id);
-		void normalMappedVertexMesh(const aiMesh* mesh, unsigned material_id);
-		void animatedVertexMesh(const aiMesh* mesh, unsigned material_id);
+		void basicVertexMesh(const aiMesh* mesh,
+			unsigned mesh_id, unsigned material_id);
+		void normalMappedVertexMesh(const aiMesh* mesh,
+			unsigned mesh_id, unsigned material_id);
+		void animatedVertexMesh(const aiMesh* mesh,
+			unsigned mesh_id, unsigned material_id);
 		void animatedNormalMappedVertexMesh(const aiMesh* mesh,
-			unsigned material_id);
+			unsigned mesh_id, unsigned material_id);
+
+		// Helper to load materials based on it's properties.
+		bool loadMaterials(const aiMaterial* material,
+			aiTextureType type, std::string& path);
+
+		// Stores the current scene path for mesh naming
+		std::string m_path;
 	};
 }
 
