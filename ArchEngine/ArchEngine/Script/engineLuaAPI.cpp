@@ -91,5 +91,9 @@ namespace Script {
 		lua_context.initialize(m_file, functions);
 
 		lua_context.destroy();
+
+		// Clears file
+		std::fstream file(m_file, std::fstream::out | std::fstream::trunc);
+		file.close();
 	}
 }

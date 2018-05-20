@@ -21,6 +21,7 @@
 #include "../Utils/fileWatcher.hpp"
 #include "../Utils/serviceLocator.hpp"
 
+#include <fstream>
 #include <string>
 
 
