@@ -230,55 +230,24 @@ namespace Graphics {
 		return it->second;
 	}
 
-	unsigned GraphicsManager::addMaterial(const std::string& path) {
-		auto it = m_material_path_to_handle.find(path);
-
-		Material material;
-
-		// If the material isn't in the vector
-		if (it == this->m_material_path_to_handle.end()) {
-			// TODO: create create material
-
-			//------------------------------------------------------------ TEST
-			//-----------------------------------------------------------------
-
-			unsigned handle;
-
-			// If there aren't spaces available from previous removes
-			if (m_materials_unused_spaces.empty()) {
-				m_materials.push_back(std::make_pair(std::move(material), 1));
-				m_mesh_path_to_handle[path] = m_materials.size() - 1;
-				handle = m_meshes.size() - 1;
-			}
-			else {
-				handle = m_materials_unused_spaces.top();
-				m_materials_unused_spaces.pop();
-
-				m_materials[handle] = std::make_pair(std::move(material), 1);
-				m_material_path_to_handle[path] = handle;
-			}
-
-			return handle;
-		}
-
-		// Increases material reference
-		m_materials[it->second].second++;
-		return it->second;
+	unsigned GraphicsManager::addMaterial(const Material& material) {
+		m_materials.push_back(material);
+		return m_materials.size() - 1;
 	}
 
-	unsigned GraphicsManager::addDirectionalLight(unsigned shader_handle,
+	unsigned GraphicsManager::addDirectionalLight(
 		const DirectionalLight& light) {
 		m_directional_lights.push_back(light);
 		return m_directional_lights.size() - 1;
 	}
 
-	unsigned GraphicsManager::addPointLight(unsigned shader_handle,
+	unsigned GraphicsManager::addPointLight(
 		const PointLight& light) {
 		m_point_lights.push_back(light);
 		return m_point_lights.size() - 1;
 	}
 
-	unsigned GraphicsManager::addSpotLight(unsigned shader_handle,
+	unsigned GraphicsManager::addSpotLight(
 		const SpotLight& light) {
 		m_spot_lights.push_back(light);
 		return m_spot_lights.size() - 1;
@@ -348,32 +317,12 @@ namespace Graphics {
 		if (handle >= m_materials.size()) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Attempt to remove Mesh outside boundaries");
+				"Attempt to remove Material outside boundaries");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			return;
 		}
 
-		if (m_materials[handle].second > 0)
-			m_materials[handle].second--;
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-		else
-			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Attempt to remove Material with 0 references");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-
-		// If no one references the mesh anymore
-		if (m_materials[handle].second == 0) {
-			// Remove reference from map
-			for (auto it = m_material_path_to_handle.begin();
-				it != m_material_path_to_handle.end(); ++it) {
-				if (it->second == handle) {
-					m_material_path_to_handle.erase(it);
-					break;
-				}
-			}
-
-			m_materials_unused_spaces.push(handle);
-		}
+		m_materials.erase(m_materials.begin() + handle);
 	}
 
 	void GraphicsManager::removeDirectionalLight(unsigned handle) {

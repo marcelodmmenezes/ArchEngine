@@ -165,14 +165,9 @@ namespace Graphics {
 		NUMBER_OF_TEXTURE_TYPES
 	};
 
-	struct Texture {
-		unsigned handle;
-		TextureType type;
-		std::string path;
-	};
-
 	struct Material {
-		Texture textures[NUMBER_OF_TEXTURE_TYPES];
+		glm::vec4 color;
+		unsigned textures[NUMBER_OF_TEXTURE_TYPES];
 	};
 
 	//-------------------------------------------------------------------------

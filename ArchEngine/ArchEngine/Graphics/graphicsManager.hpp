@@ -66,13 +66,10 @@ namespace Graphics {
 		unsigned addShader(const std::string& vs_path,
 			const std::string& gs_path, const std::string& fs_path);
 		unsigned addMesh(const std::string& path);
-		unsigned addMaterial(const std::string& path);
-		unsigned addDirectionalLight(unsigned shader_handle,
-			const DirectionalLight& light);
-		unsigned addPointLight(unsigned shader_handle,
-			const PointLight& light);
-		unsigned addSpotLight(unsigned shader_handle,
-			const SpotLight& light);
+		unsigned addMaterial(const Material& material);
+		unsigned addDirectionalLight(const DirectionalLight& light);
+		unsigned addPointLight(const PointLight& light);
+		unsigned addSpotLight(const SpotLight& light);
 
 		// Removes the component by handle
 		void removeCamera(unsigned handle);
@@ -100,7 +97,6 @@ namespace Graphics {
 
 	private:
 		//------------------------------------------------------------- Shaders
-		// The shader programs are stored here.
 		std::vector<Shader> m_shaders;
 
 		//-------------------------------------------------------------- Meshes
@@ -118,21 +114,9 @@ namespace Graphics {
 		std::stack<unsigned> m_meshes_unused_spaces;
 
 		//----------------------------------------------------------- Materials
-		// All the game materials are stored here.
-		// - The pair tells how many game entities reference a given material.
-		//   When it's reference count reaches 0 the material is removed from
-		//   the vector.
-		std::vector<std::pair<Material, unsigned>> m_materials;
-
-		// Map used to reference a material by its path. Used internally by
-		// the manager to control how materials are added and removed.
-		std::map<std::string, unsigned> m_material_path_to_handle;
-
-		// Stack used to store unused spaces at m_materials.
-		std::stack<unsigned> m_materials_unused_spaces;
+		std::vector<Material> m_materials;
 
 		//-------------------------------------------------------------- Lights
-		// All the game lights are stored here.
 		std::vector<DirectionalLight> m_directional_lights;
 		std::vector<PointLight> m_point_lights;
 		std::vector<SpotLight> m_spot_lights;

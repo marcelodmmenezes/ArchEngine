@@ -102,6 +102,9 @@
     <ClInclude Include="Script\engineLuaAPI.hpp">
       <Filter>Script</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\materialManager.hpp">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -169,6 +172,9 @@
     </ClCompile>
     <ClCompile Include="Script\engineLuaAPI.cpp">
       <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\materialManager.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
