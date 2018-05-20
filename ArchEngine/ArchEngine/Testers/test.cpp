@@ -16,7 +16,8 @@
 #if defined(ARCH_ENGINE_TEST)
 
 #include "../Core/engine.hpp"
-#include "../Graphics/shader.hpp"
+#include "../Graphics/assimpLoader.hpp"
+#include "../Graphics/graphicsManager.hpp"
 #include "../OS/inputManager.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -92,16 +93,19 @@ void loadData() {
 	GraphicsManager::getInstance().addCamera(camera);
 
 	GraphicsManager::getInstance().addShader(
-		"../../ArchEngine/Testers/simplevs.glsl",
-		"../../ArchEngine/Testers/simplefs.glsl");
+		"../../ArchEngine/Testers/testvs.glsl",
+		"../../ArchEngine/Testers/testfs.glsl");
 
-	Mesh test_mesh;
-	test_mesh.m_name = "teste1";
-	int teste1 = GraphicsManager::getInstance().addMesh(test_mesh);
-	test_mesh.m_name = "teste2";
-	int teste2 = GraphicsManager::getInstance().addMesh(test_mesh);
-	test_mesh.m_name = "teste3";
-	int teste3 = GraphicsManager::getInstance().addMesh(test_mesh);
+	AssimpLoader loader;
+	loader.importScene(
+		"../../../../GameEngineLearning/assets/cube/cube_wooden.obj",
+		(aiPostProcessSteps)(
+			aiProcess_GenSmoothNormals |
+			aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType |
+			aiProcess_FlipUVs));
 }
 
 void onContextEvent(EventPtr e) {

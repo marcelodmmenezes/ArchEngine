@@ -212,5 +212,11 @@
     <None Include="Testers\luaAPI.lua">
       <Filter>Testers</Filter>
     </None>
+    <None Include="Testers\testfs.glsl">
+      <Filter>Testers</Filter>
+    </None>
+    <None Include="Testers\testvs.glsl">
+      <Filter>Testers</Filter>
+    </None>
   </ItemGroup>
 </Project>

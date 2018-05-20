@@ -100,8 +100,11 @@ namespace Graphics {
 
 	void AssimpLoader::basicVertexMesh(const aiMesh* mesh,
 		unsigned material_id) {
-		std::vector<BasicVertex> vertices(mesh->mNumVertices);
-		std::vector<unsigned int> indices(mesh->mNumFaces);
+		std::vector<BasicVertex> vertices;
+		std::vector<unsigned int> indices;
+
+		vertices.reserve(mesh->mNumVertices);
+		indices.reserve(mesh->mNumFaces);
 
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
 			const aiVector3D* p_pos = &(mesh->mVertices[i]);
@@ -132,7 +135,41 @@ namespace Graphics {
 
 	void AssimpLoader::normalMappedVertexMesh(const aiMesh* mesh,
 		unsigned material_id) {
-		// TODO
+		std::vector<NormalMappedVertex> vertices;
+		std::vector<unsigned int> indices;
+
+		vertices.reserve(mesh->mNumVertices);
+		indices.reserve(mesh->mNumFaces);
+
+		for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+			const aiVector3D* p_pos = &(mesh->mVertices[i]);
+			const aiVector3D* p_normal = &(mesh->mNormals[i]);
+			const aiVector3D* p_tex_coord = &(mesh->mTextureCoords[0][i]);
+			const aiVector3D* p_tangent = &(mesh->mTangents[i]);
+			const aiVector3D* p_bitangent = &(mesh->mBitangents[i]);
+
+			vertices.push_back(std::move(NormalMappedVertex{
+				glm::vec3(p_pos->x, p_pos->y, p_pos->z),
+				glm::vec3(p_normal->x, p_normal->y, p_normal->z),
+				glm::vec2(p_tex_coord->x, p_tex_coord->y),
+				glm::vec3(p_tangent->x, p_tangent->y, p_tangent->z),
+				glm::vec3(p_bitangent->x, p_bitangent->y, p_bitangent->z)}));
+		}
+
+		for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+			assert(mesh->mFaces[i].mNumIndices == 3);
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+
+			indices.push_back(mesh->mFaces[i].mIndices[0]);
+			indices.push_back(mesh->mFaces[i].mIndices[1]);
+			indices.push_back(mesh->mFaces[i].mIndices[2]);
+		}
+
+		Mesh arch_mesh;
+		arch_mesh.create(mesh->mName.C_Str(), material_id, vertices, indices);
+
+		GraphicsManager::getInstance().addMesh(arch_mesh);
 	}
 
 	void AssimpLoader::animatedVertexMesh(const aiMesh* mesh,

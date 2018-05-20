@@ -168,11 +168,11 @@ namespace Core {
 			//------------------------------------------------- Scene rendering
 			GraphicsManager::getInstance().update(
 				(float)m_timer.getDeltaTime());
-			/*
+			
 			std::cout << "Seconds between frames: " <<
 				std::setprecision(6) << m_timer.getDeltaTime() << " - FPS: " <<
 				std::setprecision(3) << m_timer.getFrameRate() << "      \r";
-			*/
+			
 			m_window.update();
 		}
 	}

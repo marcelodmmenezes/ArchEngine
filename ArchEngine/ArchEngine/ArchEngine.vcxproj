@@ -192,6 +192,8 @@
     <None Include="Testers\simplevs.glsl" />
     <None Include="Testers\testContext.lua" />
     <None Include="Testers\testContext2.lua" />
+    <None Include="Testers\testfs.glsl" />
+    <None Include="Testers\testvs.glsl" />
     <None Include="Testers\windowConfig.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

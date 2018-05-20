@@ -113,11 +113,14 @@ namespace Graphics {
 			it.setMat4("u_projection", glm::perspective(
 				glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f));
 			it.setMat4("u_view", m_cameras[0].getViewMatrix());
+			it.setVec3("u_view_pos", m_cameras[0].getPosition());
 
 			for (int i = 0; i < (int)m_meshes.size(); i++) {
 				if (m_meshes[i].second > 0) {
-					it.setMat4("u_model", glm::translate(glm::mat4(1.0f),
-						glm::vec3((i - ((int)m_meshes.size() / 2)) * 5, 0.0f, 0.0f)));
+					glm::mat4 model = glm::translate(glm::mat4(1.0f),
+						glm::vec3((i - ((int)m_meshes.size() / 2)) * 5, 0.0f, 0.0f));
+					it.setMat4("u_model", model);
+					it.setMat3("u_trn_inv_up_model", glm::transpose(glm::inverse(glm::mat3(model))));
 					it.update();
 					m_meshes[i].first.draw();
 				}
@@ -139,17 +142,19 @@ namespace Graphics {
 
 	unsigned GraphicsManager::addShader(const std::string& vs_path,
 		const std::string& fs_path) {
+		// Shader must be initialized after push_back to keep the instance reference
 		Shader shader;
-		shader.initialize(vs_path, fs_path);
 		m_shaders.push_back(shader);
+		m_shaders[m_shaders.size() - 1].initialize(vs_path, fs_path);
 		return m_shaders.size() - 1;
 	}
 
 	unsigned GraphicsManager::addShader(const std::string& vs_path,
 		const std::string& gs_path, const std::string& fs_path) {
+		// Shader must be initialized after push_back to keep the instance reference
 		Shader shader;
-		shader.initialize(vs_path, gs_path, fs_path);
 		m_shaders.push_back(shader);
+		m_shaders[m_shaders.size() - 1].initialize(vs_path, gs_path, fs_path);
 		return m_shaders.size() - 1;
 	}
 
@@ -158,61 +163,11 @@ namespace Graphics {
 
 		// If the mesh isn't in the vector
 		if (it == this->m_mesh_name_to_handle.end()) {
-			// TODO: create mesh
-
-			//------------------------------------------------------------ TEST
-			Mesh test_mesh;
-			std::vector<BasicVertex> vertices;
-			BasicVertex vertex;
-
-			vertex.position = glm::vec3(-1.0f, -1.0f, 1.0f);
-			vertex.normal = vertex.position / 2.0f + 0.5f;
-			vertices.push_back(vertex);
-			vertex.position = glm::vec3(1.0f, -1.0f, 1.0f);
-			vertex.normal = vertex.position / 2.0f + 0.5f;
-			vertices.push_back(vertex);
-			vertex.position = glm::vec3(1.0f, 1.0f, 1.0f);
-			vertex.normal = vertex.position / 2.0f + 0.5f;
-			vertices.push_back(vertex);
-			vertex.position = glm::vec3(-1.0f, 1.0f, 1.0f);
-			vertex.normal = vertex.position / 2.0f + 0.5f;
-			vertices.push_back(vertex);
-			vertex.position = glm::vec3(-1.0f, -1.0f, -1.0f);
-			vertex.normal = vertex.position / 2.0f + 0.5f;
-			vertices.push_back(vertex);
-			vertex.position = glm::vec3(1.0f, -1.0f, -1.0f);
-			vertex.normal = vertex.position / 2.0f + 0.5f;
-			vertices.push_back(vertex);
-			vertex.position = glm::vec3(1.0f, 1.0f, -1.0f);
-			vertex.normal = vertex.position / 2.0f + 0.5f;
-			vertices.push_back(vertex);
-			vertex.position = glm::vec3(-1.0f, 1.0f, -1.0f);
-			vertex.normal = vertex.position / 2.0f + 0.5f;
-			vertices.push_back(vertex);
-
-			std::vector<unsigned> indices = {
-				0, 1, 2,
-				2, 3, 0,
-				3, 2, 6,
-				6, 7, 3,
-				7, 6, 5,
-				5, 4, 7,
-				4, 5, 1,
-				1, 0, 4,
-				4, 0, 3,
-				3, 7, 4,
-				1, 5, 6,
-				6, 2, 1,
-			};
-
-			test_mesh.create(mesh.m_name, 0, vertices, indices);
-			//-----------------------------------------------------------------
-
 			unsigned handle;
 
 			// If there aren't spaces available from previous removes
 			if (m_meshes_unused_spaces.empty()) {
-				m_meshes.push_back(std::make_pair(std::move(test_mesh), 1));
+				m_meshes.push_back(std::make_pair(mesh, 1));
 				m_mesh_name_to_handle[mesh.m_name] = m_meshes.size() - 1;
 				handle = m_meshes.size() - 1;
 			}
@@ -220,7 +175,7 @@ namespace Graphics {
 				handle = m_meshes_unused_spaces.top();
 				m_meshes_unused_spaces.pop();
 
-				m_meshes[handle] = std::make_pair(std::move(test_mesh), 1);
+				m_meshes[handle] = std::make_pair(mesh, 1);
 				m_mesh_name_to_handle[mesh.m_name] = handle;
 			}
 
