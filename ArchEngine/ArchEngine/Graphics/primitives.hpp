@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/05/2018                                                       *
- * Last Modified: 19/05/2018                                                 *
+ * Last Modified: 20/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -74,15 +74,6 @@ namespace Graphics {
 
 	//------------------------------------------------------------------ Vertex
 
-	// Shader attribute location
-	const unsigned VERTEX_POSITION_LOCATION        = 0;
-	const unsigned VERTEX_NORMAL_LOCATION          = 1;
-	const unsigned VERTEX_TEXTURE_COORDS_LOCATION  = 2;
-	const unsigned VERTEX_TANGENT_LOCATION         = 3;
-	const unsigned VERTEX_BONE_IDS_LOCATION        = 4;
-	const unsigned VERTEX_BONE_WEIGHT_LOCATION     = 5;
-	const unsigned VERTEX_INSTANCE_MATRIX_LOCATION = 6;
-
 	// All types of vertices have their own struct in order to
 	// easily specify OpenGL vertex attributes in packed arrays.
 	
@@ -91,6 +82,7 @@ namespace Graphics {
 		glm::vec3 normal;            // Normal vector
 		glm::vec2 texture_coords;    // UV coordinates
 		glm::vec3 tangent;           // Coordinates of tangent space
+		glm::vec3 bitangent;         // Coordinates of tangent space
 		glm::ivec4 bone_ids;         // Ids for bones (maximum of 4)
 		glm::vec4 bone_weights;      // Weight of each bone upon this vertex
 		glm::mat4 instance_matrix;   // Model matrix for instanced rendering
@@ -107,6 +99,7 @@ namespace Graphics {
 		glm::vec3 normal;
 		glm::vec2 texture_coords;
 		glm::vec3 tangent;
+		glm::vec3 bitangent;
 	};
 
 	struct AnimatedVertex {
@@ -129,6 +122,7 @@ namespace Graphics {
 		glm::vec3 normal;
 		glm::vec2 texture_coords;
 		glm::vec3 tangent;
+		glm::vec3 bitangent;
 		glm::ivec4 bone_ids;
 		glm::vec4 bone_weights;
 	};
@@ -138,6 +132,7 @@ namespace Graphics {
 		glm::vec3 normal;
 		glm::vec2 texture_coords;
 		glm::vec3 tangent;
+		glm::vec3 bitangent;
 		glm::mat4 instance_matrix;
 	};
 
@@ -162,11 +157,12 @@ namespace Graphics {
 		TEXTURE_HEIGHT,
 		TEXTURE_NORMALS,
 		TEXTURE_DISPLACEMENT,
+		TEXTURE_CUBE_TEXTURE,
 		NUMBER_OF_TEXTURE_TYPES
 	};
 
 	struct Material {
-		glm::vec4 color;
+		// Each position is a handle to MaterialManager's m_textures vector
 		unsigned textures[NUMBER_OF_TEXTURE_TYPES];
 	};
 

@@ -18,6 +18,7 @@
 #include "glad_3_3_core.hpp"
 #include "mesh.hpp"
 #include "shader.hpp"
+#include "materialManager.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -65,7 +66,7 @@ namespace Graphics {
 			const std::string& fs_path);
 		unsigned addShader(const std::string& vs_path,
 			const std::string& gs_path, const std::string& fs_path);
-		unsigned addMesh(const std::string& path);
+		unsigned addMesh(const Mesh& mesh);
 		unsigned addMaterial(const Material& material);
 		unsigned addDirectionalLight(const DirectionalLight& light);
 		unsigned addPointLight(const PointLight& light);
@@ -108,7 +109,7 @@ namespace Graphics {
 
 		// Map used to reference a mesh by its path. Used internally by the
 		// manager to control how meshes are added and removed.
-		std::map<std::string, unsigned> m_mesh_path_to_handle;
+		std::map<std::string, unsigned> m_mesh_name_to_handle;
 
 		// Stack used to store unused spaces at m_meshes.
 		std::stack<unsigned> m_meshes_unused_spaces;

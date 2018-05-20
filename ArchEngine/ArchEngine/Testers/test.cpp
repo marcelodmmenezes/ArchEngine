@@ -95,9 +95,13 @@ void loadData() {
 		"../../ArchEngine/Testers/simplevs.glsl",
 		"../../ArchEngine/Testers/simplefs.glsl");
 
-	GraphicsManager::getInstance().addMesh("teste");
-	GraphicsManager::getInstance().addMesh("teste2");
-	GraphicsManager::getInstance().addMesh("teste3");
+	Mesh test_mesh;
+	test_mesh.m_name = "teste1";
+	int teste1 = GraphicsManager::getInstance().addMesh(test_mesh);
+	test_mesh.m_name = "teste2";
+	int teste2 = GraphicsManager::getInstance().addMesh(test_mesh);
+	test_mesh.m_name = "teste3";
+	int teste3 = GraphicsManager::getInstance().addMesh(test_mesh);
 }
 
 void onContextEvent(EventPtr e) {

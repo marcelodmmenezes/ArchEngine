@@ -18,6 +18,7 @@ using namespace Utils;
 
 //------------------------------------------------------------ Lua Graphics API
 int addMesh(lua_State* lua) {
+	/*
 	int argc = lua_gettop(lua);
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
@@ -38,6 +39,8 @@ int addMesh(lua_State* lua) {
 
 	// No values returned to Lua
 	return 1;
+	*/
+	return 0;
 }
 
 int removeMesh(lua_State* lua) {
@@ -150,42 +153,41 @@ namespace Graphics {
 		return m_shaders.size() - 1;
 	}
 
-	unsigned GraphicsManager::addMesh(const std::string& path) {
-		auto it = m_mesh_path_to_handle.find(path);
-
-		Mesh mesh;
+	unsigned GraphicsManager::addMesh(const Mesh& mesh) {
+		auto it = m_mesh_name_to_handle.find(mesh.m_name);
 
 		// If the mesh isn't in the vector
-		if (it == this->m_mesh_path_to_handle.end()) {
+		if (it == this->m_mesh_name_to_handle.end()) {
 			// TODO: create mesh
 
 			//------------------------------------------------------------ TEST
+			Mesh test_mesh;
 			std::vector<BasicVertex> vertices;
 			BasicVertex vertex;
 
 			vertex.position = glm::vec3(-1.0f, -1.0f, 1.0f);
-			vertex.normal = vertex.position;
+			vertex.normal = vertex.position / 2.0f + 0.5f;
 			vertices.push_back(vertex);
 			vertex.position = glm::vec3(1.0f, -1.0f, 1.0f);
-			vertex.normal = vertex.position;
+			vertex.normal = vertex.position / 2.0f + 0.5f;
 			vertices.push_back(vertex);
 			vertex.position = glm::vec3(1.0f, 1.0f, 1.0f);
-			vertex.normal = vertex.position;
+			vertex.normal = vertex.position / 2.0f + 0.5f;
 			vertices.push_back(vertex);
 			vertex.position = glm::vec3(-1.0f, 1.0f, 1.0f);
-			vertex.normal = vertex.position;
+			vertex.normal = vertex.position / 2.0f + 0.5f;
 			vertices.push_back(vertex);
 			vertex.position = glm::vec3(-1.0f, -1.0f, -1.0f);
-			vertex.normal = vertex.position;
+			vertex.normal = vertex.position / 2.0f + 0.5f;
 			vertices.push_back(vertex);
 			vertex.position = glm::vec3(1.0f, -1.0f, -1.0f);
-			vertex.normal = vertex.position;
+			vertex.normal = vertex.position / 2.0f + 0.5f;
 			vertices.push_back(vertex);
 			vertex.position = glm::vec3(1.0f, 1.0f, -1.0f);
-			vertex.normal = vertex.position;
+			vertex.normal = vertex.position / 2.0f + 0.5f;
 			vertices.push_back(vertex);
 			vertex.position = glm::vec3(-1.0f, 1.0f, -1.0f);
-			vertex.normal = vertex.position;
+			vertex.normal = vertex.position / 2.0f + 0.5f;
 			vertices.push_back(vertex);
 
 			std::vector<unsigned> indices = {
@@ -203,23 +205,23 @@ namespace Graphics {
 				6, 2, 1,
 			};
 
-			mesh.create(vertices, indices, 0);
+			test_mesh.create(mesh.m_name, 0, vertices, indices);
 			//-----------------------------------------------------------------
 
 			unsigned handle;
 
 			// If there aren't spaces available from previous removes
 			if (m_meshes_unused_spaces.empty()) {
-				m_meshes.push_back(std::make_pair(std::move(mesh), 1));
-				m_mesh_path_to_handle[path] = m_meshes.size() - 1;
+				m_meshes.push_back(std::make_pair(std::move(test_mesh), 1));
+				m_mesh_name_to_handle[mesh.m_name] = m_meshes.size() - 1;
 				handle = m_meshes.size() - 1;
 			}
 			else {
 				handle = m_meshes_unused_spaces.top();
 				m_meshes_unused_spaces.pop();
 
-				m_meshes[handle] = std::make_pair(std::move(mesh), 1);
-				m_mesh_path_to_handle[path] = handle;
+				m_meshes[handle] = std::make_pair(std::move(test_mesh), 1);
+				m_mesh_name_to_handle[mesh.m_name] = handle;
 			}
 
 			return handle;
@@ -301,10 +303,10 @@ namespace Graphics {
 			m_meshes[handle].first.destroy();
 
 			// Remove reference from map
-			for (auto it = m_mesh_path_to_handle.begin();
-				it != m_mesh_path_to_handle.end(); ++it) {
+			for (auto it = m_mesh_name_to_handle.begin();
+				it != m_mesh_name_to_handle.end(); ++it) {
 				if (it->second == handle) {
-					m_mesh_path_to_handle.erase(it);
+					m_mesh_name_to_handle.erase(it);
 					break;
 				}
 			}

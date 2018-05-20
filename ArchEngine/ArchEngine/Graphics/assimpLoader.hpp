@@ -14,6 +14,8 @@
 #define GRAPHICS_ASSIMP_LOADER_HPP
 
 
+#include "graphicsManager.hpp"
+#include "primitives.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 #include <assimp/Importer.hpp>
@@ -29,9 +31,21 @@ namespace Graphics {
 	public:
 		bool importScene(const std::string& path, aiPostProcessSteps flags);
 
-
-
 	private:
+		void loadCameras(const aiScene* scene);
+		void loadMeshes(const aiScene* scene);
+		void loadMaterials(const aiScene* scene);
+		void loadAnimations(const aiScene* scene);
+		void loadLights(const aiScene* scene);
+
+		// Helpers to load meshes based on it's properties.
+		// Instanced meshes are exported by the level editor, therefore
+		// not loaded by assimp, but by a custom format loader.
+		void basicVertexMesh(const aiMesh* mesh, unsigned material_id);
+		void normalMappedVertexMesh(const aiMesh* mesh, unsigned material_id);
+		void animatedVertexMesh(const aiMesh* mesh, unsigned material_id);
+		void animatedNormalMappedVertexMesh(const aiMesh* mesh,
+			unsigned material_id);
 	};
 }
 

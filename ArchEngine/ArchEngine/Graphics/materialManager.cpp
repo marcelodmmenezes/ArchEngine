@@ -35,6 +35,16 @@ namespace Graphics {
 		return instance;
 	}
 
+	Material MaterialManager::buildMaterial(const std::vector
+		<std::pair<std::string, TextureType>>& textures) {
+		Material material;
+
+		for (auto& it : textures)
+			material.textures[it.second] = addTexture(it.first);
+
+		return material;
+	}
+
 	unsigned MaterialManager::addTexture(const std::string& path) {
 		auto it = m_texture_path_to_handle.find(path);
 
@@ -65,6 +75,18 @@ namespace Graphics {
 		// Increases texture reference
 		m_textures[it->second].second++;
 		return it->second;
+	}
+
+	unsigned MaterialManager::getTexture(unsigned handle) {
+		if (handle >= m_textures.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"MaterialManager getTexture handle out of bounds");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return 0;
+		}
+
+		return m_textures[handle].first;
 	}
 
 	void MaterialManager::removeTexture(unsigned handle) {

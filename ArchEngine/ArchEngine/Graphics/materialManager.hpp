@@ -36,7 +36,11 @@ namespace Graphics {
 
 		static MaterialManager& getInstance();
 
+		Material buildMaterial(const std::vector
+			<std::pair<std::string, TextureType>>& textures);
+
 		unsigned addTexture(const std::string& path);
+		unsigned getTexture(unsigned handle);
 		void removeTexture(unsigned handle);
 
 	private:

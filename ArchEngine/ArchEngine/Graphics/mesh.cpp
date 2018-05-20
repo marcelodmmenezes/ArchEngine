@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/05/2018                                                       *
- * Last Modified: 16/05/2018                                                 *
+ * Last Modified: 20/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -30,9 +30,11 @@ namespace Graphics {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
-	void Mesh::create(const std::vector<CompleteVertex>& vertices,
-		const std::vector<unsigned>& indices, unsigned material_id) {
-
+	void Mesh::create(const std::string& name, unsigned material_id,
+		const std::vector<CompleteVertex>& vertices,
+		const std::vector<unsigned>& indices) {
+		m_name = name;
+		m_material_id = material_id;
 		m_number_of_indices = indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
@@ -48,20 +50,23 @@ namespace Graphics {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
 			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
 
-		specifyPosition<CompleteVertex>();
-		specifyNormal<CompleteVertex>();
-		specifyTextureCoords<CompleteVertex>();
-		specifyTangent<CompleteVertex>();
-		specifyBoneIds<CompleteVertex>();
-		specifyBoneWeights<CompleteVertex>();
-		specifyInstancedMatrix<CompleteVertex>();
+		specifyPosition<CompleteVertex>(0);
+		specifyNormal<CompleteVertex>(1);
+		specifyTextureCoords<CompleteVertex>(2);
+		specifyTangent<CompleteVertex>(3);
+		specifyBitangent<CompleteVertex>(4);
+		specifyBoneIds<CompleteVertex>(5);
+		specifyBoneWeights<CompleteVertex>(6);
+		specifyInstancedMatrix<CompleteVertex>(7);
 
 		glBindVertexArray(0);
 	}
 
-	void Mesh::create(const std::vector<BasicVertex>& vertices,
-		const std::vector<unsigned>& indices, unsigned material_id) {
-
+	void Mesh::create(const std::string& name, unsigned material_id,
+		const std::vector<BasicVertex>& vertices,
+		const std::vector<unsigned>& indices) {
+		m_name = name;
+		m_material_id = material_id;
 		m_number_of_indices = indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
@@ -77,16 +82,18 @@ namespace Graphics {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
 			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
 
-		specifyPosition<BasicVertex>();
-		specifyNormal<BasicVertex>();
-		specifyTextureCoords<BasicVertex>();
+		specifyPosition<BasicVertex>(0);
+		specifyNormal<BasicVertex>(1);
+		specifyTextureCoords<BasicVertex>(2);
 
 		glBindVertexArray(0);
 	}
 
-	void Mesh::create(const std::vector<NormalMappedVertex>& vertices,
-		const std::vector<unsigned>& indices, unsigned material_id) {
-
+	void Mesh::create(const std::string& name, unsigned material_id,
+		const std::vector<NormalMappedVertex>& vertices,
+		const std::vector<unsigned>& indices) {
+		m_name = name;
+		m_material_id = material_id;
 		m_number_of_indices = indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
@@ -102,17 +109,20 @@ namespace Graphics {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
 			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
 
-		specifyPosition<NormalMappedVertex>();
-		specifyNormal<NormalMappedVertex>();
-		specifyTextureCoords<NormalMappedVertex>();
-		specifyTangent<NormalMappedVertex>();
+		specifyPosition<NormalMappedVertex>(0);
+		specifyNormal<NormalMappedVertex>(1);
+		specifyTextureCoords<NormalMappedVertex>(2);
+		specifyTangent<NormalMappedVertex>(3);
+		specifyBitangent<NormalMappedVertex>(4);
 
 		glBindVertexArray(0);
 	}
 
-	void Mesh::create(const std::vector<AnimatedVertex>& vertices,
-		const std::vector<unsigned>& indices, unsigned material_id) {
-
+	void Mesh::create(const std::string& name, unsigned material_id,
+		const std::vector<AnimatedVertex>& vertices,
+		const std::vector<unsigned>& indices) {
+		m_name = name;
+		m_material_id = material_id;
 		m_number_of_indices = indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
@@ -128,18 +138,20 @@ namespace Graphics {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
 			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
 
-		specifyPosition<AnimatedVertex>();
-		specifyNormal<AnimatedVertex>();
-		specifyTextureCoords<AnimatedVertex>();
-		specifyBoneIds<AnimatedVertex>();
-		specifyBoneWeights<AnimatedVertex>();
+		specifyPosition<AnimatedVertex>(0);
+		specifyNormal<AnimatedVertex>(1);
+		specifyTextureCoords<AnimatedVertex>(2);
+		specifyBoneIds<AnimatedVertex>(3);
+		specifyBoneWeights<AnimatedVertex>(4);
 
 		glBindVertexArray(0);
 	}
 
-	void Mesh::create(const std::vector<InstancedVertex>& vertices,
-		const std::vector<unsigned>& indices, unsigned material_id) {
-
+	void Mesh::create(const std::string& name, unsigned material_id,
+		const std::vector<InstancedVertex>& vertices,
+		const std::vector<unsigned>& indices) {
+		m_name = name;
+		m_material_id = material_id;
 		m_number_of_indices = indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
@@ -155,17 +167,19 @@ namespace Graphics {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
 			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
 
-		specifyPosition<InstancedVertex>();
-		specifyNormal<InstancedVertex>();
-		specifyTextureCoords<InstancedVertex>();
-		specifyInstancedMatrix<InstancedVertex>();
+		specifyPosition<InstancedVertex>(0);
+		specifyNormal<InstancedVertex>(1);
+		specifyTextureCoords<InstancedVertex>(2);
+		specifyInstancedMatrix<InstancedVertex>(3);
 
 		glBindVertexArray(0);
 	}
 
-	void Mesh::create(const std::vector<AnimatedNormalMappedVertex>& vertices,
-		const std::vector<unsigned>& indices, unsigned material_id) {
-
+	void Mesh::create(const std::string& name, unsigned material_id,
+		const std::vector<AnimatedNormalMappedVertex>& vertices,
+		const std::vector<unsigned>& indices) {
+		m_name = name;
+		m_material_id = material_id;
 		m_number_of_indices = indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
@@ -181,19 +195,22 @@ namespace Graphics {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
 			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
 
-		specifyPosition<AnimatedNormalMappedVertex>();
-		specifyNormal<AnimatedNormalMappedVertex>();
-		specifyTextureCoords<AnimatedNormalMappedVertex>();
-		specifyTangent<AnimatedNormalMappedVertex>();
-		specifyBoneIds<AnimatedNormalMappedVertex>();
-		specifyBoneWeights<AnimatedNormalMappedVertex>();
+		specifyPosition<AnimatedNormalMappedVertex>(0);
+		specifyNormal<AnimatedNormalMappedVertex>(1);
+		specifyTextureCoords<AnimatedNormalMappedVertex>(2);
+		specifyTangent<AnimatedNormalMappedVertex>(3);
+		specifyBitangent<AnimatedNormalMappedVertex>(4);
+		specifyBoneIds<AnimatedNormalMappedVertex>(5);
+		specifyBoneWeights<AnimatedNormalMappedVertex>(6);
 
 		glBindVertexArray(0);
 	}
 
-	void Mesh::create(const std::vector<InstancedNormalMappedVertex>& vertices,
-		const std::vector<unsigned>& indices, unsigned material_id) {
-
+	void Mesh::create(const std::string& name, unsigned material_id,
+		const std::vector<InstancedNormalMappedVertex>& vertices,
+		const std::vector<unsigned>& indices) {
+		m_name = name;
+		m_material_id = material_id;
 		m_number_of_indices = indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
@@ -209,18 +226,21 @@ namespace Graphics {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
 			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
 
-		specifyPosition<InstancedNormalMappedVertex>();
-		specifyNormal<InstancedNormalMappedVertex>();
-		specifyTextureCoords<InstancedNormalMappedVertex>();
-		specifyTangent<InstancedNormalMappedVertex>();
-		specifyInstancedMatrix<InstancedNormalMappedVertex>();
+		specifyPosition<InstancedNormalMappedVertex>(0);
+		specifyNormal<InstancedNormalMappedVertex>(1);
+		specifyTextureCoords<InstancedNormalMappedVertex>(2);
+		specifyTangent<InstancedNormalMappedVertex>(3);
+		specifyBitangent<InstancedNormalMappedVertex>(4);
+		specifyInstancedMatrix<InstancedNormalMappedVertex>(5);
 
 		glBindVertexArray(0);
 	}
 
-	void Mesh::create(const std::vector<InstancedAnimatedVertex>& vertices,
-		const std::vector<unsigned>& indices, unsigned material_id) {
-
+	void Mesh::create(const std::string& name, unsigned material_id,
+		const std::vector<InstancedAnimatedVertex>& vertices,
+		const std::vector<unsigned>& indices) {
+		m_name = name;
+		m_material_id = material_id;
 		m_number_of_indices = indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
@@ -236,12 +256,12 @@ namespace Graphics {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() *
 			sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
 
-		specifyPosition<InstancedAnimatedVertex>();
-		specifyNormal<InstancedAnimatedVertex>();
-		specifyTextureCoords<InstancedAnimatedVertex>();
-		specifyBoneIds<InstancedAnimatedVertex>();
-		specifyBoneWeights<InstancedAnimatedVertex>();
-		specifyInstancedMatrix<InstancedAnimatedVertex>();
+		specifyPosition<InstancedAnimatedVertex>(0);
+		specifyNormal<InstancedAnimatedVertex>(1);
+		specifyTextureCoords<InstancedAnimatedVertex>(2);
+		specifyBoneIds<InstancedAnimatedVertex>(3);
+		specifyBoneWeights<InstancedAnimatedVertex>(4);
+		specifyInstancedMatrix<InstancedAnimatedVertex>(5);
 
 		glBindVertexArray(0);
 	}
