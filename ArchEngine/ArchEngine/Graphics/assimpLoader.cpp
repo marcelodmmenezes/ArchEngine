@@ -57,6 +57,9 @@ namespace Graphics {
 	}
 
 	void AssimpLoader::loadMeshes(const aiScene* scene) {
+		// Requests more space to GraphicsManager for efficiency
+		GraphicsManager::getInstance().reserveMeshes(scene->mNumMeshes);
+
 		for (unsigned i = 0; i < scene->mNumMeshes; i++) {
 			// A mesh should contain at least position,
 			// normal, texture_coords and faces.
@@ -89,6 +92,9 @@ namespace Graphics {
 	}
 
 	void AssimpLoader::loadMaterials(const aiScene* scene) {
+		// Requests more space to GraphicsManager for efficiency
+		GraphicsManager::getInstance().reserveMaterials(scene->mNumMaterials);
+
 		std::string str;
 		std::vector<std::pair<std::string, TextureType>> materials;
 		materials.reserve(NUMBER_OF_TEXTURE_TYPES);

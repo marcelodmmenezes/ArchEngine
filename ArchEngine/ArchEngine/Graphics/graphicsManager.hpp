@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 19/05/2018                                                 *
+ * Last Modified: 22/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -60,6 +60,12 @@ namespace Graphics {
 		void destroy();
 
 		void onWindowResizeEvent(Core::EventPtr e);
+
+		// Memory management helpers
+		// Allocates + size space for meshes
+		void reserveMeshes(int size);
+		// Allocates + size space for materials
+		void reserveMaterials(int size);
 
 		// The functions below receives the path of the files which
 		// describes the entity to be added and returns the added component

@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 19/05/2018                                                 *
+ * Last Modified: 22/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -169,6 +169,26 @@ namespace Graphics {
 		//---------------------------------------------------------------------
 
 		glViewport(0, 0, w, h);
+	}
+
+	void GraphicsManager::reserveMeshes(int size) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
+			"GraphicsManager allocating " + std::to_string(size) +
+			" more meshes");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+
+		m_meshes.reserve(m_meshes.size() + size);
+	}
+
+	void GraphicsManager::reserveMaterials(int size) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
+			"GraphicsManager allocating " + std::to_string(size) +
+			" more materials");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+
+		m_materials.reserve(m_materials.size() + size);
 	}
 
 	//----------------------------------------------------------- Add functions
