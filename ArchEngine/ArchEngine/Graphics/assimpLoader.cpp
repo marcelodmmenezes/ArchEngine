@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 20/05/2018                                                 *
+ * Last Modified: 22/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -19,6 +19,8 @@ using namespace Utils;
 namespace Graphics {
 	bool AssimpLoader::importScene(const std::string& path,
 		aiPostProcessSteps flags) {
+		m_path = path;
+
 		Assimp::Importer importer;
 
 		const aiScene* scene = importer.ReadFile(path, flags);
@@ -165,15 +167,13 @@ namespace Graphics {
 			indices.push_back(mesh->mFaces[i].mIndices[2]);
 		}
 
-		Mesh arch_mesh;
-
 		// Case mesh doesn't have a name
 		if (mesh->mName.length == 0)
-			arch_mesh.m_name = m_path + std::to_string(mesh_id);
+			m_mesh.m_name = m_path + std::to_string(mesh_id);
 
-		arch_mesh.create(arch_mesh.m_name, material_id, vertices, indices);
+		m_mesh.create(m_mesh.m_name, material_id, vertices, indices);
 
-		GraphicsManager::getInstance().addMesh(arch_mesh);
+		GraphicsManager::getInstance().addMesh(m_mesh);
 	}
 
 	void AssimpLoader::normalMappedVertexMesh(const aiMesh* mesh,
@@ -192,7 +192,7 @@ namespace Graphics {
 			const aiVector3D* p_bitangent = &(mesh->mBitangents[i]);
 
 			vertices.push_back(std::move(NormalMappedVertex{
-				glm::vec3(p_pos->x, p_pos->y, p_pos->z),
+				glm::vec3(glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f)) * glm::vec4(p_pos->x, p_pos->y, p_pos->z, 1.0f)),
 				glm::vec3(p_normal->x, p_normal->y, p_normal->z),
 				glm::vec2(p_tex_coord->x, p_tex_coord->y),
 				glm::vec3(p_tangent->x, p_tangent->y, p_tangent->z),
@@ -209,15 +209,13 @@ namespace Graphics {
 			indices.push_back(mesh->mFaces[i].mIndices[2]);
 		}
 
-		Mesh arch_mesh;
-
 		// Case mesh doesn't have a name
 		if (mesh->mName.length == 0)
-			arch_mesh.m_name = m_path + std::to_string(mesh_id);
+			m_mesh.m_name = m_path + std::to_string(mesh_id);
 
-		arch_mesh.create(arch_mesh.m_name, material_id, vertices, indices);
+		m_mesh.create(m_mesh.m_name, material_id, vertices, indices);
 
-		GraphicsManager::getInstance().addMesh(arch_mesh);
+		GraphicsManager::getInstance().addMesh(m_mesh);
 	}
 
 	void AssimpLoader::animatedVertexMesh(const aiMesh* mesh,
@@ -238,9 +236,10 @@ namespace Graphics {
 			aiString str;
 			material->GetTexture(type, 0, &str);
 
-			path = str.C_Str();
+			int index = m_path.find_last_of('/');
+			path = m_path.substr(0, index) + "/" + str.C_Str();
 
-			int index = path.find_last_of('.');
+			index = path.find_last_of('.');
 
 			// TODO
 			// Stbi is failing to load tga images.

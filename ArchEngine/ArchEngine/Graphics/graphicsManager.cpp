@@ -98,7 +98,7 @@ namespace Graphics {
 		
 		//---------------------------------------------------------------- TEST
 		m_projection = glm::perspective(
-			glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
+			glm::radians(45.0f), (float)width / (float)height, 0.1f, 10000.0f);
 		//---------------------------------------------------------------------
 
 		glClearColor(color.r, color.g, color.b, color.a);
@@ -127,10 +127,11 @@ namespace Graphics {
 			it.setMat4("u_view", m_cameras[0].getViewMatrix());
 			it.setVec3("u_view_pos", m_cameras[0].getPosition());
 
-			for (int k = -3; k < 4; k++) {
-				for (int j = -3; j < 4; j++) {
+			int j = 0, k = 0;
+			//for (int k = -3; k < 4; k++) {
+			//	for (int j = -3; j < 4; j++) {
 					for (int i = 0; i < (int)m_meshes.size(); i++) {
-						if (m_meshes[i].second > 0) {
+			//			if (m_meshes[i].second > 0) {
 							glm::mat4 model = glm::translate(glm::mat4(1.0f),
 								glm::vec3(j * 10.0f, 0.0f, k * 10.0f));
 							it.setMat4("u_model", model);
@@ -138,10 +139,10 @@ namespace Graphics {
 								glm::transpose(glm::inverse(glm::mat3(model))));
 							it.update();
 							m_meshes[i].first.draw();
-						}
+			//			}
 					}
-				}
-			}
+			//	}
+			//}
 		}
 
 		//---------------------------------------------------------------------
@@ -164,7 +165,7 @@ namespace Graphics {
 
 		//---------------------------------------------------------------- TEST
 		m_projection = glm::perspective(
-			glm::radians(45.0f), (float)w / (float)h, 0.1f, 100.0f);
+			glm::radians(45.0f), (float)w / (float)h, 0.1f, 10000.0f);
 		//---------------------------------------------------------------------
 
 		glViewport(0, 0, w, h);

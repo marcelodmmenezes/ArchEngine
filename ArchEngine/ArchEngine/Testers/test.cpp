@@ -98,7 +98,8 @@ void loadData() {
 
 	AssimpLoader loader;
 	loader.importScene(
-		"../../../../GameEngineLearning/assets/nanosuit/nanosuit.obj",
+		"../../../../GameEngineLearning/assets/sponza/sponza.obj",
+		//"../../../../GameEngineLearning/assets/nanosuit/nanosuit.obj",
 		(aiPostProcessSteps)(
 			aiProcess_GenSmoothNormals |
 			aiProcess_CalcTangentSpace |

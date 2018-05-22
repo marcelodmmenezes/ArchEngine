@@ -140,6 +140,13 @@ namespace Graphics {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			return 0;
 		}
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		else {
+			ServiceLocator::getFileLogger()->log<LOG_INFO>(
+				path + " loaded successfully!");
+
+		}
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height,
 			0, GL_RGBA, GL_UNSIGNED_BYTE, image);
