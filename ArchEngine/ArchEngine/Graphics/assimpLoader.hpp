@@ -64,6 +64,10 @@ namespace Graphics {
 
 		// Auxiliary Mesh for importing
 		Mesh m_mesh;
+
+		// Auxiliary to associate a mesh with it's
+		// GraphicsManager's material id
+		static unsigned m_material_base_index;
 	};
 }
 

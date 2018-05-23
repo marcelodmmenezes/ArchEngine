@@ -17,6 +17,8 @@ using namespace Utils;
 
 
 namespace Graphics {
+	unsigned AssimpLoader::m_material_base_index = 0u;
+
 	bool AssimpLoader::importScene(const std::string& path,
 		aiPostProcessSteps flags) {
 		m_path = path;
@@ -48,6 +50,8 @@ namespace Graphics {
 
 		if (scene->HasLights())
 			loadLights(scene);
+
+		m_material_base_index += scene->mNumMaterials;
 
 		return true;
 	}
@@ -177,7 +181,9 @@ namespace Graphics {
 		if (mesh->mName.length == 0)
 			m_mesh.m_name = m_path + std::to_string(mesh_id);
 
-		m_mesh.create(m_mesh.m_name, material_id, vertices, indices);
+		m_mesh.create(m_mesh.m_name,
+			m_material_base_index + material_id,
+			vertices, indices);
 
 		GraphicsManager::getInstance().addMesh(m_mesh);
 	}
@@ -198,7 +204,7 @@ namespace Graphics {
 			const aiVector3D* p_bitangent = &(mesh->mBitangents[i]);
 
 			vertices.push_back(std::move(NormalMappedVertex{
-				glm::vec3(glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f)) * glm::vec4(p_pos->x, p_pos->y, p_pos->z, 1.0f)),
+				glm::vec3(p_pos->x, p_pos->y, p_pos->z),
 				glm::vec3(p_normal->x, p_normal->y, p_normal->z),
 				glm::vec2(p_tex_coord->x, p_tex_coord->y),
 				glm::vec3(p_tangent->x, p_tangent->y, p_tangent->z),
@@ -219,7 +225,9 @@ namespace Graphics {
 		if (mesh->mName.length == 0)
 			m_mesh.m_name = m_path + std::to_string(mesh_id);
 
-		m_mesh.create(m_mesh.m_name, material_id, vertices, indices);
+		m_mesh.create(m_mesh.m_name,
+			m_material_base_index + material_id,
+			vertices, indices);
 
 		GraphicsManager::getInstance().addMesh(m_mesh);
 	}

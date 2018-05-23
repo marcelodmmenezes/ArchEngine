@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 13/05/2018                                                 *
+ * Last Modified: 22/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -192,8 +192,10 @@ namespace Graphics {
 	}
 
 	void Shader::update() {
-		for (auto& it : m_dirty_uniforms)
-			m_uniforms_by_name[it]->update();
+		for (auto& it : m_dirty_uniforms) {
+			auto uniform = m_uniforms_by_name[it];
+			if (uniform) uniform->update();
+		}
 
 		m_dirty_uniforms.clear();
 	}
@@ -208,48 +210,96 @@ namespace Graphics {
 	}
 
 	void Shader::setBool(const std::string& name, bool value) {
-		auto uniform = std::static_pointer_cast<Uniform<bool>>(
+		auto uniform = std::dynamic_pointer_cast<Uniform<bool>>(
 			m_uniforms_by_name[name]);
+
+		if (!uniform) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Couldn't find " + name + " in shader");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
 
 		if (uniform->setValue(value))
 			m_dirty_uniforms.push_back(name);
 	}
 
 	void Shader::setInt(const std::string& name, int value) {
-		auto uniform = std::static_pointer_cast<Uniform<int>>(
+		auto uniform = std::dynamic_pointer_cast<Uniform<int>>(
 			m_uniforms_by_name[name]);
+
+		if (!uniform) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Couldn't find " + name + " in shader");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
 
 		if (uniform->setValue(value))
 			m_dirty_uniforms.push_back(name);
 	}
 
 	void Shader::setFloat(const std::string& name, float value) {
-		auto uniform = std::static_pointer_cast<Uniform<float>>(
+		auto uniform = std::dynamic_pointer_cast<Uniform<float>>(
 			m_uniforms_by_name[name]);
+
+		if (!uniform) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Couldn't find " + name + " in shader");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
 
 		if (uniform->setValue(value))
 			m_dirty_uniforms.push_back(name);
 	}
 
 	void Shader::setVec3(const std::string& name, const glm::vec3& vec) {
-		auto uniform = std::static_pointer_cast<Uniform<glm::vec3>>(
+		auto uniform = std::dynamic_pointer_cast<Uniform<glm::vec3>>(
 			m_uniforms_by_name[name]);
+
+		if (!uniform) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Couldn't find " + name + " in shader");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
 
 		if (uniform->setValue(vec))
 			m_dirty_uniforms.push_back(name);
 	}
 
 	void Shader::setMat3(const std::string& name, const glm::mat3& matrix) {
-		auto uniform = std::static_pointer_cast<Uniform<glm::mat3>>(
+		auto uniform = std::dynamic_pointer_cast<Uniform<glm::mat3>>(
 			m_uniforms_by_name[name]);
+
+		if (!uniform) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Couldn't find " + name + " in shader");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
 
 		if (uniform->setValue(matrix))
 			m_dirty_uniforms.push_back(name);
 	}
 
 	void Shader::setMat4(const std::string& name, const glm::mat4& matrix) {
-		auto uniform = std::static_pointer_cast<Uniform<glm::mat4>>(
+		auto uniform = std::dynamic_pointer_cast<Uniform<glm::mat4>>(
 			m_uniforms_by_name[name]);
+
+		if (!uniform) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Couldn't find " + name + " in shader");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
 
 		if (uniform->setValue(matrix))
 			m_dirty_uniforms.push_back(name);

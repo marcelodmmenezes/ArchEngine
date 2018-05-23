@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 20/05/2018                                                       *
- * Last Modified: 20/05/2018                                                 *
+ * Last Modified: 22/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -36,5 +36,5 @@ void main() {
 	f_normal = u_trn_inv_up_model * v_normal;
 	f_frag_pos = vec3(world_position);
 
-	f_texture_coords = vec2(v_texture_coords.x, 1.0f - v_texture_coords.y);;
+	f_texture_coords = v_texture_coords;
 }

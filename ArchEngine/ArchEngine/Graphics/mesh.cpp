@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/05/2018                                                       *
- * Last Modified: 20/05/2018                                                 *
+ * Last Modified: 22/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -24,10 +24,12 @@ namespace Graphics {
 	}
 
 	Mesh::~Mesh() {
+		/*
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Mesh destructor");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		*/
 	}
 
 	void Mesh::create(const std::string& name, unsigned material_id,

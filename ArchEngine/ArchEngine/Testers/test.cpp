@@ -89,7 +89,9 @@ int main(int argc, char* argv[]) {
 }
 
 void loadData() {
-	DebugCamera camera(glm::vec3(0.0f, 0.0f, 5.0f));
+	DebugCamera camera(glm::vec3(50.0f, 20.0f, -5.0f),
+		glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90);
+
 	GraphicsManager::getInstance().addCamera(camera);
 
 	GraphicsManager::getInstance().addShader(
@@ -98,8 +100,17 @@ void loadData() {
 
 	AssimpLoader loader;
 	loader.importScene(
-		"../../../../GameEngineLearning/assets/sponza/sponza.obj",
-		//"../../../../GameEngineLearning/assets/nanosuit/nanosuit.obj",
+		"../../../../GameEngineLearning/assets/sponza/mergedSponza.obj",
+		(aiPostProcessSteps)(
+			aiProcess_GenSmoothNormals |
+			aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType |
+			aiProcess_FlipUVs));
+	
+	loader.importScene(
+		"../../../../GameEngineLearning/assets/nanosuit/nanosuit.obj",
 		(aiPostProcessSteps)(
 			aiProcess_GenSmoothNormals |
 			aiProcess_CalcTangentSpace |

@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 20/05/2018                                                       *
- * Last Modified: 20/05/2018                                                 *
+ * Last Modified: 22/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -18,8 +18,8 @@ in vec3 f_frag_pos;
 in vec2 f_texture_coords;
 
 uniform vec3 u_view_pos;
-uniform sampler2D u_texture_diffuse;
-uniform sampler2D u_texture_specular;
+uniform sampler2D u_texture_0;
+uniform sampler2D u_texture_1;
 
 out vec4 f_frag_color;
 
@@ -27,10 +27,10 @@ void main() {
 	vec3 norm = normalize(f_normal);
 	vec3 view_dir = normalize(u_view_pos - f_frag_pos);
 
-	vec3 diffuse_tex = vec3(texture(u_texture_diffuse, f_texture_coords));
-	vec3 specular_tex = vec3(texture(u_texture_specular, f_texture_coords));
-	diffuse_tex = vec3(0.4f, 0.3f, 0.2f);
-	specular_tex = vec3(1.0f, 1.0f, 1.0f);
+	vec3 diffuse_tex = vec3(texture(u_texture_0, f_texture_coords));
+	vec3 specular_tex = vec3(texture(u_texture_1, f_texture_coords));
+	//diffuse_tex = vec3(0.4f, 0.3f, 0.2f);
+	//specular_tex = vec3(1.0f, 1.0f, 1.0f);
 
 	vec3 result = 0.1f * diffuse_tex;
 	

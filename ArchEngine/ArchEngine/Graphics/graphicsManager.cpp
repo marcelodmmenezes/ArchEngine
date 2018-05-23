@@ -95,10 +95,9 @@ namespace Graphics {
 			<GraphicsManager, &GraphicsManager::onWindowResizeEvent>(this);
 		EventManager::getInstance().addListener(
 			m_window_size_listener, EVENT_WINDOW_RESIZE);
-		
+
 		//---------------------------------------------------------------- TEST
-		m_projection = glm::perspective(
-			glm::radians(45.0f), (float)width / (float)height, 0.1f, 10000.0f);
+		onWindowResizeEvent(EventPtr(new WindowResizeEvent(800, 600)));
 		//---------------------------------------------------------------------
 
 		glClearColor(color.r, color.g, color.b, color.a);
@@ -110,7 +109,10 @@ namespace Graphics {
 		// TODO
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
+
+		//---------------------------------------------------------------- TEST
 		return initialize(glm::vec4(0.05f, 0.08f, 0.07f, 1.0f), 800, 600);
+		//---------------------------------------------------------------------
 	}
 
 	void GraphicsManager::update(float delta_time) {
@@ -121,28 +123,53 @@ namespace Graphics {
 
 		m_cameras[0].m_delta_time = delta_time;
 
+		auto a = m_materials.size();
+
 		for (auto& it : m_shaders) {
 			it.bind();
 			it.setMat4("u_projection", m_projection);
 			it.setMat4("u_view", m_cameras[0].getViewMatrix());
 			it.setVec3("u_view_pos", m_cameras[0].getPosition());
 
-			int j = 0, k = 0;
-			//for (int k = -3; k < 4; k++) {
-			//	for (int j = -3; j < 4; j++) {
-					for (int i = 0; i < (int)m_meshes.size(); i++) {
-			//			if (m_meshes[i].second > 0) {
-							glm::mat4 model = glm::translate(glm::mat4(1.0f),
-								glm::vec3(j * 10.0f, 0.0f, k * 10.0f));
-							it.setMat4("u_model", model);
-							it.setMat3("u_trn_inv_up_model",
-								glm::transpose(glm::inverse(glm::mat3(model))));
-							it.update();
-							m_meshes[i].first.draw();
-			//			}
+			for (int i = 0; i < (int)m_meshes.size(); i++) {
+				glm::mat4 model;
+
+				if (i < 25)
+					model = glm::scale(glm::mat4(1.0f),
+						glm::vec3(0.1f, 0.1f, 0.1f));
+				else
+					model = glm::scale(glm::rotate(glm::translate(
+						glm::mat4(1.0f), glm::vec3(0.0f, -0.25f, -5.0f)),
+						glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)),
+						glm::vec3(1.5f, 1.5f, 1.5f));
+
+				it.setMat4("u_model", model);
+				it.setMat3("u_trn_inv_up_model",
+					glm::transpose(glm::inverse(glm::mat3(model))));
+
+				int u = 0;
+				for (int t = 0; t < NUMBER_OF_TEXTURE_TYPES; t++) {
+					int texture = m_materials[m_meshes[i].first.m_material_id].textures[t];
+
+					if (texture < UINT_MAX) {
+						glActiveTexture(GL_TEXTURE0 + u);
+						glBindTexture(GL_TEXTURE_2D,
+							MaterialManager::getInstance().getTexture(texture));
+						it.setInt("u_texture_" + std::to_string(u), GL_TEXTURE0 + u);
+						u++;
+						if (u == 2)
+							break;
 					}
-			//	}
-			//}
+				}
+
+				it.update();
+				m_meshes[i].first.draw();
+
+				for (int t = 0; t < NUMBER_OF_TEXTURE_TYPES; t++) {
+					glActiveTexture(GL_TEXTURE0 + t);
+					glBindTexture(GL_TEXTURE_2D, 0);
+				}
+			}
 		}
 
 		//---------------------------------------------------------------------
@@ -226,7 +253,7 @@ namespace Graphics {
 
 			// If there aren't spaces available from previous removes
 			if (m_meshes_unused_spaces.empty()) {
-				m_meshes.push_back(std::make_pair(mesh, 1));
+				m_meshes.push_back(std::move(std::make_pair(mesh, 1)));
 				m_mesh_name_to_handle[mesh.m_name] = m_meshes.size() - 1;
 				handle = m_meshes.size() - 1;
 			}

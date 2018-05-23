@@ -26,11 +26,8 @@ namespace Graphics {
 
 	DebugCamera::DebugCamera(glm::vec3 position, glm::vec3 front,
 		glm::vec3 up, float yaw, float pitch) :
-		m_front(front), m_movement_speed(SPEED), m_zoom(ZOOM) {
-		m_position = position;
-		m_world_up = up;
-		m_yaw = yaw;
-		m_pitch = pitch;
+		m_position(position), m_front(front), m_world_up(up),
+		m_yaw(yaw), m_pitch(pitch), m_movement_speed(SPEED), m_zoom(ZOOM) {
 		updateCameraVectors();
 	}
 
