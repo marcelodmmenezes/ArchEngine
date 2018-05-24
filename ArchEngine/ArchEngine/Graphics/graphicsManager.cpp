@@ -143,7 +143,7 @@ namespace Graphics {
 						glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)),
 						glm::vec3(1.2f, 1.2f, 1.2f));
 
-				model = glm::mat4(1.0f);
+				//model = glm::mat4(1.0f);
 
 				it.setMat4("u_model", model);
 				it.setMat3("u_trn_inv_up_model",
