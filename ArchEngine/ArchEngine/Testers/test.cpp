@@ -112,7 +112,7 @@ void loadData() {
 			aiProcess_JoinIdenticalVertices |
 			aiProcess_SortByPType |
 			aiProcess_FlipUVs));
-	/*
+	
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/nanosuit/nanosuit.obj",
 		(aiPostProcessSteps)(
@@ -122,7 +122,7 @@ void loadData() {
 			aiProcess_JoinIdenticalVertices |
 			aiProcess_SortByPType |
 			aiProcess_FlipUVs));
-			*/
+			
 	/*
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/plane/plane_brick.obj",

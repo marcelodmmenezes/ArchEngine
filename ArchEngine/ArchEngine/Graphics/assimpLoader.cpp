@@ -221,9 +221,7 @@ namespace Graphics {
 			indices.push_back(mesh->mFaces[i].mIndices[2]);
 		}
 
-		// Case mesh doesn't have a name
-		if (mesh->mName.length == 0)
-			m_mesh.m_name = m_path + std::to_string(mesh_id);
+		m_mesh.m_name = m_path + std::to_string(mesh_id) + mesh->mName.C_Str();
 
 		m_mesh.create(m_mesh.m_name,
 			m_material_base_index + material_id,
