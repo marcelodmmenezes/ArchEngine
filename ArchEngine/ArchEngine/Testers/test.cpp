@@ -93,11 +93,15 @@ void loadData() {
 		glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90);
 
 	GraphicsManager::getInstance().addCamera(camera);
-
+	
+	GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Testers/normalmapvs.glsl",
+		"../../ArchEngine/Testers/normalmapfs.glsl");
+	/*
 	GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Testers/testvs.glsl",
 		"../../ArchEngine/Testers/testfs.glsl");
-
+	*/
 	AssimpLoader loader;
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/sponza/mergedSponza.obj",
@@ -108,7 +112,7 @@ void loadData() {
 			aiProcess_JoinIdenticalVertices |
 			aiProcess_SortByPType |
 			aiProcess_FlipUVs));
-	
+	/*
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/nanosuit/nanosuit.obj",
 		(aiPostProcessSteps)(
@@ -118,6 +122,18 @@ void loadData() {
 			aiProcess_JoinIdenticalVertices |
 			aiProcess_SortByPType |
 			aiProcess_FlipUVs));
+			*/
+	/*
+	loader.importScene(
+		"../../../../GameEngineLearning/assets/plane/plane_brick.obj",
+		(aiPostProcessSteps)(
+			aiProcess_GenSmoothNormals |
+			aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType |
+			aiProcess_FlipUVs));
+			*/
 }
 
 void onContextEvent(EventPtr e) {

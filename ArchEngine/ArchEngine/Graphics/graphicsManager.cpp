@@ -125,7 +125,10 @@ namespace Graphics {
 
 		auto a = m_materials.size();
 
-		for (auto& it : m_shaders) {
+		int index = 0;
+		auto &it = m_shaders[index];
+
+		//for (auto& it : m_shaders) {
 			it.bind();
 			it.setMat4("u_projection", m_projection);
 			it.setMat4("u_view", m_cameras[0].getViewMatrix());
@@ -141,25 +144,46 @@ namespace Graphics {
 					model = glm::scale(glm::rotate(glm::translate(
 						glm::mat4(1.0f), glm::vec3(0.0f, -0.25f, -5.0f)),
 						glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)),
-						glm::vec3(1.5f, 1.5f, 1.5f));
+						glm::vec3(1.2f, 1.2f, 1.2f));
+
+				//model = glm::mat4(1.0f);
 
 				it.setMat4("u_model", model);
 				it.setMat3("u_trn_inv_up_model",
 					glm::transpose(glm::inverse(glm::mat3(model))));
 
-				int u = 0;
-				for (int t = 0; t < NUMBER_OF_TEXTURE_TYPES; t++) {
-					int texture = m_materials[m_meshes[i].first.m_material_id].textures[t];
+				unsigned texture = m_materials[m_meshes[i].first.m_material_id].
+					textures[TEXTURE_DIFFUSE];
 
-					if (texture < UINT_MAX) {
-						glActiveTexture(GL_TEXTURE0 + u);
-						glBindTexture(GL_TEXTURE_2D,
-							MaterialManager::getInstance().getTexture(texture));
-						it.setInt("u_texture_" + std::to_string(u), GL_TEXTURE0 + u);
-						u++;
-						if (u == 2)
-							break;
-					}
+				if (texture < UINT_MAX) {
+					glActiveTexture(GL_TEXTURE0);
+					glBindTexture(GL_TEXTURE_2D,
+						MaterialManager::getInstance().getTexture(texture));
+					it.setInt("u_texture_0", 0);
+				}
+
+				texture = m_materials[m_meshes[i].first.m_material_id].
+					textures[TEXTURE_SPECULAR];
+
+				if (texture < UINT_MAX) {
+					glActiveTexture(GL_TEXTURE1);
+					glBindTexture(GL_TEXTURE_2D,
+						MaterialManager::getInstance().getTexture(
+							m_materials[m_meshes[i].first.m_material_id].
+							textures[TEXTURE_SPECULAR]));
+					it.setInt("u_texture_1", 1);
+				}
+
+				texture = m_materials[m_meshes[i].first.m_material_id].
+					textures[TEXTURE_HEIGHT];
+
+				if (texture < UINT_MAX) {
+					glActiveTexture(GL_TEXTURE2);
+					glBindTexture(GL_TEXTURE_2D,
+						MaterialManager::getInstance().getTexture(
+							m_materials[m_meshes[i].first.m_material_id].
+							textures[TEXTURE_HEIGHT]));
+					it.setInt("u_texture_2", 2);
 				}
 
 				it.update();
@@ -170,7 +194,7 @@ namespace Graphics {
 					glBindTexture(GL_TEXTURE_2D, 0);
 				}
 			}
-		}
+		//}
 
 		//---------------------------------------------------------------------
 	}

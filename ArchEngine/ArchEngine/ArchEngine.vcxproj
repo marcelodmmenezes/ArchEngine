@@ -186,6 +186,8 @@
     <None Include="Testers\engineConfig.lua" />
     <None Include="Testers\inputContexts.lua" />
     <None Include="Testers\luaAPI.lua" />
+    <None Include="Testers\normalmapfs.glsl" />
+    <None Include="Testers\normalmapvs.glsl" />
     <None Include="Testers\objfs.glsl" />
     <None Include="Testers\objvs.glsl" />
     <None Include="Testers\simplefs.glsl" />

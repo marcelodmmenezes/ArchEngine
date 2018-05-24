@@ -218,5 +218,11 @@
     <None Include="Testers\testvs.glsl">
       <Filter>Testers</Filter>
     </None>
+    <None Include="Testers\normalmapfs.glsl">
+      <Filter>Testers</Filter>
+    </None>
+    <None Include="Testers\normalmapvs.glsl">
+      <Filter>Testers</Filter>
+    </None>
   </ItemGroup>
 </Project>
