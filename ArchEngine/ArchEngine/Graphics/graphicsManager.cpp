@@ -233,26 +233,7 @@ namespace Graphics {
 		// TODO
 		m_framebuffer.destroy();
 	}
-
-	void GraphicsManager::onWindowResizeEvent(EventPtr e) {
-		auto evnt = std::static_pointer_cast<WindowResizeEvent>(e);
-
-		int w, h;
-		evnt->getSize(w, h);
-
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
-		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
-			"Window size: " + std::to_string(w) + " " + std::to_string(h));
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
-
-		//---------------------------------------------------------------- TEST
-		m_projection = glm::perspective(
-			glm::radians(45.0f), (float)w / (float)h, 0.1f, 10000.0f);
-		//---------------------------------------------------------------------
-
-		glViewport(0, 0, w, h);
-	}
-
+	
 	void GraphicsManager::reserveMeshes(int size) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
@@ -457,5 +438,24 @@ namespace Graphics {
 		}
 
 		m_spot_lights.erase(m_spot_lights.begin() + handle);
+	}
+
+	void GraphicsManager::onWindowResizeEvent(EventPtr e) {
+		auto evnt = std::static_pointer_cast<WindowResizeEvent>(e);
+
+		int w, h;
+		evnt->getSize(w, h);
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
+			"Window size: " + std::to_string(w) + " " + std::to_string(h));
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+
+		//---------------------------------------------------------------- TEST
+		m_projection = glm::perspective(
+			glm::radians(45.0f), (float)w / (float)h, 0.1f, 10000.0f);
+		//---------------------------------------------------------------------
+
+		glViewport(0, 0, w, h);
 	}
 }

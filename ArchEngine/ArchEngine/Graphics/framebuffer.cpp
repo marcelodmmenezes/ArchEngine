@@ -12,6 +12,7 @@
 #include "framebuffer.hpp"
 
 
+using namespace Core;
 using namespace Utils;
 
 
@@ -21,6 +22,11 @@ namespace Graphics {
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Framebuffer constructor");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+
+		m_window_size_listener.bind
+			<Framebuffer, &Framebuffer::onWindowResizeEvent>(this);
+		EventManager::getInstance().addListener(
+			m_window_size_listener, EVENT_WINDOW_RESIZE);
 	}
 
 	Framebuffer::~Framebuffer() {
@@ -113,5 +119,16 @@ namespace Graphics {
 
 	void Framebuffer::defaultFramebuffer() {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void Framebuffer::onWindowResizeEvent(Core::EventPtr e) {
+		auto evnt = std::static_pointer_cast<WindowResizeEvent>(e);
+
+		int w, h;
+		evnt->getSize(w, h);
+
+		// Recreates the framebuffer
+		destroy();
+		initialize(w, h);
 	}
 }

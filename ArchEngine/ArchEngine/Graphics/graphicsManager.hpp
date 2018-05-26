@@ -61,8 +61,6 @@ namespace Graphics {
 
 		void destroy();
 
-		void onWindowResizeEvent(Core::EventPtr e);
-
 		// Memory management helpers
 		// Allocates + size space for meshes
 		void reserveMeshes(int size);
@@ -100,6 +98,7 @@ namespace Graphics {
 		};
 
 		GraphicsManager();
+		void onWindowResizeEvent(Core::EventPtr e);
 
 		State m_state;
 

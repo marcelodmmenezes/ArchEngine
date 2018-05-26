@@ -14,6 +14,7 @@
 
 
 #include "../Config/engineMacros.hpp"
+#include "../Core/eventManager.hpp"
 #include "glad_3_3_core.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -40,7 +41,11 @@ namespace Graphics {
 			SAFE_TO_DESTROY
 		};
 
+		void onWindowResizeEvent(Core::EventPtr e);
+
 		State m_state;
+
+		Core::EventListener m_window_size_listener;
 
 		int m_width;
 		int m_height;
