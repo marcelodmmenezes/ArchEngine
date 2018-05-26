@@ -504,43 +504,67 @@ namespace Graphics {
 
 			int location = glGetUniformLocation(m_program_id, name);
 
-			m_dirty_uniforms.push_back(name);
+			std::string name_str(name), array_name;
 
-			switch (type) {
-			case GL_BOOL:
-				m_uniforms_by_name.insert(std::make_pair(
-					name, std::make_shared<Uniform<bool>>(name, location)));
-				break;
+			// if array
+			if (size > 1)
+				array_name = name_str.substr(0, name_str.size() - 3);
 
-			case GL_INT:
-				m_uniforms_by_name.insert(std::make_pair(
-					name, std::make_shared<Uniform<int>>(name, location)));
-				break;
+			for (unsigned i = 0; i < size; i++) { // for arrays
+				if (size > 1)
+					name_str = array_name + "[" + std::to_string(i) + "]";
 
-			case GL_FLOAT:
-				m_uniforms_by_name.insert(std::make_pair(
-					name, std::make_shared<Uniform<float>>(name, location)));
-				break;
+				m_dirty_uniforms.push_back(name_str);
 
-			case GL_FLOAT_VEC3:
-				m_uniforms_by_name.insert(std::make_pair(
-					name, std::make_shared<Uniform<glm::vec3>>(name, location)));
-				break;
+				switch (type) {
+				case GL_BOOL:
+					m_uniforms_by_name.insert(std::make_pair(
+						name_str, std::make_shared<Uniform<bool>>
+							(name_str, location)));
+					break;
 
-			case GL_FLOAT_MAT3:
-				m_uniforms_by_name.insert(std::make_pair(
-					name, std::make_shared<Uniform<glm::mat3>>(name, location)));
-				break;
+				case GL_INT:
+					m_uniforms_by_name.insert(std::make_pair(
+						name_str, std::make_shared<Uniform<int>>
+							(name_str, location)));
+					break;
 
-			case GL_FLOAT_MAT4:
-				m_uniforms_by_name.insert(std::make_pair(
-					name, std::make_shared<Uniform<glm::mat4>>(name, location)));
-				break;
+				case GL_FLOAT:
+					m_uniforms_by_name.insert(std::make_pair(
+						name_str, std::make_shared<Uniform<float>>
+							(name_str, location)));
+					break;
 
-			case GL_SAMPLER_2D:
-				m_uniforms_by_name.insert(std::make_pair(
-					name, std::make_shared<Uniform<int>>(name, location)));
-				break;
+				case GL_FLOAT_VEC3:
+					m_uniforms_by_name.insert(std::make_pair(
+						name_str, std::make_shared<Uniform<glm::vec3>>
+							(name_str, location)));
+					break;
+
+				case GL_FLOAT_MAT3:
+					m_uniforms_by_name.insert(std::make_pair(
+						name_str, std::make_shared<Uniform<glm::mat3>>
+							(name_str, location)));
+					break;
+
+				case GL_FLOAT_MAT4:
+					m_uniforms_by_name.insert(std::make_pair(
+						name_str, std::make_shared<Uniform<glm::mat4>>
+							(name_str, location)));
+					break;
+
+				case GL_SAMPLER_2D:
+					m_uniforms_by_name.insert(std::make_pair(
+						name_str, std::make_shared<Uniform<int>>
+							(name_str, location)));
+					break;
+
+				case GL_SAMPLER_CUBE:
+					m_uniforms_by_name.insert(std::make_pair(
+						name_str, std::make_shared<Uniform<int>>
+						(name_str, location)));
+					break;
+				}
 			}
 		}
 	}

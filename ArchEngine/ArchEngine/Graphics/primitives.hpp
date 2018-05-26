@@ -6,13 +6,15 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/05/2018                                                       *
- * Last Modified: 20/05/2018                                                 *
+ * Last Modified: 26/05/2018                                                 *
  *===========================================================================*/
 
 
 #ifndef GRAPHICS_PRIMITIVES_HPP
 #define GRAPHICS_PRIMITIVES_HPP
 
+
+#include "framebuffer.hpp"
 
 #include <glm/glm.hpp>
 
@@ -31,7 +33,11 @@ namespace Graphics {
 		glm::vec3 diffuse;
 		glm::vec3 specular;
 
+		// Shadow properties
 		bool emit_shadows;
+		glm::mat4 projection; // Shadow mapping projection matrix
+		glm::mat4 view; // Shadow mapping view matrix
+		Framebuffer depth_map; // Holds the depth map texture
 	};
 
 	struct PointLight {
@@ -47,7 +53,11 @@ namespace Graphics {
 		glm::vec3 diffuse;
 		glm::vec3 specular;
 
+		// Shadow properties
 		bool emit_shadows;
+		glm::mat4 projection; // Shadow mapping projection matrix
+		glm::mat4 view[6]; // Shadow mapping view matrices
+		Framebuffer depth_map; // Holds the depth map texture
 	};
 
 	struct SpotLight {

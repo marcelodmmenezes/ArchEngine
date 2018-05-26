@@ -98,7 +98,6 @@ namespace Graphics {
 
 		//---------------------------------------------------------------- TEST
 		onWindowResizeEvent(EventPtr(new WindowResizeEvent(800, 600)));
-		m_framebuffer.initialize(FB_COLOR_BUFFER, 800, 600);
 		//---------------------------------------------------------------------
 
 		glClearColor(color.r, color.g, color.b, color.a);
@@ -117,121 +116,26 @@ namespace Graphics {
 	}
 
 	void GraphicsManager::update(float delta_time) {
+		// TODO
+
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		checkOpenGLErrors("Entering GraphicsManager::update");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 
-		m_framebuffer.bind();
-
-		// TODO
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		//---------------------------------------------------------------- TEST
-		m_cameras[0].m_delta_time = delta_time;
-
-		//for (auto& it : m_shaders) {
-			for (int i = 0; i < (int)m_meshes.size(); i++) {
-				glm::mat4 model;
-
-				if (i < 32) {
-					m_shaders[0].bind();
-					m_shaders[0].setMat4("u_projection", m_projection);
-					m_shaders[0].setMat4("u_view", m_cameras[0].getViewMatrix());
-					m_shaders[0].setVec3("u_view_pos", m_cameras[0].getPosition());
-
-					if (i < 25)
-						model = glm::scale(glm::mat4(1.0f),
-							glm::vec3(0.07f, 0.07f, 0.07f));
-					else
-						model = glm::rotate(glm::translate(
-							glm::mat4(1.0f), glm::vec3(0.0f, -0.25f, -5.0f)),
-							glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-					//model = glm::mat4(1.0f);
-
-					m_shaders[0].setMat4("u_model", model);
-					m_shaders[0].setMat3("u_trn_inv_up_model",
-						glm::transpose(glm::inverse(glm::mat3(model))));
-
-					unsigned texture = m_materials[m_meshes[i].first.m_material_id].
-						textures[TEXTURE_DIFFUSE];
-
-					if (texture < UINT_MAX) {
-						glActiveTexture(GL_TEXTURE0);
-						glBindTexture(GL_TEXTURE_2D,
-							MaterialManager::getInstance().getTexture(texture));
-						m_shaders[0].setInt("u_texture_0", 0);
-					}
-
-					if (i < 25)
-						texture = m_materials[m_meshes[i].first.m_material_id].
-						textures[TEXTURE_AMBIENT];
-					else
-						texture = m_materials[m_meshes[i].first.m_material_id].
-						textures[TEXTURE_SPECULAR];
-
-					if (texture < UINT_MAX) {
-						glActiveTexture(GL_TEXTURE1);
-						glBindTexture(GL_TEXTURE_2D,
-							MaterialManager::getInstance().getTexture(texture));
-						m_shaders[0].setInt("u_texture_1", 1);
-					}
-
-					texture = m_materials[m_meshes[i].first.m_material_id].
-						textures[TEXTURE_HEIGHT];
-
-					if (texture < UINT_MAX) {
-						glActiveTexture(GL_TEXTURE2);
-						glBindTexture(GL_TEXTURE_2D,
-							MaterialManager::getInstance().getTexture(texture));
-						m_shaders[0].setInt("u_texture_2", 2);
-					}
-
-					m_shaders[0].update();
-
-					m_meshes[i].first.draw();
-
-					for (int t = 0; t < NUMBER_OF_TEXTURE_TYPES; t++) {
-						glActiveTexture(GL_TEXTURE0 + t);
-						glBindTexture(GL_TEXTURE_2D, 0);
-					}
-				}
-				else {
-					Framebuffer::defaultFramebuffer();
-
-					glClear(GL_COLOR_BUFFER_BIT);
-					glDisable(GL_DEPTH_TEST);
-
-					m_shaders[1].bind();
-
-					model = glm::scale(glm::rotate(glm::mat4(1.0f), glm::radians(90.0f),
-						glm::vec3(1.0f, 0.0f, 0.0f)), glm::vec3(0.8f, 0.8f, 0.8f));
-
-					m_shaders[1].setMat4("u_model", model);
-
-					glActiveTexture(GL_TEXTURE0);
-					glBindTexture(GL_TEXTURE_2D, m_framebuffer.getTextureId());
-					//glBindTexture(GL_TEXTURE_2D, 2);
-					m_shaders[1].setInt("u_texture", 0);
-					m_shaders[1].update();
-					m_meshes[i].first.draw();
-					glBindTexture(GL_TEXTURE_2D, 0);
-
-					glEnable(GL_DEPTH_TEST);
-				}
-			}
-		//}
-
-		//---------------------------------------------------------------------
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-			checkOpenGLErrors("Exiting GraphicsManager::update");
+		checkOpenGLErrors("Exiting GraphicsManager::update");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 	}
 
 	void GraphicsManager::destroy() {
 		// TODO
-		m_framebuffer.destroy();
+
+		for (auto& it : m_directional_lights)
+			it.depth_map.destroy();
+
+		for (auto& it : m_point_lights)
+			it.depth_map.destroy();
 	}
 	
 	void GraphicsManager::reserveMeshes(int size) {

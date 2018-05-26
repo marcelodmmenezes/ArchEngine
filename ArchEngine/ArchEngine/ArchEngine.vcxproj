@@ -186,18 +186,29 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Shaders\cubemapfs.glsl" />
+    <None Include="Shaders\cubemapvs.glsl" />
+    <None Include="Shaders\depthmapfs.glsl" />
+    <None Include="Shaders\depthmapvs.glsl" />
+    <None Include="Shaders\normalmapfs.glsl" />
+    <None Include="Shaders\normalmapvs.glsl" />
+    <None Include="Shaders\objfs.glsl" />
+    <None Include="Shaders\objvs.glsl" />
+    <None Include="Shaders\pdepthfs.glsl" />
+    <None Include="Shaders\pdepthgs.glsl" />
+    <None Include="Shaders\pdepthvs.glsl" />
+    <None Include="Shaders\pshadowfs.glsl" />
+    <None Include="Shaders\pshadowvs.glsl" />
+    <None Include="Shaders\quadfs.glsl" />
+    <None Include="Shaders\quadvs.glsl" />
+    <None Include="Shaders\shadowfs.glsl" />
+    <None Include="Shaders\shadowvs.glsl" />
+    <None Include="Shaders\simplefs.glsl" />
+    <None Include="Shaders\simplevs.glsl" />
     <None Include="Testers\core_engine_test_engine_config.lua" />
     <None Include="Testers\engineConfig.lua" />
     <None Include="Testers\inputContexts.lua" />
     <None Include="Testers\luaAPI.lua" />
-    <None Include="Testers\normalmapfs.glsl" />
-    <None Include="Testers\normalmapvs.glsl" />
-    <None Include="Testers\objfs.glsl" />
-    <None Include="Testers\objvs.glsl" />
-    <None Include="Testers\quadfs.glsl" />
-    <None Include="Testers\quadvs.glsl" />
-    <None Include="Testers\simplefs.glsl" />
-    <None Include="Testers\simplevs.glsl" />
     <None Include="Testers\testContext.lua" />
     <None Include="Testers\testContext2.lua" />
     <None Include="Testers\testfs.glsl" />

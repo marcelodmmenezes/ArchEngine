@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/05/2018                                                       *
- * Last Modified: 25/05/2018                                                 *
+ * Last Modified: 26/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -42,14 +42,16 @@ namespace Graphics {
 
 	bool Framebuffer::initialize(FramebufferType type, int width, int height) {
 		m_type = type;
+		m_width = width;
+		m_height = height;
 
 		switch (type) {
 		case FB_COLOR_BUFFER:
-			return initializeColorBuffer(width, height);
+			return initializeColorBuffer();
 		case FB_DEPTH_MAP:
-			return initializeDepthMap(width, height);
+			return initializeDepthMap();
 		case FB_DEPTH_CUBE_MAP:
-			return initializeDepthCubeMap(width, height);
+			return initializeDepthCubeMap();
 		}
 	}
 
@@ -78,14 +80,7 @@ namespace Graphics {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	bool Framebuffer::initializeColorBuffer(int width, int height) {
-		m_width = width;
-		m_height = height;
-
-		//--------------------------------------------------------- Framebuffer
-		glGenFramebuffers(1, &m_fbo);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-
+	bool Framebuffer::initializeColorBuffer() {
 		//------------------------------------------------------------- Texture
 		glGenTextures(1, &m_texture);
 		glBindTexture(GL_TEXTURE_2D, m_texture);
@@ -111,6 +106,10 @@ namespace Graphics {
 			m_width, m_height);
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
+		//--------------------------------------------------------- Framebuffer
+		glGenFramebuffers(1, &m_fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+
 		// Attaching renderbuffer to currently bound framebuffer
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER,
 			GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_rbo);
@@ -120,7 +119,7 @@ namespace Graphics {
 			!= GL_FRAMEBUFFER_COMPLETE) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
-				"Failed to create framebuffer");
+				"\nFailed to create framebuffer\n");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -134,14 +133,7 @@ namespace Graphics {
 		return true;
 	}
 
-	bool Framebuffer::initializeDepthMap(int width, int height) {
-		m_width = width;
-		m_height = height;
-
-		//--------------------------------------------------------- Framebuffer
-		glGenFramebuffers(1, &m_fbo);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-
+	bool Framebuffer::initializeDepthMap() {
 		//------------------------------------------------------------- Texture
 		glGenTextures(1, &m_texture);
 		glBindTexture(GL_TEXTURE_2D, m_texture);
@@ -156,19 +148,75 @@ namespace Graphics {
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
+		//--------------------------------------------------------- Framebuffer
+		glGenFramebuffers(1, &m_fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+
 		// Attaching texture to currently bound framebuffer
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
 			GL_TEXTURE_2D, m_texture, 0);
 		glDrawBuffer(GL_NONE);
 		glReadBuffer(GL_NONE);
 
+		//---------------------------------------------------------- Validation
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER)
+			!= GL_FRAMEBUFFER_COMPLETE) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
+				"\nFailed to create framebuffer\n");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+			return false;
+		}
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		return true;
 	}
 
-	bool Framebuffer::initializeDepthCubeMap(int width, int height) {
-		// TODO
+	bool Framebuffer::initializeDepthCubeMap() {
+		//------------------------------------------------------------- Texture
+		glGenTextures(1, &m_texture);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_texture);
+
+		// Cube texture
+		for (unsigned i = 0; i < 6; i++)
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
+				GL_DEPTH_COMPONENT, m_width, m_height, 0,
+				GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+		//--------------------------------------------------------- Framebuffer
+		glGenFramebuffers(1, &m_fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+
+		// Attaching texture to currently bound framebuffer
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_texture, 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+
+		//---------------------------------------------------------- Validation
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER)
+			!= GL_FRAMEBUFFER_COMPLETE) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
+				"\nFailed to create framebuffer\n");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+			return false;
+		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 		return true;
 	}
 
@@ -180,6 +228,8 @@ namespace Graphics {
 
 		// Recreates the framebuffer
 		destroy();
-		initialize(m_type, w, h);
+
+		if (m_type == FB_COLOR_BUFFER)
+			initialize(m_type, w, h);
 	}
 }

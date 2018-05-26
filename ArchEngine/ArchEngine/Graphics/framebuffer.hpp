@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/05/2018                                                       *
- * Last Modified: 25/05/2018                                                 *
+ * Last Modified: 26/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -47,9 +47,9 @@ namespace Graphics {
 			SAFE_TO_DESTROY
 		};
 
-		bool initializeColorBuffer(int width, int height);
-		bool initializeDepthMap(int width, int height);
-		bool initializeDepthCubeMap(int width, int height);
+		bool initializeColorBuffer();
+		bool initializeDepthMap();
+		bool initializeDepthCubeMap();
 		void onWindowResizeEvent(Core::EventPtr e);
 
 		State m_state;
@@ -60,7 +60,7 @@ namespace Graphics {
 		int m_width;
 		int m_height;
 
-		// OpenGL handle
+		// OpenGL handles
 		unsigned m_fbo; // Framebuffer
 		unsigned m_rbo; // Renderbuffer
 		unsigned m_texture; // Texture

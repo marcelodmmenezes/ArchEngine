@@ -105,7 +105,7 @@ namespace Graphics {
 		Core::EventListener m_window_size_listener;
 		
 		glm::mat4 m_projection; // test
-		Framebuffer m_framebuffer; // test
+		void drawScene(Shader& shader, bool normals, bool textures); // test
 		
 	public: // test
 		//------------------------------------------------------------- Cameras
