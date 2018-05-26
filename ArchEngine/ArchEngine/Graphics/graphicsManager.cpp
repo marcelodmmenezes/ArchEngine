@@ -98,6 +98,7 @@ namespace Graphics {
 
 		//---------------------------------------------------------------- TEST
 		onWindowResizeEvent(EventPtr(new WindowResizeEvent(800, 600)));
+		m_active_camera = -1;
 		//---------------------------------------------------------------------
 
 		glClearColor(color.r, color.g, color.b, color.a);
@@ -122,6 +123,20 @@ namespace Graphics {
 		checkOpenGLErrors("Entering GraphicsManager::update");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 
+		// Draw scene
+		for (auto& it : m_shaders) {
+			it.bind();
+
+			it.setMat4("u_projection_matrix", m_projection);
+			it.setMat4("u_view_matrix",
+				m_cameras[m_active_camera].getViewMatrix());
+			it.setVec3("u_view_pos",
+				m_cameras[m_active_camera].getPosition());
+
+			bindLights(it);
+			drawMeshes(it, true);
+		}
+
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		checkOpenGLErrors("Exiting GraphicsManager::update");
@@ -132,6 +147,9 @@ namespace Graphics {
 		for (unsigned i = 0; i < m_directional_lights.size(); i++) {
 			shader.setVec3("u_dir_light[" + std::to_string(i) +
 				"].direction", m_directional_lights[i].direction);
+
+			shader.setFloat("u_dir_light[" + std::to_string(i) +
+				"].shineness", m_directional_lights[i].shineness);
 
 			shader.setVec3("u_dir_light[" + std::to_string(i) +
 				"].ambient", m_directional_lights[i].ambient);
@@ -151,6 +169,9 @@ namespace Graphics {
 				"].linear", m_point_lights[i].linear);
 			shader.setFloat("u_point_light[" + std::to_string(i) +
 				"].quadratic", m_point_lights[i].quadratic);
+
+			shader.setFloat("u_point_light[" + std::to_string(i) +
+				"].shineness", m_point_lights[i].shineness);
 
 			shader.setVec3("u_point_light[" + std::to_string(i) +
 				"].ambient", m_point_lights[i].ambient);
@@ -178,12 +199,32 @@ namespace Graphics {
 			shader.setFloat("u_spot_light[" + std::to_string(i) +
 				"].quadratic", m_spot_lights[i].quadratic);
 
+			shader.setFloat("u_spot_light[" + std::to_string(i) +
+				"].shineness", m_spot_lights[i].shineness);
+
 			shader.setVec3("u_spot_light[" + std::to_string(i) +
 				"].ambient", m_spot_lights[i].ambient);
 			shader.setVec3("u_spot_light[" + std::to_string(i) +
 				"].diffuse", m_spot_lights[i].diffuse);
 			shader.setVec3("u_spot_light[" + std::to_string(i) +
 				"].specular", m_spot_lights[i].specular);
+		}
+	}
+
+	void GraphicsManager::drawMeshes(Shader& shader, bool draw_textures) {
+		glm::mat4 model_matrix;
+
+		for (unsigned i = 0; i < m_meshes.size(); i++) {
+			// If current mesh has references
+			if (m_meshes[i].second > 0) {
+				if (draw_textures)
+					bind2DTextures(shader, i);
+
+				model_matrix = glm::mat4(1.0f); // TODO -> get real model
+				shader.setMat4("u_model_matrix", model_matrix);
+				shader.update();
+				m_meshes[i].first.draw();
+			}
 		}
 	}
 
@@ -215,6 +256,9 @@ namespace Graphics {
 			it.depth_map.destroy();
 
 		for (auto& it : m_point_lights)
+			it.depth_map.destroy();
+
+		for (auto& it : m_spot_lights)
 			it.depth_map.destroy();
 	}
 	
@@ -314,6 +358,19 @@ namespace Graphics {
 		const SpotLight& light) {
 		m_spot_lights.push_back(light);
 		return m_spot_lights.size() - 1;
+	}
+
+	//----------------------------------------------------------------- Getters
+	DebugCamera* GraphicsManager::getActiveCamera() {
+		if (m_active_camera < 0 || m_active_camera >= (int)m_cameras.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Trying to get inexisting active camera");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return nullptr;
+		}
+
+		return &m_cameras[m_active_camera];
 	}
 
 	//-------------------------------------------------------- Remove functions

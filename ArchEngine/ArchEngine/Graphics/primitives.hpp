@@ -28,6 +28,8 @@ namespace Graphics {
 	struct DirectionalLight {
 		glm::vec3 direction;
 
+		float shineness;
+
 		// Color properties
 		glm::vec3 ambient;
 		glm::vec3 diffuse;
@@ -42,6 +44,8 @@ namespace Graphics {
 
 	struct PointLight {
 		glm::vec3 position;
+
+		float shineness;
 
 		// Attenuation properties
 		float constant;
@@ -64,6 +68,8 @@ namespace Graphics {
 		glm::vec3 position;
 		glm::vec3 direction;
 
+		float shineness;
+
 		// SpotLight radiuses
 		float inner_cut_off;
 		float outer_cut_off;
@@ -78,7 +84,11 @@ namespace Graphics {
 		glm::vec3 diffuse;
 		glm::vec3 specular;
 
+		// Shadow properties
 		bool emit_shadows;
+		glm::mat4 projection; // Shadow mapping projection matrix
+		glm::mat4 view; // Shadow mapping view matrix
+		Framebuffer depth_map; // Holds the depth map texture
 	};
 
 	//-------------------------------------------------------------------------

@@ -121,52 +121,54 @@ void onInputActionEvent(EventPtr e) {
 	}
 }
 
-void onInputStateEvent(EventPtr e) {/*
+void onInputStateEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputStateEvent>(e);
 
-	auto& camera = GraphicsManager::getInstance().m_cameras[0];
+	auto camera = GraphicsManager::getInstance().getActiveCamera();
+	if (!camera) return;
 
 	switch (evnt->getValue()) {
 	case 0:
-		camera.move(CAMERA_FORWARD);
+		camera->move(CAMERA_FORWARD);
 		break;
 	case 1:
-		camera.move(CAMERA_BACKWARD);
+		camera->move(CAMERA_BACKWARD);
 		break;
 	case 2:
-		camera.move(CAMERA_LEFT);
+		camera->move(CAMERA_LEFT);
 		break;
 	case 3:
-		camera.move(CAMERA_RIGHT);
+		camera->move(CAMERA_RIGHT);
 		break;
 	case 4:
-		camera.move(CAMERA_UP);
+		camera->move(CAMERA_UP);
 		break;
 	case 5:
-		camera.move(CAMERA_DOWN);
+		camera->move(CAMERA_DOWN);
 		break;
 	case 6:
 		if (evnt->isOver())
-			camera.setSpeed(10.0f);
+			camera->setSpeed(10.0f);
 		else
-			camera.setSpeed(25.0f);
+			camera->setSpeed(25.0f);
 		break;
-	}*/
+	}
 }
 
-void onInputRangeEvent(EventPtr e) {/*
+void onInputRangeEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputRangeEvent>(e);
 
-	auto& camera = GraphicsManager::getInstance().m_cameras[0];
+	auto camera = GraphicsManager::getInstance().getActiveCamera();
+	if (!camera) return;
 
 	switch (evnt->getValue().m_range) {
 	case 0:
-		camera.look((float)evnt->getValue().m_value, 0.0f);
+		camera->look((float)evnt->getValue().m_value, 0.0f);
 		break;
 	case 1:
-		camera.look(0.0f, (float)evnt->getValue().m_value);
+		camera->look(0.0f, (float)evnt->getValue().m_value);
 		break;
-	}*/
+	}
 }
 
 

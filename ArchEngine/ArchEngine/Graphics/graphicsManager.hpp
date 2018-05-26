@@ -81,6 +81,9 @@ namespace Graphics {
 		unsigned addPointLight(const PointLight& light);
 		unsigned addSpotLight(const SpotLight& light);
 
+		// Getters
+		DebugCamera* getActiveCamera();
+
 		// Removes the component by handle
 		void removeCamera(unsigned handle);
 		void removeShader(unsigned handle);
@@ -104,9 +107,8 @@ namespace Graphics {
 
 		Core::EventListener m_window_size_listener;
 		
-
 		void bindLights(Shader& shader);
-
+		void drawMeshes(Shader& shader, bool draw_textures);
 		void bind2DTextures(Shader& shader, unsigned mesh_id);
 		void unbind2DTextures(Shader& shader);
 
@@ -117,7 +119,11 @@ namespace Graphics {
 			"u_texture_displacement", "u_texture_cube_texture"
 		};
 		
+		//--------------------------------------------------- Projection matrix
+		glm::mat4 m_projection;
+
 		//------------------------------------------------------------- Cameras
+		int m_active_camera;
 		std::vector<DebugCamera> m_cameras;
 
 		//------------------------------------------------------------- Shaders
