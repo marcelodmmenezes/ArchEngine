@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 25/05/2018                                                 *
+ * Last Modified: 26/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -126,6 +126,86 @@ namespace Graphics {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		checkOpenGLErrors("Exiting GraphicsManager::update");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+	}
+
+	void GraphicsManager::bindLights(Shader& shader) {
+		for (unsigned i = 0; i < m_directional_lights.size(); i++) {
+			shader.setVec3("u_dir_light[" + std::to_string(i) +
+				"].direction", m_directional_lights[i].direction);
+
+			shader.setVec3("u_dir_light[" + std::to_string(i) +
+				"].ambient", m_directional_lights[i].ambient);
+			shader.setVec3("u_dir_light[" + std::to_string(i) +
+				"].diffuse", m_directional_lights[i].diffuse);
+			shader.setVec3("u_dir_light[" + std::to_string(i) +
+				"].specular", m_directional_lights[i].specular);
+		}
+
+		for (unsigned i = 0; i < m_point_lights.size(); i++) {
+			shader.setVec3("u_point_light[" + std::to_string(i) +
+				"].position", m_point_lights[i].position);
+
+			shader.setFloat("u_point_light[" + std::to_string(i) +
+				"].constant", m_point_lights[i].constant);
+			shader.setFloat("u_point_light[" + std::to_string(i) +
+				"].linear", m_point_lights[i].linear);
+			shader.setFloat("u_point_light[" + std::to_string(i) +
+				"].quadratic", m_point_lights[i].quadratic);
+
+			shader.setVec3("u_point_light[" + std::to_string(i) +
+				"].ambient", m_point_lights[i].ambient);
+			shader.setVec3("u_point_light[" + std::to_string(i) +
+				"].diffuse", m_point_lights[i].diffuse);
+			shader.setVec3("u_point_light[" + std::to_string(i) +
+				"].specular", m_point_lights[i].specular);
+		}
+
+		for (unsigned i = 0; i < m_spot_lights.size(); i++) {
+			shader.setVec3("u_spot_light[" + std::to_string(i) +
+				"].position", m_spot_lights[i].position);
+			shader.setVec3("u_spot_light[" + std::to_string(i) +
+				"].direction", m_spot_lights[i].direction);
+
+			shader.setFloat("u_spot_light[" + std::to_string(i) +
+				"].inner_cut_off", m_spot_lights[i].inner_cut_off);
+			shader.setFloat("u_spot_light[" + std::to_string(i) +
+				"].outer_cut_off", m_spot_lights[i].outer_cut_off);
+
+			shader.setFloat("u_spot_light[" + std::to_string(i) +
+				"].constant", m_spot_lights[i].constant);
+			shader.setFloat("u_spot_light[" + std::to_string(i) +
+				"].linear", m_spot_lights[i].linear);
+			shader.setFloat("u_spot_light[" + std::to_string(i) +
+				"].quadratic", m_spot_lights[i].quadratic);
+
+			shader.setVec3("u_spot_light[" + std::to_string(i) +
+				"].ambient", m_spot_lights[i].ambient);
+			shader.setVec3("u_spot_light[" + std::to_string(i) +
+				"].diffuse", m_spot_lights[i].diffuse);
+			shader.setVec3("u_spot_light[" + std::to_string(i) +
+				"].specular", m_spot_lights[i].specular);
+		}
+	}
+
+	void GraphicsManager::bind2DTextures(Shader& shader, unsigned mesh_id) {
+		for (unsigned i = 0; i < NUMBER_OF_TEXTURE_TYPES; i++) {
+			unsigned texture =
+				m_materials[m_meshes[mesh_id].first.m_material_id].textures[i];
+
+			if (texture < UINT_MAX) {
+				glActiveTexture(GL_TEXTURE0 + i);
+				glBindTexture(GL_TEXTURE_2D,
+					MaterialManager::getInstance().getTexture(texture));
+				shader.setInt(m_texture_names[i], i);
+			}
+		}
+	}
+
+	void GraphicsManager::unbind2DTextures(Shader& shader) {
+		for (unsigned i = 0; i < NUMBER_OF_TEXTURE_TYPES; i++) {
+			glActiveTexture(GL_TEXTURE0 + i);
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
 	}
 
 	void GraphicsManager::destroy() {
@@ -354,11 +434,6 @@ namespace Graphics {
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Window size: " + std::to_string(w) + " " + std::to_string(h));
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
-
-		//---------------------------------------------------------------- TEST
-		m_projection = glm::perspective(
-			glm::radians(45.0f), (float)w / (float)h, 0.1f, 10000.0f);
-		//---------------------------------------------------------------------
 
 		glViewport(0, 0, w, h);
 	}

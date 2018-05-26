@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 25/05/2018                                                 *
+ * Last Modified: 26/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -104,13 +104,21 @@ namespace Graphics {
 
 		Core::EventListener m_window_size_listener;
 		
-		glm::mat4 m_projection; // test
-		void drawScene(Shader& shader, bool normals, bool textures); // test
+
+		void bindLights(Shader& shader);
+
+		void bind2DTextures(Shader& shader, unsigned mesh_id);
+		void unbind2DTextures(Shader& shader);
+
+		// Hard coded uniform variables for now
+		std::string m_texture_names[NUMBER_OF_TEXTURE_TYPES] = {
+			"u_texture_diffuse", "u_texture_specular", "u_texture_ambient",
+			"u_texture_emissive", "u_texture_height", "u_texture_normals",
+			"u_texture_displacement", "u_texture_cube_texture"
+		};
 		
-	public: // test
 		//------------------------------------------------------------- Cameras
 		std::vector<DebugCamera> m_cameras;
-	private: // test
 
 		//------------------------------------------------------------- Shaders
 		std::vector<Shader> m_shaders;
