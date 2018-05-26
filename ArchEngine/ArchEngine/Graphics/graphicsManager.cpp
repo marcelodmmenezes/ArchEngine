@@ -98,7 +98,7 @@ namespace Graphics {
 
 		//---------------------------------------------------------------- TEST
 		onWindowResizeEvent(EventPtr(new WindowResizeEvent(800, 600)));
-		m_framebuffer.initialize(800, 600);
+		m_framebuffer.initialize(FB_COLOR_BUFFER, 800, 600);
 		//---------------------------------------------------------------------
 
 		glClearColor(color.r, color.g, color.b, color.a);

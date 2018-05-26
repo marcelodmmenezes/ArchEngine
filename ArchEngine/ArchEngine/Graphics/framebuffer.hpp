@@ -22,12 +22,18 @@
 
 
 namespace Graphics {
+	enum FramebufferType {
+		FB_COLOR_BUFFER,
+		FB_DEPTH_MAP,
+		FB_DEPTH_CUBE_MAP
+	};
+
 	class Framebuffer {
 	public:
 		Framebuffer();
 		~Framebuffer();
 
-		bool initialize(int width, int height);
+		bool initialize(FramebufferType type, int width, int height);
 		void destroy();
 
 		void bind();
@@ -41,9 +47,13 @@ namespace Graphics {
 			SAFE_TO_DESTROY
 		};
 
+		bool initializeColorBuffer(int width, int height);
+		bool initializeDepthMap(int width, int height);
+		bool initializeDepthCubeMap(int width, int height);
 		void onWindowResizeEvent(Core::EventPtr e);
 
 		State m_state;
+		FramebufferType m_type;
 
 		Core::EventListener m_window_size_listener;
 

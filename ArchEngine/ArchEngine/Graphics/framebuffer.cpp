@@ -40,7 +40,45 @@ namespace Graphics {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
-	bool Framebuffer::initialize(int width, int height) {
+	bool Framebuffer::initialize(FramebufferType type, int width, int height) {
+		m_type = type;
+
+		switch (type) {
+		case FB_COLOR_BUFFER:
+			return initializeColorBuffer(width, height);
+		case FB_DEPTH_MAP:
+			return initializeDepthMap(width, height);
+		case FB_DEPTH_CUBE_MAP:
+			return initializeDepthCubeMap(width, height);
+		}
+	}
+
+	void Framebuffer::destroy() {
+		if (glIsTexture(m_texture))
+			glDeleteTextures(1, &m_texture);
+
+		if (glIsRenderbuffer(m_rbo))
+			glDeleteRenderbuffers(1, &m_rbo);
+
+		if (glIsFramebuffer(m_fbo))
+			glDeleteFramebuffers(1, &m_fbo);
+
+		m_state = SAFE_TO_DESTROY;
+	}
+
+	void Framebuffer::bind() {
+		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+	}
+
+	unsigned Framebuffer::getTextureId() const {
+		return m_texture;
+	}
+
+	void Framebuffer::defaultFramebuffer() {
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	bool Framebuffer::initializeColorBuffer(int width, int height) {
 		m_width = width;
 		m_height = height;
 
@@ -96,29 +134,42 @@ namespace Graphics {
 		return true;
 	}
 
-	void Framebuffer::destroy() {
-		if (glIsTexture(m_texture))
-			glDeleteTextures(1, &m_texture);
+	bool Framebuffer::initializeDepthMap(int width, int height) {
+		m_width = width;
+		m_height = height;
 
-		if (glIsRenderbuffer(m_rbo))
-			glDeleteRenderbuffers(1, &m_rbo);
-
-		if (glIsFramebuffer(m_fbo))
-			glDeleteFramebuffers(1, &m_fbo);
-
-		m_state = SAFE_TO_DESTROY;
-	}
-
-	void Framebuffer::bind() {
+		//--------------------------------------------------------- Framebuffer
+		glGenFramebuffers(1, &m_fbo);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-	}
 
-	unsigned Framebuffer::getTextureId() const {
-		return m_texture;
-	}
+		//------------------------------------------------------------- Texture
+		glGenTextures(1, &m_texture);
+		glBindTexture(GL_TEXTURE_2D, m_texture);
 
-	void Framebuffer::defaultFramebuffer() {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, m_width, m_height,
+			0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		// Attaching texture to currently bound framebuffer
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+			GL_TEXTURE_2D, m_texture, 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		return true;
+	}
+
+	bool Framebuffer::initializeDepthCubeMap(int width, int height) {
+		// TODO
+		return true;
 	}
 
 	void Framebuffer::onWindowResizeEvent(Core::EventPtr e) {
@@ -129,6 +180,6 @@ namespace Graphics {
 
 		// Recreates the framebuffer
 		destroy();
-		initialize(w, h);
+		initialize(m_type, w, h);
 	}
 }
