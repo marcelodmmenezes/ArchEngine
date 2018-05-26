@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 16/05/2018                                                 *
+ * Last Modified: 25/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -31,19 +31,6 @@
 
 
 namespace Graphics {
-	/*
-	 * ArchEngine GLSL shaders attributes are defined like this,
-	 * in order to easily bind different VAOs to different shaders.
-	 *
-	 * layout(location = 0) in vec3 v_position;
-	 * layout(location = 1) in vec3 v_normal;
-	 * layout(location = 2) in vec2 v_texture_coords;
-	 * layout(location = 3) in vec3 v_tangent;
-	 * layout(location = 4) in ivec4 v_bone_ids;
-	 * layout(location = 5) in vec4 v_bone_weights;
-	 * layout(location = 6) in mat4 v_instance_model_matrix;
-	 */
-
 	class Shader {
 	public:
 		Shader();

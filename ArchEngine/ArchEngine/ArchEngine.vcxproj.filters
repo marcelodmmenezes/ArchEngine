@@ -105,6 +105,9 @@
     <ClInclude Include="Graphics\materialManager.hpp">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\framebuffer.hpp">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -174,6 +177,9 @@
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\materialManager.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\framebuffer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>

@@ -136,12 +136,11 @@ namespace Graphics {
 
 				if (i < 25)
 					model = glm::scale(glm::mat4(1.0f),
-						glm::vec3(0.1f, 0.1f, 0.1f));
+						glm::vec3(0.07f, 0.07f, 0.07f));
 				else
-					model = glm::scale(glm::rotate(glm::translate(
+					model = glm::rotate(glm::translate(
 						glm::mat4(1.0f), glm::vec3(0.0f, -0.25f, -5.0f)),
-						glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)),
-						glm::vec3(1.2f, 1.2f, 1.2f));
+						glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 				//model = glm::mat4(1.0f);
 
