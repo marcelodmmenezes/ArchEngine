@@ -18,6 +18,7 @@
 #include "glad_3_3_core.hpp"
 #include "uniforms.hpp"
 #include "../Script/luaScript.hpp"
+#include "../Utils/debugging.hpp"
 #include "../Utils/fileWatcher.hpp"
 #include "../Utils/serviceLocator.hpp"
 

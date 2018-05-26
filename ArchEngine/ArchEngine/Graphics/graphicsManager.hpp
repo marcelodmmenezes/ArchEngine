@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 22/05/2018                                                 *
+ * Last Modified: 25/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -21,6 +21,7 @@
 #include "shader.hpp"
 #include "materialManager.hpp"
 #include "../Script/luaScript.hpp"
+#include "../Utils/debugging.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 #include <glm/glm.hpp>

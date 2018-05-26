@@ -108,6 +108,9 @@
     <ClInclude Include="Graphics\framebuffer.hpp">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\debugging.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -182,6 +185,9 @@
     <ClCompile Include="Graphics\framebuffer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\debugging.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -228,6 +234,12 @@
       <Filter>Testers</Filter>
     </None>
     <None Include="Testers\normalmapvs.glsl">
+      <Filter>Testers</Filter>
+    </None>
+    <None Include="Testers\quadfs.glsl">
+      <Filter>Testers</Filter>
+    </None>
+    <None Include="Testers\quadvs.glsl">
       <Filter>Testers</Filter>
     </None>
   </ItemGroup>

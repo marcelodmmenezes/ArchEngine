@@ -78,11 +78,16 @@ namespace Graphics {
 			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
 				"Failed to create framebuffer");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+			return false;
 		}
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		m_state = INITIALIZED;
+
+		return true;
 	}
 
 	void Framebuffer::destroy() {

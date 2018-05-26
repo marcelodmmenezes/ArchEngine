@@ -149,6 +149,7 @@
     <ClInclude Include="Physics\world.hpp" />
     <ClInclude Include="Script\engineLuaAPI.hpp" />
     <ClInclude Include="Script\luaScript.hpp" />
+    <ClInclude Include="Utils\debugging.hpp" />
     <ClInclude Include="Utils\delegate.hpp" />
     <ClInclude Include="Utils\fileWatcher.hpp" />
     <ClInclude Include="Utils\logger.hpp" />
@@ -178,6 +179,7 @@
     <ClCompile Include="Script\engineLuaAPI.cpp" />
     <ClCompile Include="Script\luaScript.cpp" />
     <ClCompile Include="Testers\test.cpp" />
+    <ClCompile Include="Utils\debugging.cpp" />
     <ClCompile Include="Utils\fileWatcher.cpp" />
     <ClCompile Include="Utils\serviceLocator.cpp" />
     <ClCompile Include="Utils\timer.cpp" />
@@ -192,6 +194,8 @@
     <None Include="Testers\normalmapvs.glsl" />
     <None Include="Testers\objfs.glsl" />
     <None Include="Testers\objvs.glsl" />
+    <None Include="Testers\quadfs.glsl" />
+    <None Include="Testers\quadvs.glsl" />
     <None Include="Testers\simplefs.glsl" />
     <None Include="Testers\simplevs.glsl" />
     <None Include="Testers\testContext.lua" />

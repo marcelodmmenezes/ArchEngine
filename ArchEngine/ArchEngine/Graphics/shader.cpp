@@ -195,6 +195,9 @@ namespace Graphics {
 		for (auto& it : m_dirty_uniforms) {
 			auto uniform = m_uniforms_by_name[it];
 			if (uniform) uniform->update();
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			checkOpenGLErrors(it);
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		}
 
 		m_dirty_uniforms.clear();

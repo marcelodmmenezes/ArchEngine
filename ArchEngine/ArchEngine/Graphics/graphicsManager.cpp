@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 22/05/2018                                                 *
+ * Last Modified: 25/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -108,7 +108,7 @@ namespace Graphics {
 	bool GraphicsManager::initializeFromConfigFile(const std::string& path) {
 		// TODO
 		glEnable(GL_DEPTH_TEST);
-		//glEnable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
 
 		//---------------------------------------------------------------- TEST
 		return initialize(glm::vec4(0.05f, 0.08f, 0.07f, 1.0f), 800, 600);
@@ -116,9 +116,13 @@ namespace Graphics {
 	}
 
 	void GraphicsManager::update(float delta_time) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+		checkOpenGLErrors("Entering GraphicsManager::update");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+
 		// TODO
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		
 		//---------------------------------------------------------------- TEST
 
 		m_cameras[0].m_delta_time = delta_time;
@@ -158,15 +162,17 @@ namespace Graphics {
 					it.setInt("u_texture_0", 0);
 				}
 
-				texture = m_materials[m_meshes[i].first.m_material_id].
-					textures[TEXTURE_SPECULAR];
+				if (i < 25)
+					texture = m_materials[m_meshes[i].first.m_material_id].
+						textures[TEXTURE_AMBIENT];
+				else
+					texture = m_materials[m_meshes[i].first.m_material_id].
+						textures[TEXTURE_SPECULAR];
 
 				if (texture < UINT_MAX) {
 					glActiveTexture(GL_TEXTURE1);
 					glBindTexture(GL_TEXTURE_2D,
-						MaterialManager::getInstance().getTexture(
-							m_materials[m_meshes[i].first.m_material_id].
-							textures[TEXTURE_SPECULAR]));
+						MaterialManager::getInstance().getTexture(texture));
 					it.setInt("u_texture_1", 1);
 				}
 
@@ -176,13 +182,12 @@ namespace Graphics {
 				if (texture < UINT_MAX) {
 					glActiveTexture(GL_TEXTURE2);
 					glBindTexture(GL_TEXTURE_2D,
-						MaterialManager::getInstance().getTexture(
-							m_materials[m_meshes[i].first.m_material_id].
-							textures[TEXTURE_HEIGHT]));
+						MaterialManager::getInstance().getTexture(texture));
 					it.setInt("u_texture_2", 2);
 				}
 
 				it.update();
+
 				m_meshes[i].first.draw();
 
 				for (int t = 0; t < NUMBER_OF_TEXTURE_TYPES; t++) {
@@ -193,6 +198,10 @@ namespace Graphics {
 		//}
 
 		//---------------------------------------------------------------------
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			checkOpenGLErrors("Exiting GraphicsManager::update");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 	}
 
 	void GraphicsManager::destroy() {
