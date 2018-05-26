@@ -16,6 +16,7 @@
 #include "../Config/engineMacros.hpp"
 #include "../Core/eventManager.hpp"
 #include "debugCamera.hpp"
+#include "framebuffer.hpp"
 #include "glad_3_3_core.hpp"
 #include "mesh.hpp"
 #include "shader.hpp"
@@ -103,13 +104,15 @@ namespace Graphics {
 		State m_state;
 
 		Core::EventListener m_window_size_listener;
+		
 		glm::mat4 m_projection; // test
-
+		Framebuffer m_framebuffer; // test
+		
+	public: // test
 		//------------------------------------------------------------- Cameras
-	public:
 		std::vector<DebugCamera> m_cameras;
+	private: // test
 
-	private:
 		//------------------------------------------------------------- Shaders
 		std::vector<Shader> m_shaders;
 

@@ -30,6 +30,7 @@ namespace Graphics {
 		void destroy();
 
 		void bind();
+		unsigned getTextureId() const;
 		static void defaultFramebuffer();
 
 	private:

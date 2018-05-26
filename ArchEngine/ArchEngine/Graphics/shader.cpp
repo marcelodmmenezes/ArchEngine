@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 22/05/2018                                                 *
+ * Last Modified: 25/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -195,6 +195,7 @@ namespace Graphics {
 		for (auto& it : m_dirty_uniforms) {
 			auto uniform = m_uniforms_by_name[it];
 			if (uniform) uniform->update();
+
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			checkOpenGLErrors(it);
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
@@ -219,7 +220,7 @@ namespace Graphics {
 		if (!uniform) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Couldn't find " + name + " in shader");
+				"Couldn't find " + name + " in shader " + m_vs_path);
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			return;
 		}
@@ -235,7 +236,7 @@ namespace Graphics {
 		if (!uniform) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Couldn't find " + name + " in shader");
+				"Couldn't find " + name + " in shader " + m_vs_path);
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			return;
 		}
@@ -251,7 +252,7 @@ namespace Graphics {
 		if (!uniform) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Couldn't find " + name + " in shader");
+				"Couldn't find " + name + " in shader " + m_vs_path);
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			return;
 		}
@@ -267,7 +268,7 @@ namespace Graphics {
 		if (!uniform) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Couldn't find " + name + " in shader");
+				"Couldn't find " + name + " in shader " + m_vs_path);
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			return;
 		}
@@ -283,7 +284,7 @@ namespace Graphics {
 		if (!uniform) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Couldn't find " + name + " in shader");
+				"Couldn't find " + name + " in shader " + m_vs_path);
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			return;
 		}
@@ -299,7 +300,7 @@ namespace Graphics {
 		if (!uniform) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Couldn't find " + name + " in shader");
+				"Couldn't find " + name + " in shader " + m_vs_path);
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			return;
 		}

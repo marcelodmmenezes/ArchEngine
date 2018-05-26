@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 17/05/2018                                                 *
+ * Last Modified: 25/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -97,11 +97,11 @@ void loadData() {
 	GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Testers/normalmapvs.glsl",
 		"../../ArchEngine/Testers/normalmapfs.glsl");
-	/*
+	
 	GraphicsManager::getInstance().addShader(
-		"../../ArchEngine/Testers/testvs.glsl",
-		"../../ArchEngine/Testers/testfs.glsl");
-	*/
+		"../../ArchEngine/Testers/quadvs.glsl",
+		"../../ArchEngine/Testers/quadfs.glsl");
+	
 	AssimpLoader loader;
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/sponza/mergedSponza.obj",
@@ -122,8 +122,7 @@ void loadData() {
 			aiProcess_JoinIdenticalVertices |
 			aiProcess_SortByPType |
 			aiProcess_FlipUVs));
-			
-	/*
+	
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/plane/plane_brick.obj",
 		(aiPostProcessSteps)(
@@ -131,9 +130,9 @@ void loadData() {
 			aiProcess_CalcTangentSpace |
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices |
-			aiProcess_SortByPType |
-			aiProcess_FlipUVs));
-			*/
+			aiProcess_SortByPType// |
+			//aiProcess_FlipUVs
+			));
 }
 
 void onContextEvent(EventPtr e) {

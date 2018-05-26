@@ -98,6 +98,7 @@ namespace Graphics {
 
 		//---------------------------------------------------------------- TEST
 		onWindowResizeEvent(EventPtr(new WindowResizeEvent(800, 600)));
+		m_framebuffer.initialize(800, 600);
 		//---------------------------------------------------------------------
 
 		glClearColor(color.r, color.g, color.b, color.a);
@@ -120,79 +121,103 @@ namespace Graphics {
 		checkOpenGLErrors("Entering GraphicsManager::update");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 
+		m_framebuffer.bind();
+
 		// TODO
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		//---------------------------------------------------------------- TEST
-
 		m_cameras[0].m_delta_time = delta_time;
 
-		auto &it = m_shaders[0];
-
 		//for (auto& it : m_shaders) {
-			it.bind();
-			it.setMat4("u_projection", m_projection);
-			it.setMat4("u_view", m_cameras[0].getViewMatrix());
-			it.setVec3("u_view_pos", m_cameras[0].getPosition());
-
 			for (int i = 0; i < (int)m_meshes.size(); i++) {
 				glm::mat4 model;
 
-				if (i < 25)
-					model = glm::scale(glm::mat4(1.0f),
-						glm::vec3(0.07f, 0.07f, 0.07f));
-				else
-					model = glm::rotate(glm::translate(
-						glm::mat4(1.0f), glm::vec3(0.0f, -0.25f, -5.0f)),
-						glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+				if (i < 32) {
+					m_shaders[0].bind();
+					m_shaders[0].setMat4("u_projection", m_projection);
+					m_shaders[0].setMat4("u_view", m_cameras[0].getViewMatrix());
+					m_shaders[0].setVec3("u_view_pos", m_cameras[0].getPosition());
 
-				//model = glm::mat4(1.0f);
+					if (i < 25)
+						model = glm::scale(glm::mat4(1.0f),
+							glm::vec3(0.07f, 0.07f, 0.07f));
+					else
+						model = glm::rotate(glm::translate(
+							glm::mat4(1.0f), glm::vec3(0.0f, -0.25f, -5.0f)),
+							glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-				it.setMat4("u_model", model);
-				it.setMat3("u_trn_inv_up_model",
-					glm::transpose(glm::inverse(glm::mat3(model))));
+					//model = glm::mat4(1.0f);
 
-				unsigned texture = m_materials[m_meshes[i].first.m_material_id].
-					textures[TEXTURE_DIFFUSE];
+					m_shaders[0].setMat4("u_model", model);
+					m_shaders[0].setMat3("u_trn_inv_up_model",
+						glm::transpose(glm::inverse(glm::mat3(model))));
 
-				if (texture < UINT_MAX) {
-					glActiveTexture(GL_TEXTURE0);
-					glBindTexture(GL_TEXTURE_2D,
-						MaterialManager::getInstance().getTexture(texture));
-					it.setInt("u_texture_0", 0);
-				}
+					unsigned texture = m_materials[m_meshes[i].first.m_material_id].
+						textures[TEXTURE_DIFFUSE];
 
-				if (i < 25)
-					texture = m_materials[m_meshes[i].first.m_material_id].
+					if (texture < UINT_MAX) {
+						glActiveTexture(GL_TEXTURE0);
+						glBindTexture(GL_TEXTURE_2D,
+							MaterialManager::getInstance().getTexture(texture));
+						m_shaders[0].setInt("u_texture_0", 0);
+					}
+
+					if (i < 25)
+						texture = m_materials[m_meshes[i].first.m_material_id].
 						textures[TEXTURE_AMBIENT];
-				else
-					texture = m_materials[m_meshes[i].first.m_material_id].
+					else
+						texture = m_materials[m_meshes[i].first.m_material_id].
 						textures[TEXTURE_SPECULAR];
 
-				if (texture < UINT_MAX) {
-					glActiveTexture(GL_TEXTURE1);
-					glBindTexture(GL_TEXTURE_2D,
-						MaterialManager::getInstance().getTexture(texture));
-					it.setInt("u_texture_1", 1);
+					if (texture < UINT_MAX) {
+						glActiveTexture(GL_TEXTURE1);
+						glBindTexture(GL_TEXTURE_2D,
+							MaterialManager::getInstance().getTexture(texture));
+						m_shaders[0].setInt("u_texture_1", 1);
+					}
+
+					texture = m_materials[m_meshes[i].first.m_material_id].
+						textures[TEXTURE_HEIGHT];
+
+					if (texture < UINT_MAX) {
+						glActiveTexture(GL_TEXTURE2);
+						glBindTexture(GL_TEXTURE_2D,
+							MaterialManager::getInstance().getTexture(texture));
+						m_shaders[0].setInt("u_texture_2", 2);
+					}
+
+					m_shaders[0].update();
+
+					m_meshes[i].first.draw();
+
+					for (int t = 0; t < NUMBER_OF_TEXTURE_TYPES; t++) {
+						glActiveTexture(GL_TEXTURE0 + t);
+						glBindTexture(GL_TEXTURE_2D, 0);
+					}
 				}
+				else {
+					Framebuffer::defaultFramebuffer();
 
-				texture = m_materials[m_meshes[i].first.m_material_id].
-					textures[TEXTURE_HEIGHT];
+					glClear(GL_COLOR_BUFFER_BIT);
+					glDisable(GL_DEPTH_TEST);
 
-				if (texture < UINT_MAX) {
-					glActiveTexture(GL_TEXTURE2);
-					glBindTexture(GL_TEXTURE_2D,
-						MaterialManager::getInstance().getTexture(texture));
-					it.setInt("u_texture_2", 2);
-				}
+					m_shaders[1].bind();
 
-				it.update();
+					model = glm::scale(glm::rotate(glm::mat4(1.0f), glm::radians(90.0f),
+						glm::vec3(1.0f, 0.0f, 0.0f)), glm::vec3(0.8f, 0.8f, 0.8f));
 
-				m_meshes[i].first.draw();
+					m_shaders[1].setMat4("u_model", model);
 
-				for (int t = 0; t < NUMBER_OF_TEXTURE_TYPES; t++) {
-					glActiveTexture(GL_TEXTURE0 + t);
+					glActiveTexture(GL_TEXTURE0);
+					glBindTexture(GL_TEXTURE_2D, m_framebuffer.getTextureId());
+					//glBindTexture(GL_TEXTURE_2D, 2);
+					m_shaders[1].setInt("u_texture", 0);
+					m_shaders[1].update();
+					m_meshes[i].first.draw();
 					glBindTexture(GL_TEXTURE_2D, 0);
+
+					glEnable(GL_DEPTH_TEST);
 				}
 			}
 		//}
@@ -206,6 +231,7 @@ namespace Graphics {
 
 	void GraphicsManager::destroy() {
 		// TODO
+		m_framebuffer.destroy();
 	}
 
 	void GraphicsManager::onWindowResizeEvent(EventPtr e) {

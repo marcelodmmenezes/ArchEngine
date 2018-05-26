@@ -107,6 +107,10 @@ namespace Graphics {
 		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
 	}
 
+	unsigned Framebuffer::getTextureId() const {
+		return m_texture;
+	}
+
 	void Framebuffer::defaultFramebuffer() {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}

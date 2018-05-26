@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/05/2018                                                       *
- * Last Modified: 19/05/2018                                                 *
+ * Last Modified: 25/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -19,14 +19,14 @@ namespace Graphics {
 	MaterialManager::MaterialManager() {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
-			"Material constructor");
+			"MaterialManager constructor");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
 	MaterialManager::~MaterialManager() {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
-			"Material destructor");
+			"MaterialManager destructor");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
