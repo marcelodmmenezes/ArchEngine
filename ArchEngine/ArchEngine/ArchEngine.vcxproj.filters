@@ -278,5 +278,8 @@
     <None Include="Shaders\simplevs.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Testers\graphicsConfig.lua">
+      <Filter>Testers</Filter>
+    </None>
   </ItemGroup>
 </Project>

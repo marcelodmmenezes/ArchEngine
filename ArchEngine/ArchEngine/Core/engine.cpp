@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 25/05/2018                                                 *
+ * Last Modified: 26/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -276,8 +276,11 @@ namespace Core {
 		}
 
 		//---------------------------------- Graphics system configuration file
-		// TODO
-		GraphicsManager::getInstance().initializeFromConfigFile("");
+		if (!GraphicsManager::getInstance().initializeFromConfigFile(
+			lua_context.get<std::string>("files.graphicsConfig"))) {
+			lua_context.destroy();
+			return false;
+		}
 
 		//------------------------------------ Input systems configuration file
 		if (!InputManager::getInstance().initialize(

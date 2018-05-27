@@ -9,7 +9,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 15/04/2018                                                       *
- * Last Modified: 07/05/2018                                                 *
+ * Last Modified: 26/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -96,6 +96,24 @@ namespace Script {
 		lua_pushnil(m_lua);
 		while (lua_next(m_lua, -2)) {
 			v.push_back((int)lua_tonumber(m_lua, -1));
+			lua_pop(m_lua, 1);
+		}
+
+		clearStack();
+		return v; // Moved, not copied
+	}
+
+	std::vector<float> LuaScript::getFloatVector(const std::string& name) {
+		std::vector<float> v;
+		int discard;
+
+		getToStack(name.c_str(), discard);
+		if (lua_isnil(m_lua, -1))
+			return std::vector<float>();
+
+		lua_pushnil(m_lua);
+		while (lua_next(m_lua, -2)) {
+			v.push_back((float)lua_tonumber(m_lua, -1));
 			lua_pop(m_lua, 1);
 		}
 

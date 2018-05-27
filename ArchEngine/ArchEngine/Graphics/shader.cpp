@@ -510,7 +510,7 @@ namespace Graphics {
 			if (size > 1)
 				array_name = name_str.substr(0, name_str.size() - 3);
 
-			for (unsigned i = 0; i < size; i++) { // for arrays
+			for (unsigned i = 0; i < (unsigned)size; i++) { // for arrays
 				if (size > 1)
 					name_str = array_name + "[" + std::to_string(i) + "]";
 

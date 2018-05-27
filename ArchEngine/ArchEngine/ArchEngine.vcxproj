@@ -207,6 +207,7 @@
     <None Include="Shaders\simplevs.glsl" />
     <None Include="Testers\core_engine_test_engine_config.lua" />
     <None Include="Testers\engineConfig.lua" />
+    <None Include="Testers\graphicsConfig.lua" />
     <None Include="Testers\inputContexts.lua" />
     <None Include="Testers\luaAPI.lua" />
     <None Include="Testers\testContext.lua" />

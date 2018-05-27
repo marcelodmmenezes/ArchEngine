@@ -9,7 +9,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 15/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 26/04/2018                                                 *
  *===========================================================================*/
 
 
@@ -56,6 +56,7 @@ namespace Script {
 
 		// Returned vectors are moved, not copied
 		std::vector<int> getIntVector(const std::string& name);
+		std::vector<float> getFloatVector(const std::string& name);
 		std::vector<std::string> getStringVector(const std::string& name);
 		std::vector<std::string> getTableKeys(const std::string& name);
 		std::vector<std::pair<std::string, std::string>>

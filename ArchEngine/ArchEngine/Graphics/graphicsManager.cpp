@@ -87,33 +87,42 @@ namespace Graphics {
 		return instance;
 	}
 
-	bool GraphicsManager::initialize(const glm::vec4& color,
-		int width, int height) {
-		// TODO
+	bool GraphicsManager::initialize(bool depth_test, bool face_culling,
+		int view_port[4], const glm::vec4& color, int active_camera) {
+		if (depth_test)
+			glEnable(GL_DEPTH_TEST);
+		if (face_culling)
+			glEnable(GL_CULL_FACE);
 
+		//------------------------------------------------------ Event handlers
 		m_window_size_listener.bind
 			<GraphicsManager, &GraphicsManager::onWindowResizeEvent>(this);
 		EventManager::getInstance().addListener(
 			m_window_size_listener, EVENT_WINDOW_RESIZE);
-
-		//---------------------------------------------------------------- TEST
-		onWindowResizeEvent(EventPtr(new WindowResizeEvent(800, 600)));
-		m_active_camera = -1;
 		//---------------------------------------------------------------------
 
+		glViewport(view_port[0], view_port[1], view_port[2], view_port[3]);
 		glClearColor(color.r, color.g, color.b, color.a);
+
+		m_active_camera = active_camera;
 
 		return true;
 	}
 
 	bool GraphicsManager::initializeFromConfigFile(const std::string& path) {
-		// TODO
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
+		LuaScript lua_context;
+		lua_context.initialize(path);
 
-		//---------------------------------------------------------------- TEST
-		return initialize(glm::vec4(0.05f, 0.08f, 0.07f, 1.0f), 800, 600);
-		//---------------------------------------------------------------------
+		bool depth_test = lua_context.get<bool>("depth_test");
+		bool face_culling = lua_context.get<bool>("face_culling");
+		auto color = lua_context.getFloatVector("clear_color");
+		auto view_port = lua_context.getIntVector("view_port");
+		int active_camera = lua_context.get<int>("active_camera");
+
+		lua_context.destroy();
+
+		return initialize(depth_test, face_culling, &view_port[0],
+			glm::vec4(color[0], color[1], color[2], color[3]), active_camera);
 	}
 
 	void GraphicsManager::update(float delta_time) {
@@ -123,6 +132,9 @@ namespace Graphics {
 		checkOpenGLErrors("Entering GraphicsManager::update");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		/*
 		// Draw scene
 		for (auto& it : m_shaders) {
 			it.bind();
@@ -136,8 +148,7 @@ namespace Graphics {
 			bindLights(it);
 			drawMeshes(it, true);
 		}
-
-
+		*/
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		checkOpenGLErrors("Exiting GraphicsManager::update");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
