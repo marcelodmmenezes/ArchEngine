@@ -102,10 +102,20 @@ void loadData() {
 
 	GraphicsManager::getInstance().setActiveCamera(
 		GraphicsManager::getInstance().addCamera(camera));
-
+	/*
 	unsigned objshader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/objvs.glsl",
 		"../../ArchEngine/Shaders/objfs.glsl"
+	);
+	*/
+	unsigned objshader = GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Shaders/shadowvs.glsl",
+		"../../ArchEngine/Shaders/shadowfs.glsl"
+	);
+
+	unsigned dir_depth_shader = GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Shaders/depthmapvs.glsl",
+		"../../ArchEngine/Shaders/depthmapfs.glsl"
 	);
 
 	loader.importScene(
@@ -169,7 +179,7 @@ void loadData() {
 		{
 			objshader,
 			loaded_meshes_ids,
-			
+
 			glm::scale(glm::rotate(glm::translate(
 				glm::mat4(1.0f), glm::vec3(30.0f, -0.25f, 0.0f)),
 				glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)),
@@ -183,6 +193,12 @@ void loadData() {
 		glm::vec3(0.1f, 0.1f, 0.05f),
 		glm::vec3(0.8f, 0.8f, 0.4f),
 		glm::vec3(0.8f, 0.8f, 0.4f),
+		true,
+		glm::ortho(-150.0f, 150.0f, -150.0f, 150.0f, 0.1f, 200.0f),
+		glm::lookAt(glm::vec3(200.0f, 200.0f, 200.0f),
+					glm::vec3(-1.0f, -1.0f, -1.0f),
+					glm::vec3(0.0f, 1.0f, 0.0f)),
+		dir_depth_shader
 	};
 
 	PointLight plight = {
@@ -211,8 +227,8 @@ void loadData() {
 	};
 
 	GraphicsManager::getInstance().addDirectionalLight(dlight);
-	GraphicsManager::getInstance().addPointLight(plight);
-	GraphicsManager::getInstance().addSpotLight(slight);
+	//GraphicsManager::getInstance().addPointLight(plight);
+	//GraphicsManager::getInstance().addSpotLight(slight);
 }
 
 void onContextEvent(EventPtr e) {

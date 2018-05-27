@@ -157,6 +157,8 @@ namespace Graphics {
 
 				m_shaders[it.shader].setMat4("u_model_matrix",
 					it.model_matrix);
+				m_shaders[it.shader].setMat3("u_trn_inv_up_model",
+					glm::transpose(glm::inverse(glm::mat3(it.model_matrix))));
 				m_shaders[it.shader].update();
 
 				m_meshes[i].first.draw();
@@ -185,6 +187,19 @@ namespace Graphics {
 					"].diffuse", m_directional_lights[i].diffuse);
 				shader.setVec3("u_dir_lights[" + std::to_string(i) +
 					"].specular", m_directional_lights[i].specular);
+				
+				if (m_directional_lights[i].emit_shadows) {
+					shader.setMat4("u_dir_light_space_matrix[" +
+						std::to_string(i) + "]",
+						m_directional_lights[i].projection *
+						m_directional_lights[i].view);
+
+					glActiveTexture(GL_TEXTURE8 + i);
+					glBindTexture(GL_TEXTURE_2D,
+						m_directional_lights[i].depth_map.getTextureId());
+					shader.setInt("u_dir_shadow_map[" + std::to_string(i) +
+						"]", 8 + i);
+				}
 			}
 		}
 
@@ -365,6 +380,11 @@ namespace Graphics {
 	unsigned GraphicsManager::addDirectionalLight(
 		const DirectionalLight& light) {
 		m_directional_lights.push_back(light);
+
+		// TODO: dynamic shadow map resolution
+		m_directional_lights[m_directional_lights.size() - 1].
+			depth_map.initialize(FB_DEPTH_MAP, 4096, 4096);
+
 		return m_directional_lights.size() - 1;
 	}
 

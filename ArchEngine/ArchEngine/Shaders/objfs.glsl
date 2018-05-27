@@ -11,7 +11,7 @@
  *===========================================================================*/
 
 
- #version 330 core
+#version 330 core
 
 struct DirLight {
 	vec3 direction;
@@ -77,9 +77,9 @@ uniform SpotLight u_spot_lights[NR_SPOT_LIGHTS];
 
 out vec4 out_color;
 
-vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, inout vec3 diff_text, inout vec3 spec_text);
-vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, inout vec3 diff_text, inout vec3 spec_text);
-vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 view_dir, inout vec3 diff_text, inout vec3 spec_text);
+vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text);
+vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text);
+vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text);
 
 void main() {
 	vec3 normal = normalize(f_normal);
@@ -104,7 +104,7 @@ void main() {
     out_color = vec4(pow(result, vec3(1.0f / 1.1f)), 1.0f);
 }
 
-vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, inout vec3 diff_text, inout vec3 spec_text) {
+vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text) {
 	vec3 light_dir = normalize(-light.direction);
 
 	float diff = max(dot(normal, light_dir), 0.0f);
@@ -119,7 +119,7 @@ vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, inout vec3 diff_te
 	return ambient + diffuse + specular;
 }
 
-vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, inout vec3 diff_text, inout vec3 spec_text) {
+vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text) {
 	vec3 pos_minus_frag = light.position - f_frag_pos;
 	vec3 light_dir = normalize(pos_minus_frag);
 
@@ -138,7 +138,7 @@ vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, inout vec3 dif
 	return ambient + diffuse + specular;
 }
 
-vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 view_dir, inout vec3 diff_text, inout vec3 spec_text) {
+vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text) {
 	vec3 pos_minus_frag = light.position - f_frag_pos;
 	vec3 light_dir = normalize(pos_minus_frag);
 

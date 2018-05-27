@@ -3,45 +3,45 @@
 layout (location = 0) in vec3 v_position;
 layout (location = 1) in vec3 v_normal;
 layout (location = 2) in vec2 v_texture_coords;
-layout (location = 3) in vec3 v_tangent;
-layout (location = 4) in vec3 v_bitangent;
 
-uniform mat4 u_projection;
-uniform mat4 u_view;
-uniform mat4 u_model;
+#define NR_DIR_LIGHTS 1
+#define NR_POINT_LIGHTS 1
+#define NR_SPOT_LIGHTS 1
+
+uniform int u_nr_dir_lights;
+uniform int u_nr_point_lights;
+uniform int u_nr_spot_lights;
+
+uniform mat4 u_projection_matrix;
+uniform mat4 u_view_matrix;
+uniform mat4 u_model_matrix;
 uniform mat3 u_trn_inv_up_model;
-uniform mat4 u_light_space_matrix;
-
-uniform vec3 u_view_pos;
+uniform mat4 u_dir_light_space_matrix[NR_DIR_LIGHTS];
+uniform mat4 u_point_light_space_matrix[NR_POINT_LIGHTS];
+uniform mat4 u_spot_light_space_matrix[NR_SPOT_LIGHTS];
 
 out vec3 f_normal;
 out vec3 f_frag_pos;
 out vec2 f_texture_coords;
-out vec3 f_tangent_light_pos;
-out vec3 f_tangent_view_pos;
-out vec3 f_tangent_frag_pos;
-out vec4 f_frag_pos_light_space;
+flat out ivec3 f_nr_of_lights;
+out vec4 f_frag_pos_dir_light_space[NR_DIR_LIGHTS];
+out vec4 f_frag_pos_point_light_space[NR_POINT_LIGHTS];
+out vec4 f_frag_pos_spot_light_space[NR_SPOT_LIGHTS];
 
 void main() {
-    f_frag_pos = vec3(u_model * vec4(v_position, 1.0f));   
+	f_normal = u_trn_inv_up_model * v_normal;
+    f_frag_pos = vec3(u_model_matrix * vec4(v_position, 1.0f));   
     f_texture_coords = v_texture_coords;
-    
-    vec3 t = normalize(u_trn_inv_up_model * v_tangent);
-    vec3 b = normalize(u_trn_inv_up_model * v_bitangent);
-    vec3 n = normalize(u_trn_inv_up_model * v_normal);
-    t = normalize(t - dot(t, n) * n);
+    f_nr_of_lights = ivec3(u_nr_dir_lights, u_nr_point_lights, u_nr_spot_lights);
 
-    if (dot(cross(n, t), b) < 0.0)
-    	t *= -1;
-    
-	f_normal = n;
+	for (int i = 0; i < u_nr_dir_lights; i++)
+		f_frag_pos_dir_light_space[i] = u_dir_light_space_matrix[i] * vec4(f_frag_pos, 1.0f);
 
-    mat3 tbn = transpose(mat3(t, b, n));    
-    f_tangent_light_pos = tbn * vec3(60.0f, 150.0f, 0.0f);
-    f_tangent_view_pos  = tbn * u_view_pos;
-    f_tangent_frag_pos  = tbn * f_frag_pos;
-        
-	f_frag_pos_light_space = mat4(u_trn_inv_up_model) * vec4(v_position, 1.0f);
+	for (int i = 0; i < u_nr_point_lights; i++)
+		f_frag_pos_point_light_space[i] = u_point_light_space_matrix[i] * vec4(f_frag_pos, 1.0f);
 
-    gl_Position = u_projection * u_view * u_model * vec4(v_position, 1.0f);
+	for (int i = 0; i < u_nr_spot_lights; i++)
+		f_frag_pos_spot_light_space[i] = u_spot_light_space_matrix[i] * vec4(f_frag_pos, 1.0f);
+
+    gl_Position = u_projection_matrix * u_view_matrix * u_model_matrix * vec4(v_position, 1.0f);
 }
