@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="API\entity.hpp" />
     <ClInclude Include="Config\engineMacros.hpp" />
     <ClInclude Include="Core\engine.hpp" />
     <ClInclude Include="Core\eventManager.hpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="Utils\timer.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="API\entity.cpp" />
     <ClCompile Include="Core\engine.cpp" />
     <ClInclude Include="Core\event.hpp" />
     <ClCompile Include="Core\event.cpp" />

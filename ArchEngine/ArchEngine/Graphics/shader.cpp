@@ -1,11 +1,11 @@
-	/*===========================================================================*
+/*===========================================================================*
  * Arch Engine - "Graphics/shader.cpp"                                       *
  *                                                                           *
  * TODO: description                                                         *
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 25/05/2018                                                 *
+ * Last Modified: 26/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -17,7 +17,8 @@ using namespace Utils;
 
 
 namespace Graphics {
-	Shader::Shader() {
+	Shader::Shader() : m_has_dir_lights(false),
+		m_has_point_lights(false), m_has_spot_lights(false) {
 #if defined(ARCH_ENGINE_HOT_RELOAD_ON)
 		m_watch_file = true;
 #endif	// ARCH_ENGINE_HOT_RELOAD_ON
@@ -211,6 +212,18 @@ namespace Graphics {
 	
 	unsigned Shader::getProgramId() {
 		return m_program_id;
+	}
+
+	bool Shader::hasDirLights() {
+		return m_has_dir_lights;
+	}
+
+	bool Shader::hasPointLights() {
+		return m_has_point_lights;
+	}
+
+	bool Shader::hasSpotLights() {
+		return m_has_spot_lights;
 	}
 
 	void Shader::setBool(const std::string& name, bool value) {
@@ -512,6 +525,15 @@ namespace Graphics {
 			// if array
 			if (size > 1)
 				array_name = name_str.substr(0, name_str.size() - 3);
+
+			if (name_str.substr(0, 12) == "u_dir_lights")
+				m_has_dir_lights = true;
+
+			if (name_str.substr(0, 14) == "u_point_lights")
+				m_has_point_lights = true;
+
+			if (name_str.substr(0, 13) == "u_spot_lights")
+				m_has_spot_lights = true;
 
 			for (unsigned i = 0; i < (unsigned)size; i++) { // for arrays
 				if (size > 1)

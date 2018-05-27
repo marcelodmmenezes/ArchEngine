@@ -14,6 +14,7 @@
 
 
 #include "../Config/engineMacros.hpp"
+#include "../API/entity.hpp"
 #include "../Core/eventManager.hpp"
 #include "debugCamera.hpp"
 #include "framebuffer.hpp"
@@ -82,11 +83,10 @@ namespace Graphics {
 		unsigned addPointLight(const PointLight& light);
 		unsigned addSpotLight(const SpotLight& light);
 
-		// Setters
+		// Helpers
 		void setProjectionMatrix(const glm::mat4& matrix);
+		
 		void setActiveCamera(int id);
-
-		// Getters
 		DebugCamera* getActiveCamera();
 
 		// Removes the component by handle
@@ -113,8 +113,7 @@ namespace Graphics {
 		Core::EventListener m_window_size_listener;
 		
 		void bindLights(Shader& shader);
-		void drawMeshes(Shader& shader, bool draw_textures);
-		void bind2DTextures(Shader& shader, unsigned mesh_id);
+		void bind2DTextures(Shader& shader, unsigned material_id);
 		void unbind2DTextures(Shader& shader);
 
 		// Hard coded uniform variables for now

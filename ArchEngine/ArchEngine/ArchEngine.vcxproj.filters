@@ -28,6 +28,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{2ad5b495-cf59-4bd7-8959-15da510b112a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="API">
+      <UniqueIdentifier>{88c15faf-10e5-4f85-9019-415f7a9d8177}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils\logger.hpp">
@@ -114,6 +117,9 @@
     <ClInclude Include="Utils\debugging.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="API\entity.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -190,6 +196,9 @@
     </ClCompile>
     <ClCompile Include="Utils\debugging.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="API\entity.cpp">
+      <Filter>API</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

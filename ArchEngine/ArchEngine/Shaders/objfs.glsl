@@ -75,7 +75,7 @@ uniform DirLight u_dir_lights[NR_DIR_LIGHTS];
 uniform PointLight u_point_lights[NR_POINT_LIGHTS];
 uniform SpotLight u_spot_lights[NR_SPOT_LIGHTS];
 
-out vec4 f_frag_color;
+out vec4 out_color;
 
 vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, inout vec3 diff_text, inout vec3 spec_text);
 vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, inout vec3 diff_text, inout vec3 spec_text);
@@ -101,7 +101,7 @@ void main() {
 		result += calcSpotLight(u_spot_lights[i], normal, view_dir, diffuse_tex, specular_tex);
 	//-------------------------------------------------------------------------------------------------------
 
-    f_frag_color = vec4(pow(result, vec3(1.0f / 1.1f)), 1.0f);
+    out_color = vec4(pow(result, vec3(1.0f / 1.1f)), 1.0f);
 }
 
 vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, inout vec3 diff_text, inout vec3 spec_text) {

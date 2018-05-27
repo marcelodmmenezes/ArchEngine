@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 22/05/2018                                                 *
+ * Last Modified: 26/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -34,11 +34,13 @@
 namespace Graphics {
 	class AssimpLoader {
 	public:
-		bool importScene(const std::string& path, aiPostProcessSteps flags);
+		bool importScene(const std::string& path, aiPostProcessSteps flags,
+			std::vector<unsigned>& loaded_meshes_ids);
 
 	private:
 		void loadCameras(const aiScene* scene);
-		void loadMeshes(const aiScene* scene);
+		void loadMeshes(const aiScene* scene,
+			std::vector<unsigned>& loaded_meshes_ids);
 		void loadMaterials(const aiScene* scene);
 		void loadAnimations(const aiScene* scene);
 		void loadLights(const aiScene* scene);
@@ -46,13 +48,14 @@ namespace Graphics {
 		// Helpers to load meshes based on it's properties.
 		// Instanced meshes are exported by the level editor, therefore
 		// not loaded by assimp, but by a custom format loader.
-		void basicVertexMesh(const aiMesh* mesh,
+		// Returns the added mesh GraphicsManager's id.
+		unsigned basicVertexMesh(const aiMesh* mesh,
 			unsigned mesh_id, unsigned material_id);
-		void normalMappedVertexMesh(const aiMesh* mesh,
+		unsigned normalMappedVertexMesh(const aiMesh* mesh,
 			unsigned mesh_id, unsigned material_id);
-		void animatedVertexMesh(const aiMesh* mesh,
+		unsigned animatedVertexMesh(const aiMesh* mesh,
 			unsigned mesh_id, unsigned material_id);
-		void animatedNormalMappedVertexMesh(const aiMesh* mesh,
+		unsigned animatedNormalMappedVertexMesh(const aiMesh* mesh,
 			unsigned mesh_id, unsigned material_id);
 
 		// Helper to load materials based on it's properties.

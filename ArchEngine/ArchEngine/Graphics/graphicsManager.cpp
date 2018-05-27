@@ -137,127 +137,123 @@ namespace Graphics {
 		// Passing delta time to cameras
 		for (auto& it : m_cameras)
 			it.m_delta_time = delta_time;
-
+		
 		// Drawing scene
-		for (auto& it : m_shaders) {
-			it.bind();
+		for (auto& it : g_entities) {
+			m_shaders[it.shader].bind();
 
-			it.setMat4("u_projection_matrix", m_projection);
-			it.setMat4("u_view_matrix",
+			m_shaders[it.shader].setMat4("u_projection_matrix",
+				m_projection);
+			m_shaders[it.shader].setMat4("u_view_matrix",
 				m_cameras[m_active_camera].getViewMatrix());
-			it.setVec3("u_view_pos",
+			m_shaders[it.shader].setVec3("u_view_pos",
 				m_cameras[m_active_camera].getPosition());
 
-			bindLights(it);
-			drawMeshes(it, true);
-		}
+			bindLights(m_shaders[it.shader]);
 
+			for (unsigned i : it.meshes) {
+				bind2DTextures(m_shaders[it.shader],
+					m_meshes[i].first.m_material_id);
+
+				m_shaders[it.shader].setMat4("u_model_matrix",
+					it.model_matrix);
+				m_shaders[it.shader].update();
+
+				m_meshes[i].first.draw();
+			}
+		}
+		
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		checkOpenGLErrors("Exiting GraphicsManager::update");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 	}
 
 	void GraphicsManager::bindLights(Shader& shader) {
-		shader.setInt("u_nr_dir_lights", m_directional_lights.size());
+		if (shader.hasDirLights()) {
+			shader.setInt("u_nr_dir_lights", m_directional_lights.size());
 
-		for (unsigned i = 0; i < m_directional_lights.size(); i++) {
-			shader.setVec3("u_dir_lights[" + std::to_string(i) +
-				"].direction", m_directional_lights[i].direction);
+			for (unsigned i = 0; i < m_directional_lights.size(); i++) {
+				shader.setVec3("u_dir_lights[" + std::to_string(i) +
+					"].direction", m_directional_lights[i].direction);
 
-			shader.setFloat("u_dir_lights[" + std::to_string(i) +
-				"].shineness", m_directional_lights[i].shineness);
+				shader.setFloat("u_dir_lights[" + std::to_string(i) +
+					"].shineness", m_directional_lights[i].shineness);
 
-			shader.setVec3("u_dir_lights[" + std::to_string(i) +
-				"].ambient", m_directional_lights[i].ambient);
-			shader.setVec3("u_dir_lights[" + std::to_string(i) +
-				"].diffuse", m_directional_lights[i].diffuse);
-			shader.setVec3("u_dir_lights[" + std::to_string(i) +
-				"].specular", m_directional_lights[i].specular);
+				shader.setVec3("u_dir_lights[" + std::to_string(i) +
+					"].ambient", m_directional_lights[i].ambient);
+				shader.setVec3("u_dir_lights[" + std::to_string(i) +
+					"].diffuse", m_directional_lights[i].diffuse);
+				shader.setVec3("u_dir_lights[" + std::to_string(i) +
+					"].specular", m_directional_lights[i].specular);
+			}
 		}
 
-		shader.setInt("u_nr_point_lights", m_point_lights.size());
+		if (shader.hasPointLights()) {
+			shader.setInt("u_nr_point_lights", m_point_lights.size());
 
-		for (unsigned i = 0; i < m_point_lights.size(); i++) {
-			shader.setVec3("u_point_lights[" + std::to_string(i) +
-				"].position", m_point_lights[i].position);
+			for (unsigned i = 0; i < m_point_lights.size(); i++) {
+				shader.setVec3("u_point_lights[" + std::to_string(i) +
+					"].position", m_point_lights[i].position);
 
-			shader.setFloat("u_point_lights[" + std::to_string(i) +
-				"].shineness", m_point_lights[i].shineness);
+				shader.setFloat("u_point_lights[" + std::to_string(i) +
+					"].shineness", m_point_lights[i].shineness);
 
-			shader.setFloat("u_point_lights[" + std::to_string(i) +
-				"].constant", m_point_lights[i].constant);
-			shader.setFloat("u_point_lights[" + std::to_string(i) +
-				"].linear", m_point_lights[i].linear);
-			shader.setFloat("u_point_lights[" + std::to_string(i) +
-				"].quadratic", m_point_lights[i].quadratic);
+				shader.setFloat("u_point_lights[" + std::to_string(i) +
+					"].constant", m_point_lights[i].constant);
+				shader.setFloat("u_point_lights[" + std::to_string(i) +
+					"].linear", m_point_lights[i].linear);
+				shader.setFloat("u_point_lights[" + std::to_string(i) +
+					"].quadratic", m_point_lights[i].quadratic);
 
-			shader.setVec3("u_point_lights[" + std::to_string(i) +
-				"].ambient", m_point_lights[i].ambient);
-			shader.setVec3("u_point_lights[" + std::to_string(i) +
-				"].diffuse", m_point_lights[i].diffuse);
-			shader.setVec3("u_point_lights[" + std::to_string(i) +
-				"].specular", m_point_lights[i].specular);
+				shader.setVec3("u_point_lights[" + std::to_string(i) +
+					"].ambient", m_point_lights[i].ambient);
+				shader.setVec3("u_point_lights[" + std::to_string(i) +
+					"].diffuse", m_point_lights[i].diffuse);
+				shader.setVec3("u_point_lights[" + std::to_string(i) +
+					"].specular", m_point_lights[i].specular);
+			}
 		}
 
-		shader.setInt("u_nr_spot_lights", m_spot_lights.size());
+		if (shader.hasSpotLights()) {
+			shader.setInt("u_nr_spot_lights", m_spot_lights.size());
 
-		for (unsigned i = 0; i < m_spot_lights.size(); i++) {
-			shader.setVec3("u_spot_lights[" + std::to_string(i) +
-				"].position", m_spot_lights[i].position);
-			shader.setVec3("u_spot_lights[" + std::to_string(i) +
-				"].direction", m_spot_lights[i].direction);
+			for (unsigned i = 0; i < m_spot_lights.size(); i++) {
+				shader.setVec3("u_spot_lights[" + std::to_string(i) +
+					"].position", m_spot_lights[i].position);
+				shader.setVec3("u_spot_lights[" + std::to_string(i) +
+					"].direction", m_spot_lights[i].direction);
 
-			shader.setFloat("u_spot_lights[" + std::to_string(i) +
-				"].shineness", m_spot_lights[i].shineness);
+				shader.setFloat("u_spot_lights[" + std::to_string(i) +
+					"].shineness", m_spot_lights[i].shineness);
 
-			shader.setFloat("u_spot_lights[" + std::to_string(i) +
-				"].inner_cut_off", m_spot_lights[i].inner_cut_off);
-			shader.setFloat("u_spot_lights[" + std::to_string(i) +
-				"].outer_cut_off", m_spot_lights[i].outer_cut_off);
+				shader.setFloat("u_spot_lights[" + std::to_string(i) +
+					"].inner_cut_off", m_spot_lights[i].inner_cut_off);
+				shader.setFloat("u_spot_lights[" + std::to_string(i) +
+					"].outer_cut_off", m_spot_lights[i].outer_cut_off);
 
-			shader.setFloat("u_spot_lights[" + std::to_string(i) +
-				"].constant", m_spot_lights[i].constant);
-			shader.setFloat("u_spot_lights[" + std::to_string(i) +
-				"].linear", m_spot_lights[i].linear);
-			shader.setFloat("u_spot_lights[" + std::to_string(i) +
-				"].quadratic", m_spot_lights[i].quadratic);
-			
-			shader.setVec3("u_spot_lights[" + std::to_string(i) +
-				"].ambient", m_spot_lights[i].ambient);
-			shader.setVec3("u_spot_lights[" + std::to_string(i) +
-				"].diffuse", m_spot_lights[i].diffuse);
-			shader.setVec3("u_spot_lights[" + std::to_string(i) +
-				"].specular", m_spot_lights[i].specular);
-		}
-	}
+				shader.setFloat("u_spot_lights[" + std::to_string(i) +
+					"].constant", m_spot_lights[i].constant);
+				shader.setFloat("u_spot_lights[" + std::to_string(i) +
+					"].linear", m_spot_lights[i].linear);
+				shader.setFloat("u_spot_lights[" + std::to_string(i) +
+					"].quadratic", m_spot_lights[i].quadratic);
 
-	void GraphicsManager::drawMeshes(Shader& shader, bool draw_textures) {
-		glm::mat4 model_matrix;
-
-		for (unsigned i = 0; i < m_meshes.size(); i++) {
-			// If current mesh has references
-			if (m_meshes[i].second > 0) {
-				if (draw_textures)
-					bind2DTextures(shader, i);
-
-				// TODO -> get real matrix
-				model_matrix = glm::scale(glm::mat4(1.0f),
-					glm::vec3(0.1f, 0.1f, 0.1f));
-
-				shader.setMat4("u_model_matrix", model_matrix);
-				shader.update();
-				m_meshes[i].first.draw();
+				shader.setVec3("u_spot_lights[" + std::to_string(i) +
+					"].ambient", m_spot_lights[i].ambient);
+				shader.setVec3("u_spot_lights[" + std::to_string(i) +
+					"].diffuse", m_spot_lights[i].diffuse);
+				shader.setVec3("u_spot_lights[" + std::to_string(i) +
+					"].specular", m_spot_lights[i].specular);
 			}
 		}
 	}
 
-	void GraphicsManager::bind2DTextures(Shader& shader, unsigned mesh_id) {
+	void GraphicsManager::bind2DTextures(Shader& shader, unsigned material_id) {
 		for (unsigned i = 0; i < NUMBER_OF_TEXTURE_TYPES; i++) {
-			if (i != 0 && i != 3)
+			if (i != 0 && i != 3) // TODO
 				continue;
 
-			unsigned texture =
-				m_materials[m_meshes[mesh_id].first.m_material_id].textures[i];
+			unsigned texture = m_materials[material_id].textures[i];
 
 			if (texture < UINT_MAX) {
 				glActiveTexture(GL_TEXTURE0 + i);
@@ -277,6 +273,9 @@ namespace Graphics {
 
 	void GraphicsManager::destroy() {
 		// TODO
+
+		for (auto& it : m_shaders)
+			it.destroy();
 
 		for (auto& it : m_directional_lights)
 			it.depth_map.destroy();
@@ -318,8 +317,7 @@ namespace Graphics {
 		const std::string& fs_path) {
 		// Shader must be initialized after push_back
 		// to keep the instance reference
-		Shader shader;
-		m_shaders.push_back(shader);
+		m_shaders.push_back(Shader());
 		m_shaders[m_shaders.size() - 1].initialize(vs_path, fs_path);
 		return m_shaders.size() - 1;
 	}
@@ -328,9 +326,9 @@ namespace Graphics {
 		const std::string& gs_path, const std::string& fs_path) {
 		// Shader must be initialized after push_back
 		// to keep the instance reference
-		Shader shader;
-		m_shaders.push_back(shader);
-		m_shaders[m_shaders.size() - 1].initialize(vs_path, gs_path, fs_path);
+		m_shaders.push_back(Shader());
+		m_shaders[m_shaders.size() - 1].initialize(
+			vs_path, gs_path, fs_path);
 		return m_shaders.size() - 1;
 	}
 
@@ -386,7 +384,7 @@ namespace Graphics {
 		return m_spot_lights.size() - 1;
 	}
 
-	//----------------------------------------------------------------- Setters
+	//----------------------------------------------------------------- Helpers
 	void GraphicsManager::setProjectionMatrix(const glm::mat4& matrix) {
 		m_projection = matrix;
 	}
@@ -395,7 +393,6 @@ namespace Graphics {
 		m_active_camera = id;
 	}
 
-	//----------------------------------------------------------------- Getters
 	DebugCamera* GraphicsManager::getActiveCamera() {
 		if (m_active_camera < 0 || m_active_camera >= (int)m_cameras.size()) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING

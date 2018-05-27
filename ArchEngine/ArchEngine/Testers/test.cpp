@@ -89,6 +89,9 @@ int main(int argc, char* argv[]) {
 }
 
 void loadData() {
+	AssimpLoader loader;
+	std::vector<unsigned> loaded_meshes_ids;
+
 	GraphicsManager::getInstance().setProjectionMatrix(
 		glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f));
 
@@ -99,22 +102,53 @@ void loadData() {
 
 	GraphicsManager::getInstance().setActiveCamera(
 		GraphicsManager::getInstance().addCamera(camera));
-	GraphicsManager::getInstance().addShader(
+
+	unsigned objshader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/objvs.glsl",
 		"../../ArchEngine/Shaders/objfs.glsl"
 	);
 
-	AssimpLoader loader;
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/sponza/mergedSponza.obj",
-		aiPostProcessSteps (
+		aiPostProcessSteps(
 			//aiProcess_GenSmoothNormals |
 			//aiProcess_CalcTangentSpace |
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices |
 			aiProcess_SortByPType |
 			aiProcess_FlipUVs
-		)
+		),
+		loaded_meshes_ids
+	);
+
+	g_entities.push_back(
+		{
+			objshader,
+			loaded_meshes_ids,
+			glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f))
+		}
+	);
+
+	loaded_meshes_ids.clear();
+	loader.importScene(
+		"../../../../GameEngineLearning/assets/nanosuit/nanosuit.obj",
+		aiPostProcessSteps(
+			//aiProcess_GenSmoothNormals |
+			//aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType |
+			aiProcess_FlipUVs
+		),
+		loaded_meshes_ids
+	);
+
+	g_entities.push_back(
+		{
+			objshader,
+			loaded_meshes_ids,
+			glm::mat4(1.0f)
+		}
 	);
 
 	DirectionalLight dlight = {

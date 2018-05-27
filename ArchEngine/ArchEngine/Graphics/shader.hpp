@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 25/05/2018                                                 *
+ * Last Modified: 26/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -61,6 +61,9 @@ namespace Graphics {
 		void destroy();
 
 		unsigned getProgramId();
+		bool hasDirLights();
+		bool hasPointLights();
+		bool hasSpotLights();
 
 		void setBool(const std::string& name, bool value);
 		void setInt(const std::string& name, int value);
@@ -80,6 +83,11 @@ namespace Graphics {
 		void getUniforms();
 
 		unsigned m_program_id;
+
+		// If shader has lights
+		bool m_has_dir_lights;
+		bool m_has_point_lights;
+		bool m_has_spot_lights;
 
 		// Stores the ids to dirty uniforms
 		std::vector<std::string> m_dirty_uniforms;

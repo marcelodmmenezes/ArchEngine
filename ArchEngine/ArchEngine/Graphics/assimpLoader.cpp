@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 22/05/2018                                                 *
+ * Last Modified: 26/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -20,7 +20,7 @@ namespace Graphics {
 	unsigned AssimpLoader::m_material_base_index = 0u;
 
 	bool AssimpLoader::importScene(const std::string& path,
-		aiPostProcessSteps flags) {
+		aiPostProcessSteps flags, std::vector<unsigned>& loaded_meshes_ids) {
 		m_path = path;
 
 		Assimp::Importer importer;
@@ -40,7 +40,7 @@ namespace Graphics {
 			loadCameras(scene);
 
 		if (scene->HasMeshes())
-			loadMeshes(scene);
+			loadMeshes(scene, loaded_meshes_ids);
 
 		if (scene->HasMaterials())
 			loadMaterials(scene);
@@ -60,7 +60,8 @@ namespace Graphics {
 		// TODO
 	}
 
-	void AssimpLoader::loadMeshes(const aiScene* scene) {
+	void AssimpLoader::loadMeshes(const aiScene* scene,
+		std::vector<unsigned>& loaded_meshes_ids) {
 		// Requests more space to GraphicsManager for efficiency
 		GraphicsManager::getInstance().reserveMeshes(scene->mNumMeshes);
 
@@ -81,17 +82,21 @@ namespace Graphics {
 
 			if (scene->mMeshes[i]->HasTangentsAndBitangents() &&
 				scene->mMeshes[i]->HasBones())
-				animatedNormalMappedVertexMesh(scene->mMeshes[i],
-					i, scene->mMeshes[i]->mMaterialIndex);
+				loaded_meshes_ids.push_back(
+					animatedNormalMappedVertexMesh(scene->mMeshes[i],
+						i, scene->mMeshes[i]->mMaterialIndex));
 			else if (scene->mMeshes[i]->HasTangentsAndBitangents())
-				normalMappedVertexMesh(scene->mMeshes[i],
-					i, scene->mMeshes[i]->mMaterialIndex);
+				loaded_meshes_ids.push_back(
+					normalMappedVertexMesh(scene->mMeshes[i],
+						i, scene->mMeshes[i]->mMaterialIndex));
 			else if (scene->mMeshes[i]->HasBones())
-				animatedVertexMesh(scene->mMeshes[i],
-					i, scene->mMeshes[i]->mMaterialIndex);
+				loaded_meshes_ids.push_back(
+					animatedVertexMesh(scene->mMeshes[i],
+						i, scene->mMeshes[i]->mMaterialIndex));
 			else
-				basicVertexMesh(scene->mMeshes[i],
-					i, scene->mMeshes[i]->mMaterialIndex);
+				loaded_meshes_ids.push_back(
+					basicVertexMesh(scene->mMeshes[i],
+						i, scene->mMeshes[i]->mMaterialIndex));
 		}
 	}
 
@@ -148,7 +153,7 @@ namespace Graphics {
 		// TODO
 	}
 
-	void AssimpLoader::basicVertexMesh(const aiMesh* mesh,
+	unsigned AssimpLoader::basicVertexMesh(const aiMesh* mesh,
 		unsigned mesh_id, unsigned material_id) {
 		std::vector<BasicVertex> vertices;
 		std::vector<unsigned int> indices;
@@ -185,10 +190,10 @@ namespace Graphics {
 			m_material_base_index + material_id,
 			vertices, indices);
 
-		GraphicsManager::getInstance().addMesh(m_mesh);
+		return GraphicsManager::getInstance().addMesh(m_mesh);
 	}
 
-	void AssimpLoader::normalMappedVertexMesh(const aiMesh* mesh,
+	unsigned AssimpLoader::normalMappedVertexMesh(const aiMesh* mesh,
 		unsigned mesh_id, unsigned material_id) {
 		std::vector<NormalMappedVertex> vertices;
 		std::vector<unsigned int> indices;
@@ -227,17 +232,19 @@ namespace Graphics {
 			m_material_base_index + material_id,
 			vertices, indices);
 
-		GraphicsManager::getInstance().addMesh(m_mesh);
+		return GraphicsManager::getInstance().addMesh(m_mesh);
 	}
 
-	void AssimpLoader::animatedVertexMesh(const aiMesh* mesh,
+	unsigned AssimpLoader::animatedVertexMesh(const aiMesh* mesh,
 		unsigned mesh_id, unsigned material_id) {
 		// TODO
+		return 0;
 	}
 
-	void AssimpLoader::animatedNormalMappedVertexMesh(const aiMesh* mesh,
+	unsigned AssimpLoader::animatedNormalMappedVertexMesh(const aiMesh* mesh,
 		unsigned mesh_id, unsigned material_id) {
 		// TODO
+		return 0;
 	}
 
 	bool AssimpLoader::loadMaterials(const aiMaterial* material,
