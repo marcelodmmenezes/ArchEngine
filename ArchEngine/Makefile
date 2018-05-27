@@ -7,7 +7,7 @@
 #*                                                                           *
 #* Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
 #* Created: 10/04/2018                                                       *
-#* Last Modified: 05/05/2018                                                 *
+#* Last Modified: 26/05/2018                                                 *
 #*===========================================================================*/
 
 
@@ -62,6 +62,8 @@ $(OBJDIR)/$(GRAPHICS)/assimpLoader.o : $(GRAPHICS)/assimpLoader.cpp
 	$(COMPILEOBJ)
 $(OBJDIR)/$(GRAPHICS)/debugCamera.o : $(GRAPHICS)/debugCamera.cpp
 	$(COMPILEOBJ)
+$(OBJDIR)/$(GRAPHICS)/framebuffer.o : $(GRAPHICS)/framebuffer.cpp
+	$(COMPILEOBJ)
 $(OBJDIR)/$(GRAPHICS)/glad_3_3_core.o : $(GRAPHICS)/glad_3_3_core.cpp
 	$(COMPILEOBJ)
 $(OBJDIR)/$(GRAPHICS)/graphicsManager.o : $(GRAPHICS)/graphicsManager.cpp
@@ -98,6 +100,8 @@ $(OBJDIR)/$(TESTERS)/test.o : \
 	$(TESTERS)/test.cpp
 	$(COMPILEOBJ)
 
+$(OBJDIR)/$(UTILS)/debugging.o : $(UTILS)/debugging.cpp
+	$(COMPILEOBJ)
 $(OBJDIR)/$(UTILS)/fileWatcher.o : $(UTILS)/fileWatcher.cpp
 	$(COMPILEOBJ)
 $(OBJDIR)/$(UTILS)/serviceLocator.o : $(UTILS)/serviceLocator.cpp
@@ -105,16 +109,16 @@ $(OBJDIR)/$(UTILS)/serviceLocator.o : $(UTILS)/serviceLocator.cpp
 $(OBJDIR)/$(UTILS)/timer.o : $(UTILS)/timer.cpp
 	$(COMPILEOBJ)
 
-_OBJ = $(CORE)/engine.o $(CORE)/event.o \
-	$(CORE)/eventManager.o $(GRAPHICS)/assimpLoader.o \
-	$(GRAPHICS)/debugCamera.o $(GRAPHICS)/glad_3_3_core.o \
+_OBJ = $(CORE)/engine.o $(CORE)/event.o $(CORE)/eventManager.o \
+	$(GRAPHICS)/assimpLoader.o $(GRAPHICS)/debugCamera.o \
+	$(GRAPHICS)/framebuffer.o $(GRAPHICS)/glad_3_3_core.o \
 	$(GRAPHICS)/graphicsManager.o $(GRAPHICS)/materialManager.o \
 	$(GRAPHICS)/shader.o $(GRAPHICS)/mesh.o $(GRAPHICS)/shader.o \
 	$(GRAPHICS)/stb_image.o $(GRAPHICS)/uniforms.o $(OS)/inputContext.o \
 	$(OS)/inputManager.o $(OS)/window.o $(PHYSICS)/physicsManager.o \
 	$(PHYSICS)/world.o $(SCRIPT)/engineLuaAPI.o $(SCRIPT)/luaScript.o \
-	$(TESTERS)/test.o $(UTILS)/fileWatcher.o $(UTILS)/serviceLocator.o \
-	$(UTILS)/timer.o
+	$(TESTERS)/test.o $(UTILS)/debugging.o $(UTILS)/fileWatcher.o \
+	$(UTILS)/serviceLocator.o $(UTILS)/timer.o
 OBJ = $(patsubst %, $(OBJDIR)/%, $(_OBJ))
 
 build: $(OBJ)
