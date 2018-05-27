@@ -177,7 +177,7 @@ namespace Graphics {
 					"].direction", m_directional_lights[i].direction);
 
 				shader.setFloat("u_dir_lights[" + std::to_string(i) +
-					"].shineness", m_directional_lights[i].shineness);
+					"].shininess", m_directional_lights[i].shininess);
 
 				shader.setVec3("u_dir_lights[" + std::to_string(i) +
 					"].ambient", m_directional_lights[i].ambient);
@@ -196,7 +196,7 @@ namespace Graphics {
 					"].position", m_point_lights[i].position);
 
 				shader.setFloat("u_point_lights[" + std::to_string(i) +
-					"].shineness", m_point_lights[i].shineness);
+					"].shininess", m_point_lights[i].shininess);
 
 				shader.setFloat("u_point_lights[" + std::to_string(i) +
 					"].constant", m_point_lights[i].constant);
@@ -224,7 +224,7 @@ namespace Graphics {
 					"].direction", m_spot_lights[i].direction);
 
 				shader.setFloat("u_spot_lights[" + std::to_string(i) +
-					"].shineness", m_spot_lights[i].shineness);
+					"].shininess", m_spot_lights[i].shininess);
 
 				shader.setFloat("u_spot_lights[" + std::to_string(i) +
 					"].inner_cut_off", m_spot_lights[i].inner_cut_off);
@@ -255,19 +255,15 @@ namespace Graphics {
 
 			unsigned texture = m_materials[material_id].textures[i];
 
+			glActiveTexture(GL_TEXTURE0 + i);
+
 			if (texture < UINT_MAX) {
-				glActiveTexture(GL_TEXTURE0 + i);
 				glBindTexture(GL_TEXTURE_2D,
 					MaterialManager::getInstance().getTexture(texture));
 				shader.setInt(m_texture_names[i], i);
 			}
-		}
-	}
-
-	void GraphicsManager::unbind2DTextures(Shader& shader) {
-		for (unsigned i = 0; i < NUMBER_OF_TEXTURE_TYPES; i++) {
-			glActiveTexture(GL_TEXTURE0 + i);
-			glBindTexture(GL_TEXTURE_2D, 0);
+			else
+				glBindTexture(GL_TEXTURE_2D, 0);
 		}
 	}
 

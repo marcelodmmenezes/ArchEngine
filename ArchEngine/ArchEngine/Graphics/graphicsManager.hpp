@@ -114,7 +114,6 @@ namespace Graphics {
 		
 		void bindLights(Shader& shader);
 		void bind2DTextures(Shader& shader, unsigned material_id);
-		void unbind2DTextures(Shader& shader);
 
 		// Hard coded uniform variables for now
 		std::string m_texture_names[NUMBER_OF_TEXTURE_TYPES] = {

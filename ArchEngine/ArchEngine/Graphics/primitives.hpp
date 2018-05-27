@@ -28,7 +28,7 @@ namespace Graphics {
 	struct DirectionalLight {
 		glm::vec3 direction;
 
-		float shineness;
+		float shininess;
 
 		// Color properties
 		glm::vec3 ambient;
@@ -45,7 +45,7 @@ namespace Graphics {
 	struct PointLight {
 		glm::vec3 position;
 
-		float shineness;
+		float shininess;
 
 		// Attenuation properties
 		float constant;
@@ -68,7 +68,7 @@ namespace Graphics {
 		glm::vec3 position;
 		glm::vec3 direction;
 
-		float shineness;
+		float shininess;
 
 		// SpotLight radiuses
 		float inner_cut_off;

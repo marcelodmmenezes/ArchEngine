@@ -16,7 +16,7 @@
 struct DirLight {
 	vec3 direction;
 
-	float shineness;
+	float shininess;
 
 	vec3 ambient;
 	vec3 diffuse;
@@ -26,7 +26,7 @@ struct DirLight {
 struct PointLight {
 	vec3 position;
 
-	float shineness;
+	float shininess;
 
 	float constant;
 	float linear;
@@ -41,7 +41,7 @@ struct SpotLight {
 	vec3 position;
 	vec3 direction;
 
-	float shineness;
+	float shininess;
 
 	float inner_cut_off;
 	float outer_cut_off;
@@ -110,7 +110,7 @@ vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, inout vec3 diff_te
 	float diff = max(dot(normal, light_dir), 0.0f);
 
 	vec3 reflect_dir = reflect(-light_dir, normal);
-	float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), light.shineness);
+	float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), light.shininess);
 
 	vec3 ambient = light.ambient * diff_text;
 	vec3 diffuse = light.diffuse * diff * diff_text;
@@ -126,7 +126,7 @@ vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, inout vec3 dif
 	float diff = max(dot(normal, light_dir), 0.0f);
 
 	vec3 reflect_dir = reflect(-light_dir, normal);
-	float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), light.shineness);
+	float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), light.shininess);
 
 	float dist = length(pos_minus_frag);
 	float att = 1.0f / (light.constant + light.linear * dist + light.quadratic * dist * dist);
@@ -149,7 +149,7 @@ vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 view_dir, inout vec3 diff_
 	float diff = max(dot(normal, light_dir), 0.0f);
 
 	vec3 reflect_dir = reflect(-light_dir, normal);
-	float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), light.shineness);
+	float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), light.shininess);
 
 	float dist = length(pos_minus_frag);
 	float att = 1.0f / (light.constant + light.linear * dist + light.quadratic * dist * dist);

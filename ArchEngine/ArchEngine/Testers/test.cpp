@@ -125,7 +125,7 @@ void loadData() {
 		{
 			objshader,
 			loaded_meshes_ids,
-			glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f))
+			glm::scale(glm::mat4(1.0f), glm::vec3(0.08f, 0.08f, 0.08f))
 		}
 	);
 
@@ -151,6 +151,32 @@ void loadData() {
 		}
 	);
 
+	loaded_meshes_ids.clear();
+	loader.importScene(
+		"../../../../GameEngineLearning/assets/dummy/dummy_obj.obj",
+		aiPostProcessSteps(
+			//aiProcess_GenSmoothNormals |
+			//aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType |
+			aiProcess_FlipUVs
+		),
+		loaded_meshes_ids
+	);
+
+	g_entities.push_back(
+		{
+			objshader,
+			loaded_meshes_ids,
+			
+			glm::scale(glm::rotate(glm::translate(
+				glm::mat4(1.0f), glm::vec3(30.0f, -0.25f, 0.0f)),
+				glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)),
+				glm::vec3(0.08f, 0.08f, 0.08f))
+		}
+	);
+
 	DirectionalLight dlight = {
 		glm::vec3(-1.0f, -1.0f, -1.0f),
 		32.0f,
@@ -171,7 +197,7 @@ void loadData() {
 	};
 
 	SpotLight slight = {
-		glm::vec3(40.0f, 55.0f, -35.0f),
+		glm::vec3(40.0f, 45.0f, -30.0f),
 		glm::vec3(0.0f, 0.0f, -1.0f),
 		64.0f,
 		glm::cos(glm::radians(12.5f)),
