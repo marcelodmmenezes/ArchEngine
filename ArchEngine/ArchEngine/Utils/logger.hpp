@@ -9,7 +9,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 08/04/2018                                                       *
- * Last Modified: 30/04/2018                                                 *
+ * Last Modified: 26/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -102,10 +102,10 @@ namespace Utils {
 			if (m_output_stream.is_open()) {
 #if defined(__unix__)
 				m_output_stream << "------------------------------------------\
------------------------- ENDED LOGGING\n" << std::endl;
+------------------------ ENDED LOGGING\n\n" << std::endl;
 #elif defined(_MSC_VER)
 				m_output_stream << "------------------------------------------\
------------------------- ENDED LOGGING\r\n" << std::endl;
+------------------------ ENDED LOGGING\r\n\n" << std::endl;
 #endif
 				m_output_stream.close();
 			}

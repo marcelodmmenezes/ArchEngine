@@ -89,6 +89,70 @@ int main(int argc, char* argv[]) {
 }
 
 void loadData() {
+	GraphicsManager::getInstance().setProjectionMatrix(
+		glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f));
+
+	DebugCamera camera(
+		glm::vec3(0.0f, 15.0f, 15.0f),
+		glm::vec3(0.0f, 0.0f, -1.0f)
+	);
+
+	GraphicsManager::getInstance().setActiveCamera(
+		GraphicsManager::getInstance().addCamera(camera));
+	GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Shaders/objvs.glsl",
+		"../../ArchEngine/Shaders/objfs.glsl"
+	);
+
+	AssimpLoader loader;
+	loader.importScene(
+		"../../../../GameEngineLearning/assets/sponza/mergedSponza.obj",
+		aiPostProcessSteps (
+			//aiProcess_GenSmoothNormals |
+			//aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType |
+			aiProcess_FlipUVs
+		)
+	);
+
+	DirectionalLight dlight = {
+		glm::vec3(-1.0f, -1.0f, -1.0f),
+		32.0f,
+		glm::vec3(0.1f, 0.1f, 0.05f),
+		glm::vec3(0.8f, 0.8f, 0.4f),
+		glm::vec3(0.8f, 0.8f, 0.4f),
+	};
+
+	PointLight plight = {
+		glm::vec3(-20.0f, 10.0f, 15.0f),
+		64.0f,
+		1.0f,
+		0.007f,
+		0.0002f,
+		glm::vec3(0.02f, 0.1f, 0.08f),
+		glm::vec3(0.2f, 1.0f, 0.8f),
+		glm::vec3(0.2f, 1.0f, 0.8f)
+	};
+
+	SpotLight slight = {
+		glm::vec3(40.0f, 55.0f, -35.0f),
+		glm::vec3(0.0f, 0.0f, -1.0f),
+		64.0f,
+		glm::cos(glm::radians(12.5f)),
+		glm::cos(glm::radians(17.5f)),
+		1.0f,
+		0.007f,
+		0.0002f,
+		glm::vec3(0.0f, 0.0f, 0.1f),
+		glm::vec3(0.0f, 0.0f, 1.0f),
+		glm::vec3(0.0f, 0.0f, 1.0f)
+	};
+
+	GraphicsManager::getInstance().addDirectionalLight(dlight);
+	GraphicsManager::getInstance().addPointLight(plight);
+	GraphicsManager::getInstance().addSpotLight(slight);
 }
 
 void onContextEvent(EventPtr e) {

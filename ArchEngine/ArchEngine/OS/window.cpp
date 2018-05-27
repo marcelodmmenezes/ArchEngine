@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 18/05/2018                                                 *
+ * Last Modified: 26/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -121,6 +121,14 @@ namespace OS {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			return false;
 		}
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		std::cout << "\nOpenGL Version: " << glGetString(GL_VERSION) << "\n";
+		std::cout << "GLSL Version:   " <<
+			glGetString(GL_SHADING_LANGUAGE_VERSION) << "\n";
+		std::cout << "Renderer:       " << glGetString(GL_RENDERER) << "\n";
+		std::cout << "Vendor:         " << glGetString(GL_VENDOR) << std::endl;
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
 		if (capture_mouse)
 			captureMouse();

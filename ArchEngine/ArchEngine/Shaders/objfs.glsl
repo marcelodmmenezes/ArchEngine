@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 13/05/2018                                                 *
+ * Last Modified: 26/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -16,6 +16,8 @@
 struct DirLight {
 	vec3 direction;
 
+	float shineness;
+
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
@@ -23,6 +25,8 @@ struct DirLight {
 
 struct PointLight {
 	vec3 position;
+
+	float shineness;
 
 	float constant;
 	float linear;
@@ -36,7 +40,10 @@ struct PointLight {
 struct SpotLight {
 	vec3 position;
 	vec3 direction;
-	float cut_off;
+
+	float shineness;
+
+	float inner_cut_off;
 	float outer_cut_off;
 
 	float constant;
@@ -48,72 +55,53 @@ struct SpotLight {
 	vec3 specular;
 };
 
-#define NR_POINT_LIGHTS 4
-
-layout (location = 0) out vec4 f_frag_color;
-layout (location = 1) out vec4 f_bright_color;
+#define NR_DIR_LIGHTS 1
+#define NR_POINT_LIGHTS 1
+#define NR_SPOT_LIGHTS 1
 
 in vec3 f_normal;
 in vec3 f_frag_pos;
 in vec2 f_texture_coords;
 
 uniform vec3 u_view_pos;
-uniform sampler2D u_texture_diffuse1;
-uniform sampler2D u_texture_diffuse2;
-uniform sampler2D u_texture_diffuse3;
-uniform sampler2D u_texture_specular1;
-uniform sampler2D u_texture_specular2;
-uniform float u_shineness;
+uniform sampler2D u_texture_diffuse;
+uniform sampler2D u_texture_specular;
 
-uniform DirLight u_dir_light;
+uniform int u_nr_dir_lights;
+uniform int u_nr_point_lights;
+uniform int u_nr_spot_lights;
+
+uniform DirLight u_dir_lights[NR_DIR_LIGHTS];
 uniform PointLight u_point_lights[NR_POINT_LIGHTS];
-uniform SpotLight u_spot_light;
+uniform SpotLight u_spot_lights[NR_SPOT_LIGHTS];
 
-uniform bool u_calc_dl;
-uniform bool u_calc_pl[NR_POINT_LIGHTS];
-uniform bool u_calc_sl;
-
-uniform bool u_discard_transparent_textures;
+out vec4 f_frag_color;
 
 vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, inout vec3 diff_text, inout vec3 spec_text);
 vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, inout vec3 diff_text, inout vec3 spec_text);
 vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 view_dir, inout vec3 diff_text, inout vec3 spec_text);
 
 void main() {
-	if(u_discard_transparent_textures && texture(u_texture_diffuse1, f_texture_coords).a < 0.1)
-		discard;
-
-	vec3 norm = normalize(f_normal);
+	vec3 normal = normalize(f_normal);
 	vec3 view_dir = normalize(u_view_pos - f_frag_pos);
 
-	vec3 diffuse_tex = vec3(texture(u_texture_diffuse1, f_texture_coords));
-	vec3 specular_tex = vec3(texture(u_texture_specular1, f_texture_coords));
+	vec3 diffuse_tex = vec3(texture(u_texture_diffuse, f_texture_coords));
+	vec3 specular_tex = vec3(texture(u_texture_specular, f_texture_coords));
 
 	//------------------------------------------------------------------------------------ Light calculations
-	vec3 result = 0.1f * diffuse_tex;
+	vec3 result = 0.15f * diffuse_tex;
+	
+	for(int i = 0; i < u_nr_dir_lights; i++)
+		result += calcDirLight(u_dir_lights[i], normal, view_dir, diffuse_tex, specular_tex);
 
-	if(u_calc_dl)
-		result += calcDirLight(u_dir_light, norm, view_dir, diffuse_tex, specular_tex);
-
-	for(int i = 0; i < NR_POINT_LIGHTS; i++)
-		if(u_calc_pl[i])
-			result += calcPointLight(u_point_lights[i], norm, view_dir, diffuse_tex, specular_tex);
-
-	if(u_calc_sl)
-		result += calcSpotLight(u_spot_light, norm, view_dir, diffuse_tex, specular_tex);
+	for(int i = 0; i < u_nr_point_lights; i++)
+		result += calcPointLight(u_point_lights[i], normal, view_dir, diffuse_tex, specular_tex);
+		
+	for(int i = 0; i < u_nr_spot_lights; i++)
+		result += calcSpotLight(u_spot_lights[i], normal, view_dir, diffuse_tex, specular_tex);
 	//-------------------------------------------------------------------------------------------------------
 
-	f_frag_color = vec4(result, 1.0f);
-
-
-    const float gamma = 1.1f;
-    f_frag_color = vec4(pow(result, vec3(1.0f / gamma)), 1.0f);
-
-    float brightness = dot(f_frag_color.rgb, vec3(0.2126f, 0.7152f, 0.0722f));
-    if(brightness > 0.8f)
-        f_bright_color = vec4(f_frag_color.rgb, 1.0f);
-    else
-        f_bright_color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    f_frag_color = vec4(pow(result, vec3(1.0f / 1.1f)), 1.0f);
 }
 
 vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, inout vec3 diff_text, inout vec3 spec_text) {
@@ -122,7 +110,7 @@ vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, inout vec3 diff_te
 	float diff = max(dot(normal, light_dir), 0.0f);
 
 	vec3 reflect_dir = reflect(-light_dir, normal);
-	float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), u_shineness);
+	float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), light.shineness);
 
 	vec3 ambient = light.ambient * diff_text;
 	vec3 diffuse = light.diffuse * diff * diff_text;
@@ -138,7 +126,7 @@ vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, inout vec3 dif
 	float diff = max(dot(normal, light_dir), 0.0f);
 
 	vec3 reflect_dir = reflect(-light_dir, normal);
-	float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), u_shineness);
+	float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), light.shineness);
 
 	float dist = length(pos_minus_frag);
 	float att = 1.0f / (light.constant + light.linear * dist + light.quadratic * dist * dist);
@@ -155,13 +143,13 @@ vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 view_dir, inout vec3 diff_
 	vec3 light_dir = normalize(pos_minus_frag);
 
 	float theta = dot(light_dir, normalize(-light.direction));
-	float epsilon = light.cut_off - light.outer_cut_off;
+	float epsilon = light.inner_cut_off - light.outer_cut_off;
 	float intensity = clamp((theta - light.outer_cut_off) / epsilon, 0.0f, 1.0f);
 
 	float diff = max(dot(normal, light_dir), 0.0f);
 
 	vec3 reflect_dir = reflect(-light_dir, normal);
-	float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), u_shineness);
+	float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), light.shineness);
 
 	float dist = length(pos_minus_frag);
 	float att = 1.0f / (light.constant + light.linear * dist + light.quadratic * dist * dist);

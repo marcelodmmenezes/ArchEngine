@@ -484,6 +484,10 @@ namespace Graphics {
 	}
 
 	void Shader::getUniforms() {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		std::stringstream log_stream;
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+
 		int count, size;
 		GLenum type;
 
@@ -494,8 +498,7 @@ namespace Graphics {
 		glGetProgramiv(m_program_id, GL_ACTIVE_UNIFORMS, &count);
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
-		ServiceLocator::getFileLogger()->log<LOG_INFO>(
-			"Found " + std::to_string(count) + " uniforms");
+		log_stream << "Found " + std::to_string(count) + " uniforms";
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
 		for (unsigned i = 0; i < (unsigned)count; i++) {
@@ -515,6 +518,10 @@ namespace Graphics {
 					name_str = array_name + "[" + std::to_string(i) + "]";
 
 				m_dirty_uniforms.push_back(name_str);
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+				log_stream << "\n    " << name_str;
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
 				switch (type) {
 				case GL_BOOL:
@@ -567,5 +574,9 @@ namespace Graphics {
 				}
 			}
 		}
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(log_stream);
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 	}
 }

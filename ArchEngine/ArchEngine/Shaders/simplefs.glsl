@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/05/2018                                                       *
- * Last Modified: 19/05/2018                                                 *
+ * Last Modified: 26/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -18,5 +18,5 @@ in vec3 f_color;
 out vec4 color;
 
 void main() {
-	color = vec4(f_color, 1.0f);
+	color = vec4((f_color / 2) + 0.5f, 1.0f);
 }

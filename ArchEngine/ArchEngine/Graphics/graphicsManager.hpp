@@ -82,6 +82,10 @@ namespace Graphics {
 		unsigned addPointLight(const PointLight& light);
 		unsigned addSpotLight(const SpotLight& light);
 
+		// Setters
+		void setProjectionMatrix(const glm::mat4& matrix);
+		void setActiveCamera(int id);
+
 		// Getters
 		DebugCamera* getActiveCamera();
 
