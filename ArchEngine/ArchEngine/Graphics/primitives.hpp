@@ -67,6 +67,7 @@ namespace Graphics {
 		unsigned depth_shader; // Depth shader handle
 		int dmw; // Depth map width
 		int dmh; // Depth map height
+		float far_plane; // Projection far plane
 		Framebuffer depth_map; // Holds the depth map texture
 	};
 

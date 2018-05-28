@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 26/05/2018                                                 *
+ * Last Modified: 28/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -183,6 +183,12 @@ namespace Core {
 			"Destroying GraphicsManager");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 		GraphicsManager::getInstance().destroy();
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Destroying MaterialManager");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		MaterialManager::getInstance().destroy();
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(

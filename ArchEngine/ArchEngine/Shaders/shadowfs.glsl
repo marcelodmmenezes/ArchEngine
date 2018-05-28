@@ -1,5 +1,9 @@
 #version 330 core
 
+#define NR_DIR_LIGHTS 1
+#define NR_POINT_LIGHTS 1
+#define NR_SPOT_LIGHTS 1
+
 struct DirLight {
 	vec3 direction;
 	
@@ -42,23 +46,20 @@ struct SpotLight {
 	vec3 specular;
 };
 
-#define NR_DIR_LIGHTS 2
-#define NR_POINT_LIGHTS 1
-#define NR_SPOT_LIGHTS 1
-
 in vec3 f_normal;
 in vec3 f_frag_pos;
 in vec2 f_texture_coords;
 flat in ivec3 f_nr_of_lights;
 in vec4 f_frag_pos_dir_light_space[NR_DIR_LIGHTS];
-in vec4 f_frag_pos_point_light_space[NR_POINT_LIGHTS];
-in vec4 f_frag_pos_spot_light_space[NR_SPOT_LIGHTS];
 
 uniform vec3 u_view_pos;
+
+uniform float u_far_plane;
 
 uniform sampler2D u_texture_diffuse;
 uniform sampler2D u_texture_specular;
 uniform sampler2D u_dir_shadow_map[NR_DIR_LIGHTS];
+uniform samplerCube u_point_shadow_map[NR_POINT_LIGHTS];
 
 uniform DirLight u_dir_lights[NR_DIR_LIGHTS];
 uniform PointLight u_point_lights[NR_POINT_LIGHTS];
@@ -66,11 +67,20 @@ uniform SpotLight u_spot_lights[NR_SPOT_LIGHTS];
 
 out vec4 out_color;
 
+vec3 g_grid_sampling_disk[20] = vec3[] (
+   vec3(1, 1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1, 1,  1), 
+   vec3(1, 1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1, 1, -1),
+   vec3(1, 1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1, 1,  0),
+   vec3(1, 0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1, 0, -1),
+   vec3(0, 1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0, 1, -1)
+);
+
 vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text);
 vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text);
 vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text);
 
 float calcDirShadows(vec4 frag_pos_light_space, vec3 normal, vec3 light_dir, int light_index);
+float calcPointShadows(int light_index);
 
 void main() {
 	vec3 normal = normalize(f_normal);
@@ -98,6 +108,8 @@ void main() {
 
 	for(int i = 0; i < f_nr_of_lights[0]; i++)
 		shadow += calcDirShadows(f_frag_pos_dir_light_space[i], normal, -u_dir_lights[i].direction, i);
+	for(int i = 0; i < f_nr_of_lights[1]; i++)
+		shadow += calcPointShadows(i);
 
 	vec3 lighting = ambient + ((1.0f - shadow) * result);
 	//-------------------------------------------------------------------------------------------------------
@@ -185,4 +197,25 @@ float calcDirShadows(vec4 frag_pos_light_space, vec3 normal, vec3 light_dir, int
 	//-----------------------------------------------------------------------------------------------------------------
 
 	return shadow;
+}
+
+float calcPointShadows(int light_index) {
+	vec3 frag_to_light = f_frag_pos - u_point_lights[light_index].position;
+	float current_depth = length(frag_to_light);
+    float shadow = 0.0;
+    float bias = 0.15;
+    int samples = 20;
+    float view_distance = length(u_view_pos - f_frag_pos);
+    float disk_radius = (1.0 + (view_distance / 200.0f)) / 25.0;
+    
+    for(int i = 0; i < samples; i++) {
+        float closest_depth = texture(u_point_shadow_map[light_index], frag_to_light + g_grid_sampling_disk[i] * disk_radius).r;
+        closest_depth *= 200.0f;   // undo mapping [0;1]
+        if(current_depth - bias > closest_depth)
+            shadow += 1.0;
+    }
+
+    shadow /= float(samples);
+
+    return shadow;
 }

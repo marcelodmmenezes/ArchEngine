@@ -128,6 +128,11 @@ void loadData() {
 		"../../ArchEngine/Shaders/quadvs.glsl",
 		"../../ArchEngine/Shaders/quadfs.glsl"
 	);
+
+	unsigned cube_shader = GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Shaders/cubemapvs.glsl",
+		"../../ArchEngine/Shaders/cubemapfs.glsl"
+	);
 	
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/sponza/mergedSponza.obj",
@@ -221,6 +226,28 @@ void loadData() {
 		}
 	);
 
+	loaded_meshes_ids.clear();
+	loader.importScene(
+		"../../../../GameEngineLearning/assets/cube/cube_wooden.obj",
+		aiPostProcessSteps(
+			//aiProcess_GenSmoothNormals |
+			//aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType //|
+			//aiProcess_FlipUVs
+		),
+		loaded_meshes_ids
+	);
+
+	g_entities.push_back(
+		{
+			cube_shader,
+			loaded_meshes_ids,
+			glm::mat4(1.0f)
+		}
+	);
+
 	DirectionalLight dlight = {
 		glm::vec3(-0.6f, -1.0f, -0.5f),
 		32.0f,
@@ -271,7 +298,8 @@ void loadData() {
 		},
 		point_depth_shader,
 		4000,
-		4000
+		4000,
+		200.0f
 	};
 
 	SpotLight slight = {
@@ -288,9 +316,20 @@ void loadData() {
 		glm::vec3(0.0f, 0.0f, 1.0f)
 	};
 
-	//GaphicsManager::getInstance().addDirectionalLight(dlight);
+	//GraphicsManager::getInstance().addDirectionalLight(dlight);
 	GraphicsManager::getInstance().addPointLight(plight);
 	//GraphicsManager::getInstance().addSpotLight(slight);
+
+	std::string skybox[] = {
+		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
+		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
+		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
+		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
+		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
+		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png"
+	};
+
+	MaterialManager::getInstance().addCubeTexture(skybox);
 }
 
 void onContextEvent(EventPtr e) {

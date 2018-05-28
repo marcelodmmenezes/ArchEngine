@@ -150,18 +150,39 @@ namespace Graphics {
 		/*
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_CULL_FACE);
-		m_shaders[g_entities[g_entities.size() - 1].shader].bind();
+		m_shaders[g_entities[g_entities.size() - 2].shader].bind();
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D,
 			m_directional_lights[0].depth_map.getTextureId());
-		m_shaders[g_entities[g_entities.size() - 1].shader].setInt("u_texture", 0);
-		m_shaders[g_entities[g_entities.size() - 1].shader].setMat4("u_model_matrix",
+		m_shaders[g_entities[g_entities.size() - 2].shader].setInt("u_texture", 0);
+		m_shaders[g_entities[g_entities.size() - 2].shader].setMat4("u_model_matrix",
 			g_entities[g_entities.size() - 1].model_matrix);
-		m_shaders[g_entities[g_entities.size() - 1].shader].update();
-		m_meshes[g_entities[g_entities.size() - 1].meshes[0]].first.draw();
+		m_shaders[g_entities[g_entities.size() - 2].shader].update();
+		m_meshes[g_entities[g_entities.size() - 2].meshes[0]].first.draw();
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		*/
+		
+		glDisable(GL_CULL_FACE);
+		glDepthFunc(GL_LEQUAL);
+		m_shaders[g_entities[g_entities.size() - 1].shader].bind();
+		glm::mat4 cube_depth_map_view_matrix = m_cameras[m_active_camera].getViewMatrix();
+		cube_depth_map_view_matrix[3][0] = 0;
+		cube_depth_map_view_matrix[3][1] = 0;
+		cube_depth_map_view_matrix[3][2] = 0;
+		m_shaders[g_entities[g_entities.size() - 1].shader].setMat4("u_view", cube_depth_map_view_matrix);
+		m_shaders[g_entities[g_entities.size() - 1].shader].setMat4("u_projection", m_projection);
+		glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, m_point_lights[0].depth_map.getTextureId());
+		glBindTexture(GL_TEXTURE_CUBE_MAP, MaterialManager::getInstance().getCubeTexture(0));
+		m_shaders[g_entities[g_entities.size() - 1].shader].setInt("u_texture", 0);
+		m_shaders[g_entities[g_entities.size() - 1].shader].update();
+		m_meshes[g_entities[g_entities.size() - 1].meshes[0]].first.draw();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+		glDepthFunc(GL_LESS);
+		glEnable(GL_CULL_FACE);
+		
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		checkOpenGLErrors("Exiting GraphicsManager::update");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
@@ -177,7 +198,41 @@ namespace Graphics {
 				m_shaders[it.depth_shader].setMat4("u_light_space_matrix",
 					it.projection * it.view);
 
+				int i = 0; // TODO
 				for (auto& entity : g_entities) {
+					if (i++ == g_entities.size() - 2) // TODO
+						break;
+
+					for (unsigned i : entity.meshes) {
+						m_shaders[it.depth_shader].setMat4("u_model_matrix",
+							entity.model_matrix);
+						m_shaders[it.depth_shader].update();
+
+						m_meshes[i].first.draw();
+					}
+				}
+			}
+		}
+		
+		for (auto& it : m_point_lights) {
+			if (it.emit_shadows) {
+				it.depth_map.bind();
+				glViewport(0, 0, it.dmw, it.dmh);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				m_shaders[it.depth_shader].bind();
+				for (int i = 0; i < 6; i++)
+					m_shaders[it.depth_shader].setMat4("u_shadow_matrices[" +
+						std::to_string(i) + "]", it.projection * it.view[i]);
+
+				m_shaders[it.depth_shader].setVec3(
+					"u_light_pos", it.position);
+				m_shaders[it.depth_shader].setFloat(
+					"u_far_plane", it.far_plane);
+				
+				int i = 0; // TODO
+				for (auto& entity : g_entities) {
+					if (i++ == g_entities.size() - 2) // TODO
+						break;
 					for (unsigned i : entity.meshes) {
 						m_shaders[it.depth_shader].setMat4("u_model_matrix",
 							entity.model_matrix);
@@ -193,8 +248,8 @@ namespace Graphics {
 	void GraphicsManager::renderScene() {
 		int i = 0; // TODO
 		for (auto& it : g_entities) {
-			if (i++ == g_entities.size() - 1) // TODO
-				continue;
+			if (i++ == g_entities.size() - 2) // TODO
+				break;
 
 			m_shaders[it.shader].bind();
 
@@ -281,6 +336,17 @@ namespace Graphics {
 					"].diffuse", m_point_lights[i].diffuse);
 				shader.setVec3("u_point_lights[" + std::to_string(i) +
 					"].specular", m_point_lights[i].specular);
+
+				if (m_point_lights[i].emit_shadows) {
+					//shader.setFloat("u_far_plane",
+					//	m_point_lights[i].far_plane);
+					
+					glActiveTexture(GL_TEXTURE16 + i);
+					glBindTexture(GL_TEXTURE_CUBE_MAP,
+						m_point_lights[i].depth_map.getTextureId());
+					shader.setInt("u_point_shadow_map[" + std::to_string(i) +
+						"]", 16 + i);
+				}
 			}
 		}
 
@@ -329,7 +395,7 @@ namespace Graphics {
 
 			if (texture < UINT_MAX) {
 				glBindTexture(GL_TEXTURE_2D,
-					MaterialManager::getInstance().getTexture(texture));
+					MaterialManager::getInstance().get2DTexture(texture));
 				shader.setInt(m_texture_names[i], i);
 			}
 			else
@@ -445,6 +511,10 @@ namespace Graphics {
 	unsigned GraphicsManager::addPointLight(
 		const PointLight& light) {
 		m_point_lights.push_back(light);
+
+		m_point_lights[m_point_lights.size() - 1].
+			depth_map.initialize(FB_DEPTH_CUBE_MAP, light.dmw, light.dmh);
+
 		return m_point_lights.size() - 1;
 	}
 
