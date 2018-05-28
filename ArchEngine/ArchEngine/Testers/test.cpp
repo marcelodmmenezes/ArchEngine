@@ -93,7 +93,7 @@ void loadData() {
 	std::vector<unsigned> loaded_meshes_ids;
 
 	GraphicsManager::getInstance().setProjectionMatrix(
-		glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f));
+		glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 500.0f));
 
 	DebugCamera camera(
 		glm::vec3(0.0f, 15.0f, 15.0f),
@@ -122,7 +122,7 @@ void loadData() {
 		"../../ArchEngine/Shaders/quadvs.glsl",
 		"../../ArchEngine/Shaders/quadfs.glsl"
 	);
-	/*
+	
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/sponza/mergedSponza.obj",
 		aiPostProcessSteps(
@@ -143,7 +143,7 @@ void loadData() {
 			glm::scale(glm::mat4(1.0f), glm::vec3(0.08f, 0.08f, 0.08f))
 		}
 	);
-	*/
+	
 	loaded_meshes_ids.clear();
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/nanosuit/nanosuit.obj",
@@ -162,7 +162,7 @@ void loadData() {
 		{
 			objshader,
 			loaded_meshes_ids,
-			glm::mat4(1.0f)
+			glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.25f, 0.0f))
 		}
 	);
 	
@@ -216,19 +216,19 @@ void loadData() {
 	);
 
 	DirectionalLight dlight = {
-		glm::vec3(-1.0f, -1.0f, 0.0f),
+		glm::vec3(-0.6f, -1.0f, -0.5f),
 		32.0f,
 		glm::vec3(0.1f, 0.1f, 0.05f),
 		glm::vec3(0.8f, 0.8f, 0.4f),
 		glm::vec3(0.8f, 0.8f, 0.4f),
 		true,
-		glm::ortho(-30.0f, 30.0f, -30.0f, 30.0f, 0.1f, 500.0f),
-		glm::lookAt(glm::vec3(35.0f, 35.0f, 0.0f),
-					glm::vec3(-1.0f, -1.0f, 0.0f),
+		glm::ortho(-150.0f, 150.0f, -150.0f, 150.0f, 0.1f, 1000.0f),
+		glm::lookAt(glm::vec3(60.0, 100.0, 50.0f),
+					glm::vec3(-0.6f, -1.0f, -0.5f),
 					glm::vec3(0.0f, 1.0f, 0.0f)),
 		dir_depth_shader,
-		10000,
-		10000
+		4000,
+		4000
 	};
 
 	PointLight plight = {

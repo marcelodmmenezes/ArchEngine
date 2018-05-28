@@ -101,6 +101,8 @@ namespace Graphics {
 			m_window_size_listener, EVENT_WINDOW_RESIZE);
 		//---------------------------------------------------------------------
 
+		m_screen_width = view_port[2];
+		m_screen_height = view_port[3];
 		glViewport(view_port[0], view_port[1], view_port[2], view_port[3]);
 		glClearColor(color.r, color.g, color.b, color.a);
 
@@ -135,12 +137,14 @@ namespace Graphics {
 			it.m_delta_time = delta_time;
 		
 		//------------------------------------------------- Depth map rendering
+		glCullFace(GL_FRONT);
 		renderDepthMaps();
+		glCullFace(GL_BACK);
 
 		//----------------------------------------------------- Scene rendering
 		Framebuffer::defaultFramebuffer();
 
-		glViewport(0, 0, 800, 600);
+		glViewport(0, 0, m_screen_width, m_screen_height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		renderScene();
 		/*
@@ -589,6 +593,12 @@ namespace Graphics {
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Window size: " + std::to_string(w) + " " + std::to_string(h));
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+
+		m_screen_width = w;
+		m_screen_height = h;
+
+		m_projection = glm::perspective(glm::radians(70.0f),
+			(float)w / (float)h, 0.1f, 1000.0f);
 
 		glViewport(0, 0, w, h);
 	}

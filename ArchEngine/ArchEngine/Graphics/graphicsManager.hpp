@@ -108,14 +108,17 @@ namespace Graphics {
 		GraphicsManager();
 		void onWindowResizeEvent(Core::EventPtr e);
 
-		State m_state;
-
-		Core::EventListener m_window_size_listener;
-		
 		void renderDepthMaps();
 		void renderScene();
 		void bindLights(Shader& shader);
 		void bind2DTextures(Shader& shader, unsigned material_id);
+
+		State m_state;
+
+		int m_screen_width;
+		int m_screen_height;
+
+		Core::EventListener m_window_size_listener;
 
 		// Hard coded uniform variables for now
 		std::string m_texture_names[NUMBER_OF_TEXTURE_TYPES] = {

@@ -42,7 +42,7 @@ struct SpotLight {
 	vec3 specular;
 };
 
-#define NR_DIR_LIGHTS 1
+#define NR_DIR_LIGHTS 2
 #define NR_POINT_LIGHTS 1
 #define NR_SPOT_LIGHTS 1
 
@@ -97,7 +97,7 @@ void main() {
 	float shadow = 0.0f;
 
 	for(int i = 0; i < f_nr_of_lights[0]; i++)
-		shadow = calcDirShadows(f_frag_pos_dir_light_space[i], normal, -u_dir_lights[i].direction, i);
+		shadow += calcDirShadows(f_frag_pos_dir_light_space[i], normal, -u_dir_lights[i].direction, i);
 
 	vec3 lighting = ambient + ((1.0f - shadow) * result);
 	//-------------------------------------------------------------------------------------------------------
@@ -164,7 +164,7 @@ float calcDirShadows(vec4 frag_pos_light_space, vec3 normal, vec3 light_dir, int
 	vec3 proj_coords = frag_pos_light_space.xyz / frag_pos_light_space.w;
 	proj_coords = proj_coords * 0.5f + 0.5f;
 
-	float closest_depth = texture(u_dir_shadow_map[light_index], proj_coords.xy).r;
+	//float closest_depth = texture(u_dir_shadow_map[light_index], proj_coords.xy).r;
 	float current_depth = proj_coords.z;
 
 	float bias = max(0.0005f * (1.0f - dot(normal, light_dir)), 0.00005f);
@@ -172,6 +172,21 @@ float calcDirShadows(vec4 frag_pos_light_space, vec3 normal, vec3 light_dir, int
 	if (proj_coords.z > 0.9f)
 		return 0.0f;
 
-	return current_depth - bias > closest_depth ? 1.0f : 0.0f;
+	//return current_depth - bias > closest_depth ? 1.0f : 0.0f;
 	//return current_depth > closest_depth ? 1.0f : 0.0f;
+
+	//------------------------------------------------------------------------------------------------------------- PCF
+	float shadow = 0.0f;
+	vec2 texel_size = 1.0f / textureSize(u_dir_shadow_map[light_index], 0);
+	for(int x = -1; x <= 1; x++) {
+		for(int y = -1; y <= 1; y++) {
+			float pcf_depth = texture(u_dir_shadow_map[light_index], proj_coords.xy + vec2(x, y) * texel_size).r; 
+			shadow += current_depth - bias > pcf_depth ? 1.0 : 0.0;        
+		}    
+	}
+
+	shadow /= 9.0f;
+	//-----------------------------------------------------------------------------------------------------------------
+
+	return shadow;
 }

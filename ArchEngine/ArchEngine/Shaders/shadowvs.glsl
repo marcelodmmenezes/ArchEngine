@@ -4,7 +4,7 @@ layout (location = 0) in vec3 v_position;
 layout (location = 1) in vec3 v_normal;
 layout (location = 2) in vec2 v_texture_coords;
 
-#define NR_DIR_LIGHTS 1
+#define NR_DIR_LIGHTS 2
 #define NR_POINT_LIGHTS 1
 #define NR_SPOT_LIGHTS 1
 
