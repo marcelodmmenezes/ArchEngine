@@ -126,20 +126,72 @@ namespace Graphics {
 	}
 
 	void GraphicsManager::update(float delta_time) {
-		// TODO
-
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		checkOpenGLErrors("Entering GraphicsManager::update");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-
- 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Passing delta time to cameras
 		for (auto& it : m_cameras)
 			it.m_delta_time = delta_time;
 		
-		// Drawing scene
+		//------------------------------------------------- Depth map rendering
+		renderDepthMaps();
+
+		//----------------------------------------------------- Scene rendering
+		Framebuffer::defaultFramebuffer();
+
+		glViewport(0, 0, 800, 600);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		renderScene();
+		/*
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_CULL_FACE);
+		m_shaders[g_entities[g_entities.size() - 1].shader].bind();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D,
+			m_directional_lights[0].depth_map.getTextureId());
+		m_shaders[g_entities[g_entities.size() - 1].shader].setInt("u_texture", 0);
+		m_shaders[g_entities[g_entities.size() - 1].shader].setMat4("u_model_matrix",
+			g_entities[g_entities.size() - 1].model_matrix);
+		m_shaders[g_entities[g_entities.size() - 1].shader].update();
+		m_meshes[g_entities[g_entities.size() - 1].meshes[0]].first.draw();
+		glEnable(GL_CULL_FACE);
+		glEnable(GL_DEPTH_TEST);
+		*/
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+		checkOpenGLErrors("Exiting GraphicsManager::update");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+	}
+
+	void GraphicsManager::renderDepthMaps() {
+		for (auto& it : m_directional_lights) {
+			if (it.emit_shadows) {
+				it.depth_map.bind();
+				glViewport(0, 0, it.dmw, it.dmh);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				m_shaders[it.depth_shader].bind();
+				m_shaders[it.depth_shader].setMat4("u_light_space_matrix",
+					it.projection * it.view);
+
+				for (auto& entity : g_entities) {
+					for (unsigned i : entity.meshes) {
+						m_shaders[it.depth_shader].setMat4("u_model_matrix",
+							entity.model_matrix);
+						m_shaders[it.depth_shader].update();
+
+						m_meshes[i].first.draw();
+					}
+				}
+			}
+		}
+	}
+
+	void GraphicsManager::renderScene() {
+		int i = 0; // TODO
 		for (auto& it : g_entities) {
+			if (i++ == g_entities.size() - 1) // TODO
+				continue;
+
 			m_shaders[it.shader].bind();
 
 			m_shaders[it.shader].setMat4("u_projection_matrix",
@@ -155,19 +207,18 @@ namespace Graphics {
 				bind2DTextures(m_shaders[it.shader],
 					m_meshes[i].first.m_material_id);
 
+				m_shaders[it.shader].setMat3("u_trn_inv_up_model",
+					glm::transpose(glm::inverse(glm::mat3(
+						it.model_matrix))));
+
 				m_shaders[it.shader].setMat4("u_model_matrix",
 					it.model_matrix);
-				m_shaders[it.shader].setMat3("u_trn_inv_up_model",
-					glm::transpose(glm::inverse(glm::mat3(it.model_matrix))));
+
 				m_shaders[it.shader].update();
 
 				m_meshes[i].first.draw();
 			}
 		}
-		
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-		checkOpenGLErrors("Exiting GraphicsManager::update");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 	}
 
 	void GraphicsManager::bindLights(Shader& shader) {
@@ -381,9 +432,8 @@ namespace Graphics {
 		const DirectionalLight& light) {
 		m_directional_lights.push_back(light);
 
-		// TODO: dynamic shadow map resolution
 		m_directional_lights[m_directional_lights.size() - 1].
-			depth_map.initialize(FB_DEPTH_MAP, 4096, 4096);
+			depth_map.initialize(FB_DEPTH_MAP, light.dmw, light.dmh);
 
 		return m_directional_lights.size() - 1;
 	}

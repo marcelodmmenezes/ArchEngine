@@ -118,6 +118,11 @@ void loadData() {
 		"../../ArchEngine/Shaders/depthmapfs.glsl"
 	);
 
+	unsigned quad_shader = GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Shaders/quadvs.glsl",
+		"../../ArchEngine/Shaders/quadfs.glsl"
+	);
+	/*
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/sponza/mergedSponza.obj",
 		aiPostProcessSteps(
@@ -138,7 +143,7 @@ void loadData() {
 			glm::scale(glm::mat4(1.0f), glm::vec3(0.08f, 0.08f, 0.08f))
 		}
 	);
-
+	*/
 	loaded_meshes_ids.clear();
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/nanosuit/nanosuit.obj",
@@ -160,7 +165,7 @@ void loadData() {
 			glm::mat4(1.0f)
 		}
 	);
-
+	
 	loaded_meshes_ids.clear();
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/dummy/dummy_obj.obj",
@@ -179,26 +184,51 @@ void loadData() {
 		{
 			objshader,
 			loaded_meshes_ids,
-
 			glm::scale(glm::rotate(glm::translate(
 				glm::mat4(1.0f), glm::vec3(30.0f, -0.25f, 0.0f)),
 				glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)),
 				glm::vec3(0.08f, 0.08f, 0.08f))
 		}
 	);
+	
+	loaded_meshes_ids.clear();
+	loader.importScene(
+		"../../../../GameEngineLearning/assets/plane/plane_brick.obj",
+		aiPostProcessSteps(
+			//aiProcess_GenSmoothNormals |
+			//aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType //|
+			//aiProcess_FlipUVs
+		),
+		loaded_meshes_ids
+	);
+
+	g_entities.push_back(
+		{
+			quad_shader,
+			loaded_meshes_ids,
+			glm::scale(glm::rotate(glm::mat4(1.0f),
+				glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)),
+				glm::vec3(0.8f, 0.8f, 0.8f))
+		}
+	);
 
 	DirectionalLight dlight = {
-		glm::vec3(-1.0f, -1.0f, -1.0f),
+		glm::vec3(-1.0f, -1.0f, 0.0f),
 		32.0f,
 		glm::vec3(0.1f, 0.1f, 0.05f),
 		glm::vec3(0.8f, 0.8f, 0.4f),
 		glm::vec3(0.8f, 0.8f, 0.4f),
 		true,
-		glm::ortho(-150.0f, 150.0f, -150.0f, 150.0f, 0.1f, 200.0f),
-		glm::lookAt(glm::vec3(200.0f, 200.0f, 200.0f),
-					glm::vec3(-1.0f, -1.0f, -1.0f),
+		glm::ortho(-30.0f, 30.0f, -30.0f, 30.0f, 0.1f, 500.0f),
+		glm::lookAt(glm::vec3(35.0f, 35.0f, 0.0f),
+					glm::vec3(-1.0f, -1.0f, 0.0f),
 					glm::vec3(0.0f, 1.0f, 0.0f)),
-		dir_depth_shader
+		dir_depth_shader,
+		10000,
+		10000
 	};
 
 	PointLight plight = {

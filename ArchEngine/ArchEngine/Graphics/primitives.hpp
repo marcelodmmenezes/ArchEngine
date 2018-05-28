@@ -40,6 +40,8 @@ namespace Graphics {
 		glm::mat4 projection; // Shadow mapping projection matrix
 		glm::mat4 view; // Shadow mapping view matrix
 		unsigned depth_shader; // Depth shader handle
+		int dmw; // Depth map width
+		int dmh; // Depth map height
 		Framebuffer depth_map; // Holds the depth map texture
 	};
 
@@ -63,6 +65,8 @@ namespace Graphics {
 		glm::mat4 projection; // Shadow mapping projection matrix
 		glm::mat4 view[6]; // Shadow mapping view matrices
 		unsigned depth_shader; // Depth shader handle
+		int dmw; // Depth map width
+		int dmh; // Depth map height
 		Framebuffer depth_map; // Holds the depth map texture
 	};
 
@@ -91,6 +95,8 @@ namespace Graphics {
 		glm::mat4 projection; // Shadow mapping projection matrix
 		glm::mat4 view; // Shadow mapping view matrix
 		unsigned depth_shader; // Depth shader handle
+		int dmw; // Depth map width
+		int dmh; // Depth map height
 		Framebuffer depth_map; // Holds the depth map texture
 	};
 

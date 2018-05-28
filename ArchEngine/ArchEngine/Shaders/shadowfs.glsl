@@ -167,10 +167,11 @@ float calcDirShadows(vec4 frag_pos_light_space, vec3 normal, vec3 light_dir, int
 	float closest_depth = texture(u_dir_shadow_map[light_index], proj_coords.xy).r;
 	float current_depth = proj_coords.z;
 
-	float bias = max(0.03f * (1.0f - dot(normal, light_dir)), 0.003f);
+	float bias = max(0.0005f * (1.0f - dot(normal, light_dir)), 0.00005f);
 
 	if (proj_coords.z > 0.9f)
 		return 0.0f;
 
 	return current_depth - bias > closest_depth ? 1.0f : 0.0f;
+	//return current_depth > closest_depth ? 1.0f : 0.0f;
 }

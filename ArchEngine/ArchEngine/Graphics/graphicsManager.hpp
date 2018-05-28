@@ -112,6 +112,8 @@ namespace Graphics {
 
 		Core::EventListener m_window_size_listener;
 		
+		void renderDepthMaps();
+		void renderScene();
 		void bindLights(Shader& shader);
 		void bind2DTextures(Shader& shader, unsigned material_id);
 
