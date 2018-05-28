@@ -93,7 +93,7 @@ void loadData() {
 	std::vector<unsigned> loaded_meshes_ids;
 
 	GraphicsManager::getInstance().setProjectionMatrix(
-		glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 500.0f));
+		glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f));
 
 	DebugCamera camera(
 		glm::vec3(0.0f, 15.0f, 15.0f),
@@ -116,6 +116,12 @@ void loadData() {
 	unsigned dir_depth_shader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/depthmapvs.glsl",
 		"../../ArchEngine/Shaders/depthmapfs.glsl"
+	);
+
+	unsigned point_depth_shader = GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Shaders/cubedepthmapvs.glsl",
+		"../../ArchEngine/Shaders/cubedepthmapgs.glsl",
+		"../../ArchEngine/Shaders/cubedepthmapfs.glsl"
 	);
 
 	unsigned quad_shader = GraphicsManager::getInstance().addShader(
@@ -231,15 +237,41 @@ void loadData() {
 		4000
 	};
 
+	glm::vec3 plight_pos(-10.0f, 25.0f, 0.0f);
 	PointLight plight = {
-		glm::vec3(-20.0f, 10.0f, 15.0f),
+		plight_pos,
 		64.0f,
 		1.0f,
-		0.007f,
+		0.007,
 		0.0002f,
-		glm::vec3(0.02f, 0.1f, 0.08f),
-		glm::vec3(0.2f, 1.0f, 0.8f),
-		glm::vec3(0.2f, 1.0f, 0.8f)
+		glm::vec3(0.1f, 0.1f, 0.1f),
+		glm::vec3(1.0f, 1.0f, 1.0f),
+		glm::vec3(1.0f, 1.0f, 1.0f),
+		true,
+		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 200.0f),
+		{
+			glm::lookAt(plight_pos,
+				plight_pos + glm::vec3(1.0f, 0.0f, 0.0f),
+				glm::vec3(0.0f, -1.0f, 0.0f)),
+			glm::lookAt(plight_pos,
+				plight_pos + glm::vec3(-1.0f, 0.0f, 0.0f),
+				glm::vec3(0.0f, -1.0f, 0.0f)),
+			glm::lookAt(plight_pos,
+				plight_pos + glm::vec3(0.0f, 1.0f, 0.0f),
+				glm::vec3(0.0f, 0.0f, 1.0f)),
+			glm::lookAt(plight_pos,
+				plight_pos + glm::vec3(0.0f, -1.0f, 0.0f),
+				glm::vec3(0.0f, 0.0f, -1.0f)),
+			glm::lookAt(plight_pos,
+				plight_pos + glm::vec3(0.0f, 0.0f, 1.0f),
+				glm::vec3(0.0f, -1.0f, 0.0f)),
+			glm::lookAt(plight_pos,
+				plight_pos + glm::vec3(0.0f, 0.0f, -1.0f),
+				glm::vec3(0.0f, -1.0f, 0.0f))
+		},
+		point_depth_shader,
+		4000,
+		4000
 	};
 
 	SpotLight slight = {
@@ -256,8 +288,8 @@ void loadData() {
 		glm::vec3(0.0f, 0.0f, 1.0f)
 	};
 
-	GraphicsManager::getInstance().addDirectionalLight(dlight);
-	//GraphicsManager::getInstance().addPointLight(plight);
+	//GaphicsManager::getInstance().addDirectionalLight(dlight);
+	GraphicsManager::getInstance().addPointLight(plight);
 	//GraphicsManager::getInstance().addSpotLight(slight);
 }
 

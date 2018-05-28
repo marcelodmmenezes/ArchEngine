@@ -597,7 +597,7 @@ namespace Graphics {
 		m_screen_width = w;
 		m_screen_height = h;
 
-		m_projection = glm::perspective(glm::radians(70.0f),
+		m_projection = glm::perspective(glm::radians(45.0f),
 			(float)w / (float)h, 0.1f, 1000.0f);
 
 		glViewport(0, 0, w, h);

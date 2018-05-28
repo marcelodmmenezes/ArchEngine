@@ -275,13 +275,13 @@
     <None Include="Testers\graphicsConfig.lua">
       <Filter>Testers</Filter>
     </None>
-    <None Include="Shaders\pdepthmapfs.glsl">
+    <None Include="Shaders\cubedepthmapfs.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\pdepthmapgs.glsl">
+    <None Include="Shaders\cubedepthmapgs.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\pdepthmapvs.glsl">
+    <None Include="Shaders\cubedepthmapvs.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
