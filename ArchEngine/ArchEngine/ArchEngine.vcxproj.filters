@@ -254,21 +254,6 @@
     <None Include="Shaders\objvs.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\pdepthfs.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\pdepthgs.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\pdepthvs.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\pshadowfs.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\pshadowvs.glsl">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shaders\quadfs.glsl">
       <Filter>Shaders</Filter>
     </None>
@@ -289,6 +274,15 @@
     </None>
     <None Include="Testers\graphicsConfig.lua">
       <Filter>Testers</Filter>
+    </None>
+    <None Include="Shaders\pdepthmapfs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\pdepthmapgs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\pdepthmapvs.glsl">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

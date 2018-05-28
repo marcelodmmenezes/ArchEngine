@@ -196,11 +196,9 @@
     <None Include="Shaders\normalmapvs.glsl" />
     <None Include="Shaders\objfs.glsl" />
     <None Include="Shaders\objvs.glsl" />
-    <None Include="Shaders\pdepthfs.glsl" />
-    <None Include="Shaders\pdepthgs.glsl" />
-    <None Include="Shaders\pdepthvs.glsl" />
-    <None Include="Shaders\pshadowfs.glsl" />
-    <None Include="Shaders\pshadowvs.glsl" />
+    <None Include="Shaders\pdepthmapfs.glsl" />
+    <None Include="Shaders\pdepthmapgs.glsl" />
+    <None Include="Shaders\pdepthmapvs.glsl" />
     <None Include="Shaders\quadfs.glsl" />
     <None Include="Shaders\quadvs.glsl" />
     <None Include="Shaders\shadowfs.glsl" />
