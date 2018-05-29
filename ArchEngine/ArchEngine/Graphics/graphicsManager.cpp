@@ -147,6 +147,11 @@ namespace Graphics {
 		glViewport(0, 0, m_screen_width, m_screen_height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		renderScene();
+		
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+		checkOpenGLErrors("After scene rendering");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+
 		/*
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_CULL_FACE);
@@ -162,7 +167,7 @@ namespace Graphics {
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		*/
-		
+		/*
 		glDisable(GL_CULL_FACE);
 		glDepthFunc(GL_LEQUAL);
 		m_shaders[g_entities[g_entities.size() - 1].shader].bind();
@@ -173,8 +178,8 @@ namespace Graphics {
 		m_shaders[g_entities[g_entities.size() - 1].shader].setMat4("u_view", cube_depth_map_view_matrix);
 		m_shaders[g_entities[g_entities.size() - 1].shader].setMat4("u_projection", m_projection);
 		glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_CUBE_MAP, m_point_lights[0].depth_map.getTextureId());
-		glBindTexture(GL_TEXTURE_CUBE_MAP, MaterialManager::getInstance().getCubeTexture(0));
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_point_lights[0].depth_map.getTextureId());
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, MaterialManager::getInstance().getCubeTexture(0));
 		m_shaders[g_entities[g_entities.size() - 1].shader].setInt("u_texture", 0);
 		m_shaders[g_entities[g_entities.size() - 1].shader].update();
 		m_meshes[g_entities[g_entities.size() - 1].meshes[0]].first.draw();
@@ -182,7 +187,7 @@ namespace Graphics {
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 		glDepthFunc(GL_LESS);
 		glEnable(GL_CULL_FACE);
-		
+		*/
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		checkOpenGLErrors("Exiting GraphicsManager::update");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
@@ -198,22 +203,22 @@ namespace Graphics {
 				m_shaders[it.depth_shader].setMat4("u_light_space_matrix",
 					it.projection * it.view);
 
-				int i = 0; // TODO
+				int skip = 0; // TODO
 				for (auto& entity : g_entities) {
-					if (i++ == g_entities.size() - 2) // TODO
+					if (skip++ == g_entities.size() - 2) // TODO
 						break;
 
-					for (unsigned i : entity.meshes) {
-						m_shaders[it.depth_shader].setMat4("u_model_matrix",
-							entity.model_matrix);
-						m_shaders[it.depth_shader].update();
+					m_shaders[it.depth_shader].setMat4("u_model_matrix",
+						entity.model_matrix);
 
+					for (unsigned i : entity.meshes) {
+						m_shaders[it.depth_shader].update();
 						m_meshes[i].first.draw();
 					}
 				}
 			}
 		}
-		
+
 		for (auto& it : m_point_lights) {
 			if (it.emit_shadows) {
 				it.depth_map.bind();
@@ -229,15 +234,16 @@ namespace Graphics {
 				m_shaders[it.depth_shader].setFloat(
 					"u_far_plane", it.far_plane);
 				
-				int i = 0; // TODO
+				int skip = 0; // TODO
 				for (auto& entity : g_entities) {
-					if (i++ == g_entities.size() - 2) // TODO
+					if (skip++ == g_entities.size() - 2) // TODO
 						break;
-					for (unsigned i : entity.meshes) {
-						m_shaders[it.depth_shader].setMat4("u_model_matrix",
-							entity.model_matrix);
-						m_shaders[it.depth_shader].update();
 
+					m_shaders[it.depth_shader].setMat4("u_model_matrix",
+						entity.model_matrix);
+
+					for (unsigned i : entity.meshes) {
+						m_shaders[it.depth_shader].update();
 						m_meshes[i].first.draw();
 					}
 				}
@@ -246,9 +252,9 @@ namespace Graphics {
 	}
 
 	void GraphicsManager::renderScene() {
-		int i = 0; // TODO
+		int skip = 0; // TODO
 		for (auto& it : g_entities) {
-			if (i++ == g_entities.size() - 2) // TODO
+			if (skip++ == g_entities.size() - 2) // TODO
 				break;
 
 			m_shaders[it.shader].bind();
@@ -257,22 +263,21 @@ namespace Graphics {
 				m_projection);
 			m_shaders[it.shader].setMat4("u_view_matrix",
 				m_cameras[m_active_camera].getViewMatrix());
+			m_shaders[it.shader].setMat4("u_model_matrix",
+				it.model_matrix);
+			m_shaders[it.shader].setMat3("u_trn_inv_up_model",
+				glm::transpose(glm::inverse(glm::mat3(
+					it.model_matrix))));
+
 			m_shaders[it.shader].setVec3("u_view_pos",
 				m_cameras[m_active_camera].getPosition());
-
+			
 			bindLights(m_shaders[it.shader]);
-
+			
 			for (unsigned i : it.meshes) {
 				bind2DTextures(m_shaders[it.shader],
 					m_meshes[i].first.m_material_id);
-
-				m_shaders[it.shader].setMat3("u_trn_inv_up_model",
-					glm::transpose(glm::inverse(glm::mat3(
-						it.model_matrix))));
-
-				m_shaders[it.shader].setMat4("u_model_matrix",
-					it.model_matrix);
-
+				
 				m_shaders[it.shader].update();
 
 				m_meshes[i].first.draw();
@@ -386,11 +391,11 @@ namespace Graphics {
 
 	void GraphicsManager::bind2DTextures(Shader& shader, unsigned material_id) {
 		for (unsigned i = 0; i < NUMBER_OF_TEXTURE_TYPES; i++) {
-			if (i != 0 && i != 3) // TODO
+			if (i >= 2) // TODO
 				continue;
 
 			unsigned texture = m_materials[material_id].textures[i];
-
+			
 			glActiveTexture(GL_TEXTURE0 + i);
 
 			if (texture < UINT_MAX) {

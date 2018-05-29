@@ -297,8 +297,8 @@ void loadData() {
 				glm::vec3(0.0f, -1.0f, 0.0f))
 		},
 		point_depth_shader,
-		4000,
-		4000,
+		2048,
+		2048,
 		200.0f
 	};
 
@@ -316,10 +316,10 @@ void loadData() {
 		glm::vec3(0.0f, 0.0f, 1.0f)
 	};
 
-	//GraphicsManager::getInstance().addDirectionalLight(dlight);
-	GraphicsManager::getInstance().addPointLight(plight);
+	GraphicsManager::getInstance().addDirectionalLight(dlight);
+	//GraphicsManager::getInstance().addPointLight(plight);
 	//GraphicsManager::getInstance().addSpotLight(slight);
-
+	/*
 	std::string skybox[] = {
 		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
 		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
@@ -329,7 +329,7 @@ void loadData() {
 		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png"
 	};
 
-	MaterialManager::getInstance().addCubeTexture(skybox);
+	MaterialManager::getInstance().addCubeTexture(skybox);*/
 }
 
 void onContextEvent(EventPtr e) {

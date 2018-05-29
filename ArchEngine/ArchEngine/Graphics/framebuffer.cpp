@@ -174,6 +174,8 @@ namespace Graphics {
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+		m_state = INITIALIZED;
+
 		return true;
 	}
 
@@ -218,6 +220,8 @@ namespace Graphics {
 		}
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		m_state = INITIALIZED;
 
 		return true;
 	}
