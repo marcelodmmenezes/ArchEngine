@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/05/2018                                                       *
- * Last Modified: 26/05/2018                                                 *
+ * Last Modified: 29/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -41,21 +41,35 @@ namespace Graphics {
 	}
 
 	bool Framebuffer::initialize(FramebufferType type, int width, int height) {
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+		assert(m_state != INITIALIZED);
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+		bool success = false;
+
 		m_type = type;
 		m_width = width;
 		m_height = height;
 
 		switch (type) {
 		case FB_COLOR_BUFFER:
-			return initializeColorBuffer();
+			success = initializeColorBuffer();
+			break;
 		case FB_DEPTH_MAP:
-			return initializeDepthMap();
+			success = initializeDepthMap();
+			break;
 		case FB_DEPTH_CUBE_MAP:
-			return initializeDepthCubeMap();
+			success = initializeDepthCubeMap();
+			break;
 		}
+
+		return success;
 	}
 
 	void Framebuffer::destroy() {
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+		assert(m_state == INITIALIZED);
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+
 		if (glIsTexture(m_texture))
 			glDeleteTextures(1, &m_texture);
 
@@ -141,10 +155,10 @@ namespace Graphics {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, m_width, m_height,
 			0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		float border_color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border_color);
 
@@ -190,11 +204,11 @@ namespace Graphics {
 				GL_DEPTH_COMPONENT, m_width, m_height, 0,
 				GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 

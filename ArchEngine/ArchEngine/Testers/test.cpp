@@ -255,16 +255,19 @@ void loadData() {
 		glm::vec3(0.8f, 0.8f, 0.4f),
 		glm::vec3(0.8f, 0.8f, 0.4f),
 		true,
-		glm::ortho(-150.0f, 150.0f, -150.0f, 150.0f, 0.1f, 1000.0f),
-		glm::lookAt(glm::vec3(60.0, 100.0, 50.0f),
-					glm::vec3(-0.6f, -1.0f, -0.5f),
-					glm::vec3(0.0f, 1.0f, 0.0f)),
+		glm::ortho(-150.0f, 150.0f, -150.0f, 150.0f, 0.1f, 1000.0f) *
+			glm::lookAt(glm::vec3(60.0, 100.0, 50.0f),
+						glm::vec3(-0.6f, -1.0f, -0.5f),
+						glm::vec3(0.0f, 1.0f, 0.0f)),
 		dir_depth_shader,
 		4000,
 		4000
 	};
 
 	glm::vec3 plight_pos(-10.0f, 25.0f, 0.0f);
+	glm::mat4 plight_proj =
+		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 200.0f);
+
 	PointLight plight = {
 		plight_pos,
 		64.0f,
@@ -275,27 +278,18 @@ void loadData() {
 		glm::vec3(1.0f, 1.0f, 1.0f),
 		glm::vec3(1.0f, 1.0f, 1.0f),
 		true,
-		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 200.0f),
-		{
-			glm::lookAt(plight_pos,
-				plight_pos + glm::vec3(1.0f, 0.0f, 0.0f),
-				glm::vec3(0.0f, -1.0f, 0.0f)),
-			glm::lookAt(plight_pos,
-				plight_pos + glm::vec3(-1.0f, 0.0f, 0.0f),
-				glm::vec3(0.0f, -1.0f, 0.0f)),
-			glm::lookAt(plight_pos,
-				plight_pos + glm::vec3(0.0f, 1.0f, 0.0f),
-				glm::vec3(0.0f, 0.0f, 1.0f)),
-			glm::lookAt(plight_pos,
-				plight_pos + glm::vec3(0.0f, -1.0f, 0.0f),
-				glm::vec3(0.0f, 0.0f, -1.0f)),
-			glm::lookAt(plight_pos,
-				plight_pos + glm::vec3(0.0f, 0.0f, 1.0f),
-				glm::vec3(0.0f, -1.0f, 0.0f)),
-			glm::lookAt(plight_pos,
-				plight_pos + glm::vec3(0.0f, 0.0f, -1.0f),
-				glm::vec3(0.0f, -1.0f, 0.0f))
-		},
+		plight_proj * glm::lookAt(plight_pos, plight_pos +
+			glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		plight_proj * glm::lookAt(plight_pos, plight_pos +
+			glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		plight_proj * glm::lookAt(plight_pos, plight_pos +
+			glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
+		plight_proj * glm::lookAt(plight_pos, plight_pos +
+			glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
+		plight_proj * glm::lookAt(plight_pos, plight_pos +
+			glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		plight_proj * glm::lookAt(plight_pos, plight_pos +
+			glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
 		point_depth_shader,
 		2048,
 		2048,

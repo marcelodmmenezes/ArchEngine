@@ -136,21 +136,8 @@ namespace Graphics {
 		for (auto& it : m_cameras)
 			it.m_delta_time = delta_time;
 		
-		//------------------------------------------------- Depth map rendering
-		glCullFace(GL_FRONT);
 		renderDepthMaps();
-		glCullFace(GL_BACK);
-
-		//----------------------------------------------------- Scene rendering
-		Framebuffer::defaultFramebuffer();
-
-		glViewport(0, 0, m_screen_width, m_screen_height);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		renderScene();
-		
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-		checkOpenGLErrors("After scene rendering");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 
 		/*
 		glDisable(GL_DEPTH_TEST);
@@ -194,14 +181,16 @@ namespace Graphics {
 	}
 
 	void GraphicsManager::renderDepthMaps() {
+		glCullFace(GL_FRONT);
+
 		for (auto& it : m_directional_lights) {
 			if (it.emit_shadows) {
 				it.depth_map.bind();
 				glViewport(0, 0, it.dmw, it.dmh);
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				glClear(GL_DEPTH_BUFFER_BIT);
 				m_shaders[it.depth_shader].bind();
 				m_shaders[it.depth_shader].setMat4("u_light_space_matrix",
-					it.projection * it.view);
+					it.transform);
 
 				int skip = 0; // TODO
 				for (auto& entity : g_entities) {
@@ -210,30 +199,30 @@ namespace Graphics {
 
 					m_shaders[it.depth_shader].setMat4("u_model_matrix",
 						entity.model_matrix);
+					m_shaders[it.depth_shader].update();
 
-					for (unsigned i : entity.meshes) {
-						m_shaders[it.depth_shader].update();
+					for (unsigned i : entity.meshes)
 						m_meshes[i].first.draw();
-					}
 				}
 			}
 		}
-
+		
 		for (auto& it : m_point_lights) {
 			if (it.emit_shadows) {
 				it.depth_map.bind();
 				glViewport(0, 0, it.dmw, it.dmh);
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				glClear(GL_DEPTH_BUFFER_BIT);
 				m_shaders[it.depth_shader].bind();
+
 				for (int i = 0; i < 6; i++)
 					m_shaders[it.depth_shader].setMat4("u_shadow_matrices[" +
-						std::to_string(i) + "]", it.projection * it.view[i]);
-
+						std::to_string(i) + "]", it.transform[i]);
+				
 				m_shaders[it.depth_shader].setVec3(
 					"u_light_pos", it.position);
 				m_shaders[it.depth_shader].setFloat(
 					"u_far_plane", it.far_plane);
-				
+
 				int skip = 0; // TODO
 				for (auto& entity : g_entities) {
 					if (skip++ == g_entities.size() - 2) // TODO
@@ -241,17 +230,23 @@ namespace Graphics {
 
 					m_shaders[it.depth_shader].setMat4("u_model_matrix",
 						entity.model_matrix);
+					m_shaders[it.depth_shader].update();
 
-					for (unsigned i : entity.meshes) {
-						m_shaders[it.depth_shader].update();
+					for (unsigned i : entity.meshes)
 						m_meshes[i].first.draw();
-					}
 				}
 			}
 		}
+
+		glCullFace(GL_BACK);
 	}
 
 	void GraphicsManager::renderScene() {
+		Framebuffer::defaultFramebuffer();
+
+		glViewport(0, 0, m_screen_width, m_screen_height);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		int skip = 0; // TODO
 		for (auto& it : g_entities) {
 			if (skip++ == g_entities.size() - 2) // TODO
@@ -277,9 +272,7 @@ namespace Graphics {
 			for (unsigned i : it.meshes) {
 				bind2DTextures(m_shaders[it.shader],
 					m_meshes[i].first.m_material_id);
-				
 				m_shaders[it.shader].update();
-
 				m_meshes[i].first.draw();
 			}
 		}
@@ -306,8 +299,7 @@ namespace Graphics {
 				if (m_directional_lights[i].emit_shadows) {
 					shader.setMat4("u_dir_light_space_matrix[" +
 						std::to_string(i) + "]",
-						m_directional_lights[i].projection *
-						m_directional_lights[i].view);
+						m_directional_lights[i].transform);
 
 					glActiveTexture(GL_TEXTURE8 + i);
 					glBindTexture(GL_TEXTURE_2D,
@@ -392,13 +384,13 @@ namespace Graphics {
 	void GraphicsManager::bind2DTextures(Shader& shader, unsigned material_id) {
 		for (unsigned i = 0; i < NUMBER_OF_TEXTURE_TYPES; i++) {
 			if (i >= 2) // TODO
-				continue;
+				break;
 
 			unsigned texture = m_materials[material_id].textures[i];
 			
 			glActiveTexture(GL_TEXTURE0 + i);
 
-			if (texture < UINT_MAX) {
+			if (texture < INT_MAX) {
 				glBindTexture(GL_TEXTURE_2D,
 					MaterialManager::getInstance().get2DTexture(texture));
 				shader.setInt(m_texture_names[i], i);
