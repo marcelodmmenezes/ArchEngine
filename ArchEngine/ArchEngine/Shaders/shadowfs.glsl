@@ -111,6 +111,8 @@ void main() {
 	for(int i = 0; i < f_nr_of_lights[1]; i++)
 		shadow += calcPointShadows(i);
 
+	shadow = min(shadow, 1.0f);
+
 	vec3 lighting = ambient + ((1.0f - shadow) * result);
 	//-------------------------------------------------------------------------------------------------------
 
@@ -206,11 +208,13 @@ float calcPointShadows(int light_index) {
     float bias = 0.15;
     int samples = 20;
     float view_distance = length(u_view_pos - f_frag_pos);
-    float disk_radius = (1.0 + (view_distance / 200.0f)) / 25.0;
+    //float disk_radius = (1.0 + (view_distance / 200.0f)) / 25.0;
+	float disk_radius = (1.0 + (view_distance / u_far_plane)) / 25.0;
     
     for(int i = 0; i < samples; i++) {
         float closest_depth = texture(u_point_shadow_map[light_index], frag_to_light + g_grid_sampling_disk[i] * disk_radius).r;
-        closest_depth *= 200.0f;   // undo mapping [0;1]
+        //closest_depth *= 200.0f;
+		closest_depth *= u_far_plane;
         if(current_depth - bias > closest_depth)
             shadow += 1.0;
     }

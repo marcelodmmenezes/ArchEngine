@@ -22,11 +22,6 @@ namespace Graphics {
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Framebuffer constructor");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
-
-		m_window_size_listener.bind
-			<Framebuffer, &Framebuffer::onWindowResizeEvent>(this);
-		EventManager::getInstance().addListener(
-			m_window_size_listener, EVENT_WINDOW_RESIZE);
 	}
 
 	Framebuffer::~Framebuffer() {
@@ -60,6 +55,13 @@ namespace Graphics {
 		case FB_DEPTH_CUBE_MAP:
 			success = initializeDepthCubeMap();
 			break;
+		}
+		
+		if (success) {
+			m_window_size_listener.bind
+				<Framebuffer, &Framebuffer::onWindowResizeEvent>(this);
+			EventManager::getInstance().addListener(
+				m_window_size_listener, EVENT_WINDOW_RESIZE);
 		}
 
 		return success;
@@ -246,10 +248,10 @@ namespace Graphics {
 		int w, h;
 		evnt->getSize(w, h);
 
-		// Recreates the framebuffer
-		destroy();
-
-		if (m_type == FB_COLOR_BUFFER)
+		if (m_type == FB_COLOR_BUFFER) {
+			// Recreates the framebuffer
+			destroy();
 			initialize(m_type, w, h);
+		}
 	}
 }

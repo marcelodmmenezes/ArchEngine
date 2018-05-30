@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 25/05/2018                                                 *
+ * Last Modified: 29/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -133,7 +133,7 @@ void loadData() {
 		"../../ArchEngine/Shaders/cubemapvs.glsl",
 		"../../ArchEngine/Shaders/cubemapfs.glsl"
 	);
-	
+
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/sponza/mergedSponza.obj",
 		aiPostProcessSteps(
@@ -154,7 +154,7 @@ void loadData() {
 			glm::scale(glm::mat4(1.0f), glm::vec3(0.08f, 0.08f, 0.08f))
 		}
 	);
-	
+
 	loaded_meshes_ids.clear();
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/nanosuit/nanosuit.obj",
@@ -176,7 +176,7 @@ void loadData() {
 			glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.25f, 0.0f))
 		}
 	);
-	
+
 	loaded_meshes_ids.clear();
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/dummy/dummy_obj.obj",
@@ -201,7 +201,7 @@ void loadData() {
 				glm::vec3(0.08f, 0.08f, 0.08f))
 		}
 	);
-	
+
 	loaded_meshes_ids.clear();
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/plane/plane_brick.obj",
@@ -255,10 +255,10 @@ void loadData() {
 		glm::vec3(0.8f, 0.8f, 0.4f),
 		glm::vec3(0.8f, 0.8f, 0.4f),
 		true,
-		glm::ortho(-150.0f, 150.0f, -150.0f, 150.0f, 0.1f, 1000.0f) *
-			glm::lookAt(glm::vec3(60.0, 100.0, 50.0f),
-						glm::vec3(-0.6f, -1.0f, -0.5f),
-						glm::vec3(0.0f, 1.0f, 0.0f)),
+		glm::ortho(-150.0f, 150.0f, -150.0f, 150.0f, 0.1f, 1000.0f),
+		glm::lookAt(glm::vec3(60.0, 100.0, 50.0f),
+					glm::vec3(-0.6f, -1.0f, -0.5f),
+					glm::vec3(0.0f, 1.0f, 0.0f)),
 		dir_depth_shader,
 		4000,
 		4000
@@ -266,7 +266,7 @@ void loadData() {
 
 	glm::vec3 plight_pos(-10.0f, 25.0f, 0.0f);
 	glm::mat4 plight_proj =
-		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 200.0f);
+		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
 
 	PointLight plight = {
 		plight_pos,
@@ -278,22 +278,25 @@ void loadData() {
 		glm::vec3(1.0f, 1.0f, 1.0f),
 		glm::vec3(1.0f, 1.0f, 1.0f),
 		true,
-		plight_proj * glm::lookAt(plight_pos, plight_pos +
-			glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
-		plight_proj * glm::lookAt(plight_pos, plight_pos +
-			glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
-		plight_proj * glm::lookAt(plight_pos, plight_pos +
-			glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
-		plight_proj * glm::lookAt(plight_pos, plight_pos +
-			glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
-		plight_proj * glm::lookAt(plight_pos, plight_pos +
-			glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
-		plight_proj * glm::lookAt(plight_pos, plight_pos +
-			glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		plight_proj,
+		{
+			glm::lookAt(plight_pos, plight_pos +
+				glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+			glm::lookAt(plight_pos, plight_pos +
+				glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+			glm::lookAt(plight_pos, plight_pos +
+				glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
+			glm::lookAt(plight_pos, plight_pos +
+				glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
+			glm::lookAt(plight_pos, plight_pos +
+				glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+			glm::lookAt(plight_pos, plight_pos +
+				glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f))
+		},
 		point_depth_shader,
 		2048,
 		2048,
-		200.0f
+		1000.0f
 	};
 
 	SpotLight slight = {
@@ -313,7 +316,7 @@ void loadData() {
 	GraphicsManager::getInstance().addDirectionalLight(dlight);
 	//GraphicsManager::getInstance().addPointLight(plight);
 	//GraphicsManager::getInstance().addSpotLight(slight);
-	/*
+	
 	std::string skybox[] = {
 		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
 		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
@@ -323,7 +326,7 @@ void loadData() {
 		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png"
 	};
 
-	MaterialManager::getInstance().addCubeTexture(skybox);*/
+	MaterialManager::getInstance().addCubeTexture(skybox);
 }
 
 void onContextEvent(EventPtr e) {

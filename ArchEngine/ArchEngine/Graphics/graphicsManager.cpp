@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 26/05/2018                                                 *
+ * Last Modified: 29/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -190,7 +190,7 @@ namespace Graphics {
 				glClear(GL_DEPTH_BUFFER_BIT);
 				m_shaders[it.depth_shader].bind();
 				m_shaders[it.depth_shader].setMat4("u_light_space_matrix",
-					it.transform);
+					it.projection * it.view);
 
 				int skip = 0; // TODO
 				for (auto& entity : g_entities) {
@@ -216,7 +216,7 @@ namespace Graphics {
 
 				for (int i = 0; i < 6; i++)
 					m_shaders[it.depth_shader].setMat4("u_shadow_matrices[" +
-						std::to_string(i) + "]", it.transform[i]);
+						std::to_string(i) + "]", it.projection * it.view[i]);
 				
 				m_shaders[it.depth_shader].setVec3(
 					"u_light_pos", it.position);
@@ -299,7 +299,8 @@ namespace Graphics {
 				if (m_directional_lights[i].emit_shadows) {
 					shader.setMat4("u_dir_light_space_matrix[" +
 						std::to_string(i) + "]",
-						m_directional_lights[i].transform);
+						m_directional_lights[i].projection *
+						m_directional_lights[i].view);
 
 					glActiveTexture(GL_TEXTURE8 + i);
 					glBindTexture(GL_TEXTURE_2D,
@@ -335,8 +336,8 @@ namespace Graphics {
 					"].specular", m_point_lights[i].specular);
 
 				if (m_point_lights[i].emit_shadows) {
-					//shader.setFloat("u_far_plane",
-					//	m_point_lights[i].far_plane);
+					shader.setFloat("u_far_plane",
+						m_point_lights[i].far_plane);
 					
 					glActiveTexture(GL_TEXTURE16 + i);
 					glBindTexture(GL_TEXTURE_CUBE_MAP,
@@ -383,7 +384,7 @@ namespace Graphics {
 
 	void GraphicsManager::bind2DTextures(Shader& shader, unsigned material_id) {
 		for (unsigned i = 0; i < NUMBER_OF_TEXTURE_TYPES; i++) {
-			if (i >= 2) // TODO
+			if (i >= 3) // TODO
 				break;
 
 			unsigned texture = m_materials[material_id].textures[i];
