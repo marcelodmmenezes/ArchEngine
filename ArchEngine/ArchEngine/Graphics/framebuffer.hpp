@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/05/2018                                                       *
- * Last Modified: 26/05/2018                                                 *
+ * Last Modified: 31/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -41,18 +41,11 @@ namespace Graphics {
 		static void defaultFramebuffer();
 
 	private:
-		enum State {
-			CONSTRUCTED,
-			INITIALIZED,
-			SAFE_TO_DESTROY
-		};
-
 		bool initializeColorBuffer();
 		bool initializeDepthMap();
 		bool initializeDepthCubeMap();
 		void onWindowResizeEvent(Core::EventPtr e);
 
-		State m_state;
 		FramebufferType m_type;
 
 		Core::EventListener m_window_size_listener;

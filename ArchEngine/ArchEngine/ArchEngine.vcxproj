@@ -188,6 +188,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Shaders\colorfs.glsl" />
+    <None Include="Shaders\colorvs.glsl" />
     <None Include="Shaders\cubemapfs.glsl" />
     <None Include="Shaders\cubemapvs.glsl" />
     <None Include="Shaders\depthmapfs.glsl" />
@@ -205,6 +207,8 @@
     <None Include="Shaders\shadowvs.glsl" />
     <None Include="Shaders\simplefs.glsl" />
     <None Include="Shaders\simplevs.glsl" />
+    <None Include="Shaders\skyboxfs.glsl" />
+    <None Include="Shaders\skyboxvs.glsl" />
     <None Include="Testers\core_engine_test_engine_config.lua" />
     <None Include="Testers\engineConfig.lua" />
     <None Include="Testers\graphicsConfig.lua" />

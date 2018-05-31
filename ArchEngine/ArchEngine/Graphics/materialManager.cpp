@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/05/2018                                                       *
- * Last Modified: 29/05/2018                                                 *
+ * Last Modified: 31/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -139,8 +139,18 @@ namespace Graphics {
 		glGenTextures(1, &texture_id);
 		glBindTexture(GL_TEXTURE_2D, texture_id);
 
-		int width, height;
-		unsigned char* image = stbi_load(path.c_str(), &width, &height, 0, 4);
+		int width, height, n_components;
+		GLenum format;
+
+		unsigned char* image = stbi_load(path.c_str(),
+			&width, &height, &n_components, 0);
+
+		if (n_components == 1)
+			format = GL_RED;
+		else if (n_components == 3)
+			format = GL_RGB;
+		else if (n_components == 4)
+			format = GL_RGBA;
 
 		if (image == nullptr) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
@@ -155,8 +165,8 @@ namespace Graphics {
 				path + " loaded successfully!");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height,
-			0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height,
+			0, format, GL_UNSIGNED_BYTE, image);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -260,10 +270,18 @@ namespace Graphics {
 		glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
 
 		int width, height, n_components;
+		GLenum format;
 
 		for (unsigned i = 0; i < 6; i++) {
 			unsigned char *image = stbi_load(path[i].c_str(),
 				&width, &height, &n_components, 0);
+
+			if (n_components == 1)
+				format = GL_RED;
+			else if (n_components == 3)
+				format = GL_RGB;
+			else if (n_components == 4)
+				format = GL_RGBA;
 
 			if (image == nullptr) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
@@ -278,8 +296,8 @@ namespace Graphics {
 					path[0] + " cube loaded successfully!");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA,
-				width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format,
+				width, height, 0, format, GL_UNSIGNED_BYTE, image);
 
 			stbi_image_free(image);
 		}

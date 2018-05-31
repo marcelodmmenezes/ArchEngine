@@ -1,7 +1,7 @@
 #version 330 core
 
 #define NR_DIR_LIGHTS 1
-#define NR_POINT_LIGHTS 1
+#define NR_POINT_LIGHTS 3
 #define NR_SPOT_LIGHTS 1
 
 layout (location = 0) in vec3 v_position;

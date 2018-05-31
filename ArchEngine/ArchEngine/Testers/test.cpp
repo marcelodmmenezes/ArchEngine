@@ -134,6 +134,16 @@ void loadData() {
 		"../../ArchEngine/Shaders/cubemapfs.glsl"
 	);
 
+	unsigned skybox_shader = GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Shaders/skyboxvs.glsl",
+		"../../ArchEngine/Shaders/skyboxfs.glsl"
+	);
+
+	unsigned color_shader = GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Shaders/colorvs.glsl",
+		"../../ArchEngine/Shaders/colorfs.glsl"
+	);
+
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/sponza/mergedSponza.obj",
 		aiPostProcessSteps(
@@ -154,7 +164,7 @@ void loadData() {
 			glm::scale(glm::mat4(1.0f), glm::vec3(0.08f, 0.08f, 0.08f))
 		}
 	);
-
+	/*
 	loaded_meshes_ids.clear();
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/nanosuit/nanosuit.obj",
@@ -176,7 +186,8 @@ void loadData() {
 			glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.25f, 0.0f))
 		}
 	);
-
+	*/
+	/*
 	loaded_meshes_ids.clear();
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/dummy/dummy_obj.obj",
@@ -225,7 +236,7 @@ void loadData() {
 				glm::vec3(0.8f, 0.8f, 0.8f))
 		}
 	);
-
+	*/
 	loaded_meshes_ids.clear();
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/cube/cube_wooden.obj",
@@ -242,12 +253,34 @@ void loadData() {
 
 	g_entities.push_back(
 		{
-			cube_shader,
+			skybox_shader,
 			loaded_meshes_ids,
 			glm::mat4(1.0f)
 		}
 	);
+	
+	loaded_meshes_ids.clear();
+	loader.importScene(
+		"../../../../GameEngineLearning/assets/sphere/sphere_metal.obj",
+		aiPostProcessSteps(
+			//aiProcess_GenSmoothNormals |
+			//aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType //|
+			//aiProcess_FlipUVs
+		),
+		loaded_meshes_ids
+	);
 
+	g_entities.push_back(
+		{
+			color_shader,
+			loaded_meshes_ids,
+			glm::mat4(1.0f)
+		}
+	);
+	
 	DirectionalLight dlight = {
 		glm::vec3(-0.6f, -1.0f, -0.5f),
 		32.0f,
@@ -263,17 +296,17 @@ void loadData() {
 		4000,
 		4000
 	};
-
+	
 	glm::vec3 plight_pos(-10.0f, 50.0f, 0.0f);
 	glm::mat4 plight_proj =
-		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 500.0f);
+		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
 
-	PointLight plight = {
+	PointLight plight1 = {
 		plight_pos,
 		64.0f,
 		1.0f,
-		0.007,
-		0.0002f,
+		0.014,
+		0.0007f,
 		glm::vec3(0.1f, 0.1f, 0.1f),
 		glm::vec3(1.0f, 1.0f, 1.0f),
 		glm::vec3(1.0f, 1.0f, 1.0f),
@@ -294,9 +327,69 @@ void loadData() {
 		point_depth_shader,
 		1024,
 		1024,
-		500.0f
+		1000.0f
 	};
 
+	glm::vec3 plight_pos2(0.0f, 50.0f, 25.0f);
+	PointLight plight2 = {
+		plight_pos2,
+		64.0f,
+		1.0f,
+		0.014,
+		0.0007f,
+		glm::vec3(0.0f, 0.1f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f),
+		true,
+		plight_proj,
+		glm::lookAt(plight_pos2, plight_pos2 +
+		glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(plight_pos2, plight_pos2 +
+			glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(plight_pos2, plight_pos2 +
+			glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
+		glm::lookAt(plight_pos2, plight_pos2 +
+			glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
+		glm::lookAt(plight_pos2, plight_pos2 +
+			glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(plight_pos2, plight_pos2 +
+			glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		point_depth_shader,
+		1024,
+		1024,
+		1000.0f
+	};
+
+	glm::vec3 plight_pos3(30.0f, 50.0f, -30.0f);
+	PointLight plight3 = {
+		plight_pos3,
+		64.0f,
+		1.0f,
+		0.014,
+		0.0007f,
+		glm::vec3(0.1f, 0.1f, 0.1f),
+		glm::vec3(1.0f, 0.0f, 0.0f),
+		glm::vec3(1.0f, 0.0f, 0.0f),
+		true,
+		plight_proj,
+		glm::lookAt(plight_pos3, plight_pos3 +
+		glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(plight_pos3, plight_pos3 +
+			glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(plight_pos3, plight_pos3 +
+			glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
+		glm::lookAt(plight_pos3, plight_pos3 +
+			glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
+		glm::lookAt(plight_pos3, plight_pos3 +
+			glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(plight_pos3, plight_pos3 +
+			glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		point_depth_shader,
+		1024,
+		1024,
+		1000.0f
+	};
+	/*
 	SpotLight slight = {
 		glm::vec3(40.0f, 45.0f, -30.0f),
 		glm::vec3(0.0f, 0.0f, -1.0f),
@@ -310,18 +403,20 @@ void loadData() {
 		glm::vec3(0.0f, 0.0f, 1.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f)
 	};
-
-	//GraphicsManager::getInstance().addDirectionalLight(dlight);
-	GraphicsManager::getInstance().addPointLight(plight);
+	*/
+	GraphicsManager::getInstance().addDirectionalLight(dlight);
+	//GraphicsManager::getInstance().addPointLight(plight1);
+	GraphicsManager::getInstance().addPointLight(plight2);
+	//GraphicsManager::getInstance().addPointLight(plight3);
 	//GraphicsManager::getInstance().addSpotLight(slight);
 	/*
 	std::string skybox[] = {
-		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
-		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
-		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
-		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
-		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
-		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png"
+		"../../../../GameEngineLearning/assets/skybox/right.jpg",
+		"../../../../GameEngineLearning/assets/skybox/left.jpg",
+		"../../../../GameEngineLearning/assets/skybox/top.jpg",
+		"../../../../GameEngineLearning/assets/skybox/bottom.jpg",
+		"../../../../GameEngineLearning/assets/skybox/front.jpg",
+		"../../../../GameEngineLearning/assets/skybox/back.jpg"
 	};
 
 	MaterialManager::getInstance().addCubeTexture(skybox);

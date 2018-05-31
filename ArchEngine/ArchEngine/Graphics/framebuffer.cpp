@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/05/2018                                                       *
- * Last Modified: 29/05/2018                                                 *
+ * Last Modified: 31/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -17,7 +17,7 @@ using namespace Utils;
 
 
 namespace Graphics {
-	Framebuffer::Framebuffer() : m_state(CONSTRUCTED) {
+	Framebuffer::Framebuffer() {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Framebuffer constructor");
@@ -25,10 +25,6 @@ namespace Graphics {
 	}
 
 	Framebuffer::~Framebuffer() {
-#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
-		assert(m_state != INITIALIZED);
-#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
-
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Framebuffer destructor");
@@ -36,9 +32,6 @@ namespace Graphics {
 	}
 
 	bool Framebuffer::initialize(FramebufferType type, int width, int height) {
-#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
-		assert(m_state != INITIALIZED);
-#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
 		bool success = false;
 
 		m_type = type;
@@ -68,10 +61,6 @@ namespace Graphics {
 	}
 
 	void Framebuffer::destroy() {
-#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
-		assert(m_state == INITIALIZED);
-#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
-
 		if (glIsTexture(m_texture))
 			glDeleteTextures(1, &m_texture);
 
@@ -80,8 +69,6 @@ namespace Graphics {
 
 		if (glIsFramebuffer(m_fbo))
 			glDeleteFramebuffers(1, &m_fbo);
-
-		m_state = SAFE_TO_DESTROY;
 	}
 
 	void Framebuffer::bind() {
@@ -144,8 +131,6 @@ namespace Graphics {
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		m_state = INITIALIZED;
-
 		return true;
 	}
 
@@ -189,8 +174,6 @@ namespace Graphics {
 		}
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		m_state = INITIALIZED;
 
 		return true;
 	}
@@ -236,8 +219,6 @@ namespace Graphics {
 		}
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		m_state = INITIALIZED;
 
 		return true;
 	}

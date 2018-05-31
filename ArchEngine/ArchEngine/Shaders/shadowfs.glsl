@@ -1,7 +1,7 @@
 #version 330 core
 
 #define NR_DIR_LIGHTS 1
-#define NR_POINT_LIGHTS 1
+#define NR_POINT_LIGHTS 3
 #define NR_SPOT_LIGHTS 1
 
 struct DirLight {
@@ -75,8 +75,8 @@ vec3 g_grid_sampling_disk[20] = vec3[] (
    vec3(0, 1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0, 1, -1)
 );
 
-vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text);
-vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text);
+vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text, int id);
+vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text, int id);
 vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text);
 
 float calcDirShadows(vec4 frag_pos_light_space, vec3 normal, vec3 light_dir, int light_index);
@@ -94,33 +94,23 @@ void main() {
 	vec3 result = vec3(0.0f);
 	
 	for(int i = 0; i < f_nr_of_lights[0]; i++)
-		result += calcDirLight(u_dir_lights[i], normal, view_dir, diffuse_tex, specular_tex);
+		result += calcDirLight(u_dir_lights[i], normal, view_dir, diffuse_tex, specular_tex, i);
 
 	for(int i = 0; i < f_nr_of_lights[1]; i++)
-		result += calcPointLight(u_point_lights[i], normal, view_dir, diffuse_tex, specular_tex);
+		result += calcPointLight(u_point_lights[i], normal, view_dir, diffuse_tex, specular_tex, i);
 			
 	for(int i = 0; i < f_nr_of_lights[2]; i++)
 		result += calcSpotLight(u_spot_lights[i], normal, view_dir, diffuse_tex, specular_tex);
 	//-------------------------------------------------------------------------------------------------------
 
-	//----------------------------------------------------------------------------------- Shadow calculations
-	float shadow = 0.0f;
-
-	for(int i = 0; i < f_nr_of_lights[0]; i++)
-		shadow += calcDirShadows(f_frag_pos_dir_light_space[i], normal, -u_dir_lights[i].direction, i);
-	for(int i = 0; i < f_nr_of_lights[1]; i++)
-		shadow += calcPointShadows(i);
-
-	shadow = min(shadow, 1.0f);
-
-	vec3 lighting = ambient + ((1.0f - shadow) * result);
-	//-------------------------------------------------------------------------------------------------------
-
-    out_color.rgb = pow(lighting, vec3(1.0f / 1.2f));
+    out_color.rgb = pow(ambient + result, vec3(1.0f / 1.2f));
 	out_color.a = 1.0f;
 }
 
-vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text) {
+vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text, int id) {
+	if (calcDirShadows(f_frag_pos_dir_light_space[id], normal, -u_dir_lights[id].direction, id) > 0.5f)
+		return vec3(0.0f);
+
 	vec3 light_dir = normalize(-light.direction);
 
 	float diff = max(dot(normal, light_dir), 0.0f);
@@ -134,7 +124,10 @@ vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, vec3 diff_text, ve
 	return diffuse + specular;
 }
 
-vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text) {
+vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text, int id) {
+	if (calcPointShadows(id) > 0.5f)
+		return vec3(0.0f);
+
 	vec3 pos_minus_frag = light.position - f_frag_pos;
 	vec3 light_dir = normalize(pos_minus_frag);
 
@@ -205,18 +198,17 @@ float calcPointShadows(int light_index) {
 	vec3 frag_to_light = f_frag_pos - u_point_lights[light_index].position;
 	float current_depth = length(frag_to_light);
     float shadow = 0.0;
-    float bias = 0.15;
+    float bias = 0.15f;
     int samples = 20;
     float view_distance = length(u_view_pos - f_frag_pos);
-    //float disk_radius = (1.0 + (view_distance / 200.0f)) / 25.0;
-	float disk_radius = (1.0 + (view_distance / u_far_plane)) / 25.0;
+
+	float disk_radius = (1.0f + (view_distance / u_far_plane)) / 25.0f;
     
     for(int i = 0; i < samples; i++) {
         float closest_depth = texture(u_point_shadow_map[light_index], frag_to_light + g_grid_sampling_disk[i] * disk_radius).r;
-        //closest_depth *= 200.0f;
 		closest_depth *= u_far_plane;
         if(current_depth - bias > closest_depth)
-            shadow += 1.0;
+            shadow += 1.0f;
     }
 
     shadow /= float(samples);

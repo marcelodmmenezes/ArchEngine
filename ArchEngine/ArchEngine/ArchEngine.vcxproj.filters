@@ -284,5 +284,17 @@
     <None Include="Shaders\cubedepthmapvs.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\colorfs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\colorvs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\skyboxfs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\skyboxvs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
