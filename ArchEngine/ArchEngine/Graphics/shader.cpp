@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 26/05/2018                                                 *
+ * Last Modified: 31/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -518,8 +518,6 @@ namespace Graphics {
 			glGetActiveUniform(m_program_id, i, BUF_SIZE,
 				&name_length, &size, &type, name);
 
-			int location = glGetUniformLocation(m_program_id, name);
-
 			std::string name_str(name), array_name;
 
 			// if array
@@ -538,6 +536,9 @@ namespace Graphics {
 			for (unsigned i = 0; i < (unsigned)size; i++) { // for arrays
 				if (size > 1)
 					name_str = array_name + "[" + std::to_string(i) + "]";
+
+				int location = glGetUniformLocation(
+					m_program_id, name_str.c_str());
 
 				m_dirty_uniforms.push_back(name_str);
 

@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 29/05/2018                                                 *
+ * Last Modified: 31/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -266,7 +266,7 @@ void loadData() {
 
 	glm::vec3 plight_pos(-10.0f, 25.0f, 0.0f);
 	glm::mat4 plight_proj =
-		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
+		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 500.0f);
 
 	PointLight plight = {
 		plight_pos,
@@ -279,24 +279,22 @@ void loadData() {
 		glm::vec3(1.0f, 1.0f, 1.0f),
 		true,
 		plight_proj,
-		{
-			glm::lookAt(plight_pos, plight_pos +
-				glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
-			glm::lookAt(plight_pos, plight_pos +
-				glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
-			glm::lookAt(plight_pos, plight_pos +
-				glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
-			glm::lookAt(plight_pos, plight_pos +
-				glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
-			glm::lookAt(plight_pos, plight_pos +
-				glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
-			glm::lookAt(plight_pos, plight_pos +
-				glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f))
-		},
+		glm::lookAt(plight_pos, plight_pos +
+			glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(plight_pos, plight_pos +
+			glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(plight_pos, plight_pos +
+			glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
+		glm::lookAt(plight_pos, plight_pos +
+			glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
+		glm::lookAt(plight_pos, plight_pos +
+			glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(plight_pos, plight_pos +
+			glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
 		point_depth_shader,
-		2048,
-		2048,
-		1000.0f
+		1024,
+		1024,
+		500.0f
 	};
 
 	SpotLight slight = {
@@ -313,10 +311,10 @@ void loadData() {
 		glm::vec3(0.0f, 0.0f, 1.0f)
 	};
 
-	GraphicsManager::getInstance().addDirectionalLight(dlight);
-	//GraphicsManager::getInstance().addPointLight(plight);
+	//GraphicsManager::getInstance().addDirectionalLight(dlight);
+	GraphicsManager::getInstance().addPointLight(plight);
 	//GraphicsManager::getInstance().addSpotLight(slight);
-	
+	/*
 	std::string skybox[] = {
 		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
 		"../../../../GameEngineLearning/assets/miscTextures/cube_diffuse.png",
@@ -327,6 +325,7 @@ void loadData() {
 	};
 
 	MaterialManager::getInstance().addCubeTexture(skybox);
+	*/
 }
 
 void onContextEvent(EventPtr e) {

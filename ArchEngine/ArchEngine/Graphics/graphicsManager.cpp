@@ -170,7 +170,6 @@ namespace Graphics {
 		m_shaders[g_entities[g_entities.size() - 1].shader].setInt("u_texture", 0);
 		m_shaders[g_entities[g_entities.size() - 1].shader].update();
 		m_meshes[g_entities[g_entities.size() - 1].meshes[0]].first.draw();
-		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 		glDepthFunc(GL_LESS);
 		glEnable(GL_CULL_FACE);
@@ -213,11 +212,11 @@ namespace Graphics {
 				glViewport(0, 0, it.dmw, it.dmh);
 				glClear(GL_DEPTH_BUFFER_BIT);
 				m_shaders[it.depth_shader].bind();
-
+				
 				for (int i = 0; i < 6; i++)
 					m_shaders[it.depth_shader].setMat4("u_shadow_matrices[" +
 						std::to_string(i) + "]", it.projection * it.view[i]);
-				
+
 				m_shaders[it.depth_shader].setVec3(
 					"u_light_pos", it.position);
 				m_shaders[it.depth_shader].setFloat(

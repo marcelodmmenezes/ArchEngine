@@ -25,6 +25,7 @@
 #include "../Script/luaScript.hpp"
 #include "../Utils/debugging.hpp"
 #include "../Utils/serviceLocator.hpp"
+#include "../Utils/timer.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
