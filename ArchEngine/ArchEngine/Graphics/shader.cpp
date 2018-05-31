@@ -39,9 +39,11 @@ namespace Graphics {
 	bool Shader::initialize(
 		const std::string& vs_path,
 		const std::string& fs_path) {
+#if defined (ARCH_ENGINE_HOT_RELOAD_ON)
 		m_vs_path = vs_path;
 		m_gs_path = "";
 		m_fs_path = fs_path;
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
 		unsigned vs, fs;
 
@@ -98,9 +100,11 @@ namespace Graphics {
 		const std::string& vs_path,
 		const std::string& gs_path,
 		const std::string& fs_path) {
+#if defined (ARCH_ENGINE_HOT_RELOAD_ON)
 		m_vs_path = vs_path;
 		m_gs_path = gs_path;
 		m_fs_path = fs_path;
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
 		unsigned vs, gs, fs;
 

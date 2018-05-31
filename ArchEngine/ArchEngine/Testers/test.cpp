@@ -264,7 +264,7 @@ void loadData() {
 		4000
 	};
 
-	glm::vec3 plight_pos(-10.0f, 25.0f, 0.0f);
+	glm::vec3 plight_pos(-10.0f, 50.0f, 0.0f);
 	glm::mat4 plight_proj =
 		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 500.0f);
 

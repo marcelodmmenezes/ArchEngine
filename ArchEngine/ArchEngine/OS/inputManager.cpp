@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 17/05/2018                                                 *
+ * Last Modified: 31/05/2018                                                 *
  *===========================================================================*/
 
 
@@ -115,8 +115,10 @@ namespace OS {
 	}
 
 	InputManager::~InputManager() {
+#if defined (ARCH_ENGINE_HOT_RELOAD_ON)
 		EventManager::getInstance().removeListener(
 			m_file_modified_listener, EVENT_FILE_MODIFIED);
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
@@ -130,7 +132,9 @@ namespace OS {
 	}
 
 	bool InputManager::initialize(const std::string& path) {
+#if defined (ARCH_ENGINE_HOT_RELOAD_ON)
 		m_config_file_path = path;
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
 		// Reads the input contexts
 		LuaScript lua_context;
@@ -139,7 +143,7 @@ namespace OS {
 		functions.push_back(std::make_pair("pushContext", ::pushContext));
 		functions.push_back(std::make_pair("popContext", ::popContext));
 		
-		if (!lua_context.initialize(m_config_file_path, functions))
+		if (!lua_context.initialize(path, functions))
 			return false;
 
 		auto input_contexts = lua_context.getTablePairs("contexts");

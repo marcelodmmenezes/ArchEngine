@@ -144,7 +144,9 @@ namespace OS {
 	}
 
 	bool Window::initializeFromConfigFile(const std::string& path) {
+#if defined (ARCH_ENGINE_HOT_RELOAD_ON)
 		m_config_file_path = path;
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
 		LuaScript lua_context;
 		lua_context.initialize(path);
@@ -304,8 +306,10 @@ namespace OS {
 			m_window = nullptr;
 		}
 
+#if defined (ARCH_ENGINE_HOT_RELOAD_ON)
 		EventManager::getInstance().removeListener(
 			m_file_modified_listener, EVENT_FILE_MODIFIED);
+#endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
 		m_state = SAFE_TO_DESTROY;
 
