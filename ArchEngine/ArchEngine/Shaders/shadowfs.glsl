@@ -108,9 +108,6 @@ void main() {
 }
 
 vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text, int id) {
-	if (calcDirShadows(f_frag_pos_dir_light_space[id], normal, -u_dir_lights[id].direction, id) > 0.5f)
-		return vec3(0.0f);
-
 	vec3 light_dir = normalize(-light.direction);
 
 	float diff = max(dot(normal, light_dir), 0.0f);
@@ -121,13 +118,10 @@ vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, vec3 diff_text, ve
 	vec3 diffuse = light.diffuse * diff * diff_text;
 	vec3 specular = light.specular * spec * spec_text;
 
-	return diffuse + specular;
+	return (1.0f - calcDirShadows(f_frag_pos_dir_light_space[id], normal, -u_dir_lights[id].direction, id)) * (diffuse + specular);
 }
 
 vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text, int id) {
-	if (calcPointShadows(id) > 0.5f)
-		return vec3(0.0f);
-
 	vec3 pos_minus_frag = light.position - f_frag_pos;
 	vec3 light_dir = normalize(pos_minus_frag);
 
@@ -142,7 +136,7 @@ vec3 calcPointLight(PointLight light, vec3 normal, vec3 view_dir, vec3 diff_text
 	vec3 diffuse = light.diffuse * att * diff * diff_text;
 	vec3 specular = light.specular * att * spec * spec_text;
 
-	return diffuse + specular;
+	return (1.0f - calcPointShadows(id)) * (diffuse + specular);
 }
 
 vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text) {
