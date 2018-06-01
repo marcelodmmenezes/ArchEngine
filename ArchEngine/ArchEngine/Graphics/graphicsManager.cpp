@@ -421,8 +421,8 @@ namespace Graphics {
 
 	void GraphicsManager::bind2DTextures(Shader& shader, unsigned material_id) {
 		for (unsigned i = 0; i < NUMBER_OF_TEXTURE_TYPES; i++) {
-			if (i >= 3) // TODO
-				break;
+			if (i == 3 || i == 6 || i == 7) // TODO
+				continue;
 
 			unsigned texture = m_materials[material_id].textures[i];
 

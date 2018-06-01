@@ -147,8 +147,8 @@ void loadData() {
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/sponza/mergedSponza.obj",
 		aiPostProcessSteps(
-			//aiProcess_GenSmoothNormals |
-			//aiProcess_CalcTangentSpace |
+			aiProcess_GenSmoothNormals |
+			aiProcess_CalcTangentSpace |
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices |
 			aiProcess_SortByPType |
@@ -164,13 +164,13 @@ void loadData() {
 			glm::scale(glm::mat4(1.0f), glm::vec3(0.08f, 0.08f, 0.08f))
 		}
 	);
-	/*
+	
 	loaded_meshes_ids.clear();
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/nanosuit/nanosuit.obj",
 		aiPostProcessSteps(
-			//aiProcess_GenSmoothNormals |
-			//aiProcess_CalcTangentSpace |
+			aiProcess_GenSmoothNormals |
+			aiProcess_CalcTangentSpace |
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices |
 			aiProcess_SortByPType |
@@ -186,7 +186,7 @@ void loadData() {
 			glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.25f, 0.0f))
 		}
 	);
-	*/
+	
 	/*
 	loaded_meshes_ids.clear();
 	loader.importScene(

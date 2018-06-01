@@ -125,7 +125,8 @@ namespace Graphics {
 		std::string m_texture_names[NUMBER_OF_TEXTURE_TYPES] = {
 			"u_texture_diffuse", "u_texture_specular", //"u_texture_ambient",
 			"u_texture_specular", // TODO
-			"u_texture_emissive", "u_texture_height", "u_texture_normals",
+			"u_texture_emissive", "u_texture_normals", // "u_texture_height",
+			"u_texture_normals", // TODO
 			"u_texture_displacement", "u_texture_cube_texture"
 		};
 		
