@@ -242,12 +242,6 @@
     <None Include="Shaders\depthmapvs.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\normalmapfs.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\normalmapvs.glsl">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shaders\objfs.glsl">
       <Filter>Shaders</Filter>
     </None>
@@ -258,12 +252,6 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\quadvs.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\shadowfs.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\shadowvs.glsl">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\simplefs.glsl">
@@ -294,6 +282,24 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\skyboxvs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\nmshadowfs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\nmshadowvs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\shadowfs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\shadowvs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\ashadowfs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\ashadowvs.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 26/05/2018                                                 *
+ * Last Modified: 01/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -61,6 +61,7 @@ namespace Graphics {
 		void destroy();
 
 		unsigned getProgramId();
+		bool hasNormalMap();
 		bool hasDirLights();
 		bool hasPointLights();
 		bool hasSpotLights();
@@ -84,7 +85,8 @@ namespace Graphics {
 
 		unsigned m_program_id;
 
-		// If shader has lights
+		// Shader properties
+		bool m_has_normal_map;
 		bool m_has_dir_lights;
 		bool m_has_point_lights;
 		bool m_has_spot_lights;

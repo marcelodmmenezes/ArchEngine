@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 26/05/2018                                                 *
+ * Last Modified: 01/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -119,23 +119,23 @@ namespace Graphics {
 
 			if (loadMaterials(scene->mMaterials[i],
 				aiTextureType_AMBIENT, str))
-			materials.push_back(std::make_pair(str, TEXTURE_AMBIENT));
+				materials.push_back(std::make_pair(str, TEXTURE_AMBIENT));
 
 			if (loadMaterials(scene->mMaterials[i],
 				aiTextureType_EMISSIVE, str))
-			materials.push_back(std::make_pair(str, TEXTURE_EMISSIVE));
+				materials.push_back(std::make_pair(str, TEXTURE_EMISSIVE));
 
 			if (loadMaterials(scene->mMaterials[i],
 				aiTextureType_HEIGHT, str))
-			materials.push_back(std::make_pair(str, TEXTURE_HEIGHT));
+				materials.push_back(std::make_pair(str, TEXTURE_HEIGHT));
 
 			if (loadMaterials(scene->mMaterials[i],
 				aiTextureType_NORMALS, str))
-			materials.push_back(std::make_pair(str, TEXTURE_NORMALS));
+				materials.push_back(std::make_pair(str, TEXTURE_NORMALS));
 
 			if (loadMaterials(scene->mMaterials[i],
 				aiTextureType_DISPLACEMENT, str))
-			materials.push_back(std::make_pair(str, TEXTURE_DISPLACEMENT));
+				materials.push_back(std::make_pair(str, TEXTURE_DISPLACEMENT));
 
 			GraphicsManager::getInstance().addMaterial(
 				MaterialManager::getInstance().buildMaterial(
@@ -156,12 +156,12 @@ namespace Graphics {
 	unsigned AssimpLoader::basicVertexMesh(const aiMesh* mesh,
 		unsigned mesh_id, unsigned material_id) {
 		std::vector<BasicVertex> vertices;
-		std::vector<unsigned int> indices;
+		std::vector<unsigned> indices;
 
 		vertices.reserve(mesh->mNumVertices);
 		indices.reserve(mesh->mNumFaces);
 
-		for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+		for (unsigned i = 0; i < mesh->mNumVertices; i++) {
 			const aiVector3D* p_pos = &(mesh->mVertices[i]);
 			const aiVector3D* p_normal = &(mesh->mNormals[i]);
 			const aiVector3D* p_tex_coord = &(mesh->mTextureCoords[0][i]);
@@ -169,10 +169,10 @@ namespace Graphics {
 			vertices.push_back(std::move(BasicVertex{
 				glm::vec3(p_pos->x, p_pos->y, p_pos->z),
 				glm::vec3(p_normal->x, p_normal->y, p_normal->z),
-				glm::vec2(p_tex_coord->x, p_tex_coord->y)}));
+				glm::vec2(p_tex_coord->x, p_tex_coord->y) }));
 		}
 
-		for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+		for (unsigned i = 0; i < mesh->mNumFaces; i++) {
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
 			assert(mesh->mFaces[i].mNumIndices == 3);
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
@@ -196,12 +196,12 @@ namespace Graphics {
 	unsigned AssimpLoader::normalMappedVertexMesh(const aiMesh* mesh,
 		unsigned mesh_id, unsigned material_id) {
 		std::vector<NormalMappedVertex> vertices;
-		std::vector<unsigned int> indices;
+		std::vector<unsigned> indices;
 
 		vertices.reserve(mesh->mNumVertices);
 		indices.reserve(mesh->mNumFaces);
 
-		for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+		for (unsigned i = 0; i < mesh->mNumVertices; i++) {
 			const aiVector3D* p_pos = &(mesh->mVertices[i]);
 			const aiVector3D* p_normal = &(mesh->mNormals[i]);
 			const aiVector3D* p_tex_coord = &(mesh->mTextureCoords[0][i]);
@@ -213,10 +213,10 @@ namespace Graphics {
 				glm::vec3(p_normal->x, p_normal->y, p_normal->z),
 				glm::vec2(p_tex_coord->x, p_tex_coord->y),
 				glm::vec3(p_tangent->x, p_tangent->y, p_tangent->z),
-				glm::vec3(p_bitangent->x, p_bitangent->y, p_bitangent->z)}));
+				glm::vec3(p_bitangent->x, p_bitangent->y, p_bitangent->z) }));
 		}
 
-		for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+		for (unsigned i = 0; i < mesh->mNumFaces; i++) {
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
 			assert(mesh->mFaces[i].mNumIndices == 3);
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
@@ -238,13 +238,88 @@ namespace Graphics {
 	unsigned AssimpLoader::animatedVertexMesh(const aiMesh* mesh,
 		unsigned mesh_id, unsigned material_id) {
 		// TODO
-		return 0;
+		std::vector<AnimatedVertex> vertices;
+		std::vector<unsigned> indices;
+
+		vertices.reserve(mesh->mNumVertices);
+		indices.reserve(mesh->mNumFaces);
+
+		for (unsigned i = 0; i < mesh->mNumVertices; i++) {
+			const aiVector3D* p_pos = &(mesh->mVertices[i]);
+			const aiVector3D* p_normal = &(mesh->mNormals[i]);
+			const aiVector3D* p_tex_coord = &(mesh->mTextureCoords[0][i]);
+
+			vertices.push_back(std::move(AnimatedVertex{
+				glm::vec3(p_pos->x, p_pos->y, p_pos->z),
+				glm::vec3(p_normal->x, p_normal->y, p_normal->z),
+				glm::vec2(p_tex_coord->x, p_tex_coord->y),
+				glm::ivec4(),
+				glm::vec4() }));
+		}
+
+		for (unsigned i = 0; i < mesh->mNumFaces; i++) {
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+			assert(mesh->mFaces[i].mNumIndices == 3);
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+
+			indices.push_back(mesh->mFaces[i].mIndices[0]);
+			indices.push_back(mesh->mFaces[i].mIndices[1]);
+			indices.push_back(mesh->mFaces[i].mIndices[2]);
+		}
+
+		m_mesh.m_name = m_path + std::to_string(mesh_id) + mesh->mName.C_Str();
+
+		m_mesh.create(m_mesh.m_name,
+			m_material_base_index + material_id,
+			vertices, indices);
+
+		return GraphicsManager::getInstance().addMesh(m_mesh);
 	}
 
 	unsigned AssimpLoader::animatedNormalMappedVertexMesh(const aiMesh* mesh,
 		unsigned mesh_id, unsigned material_id) {
 		// TODO
-		return 0;
+
+		std::vector<AnimatedNormalMappedVertex> vertices;
+		std::vector<unsigned> indices;
+
+		vertices.reserve(mesh->mNumVertices);
+		indices.reserve(mesh->mNumFaces);
+
+		for (unsigned i = 0; i < mesh->mNumVertices; i++) {
+			const aiVector3D* p_pos = &(mesh->mVertices[i]);
+			const aiVector3D* p_normal = &(mesh->mNormals[i]);
+			const aiVector3D* p_tex_coord = &(mesh->mTextureCoords[0][i]);
+			const aiVector3D* p_tangent = &(mesh->mTangents[i]);
+			const aiVector3D* p_bitangent = &(mesh->mBitangents[i]);
+
+			vertices.push_back(std::move(AnimatedNormalMappedVertex{
+				glm::vec3(p_pos->x, p_pos->y, p_pos->z),
+				glm::vec3(p_normal->x, p_normal->y, p_normal->z),
+				glm::vec2(p_tex_coord->x, p_tex_coord->y),
+				glm::vec3(p_tangent->x, p_tangent->y, p_tangent->z),
+				glm::vec3(p_bitangent->x, p_bitangent->y, p_bitangent->z),
+				glm::ivec4(),
+				glm::vec4() }));
+		}
+
+		for (unsigned i = 0; i < mesh->mNumFaces; i++) {
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+			assert(mesh->mFaces[i].mNumIndices == 3);
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+
+			indices.push_back(mesh->mFaces[i].mIndices[0]);
+			indices.push_back(mesh->mFaces[i].mIndices[1]);
+			indices.push_back(mesh->mFaces[i].mIndices[2]);
+		}
+
+		m_mesh.m_name = m_path + std::to_string(mesh_id) + mesh->mName.C_Str();
+
+		m_mesh.create(m_mesh.m_name,
+			m_material_base_index + material_id,
+			vertices, indices);
+
+		return GraphicsManager::getInstance().addMesh(m_mesh);
 	}
 
 	bool AssimpLoader::loadMaterials(const aiMaterial* material,

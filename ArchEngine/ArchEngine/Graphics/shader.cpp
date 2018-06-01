@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 31/05/2018                                                 *
+ * Last Modified: 01/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -17,7 +17,7 @@ using namespace Utils;
 
 
 namespace Graphics {
-	Shader::Shader() : m_has_dir_lights(false),
+	Shader::Shader() : m_has_normal_map(false), m_has_dir_lights(false),
 		m_has_point_lights(false), m_has_spot_lights(false) {
 #if defined(ARCH_ENGINE_HOT_RELOAD_ON)
 		m_watch_file = true;
@@ -218,6 +218,10 @@ namespace Graphics {
 		return m_program_id;
 	}
 
+	bool Shader::hasNormalMap() {
+		return m_has_normal_map;
+	}
+
 	bool Shader::hasDirLights() {
 		return m_has_dir_lights;
 	}
@@ -229,7 +233,7 @@ namespace Graphics {
 	bool Shader::hasSpotLights() {
 		return m_has_spot_lights;
 	}
-
+	
 	void Shader::setBool(const std::string& name, bool value) {
 		auto uniform = std::dynamic_pointer_cast<Uniform<bool>>(
 			m_uniforms_by_name[name]);
@@ -528,13 +532,13 @@ namespace Graphics {
 			if (size > 1)
 				array_name = name_str.substr(0, name_str.size() - 3);
 
-			if (name_str.substr(0, 12) == "u_dir_lights")
+			if (name_str == "u_texture_normals")
+				m_has_normal_map = true;
+			else if (name_str.substr(0, 12) == "u_dir_lights")
 				m_has_dir_lights = true;
-
-			if (name_str.substr(0, 14) == "u_point_lights")
+			else if (name_str.substr(0, 14) == "u_point_lights")
 				m_has_point_lights = true;
-
-			if (name_str.substr(0, 13) == "u_spot_lights")
+			else if (name_str.substr(0, 13) == "u_spot_lights")
 				m_has_spot_lights = true;
 
 			for (unsigned i = 0; i < (unsigned)size; i++) { // for arrays

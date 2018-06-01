@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 29/05/2018                                                 *
+ * Last Modified: 01/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -127,10 +127,6 @@ namespace Graphics {
 			glm::vec4(color[0], color[1], color[2], color[3]), active_camera);
 	}
 
-	//--------------------------------------------------------------- TESTS
-	unsigned light_position_factor = 0u;
-	//---------------------------------------------------------------------
-
 	void GraphicsManager::update(float delta_time) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		checkOpenGLErrors("Entering GraphicsManager::update");
@@ -143,74 +139,13 @@ namespace Graphics {
 		renderDepthMaps();
 		renderScene();
 
-		//--------------------------------------------------------------- TESTS
-		/*
-		light_position_factor++;
-
-		glm::vec3 plight_pos = glm::mix(
-			glm::vec3(-50.0f, 50.0f, 0.0f),
-			glm::vec3(50.0f, 50.0f, 0.0f),
-			sin(light_position_factor / 100.0f) * 0.5f + 0.5f);
-
-		glm::mat4 model_matrix = glm::scale(glm::translate(glm::mat4(1.0f), plight_pos), glm::vec3(0.2f, 0.2f, 0.2f));
-		m_shaders[g_entities[2].shader].bind();
-		m_shaders[g_entities[2].shader].setMat4("u_projection_matrix", m_projection);
-		m_shaders[g_entities[2].shader].setMat4("u_view_matrix", m_cameras[m_active_camera].getViewMatrix());
-		m_shaders[g_entities[2].shader].setMat4("u_model_matrix", model_matrix);
-		m_shaders[g_entities[2].shader].setVec3("u_color", m_point_lights[0].diffuse);
-		m_shaders[g_entities[2].shader].update();
-		m_meshes[g_entities[2].meshes[0]].first.draw();
-
-		m_point_lights[0].position = plight_pos;
-		m_point_lights[0].view[0] = glm::lookAt(plight_pos, plight_pos +
-			glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
-		m_point_lights[0].view[1] = glm::lookAt(plight_pos, plight_pos +
-			glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
-		m_point_lights[0].view[2] = glm::lookAt(plight_pos, plight_pos +
-			glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		m_point_lights[0].view[3] = glm::lookAt(plight_pos, plight_pos +
-			glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
-		m_point_lights[0].view[4] = glm::lookAt(plight_pos, plight_pos +
-			glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
-		m_point_lights[0].view[5] = glm::lookAt(plight_pos, plight_pos +
-			glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
-		*/
-		/*
-		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_CULL_FACE);
-		m_shaders[g_entities[g_entities.size() - 2].shader].bind();
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D,
-			m_directional_lights[0].depth_map.getTextureId());
-		m_shaders[g_entities[g_entities.size() - 2].shader].setInt("u_texture", 0);
-		m_shaders[g_entities[g_entities.size() - 2].shader].setMat4("u_model_matrix",
-			g_entities[g_entities.size() - 1].model_matrix);
-		m_shaders[g_entities[g_entities.size() - 2].shader].update();
-		m_meshes[g_entities[g_entities.size() - 2].meshes[0]].first.draw();
-		glEnable(GL_CULL_FACE);
-		glEnable(GL_DEPTH_TEST);
-		*/
-		/*
-		glDisable(GL_CULL_FACE);
-		glDepthFunc(GL_LEQUAL);
-		m_shaders[g_entities[g_entities.size() - 2].shader].bind();
-		glm::mat4 cube_depth_map_view_matrix = m_cameras[m_active_camera].getViewMatrix();
-		cube_depth_map_view_matrix[3][0] = 0;
-		cube_depth_map_view_matrix[3][1] = 0;
-		cube_depth_map_view_matrix[3][2] = 0;
-		m_shaders[g_entities[g_entities.size() - 2].shader].setMat4("u_view", cube_depth_map_view_matrix);
-		m_shaders[g_entities[g_entities.size() - 2].shader].setMat4("u_projection", m_projection);
-		glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_CUBE_MAP, m_point_lights[0].depth_map.getTextureId());
-		glBindTexture(GL_TEXTURE_CUBE_MAP, MaterialManager::getInstance().getCubeTexture(0));
-		m_shaders[g_entities[g_entities.size() - 2].shader].setInt("u_texture", 0);
-		m_shaders[g_entities[g_entities.size() - 2].shader].update();
-		m_meshes[g_entities[g_entities.size() - 2].meshes[0]].first.draw();
-		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-		glDepthFunc(GL_LESS);
-		glEnable(GL_CULL_FACE);
-		*/
-		//---------------------------------------------------------------------
+		m_shaders[0].bind();
+		m_shaders[0].setMat4("u_projection_matrix", m_projection);
+		m_shaders[0].setMat4("u_view_matrix", m_cameras[m_active_camera].getViewMatrix());
+		m_shaders[0].setMat4("u_model_matrix", glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f)), glm::vec3(0.2f, 0.2f, 0.2f)));
+		m_shaders[0].setVec3("u_color", glm::vec3(1.0f, 1.0f, 1.0f));
+		m_shaders[0].update();
+		m_meshes[m_meshes.size() - 1].first.draw();
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		checkOpenGLErrors("Exiting GraphicsManager::update");
@@ -229,11 +164,7 @@ namespace Graphics {
 				m_shaders[it.depth_shader].setMat4("u_light_space_matrix",
 					it.projection * it.view);
 
-				int skip = 0; // TODO
 				for (auto& entity : g_entities) {
-						if (skip++ == g_entities.size() - 2) // TODO
-							break;
-
 					m_shaders[it.depth_shader].setMat4("u_model_matrix",
 						entity.model_matrix);
 					m_shaders[it.depth_shader].update();
@@ -260,11 +191,7 @@ namespace Graphics {
 				m_shaders[it.depth_shader].setFloat(
 					"u_far_plane", it.far_plane);
 
-				int skip = 0; // TODO
 				for (auto& entity : g_entities) {
-					if (skip++ == g_entities.size() - 2) // TODO
-						break;
-
 					m_shaders[it.depth_shader].setMat4("u_model_matrix",
 						entity.model_matrix);
 					m_shaders[it.depth_shader].update();
@@ -284,11 +211,7 @@ namespace Graphics {
 		glViewport(0, 0, m_screen_width, m_screen_height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		int skip = 0; // TODO
 		for (auto& it : g_entities) {
-			if (skip++ == g_entities.size() - 2) // TODO
-				break;
-
 			m_shaders[it.shader].bind();
 
 			m_shaders[it.shader].setMat4("u_projection_matrix",
@@ -422,6 +345,9 @@ namespace Graphics {
 	void GraphicsManager::bind2DTextures(Shader& shader, unsigned material_id) {
 		for (unsigned i = 0; i < NUMBER_OF_TEXTURE_TYPES; i++) {
 			if (i == 3 || i == 6 || i == 7) // TODO
+				continue;
+
+			if ((i == 4 || i == 5) && !shader.hasNormalMap())
 				continue;
 
 			unsigned texture = m_materials[material_id].textures[i];
