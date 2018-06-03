@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 29/05/2018                                                 *
+ * Last Modified: 02/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -16,6 +16,7 @@
 #include "../Config/engineMacros.hpp"
 #include "../API/entity.hpp"
 #include "../Core/eventManager.hpp"
+#include "animation.hpp"
 #include "debugCamera.hpp"
 #include "framebuffer.hpp"
 #include "glad_3_3_core.hpp"
@@ -69,6 +70,10 @@ namespace Graphics {
 		void reserveMeshes(int size);
 		// Allocates + size space for materials
 		void reserveMaterials(int size);
+		// Allocates + size space for animations
+		void reserveAnimations(int size);
+
+		unsigned numberOfMeshes();
 
 		// The functions below receives the path of the files which
 		// describes the entity to be added and returns the added component
@@ -79,6 +84,7 @@ namespace Graphics {
 		unsigned addShader(const std::string& vs_path,
 			const std::string& gs_path, const std::string& fs_path);
 		unsigned addMesh(const Mesh& mesh);
+		unsigned addAnimation(const Animation& animation);
 		unsigned addMaterial(const Material& material);
 		unsigned addDirectionalLight(const DirectionalLight& light);
 		unsigned addPointLight(const PointLight& light);
@@ -94,6 +100,7 @@ namespace Graphics {
 		void removeCamera(unsigned handle);
 		void removeShader(unsigned handle);
 		void removeMesh(unsigned handle);
+		void removeAnimation(unsigned handle);
 		void removeMaterial(unsigned handle);
 		void removeDirectionalLight(unsigned handle);
 		void removePointLight(unsigned handle);
@@ -156,6 +163,9 @@ namespace Graphics {
 
 		//----------------------------------------------------------- Materials
 		std::vector<Material> m_materials;
+
+		//---------------------------------------------------------- Animations
+		std::vector<Animation> m_animations;
 
 		//-------------------------------------------------------------- Lights
 		std::vector<DirectionalLight> m_directional_lights;

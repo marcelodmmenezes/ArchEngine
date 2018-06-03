@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 26/05/2018                                                 *
+ * Last Modified: 02/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -14,6 +14,7 @@
 #define GRAPHICS_ASSIMP_LOADER_HPP
 
 
+#include "animation.hpp"
 #include "graphicsManager.hpp"
 #include "materialManager.hpp"
 #include "primitives.hpp"
@@ -42,7 +43,8 @@ namespace Graphics {
 		void loadMeshes(const aiScene* scene,
 			std::vector<unsigned>& loaded_meshes_ids);
 		void loadMaterials(const aiScene* scene);
-		void loadAnimations(const aiScene* scene);
+		void loadAnimations(const aiScene* scene,
+			const aiMesh* mesh, unsigned mesh_id);
 		void loadLights(const aiScene* scene);
 
 		// Helpers to load meshes based on it's properties.
@@ -67,6 +69,9 @@ namespace Graphics {
 
 		// Auxiliary Mesh for importing
 		Mesh m_mesh;
+
+		// Auxiliary Animation for importing
+		Animation m_animation;
 
 		// Auxiliary to associate a mesh with it's
 		// GraphicsManager's material id

@@ -120,6 +120,9 @@
     <ClInclude Include="API\entity.hpp">
       <Filter>API</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\animation.hpp">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -199,6 +202,9 @@
     </ClCompile>
     <ClCompile Include="API\entity.cpp">
       <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\animation.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

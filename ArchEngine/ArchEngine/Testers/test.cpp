@@ -113,6 +113,11 @@ void loadData() {
 		"../../ArchEngine/Shaders/shadowfs.glsl"
 	);
 
+	unsigned animatedshader = GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Shaders/ashadowvs.glsl",
+		"../../ArchEngine/Shaders/ashadowfs.glsl"
+	);
+
 	unsigned normalshader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/nmshadowvs.glsl",
 		"../../ArchEngine/Shaders/nmshadowfs.glsl"
@@ -195,7 +200,7 @@ void loadData() {
 
 	g_entities.push_back(
 		{
-			objshader,
+			animatedshader,
 			loaded_meshes_ids,
 			glm::scale(glm::rotate(glm::translate(
 				glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -15.0f)),

@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/05/2018                                                       *
- * Last Modified: 20/05/2018                                                 *
+ * Last Modified: 02/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -67,7 +67,7 @@ namespace Graphics {
 		std::string m_name;
 		unsigned m_material_id;
 
-	private:
+	protected:
 		// Helper methods for vertex specification
 		template<typename T>
 		void specifyPosition(unsigned location);

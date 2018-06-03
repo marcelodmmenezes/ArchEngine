@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 01/06/2018                                                 *
+ * Last Modified: 03/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -17,6 +17,15 @@ using namespace Utils;
 
 
 namespace Graphics {
+	void assimpMat4ToGlmMat4(const aiMatrix4x4& am, glm::mat4& gm) {
+		gm = glm::mat4(
+			am[0][0], am[0][1], am[0][2], am[0][3],
+			am[1][0], am[1][1], am[1][2], am[1][3],
+			am[2][0], am[2][1], am[2][2], am[2][3],
+			am[3][0], am[3][1], am[3][2], am[3][3]
+		);
+	}
+
 	unsigned AssimpLoader::m_material_base_index = 0u;
 
 	bool AssimpLoader::importScene(const std::string& path,
@@ -44,9 +53,6 @@ namespace Graphics {
 
 		if (scene->HasMaterials())
 			loadMaterials(scene);
-
-		if (scene->HasAnimations())
-			loadAnimations(scene);
 
 		if (scene->HasLights())
 			loadLights(scene);
@@ -97,6 +103,9 @@ namespace Graphics {
 				loaded_meshes_ids.push_back(
 					basicVertexMesh(scene->mMeshes[i],
 						i, scene->mMeshes[i]->mMaterialIndex));
+
+			if (scene->HasAnimations())
+				loadAnimations(scene, scene->mMeshes[i], i);
 		}
 	}
 
@@ -145,8 +154,9 @@ namespace Graphics {
 		}
 	}
 
-	void AssimpLoader::loadAnimations(const aiScene* scene) {
-		// TODO
+	void AssimpLoader::loadAnimations(const aiScene* scene,
+		const aiMesh* mesh, unsigned mesh_id) {
+		//TODO
 	}
 
 	void AssimpLoader::loadLights(const aiScene* scene) {
@@ -237,13 +247,12 @@ namespace Graphics {
 
 	unsigned AssimpLoader::animatedVertexMesh(const aiMesh* mesh,
 		unsigned mesh_id, unsigned material_id) {
-		// TODO
 		std::vector<AnimatedVertex> vertices;
 		std::vector<unsigned> indices;
 
 		vertices.reserve(mesh->mNumVertices);
 		indices.reserve(mesh->mNumFaces);
-
+		
 		for (unsigned i = 0; i < mesh->mNumVertices; i++) {
 			const aiVector3D* p_pos = &(mesh->mVertices[i]);
 			const aiVector3D* p_normal = &(mesh->mNormals[i]);
@@ -256,6 +265,33 @@ namespace Graphics {
 				glm::ivec4(),
 				glm::vec4() }));
 		}
+
+		//-------------------------------------------------------- Bone Loading
+		std::vector<int> bone_ids(
+			mesh->mNumVertices * WEIGHTS_PER_VERTEX);
+		std::vector<float> bone_weights(
+			mesh->mNumVertices * WEIGHTS_PER_VERTEX);
+
+		for (unsigned i = 0; i < mesh->mNumBones; i++) {
+			aiBone* bone = mesh->mBones[i];
+
+			for (unsigned j = 0; j < bone->mNumWeights; j++) {
+				aiVertexWeight weight = bone->mWeights[j];
+				unsigned vertex_start = weight.mVertexId * WEIGHTS_PER_VERTEX;
+
+				for (unsigned k = 0; k < WEIGHTS_PER_VERTEX; k++) {
+					if (bone_weights[vertex_start + k] == 0) {
+						bone_weights[vertex_start + k] = weight.mWeight;
+						bone_ids[vertex_start + k] = i;
+
+						vertices[weight.mVertexId].bone_ids[k] = i;
+						vertices[weight.mVertexId].bone_weights[k] =
+							weight.mWeight;
+					}
+				}
+			}
+		}
+		//---------------------------------------------------------------------
 
 		for (unsigned i = 0; i < mesh->mNumFaces; i++) {
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
@@ -272,6 +308,9 @@ namespace Graphics {
 		m_mesh.create(m_mesh.m_name,
 			m_material_base_index + material_id,
 			vertices, indices);
+
+		m_animation.m_mesh_id =
+			GraphicsManager::getInstance().numberOfMeshes() + 1;
 
 		return GraphicsManager::getInstance().addMesh(m_mesh);
 	}

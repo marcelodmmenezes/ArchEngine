@@ -132,6 +132,7 @@
     <ClInclude Include="Config\engineMacros.hpp" />
     <ClInclude Include="Core\engine.hpp" />
     <ClInclude Include="Core\eventManager.hpp" />
+    <ClInclude Include="Graphics\animation.hpp" />
     <ClInclude Include="Graphics\assimpLoader.hpp" />
     <ClInclude Include="Graphics\debugCamera.hpp" />
     <ClInclude Include="Graphics\framebuffer.hpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="Core\event.hpp" />
     <ClCompile Include="Core\event.cpp" />
     <ClCompile Include="Core\eventManager.cpp" />
+    <ClCompile Include="Graphics\animation.cpp" />
     <ClCompile Include="Graphics\assimpLoader.cpp" />
     <ClCompile Include="Graphics\debugCamera.cpp" />
     <ClCompile Include="Graphics\framebuffer.cpp" />

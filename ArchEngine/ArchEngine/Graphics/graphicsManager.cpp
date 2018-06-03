@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 01/06/2018                                                 *
+ * Last Modified: 02/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -400,6 +400,20 @@ namespace Graphics {
 		m_materials.reserve(m_materials.size() + size);
 	}
 
+	void GraphicsManager::reserveAnimations(int size) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
+			"GraphicsManager allocating " + std::to_string(size) +
+			" more animations");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+
+		m_animations.reserve(m_animations.size() + size);
+	}
+
+	unsigned GraphicsManager::numberOfMeshes() {
+		return m_meshes.size() - 1;
+	}
+
 	//----------------------------------------------------------- Add functions
 	unsigned GraphicsManager::addCamera(const DebugCamera& camera) {
 		m_cameras.push_back(camera);
@@ -452,6 +466,11 @@ namespace Graphics {
 		// Increases mesh reference
 		m_meshes[it->second].second++;
 		return it->second;
+	}
+
+	unsigned GraphicsManager::addAnimation(const Animation& animation) {
+		m_animations.push_back(animation);
+		return m_animations.size() - 1;
 	}
 
 	unsigned GraphicsManager::addMaterial(const Material& material) {
@@ -564,6 +583,18 @@ namespace Graphics {
 
 			m_meshes_unused_spaces.push(handle);
 		}
+	}
+
+	void GraphicsManager::removeAnimation(unsigned handle) {
+		if (handle >= m_animations.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Animation outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
+		m_animations.erase(m_animations.begin() + handle);
 	}
 
 	void GraphicsManager::removeMaterial(unsigned handle) {

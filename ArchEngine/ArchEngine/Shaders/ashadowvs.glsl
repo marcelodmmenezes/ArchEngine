@@ -7,6 +7,8 @@
 layout (location = 0) in vec3 v_position;
 layout (location = 1) in vec3 v_normal;
 layout (location = 2) in vec2 v_texture_coords;
+layout (location = 3) in ivec4 v_bone_ids;
+layout (location = 4) in vec4 v_bone_weights;
 
 uniform int u_nr_dir_lights;
 uniform int u_nr_point_lights;
