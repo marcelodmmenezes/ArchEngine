@@ -129,7 +129,7 @@ void loadData() {
 	);
 
 	unsigned point_depth_shader = GraphicsManager::getInstance().addShader(
-		"../../ArchEngine/Shaders/cubedepthmapvs.glsl",
+		"../../ArchEngine/Shaders/acubedepthmapvs.glsl",
 		"../../ArchEngine/Shaders/cubedepthmapgs.glsl",
 		"../../ArchEngine/Shaders/cubedepthmapfs.glsl"
 	);
@@ -203,7 +203,7 @@ void loadData() {
 			animatedshader,
 			loaded_meshes_ids,
 			glm::scale(glm::rotate(glm::translate(
-				glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -15.0f)),
+				glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 15.0f)),
 				glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)),
 				glm::vec3(2.0f, 2.0f, 2.0f))
 		}
@@ -238,7 +238,7 @@ void loadData() {
 		4000
 	};
 	
-	glm::vec3 plight_pos(0.0f, 10.0f, 0.0f);
+	glm::vec3 plight_pos(0.0f, 10.0f, 45.0f);
 	glm::mat4 plight_proj =
 		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
 

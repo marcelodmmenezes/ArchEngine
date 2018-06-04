@@ -275,6 +275,13 @@ namespace Graphics {
 		for (unsigned i = 0; i < mesh->mNumBones; i++) {
 			aiBone* bone = mesh->mBones[i];
 
+			std::string b_name = bone->mName.data;
+			glm::mat4 b_mat;
+			assimpMat4ToGlmMat4(bone->mOffsetMatrix, b_mat);
+			b_mat = glm::transpose(b_mat);
+
+			//GraphicsManager::getInstance().numberOfMeshes() + 1
+
 			for (unsigned j = 0; j < bone->mNumWeights; j++) {
 				aiVertexWeight weight = bone->mWeights[j];
 				unsigned vertex_start = weight.mVertexId * WEIGHTS_PER_VERTEX;
@@ -308,9 +315,6 @@ namespace Graphics {
 		m_mesh.create(m_mesh.m_name,
 			m_material_base_index + material_id,
 			vertices, indices);
-
-		m_animation.m_mesh_id =
-			GraphicsManager::getInstance().numberOfMeshes() + 1;
 
 		return GraphicsManager::getInstance().addMesh(m_mesh);
 	}

@@ -123,6 +123,12 @@
     <ClInclude Include="Graphics\animation.hpp">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\bone.hpp">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\skeleton.hpp">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -204,6 +210,12 @@
       <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\animation.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\bone.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\skeleton.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -306,6 +318,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\ashadowvs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\acubedepthmapvs.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

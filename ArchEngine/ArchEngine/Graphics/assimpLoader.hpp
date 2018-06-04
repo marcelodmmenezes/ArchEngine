@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 02/06/2018                                                 *
+ * Last Modified: 04/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -69,9 +69,6 @@ namespace Graphics {
 
 		// Auxiliary Mesh for importing
 		Mesh m_mesh;
-
-		// Auxiliary Animation for importing
-		Animation m_animation;
 
 		// Auxiliary to associate a mesh with it's
 		// GraphicsManager's material id

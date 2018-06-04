@@ -134,6 +134,7 @@
     <ClInclude Include="Core\eventManager.hpp" />
     <ClInclude Include="Graphics\animation.hpp" />
     <ClInclude Include="Graphics\assimpLoader.hpp" />
+    <ClInclude Include="Graphics\bone.hpp" />
     <ClInclude Include="Graphics\debugCamera.hpp" />
     <ClInclude Include="Graphics\framebuffer.hpp" />
     <ClInclude Include="Graphics\glad_3_3_core.hpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="Graphics\primitives.hpp" />
     <ClInclude Include="Graphics\mesh.hpp" />
     <ClInclude Include="Graphics\shader.hpp" />
+    <ClInclude Include="Graphics\skeleton.hpp" />
     <ClInclude Include="Graphics\stb_image.hpp" />
     <ClInclude Include="Graphics\materialManager.hpp" />
     <ClInclude Include="Graphics\uniforms.hpp" />
@@ -166,12 +168,14 @@
     <ClCompile Include="Core\eventManager.cpp" />
     <ClCompile Include="Graphics\animation.cpp" />
     <ClCompile Include="Graphics\assimpLoader.cpp" />
+    <ClCompile Include="Graphics\bone.cpp" />
     <ClCompile Include="Graphics\debugCamera.cpp" />
     <ClCompile Include="Graphics\framebuffer.cpp" />
     <ClCompile Include="Graphics\glad_3_3_core.cpp" />
     <ClCompile Include="Graphics\graphicsManager.cpp" />
     <ClCompile Include="Graphics\mesh.cpp" />
     <ClCompile Include="Graphics\shader.cpp" />
+    <ClCompile Include="Graphics\skeleton.cpp" />
     <ClCompile Include="Graphics\stb_image.cpp" />
     <ClCompile Include="Graphics\materialManager.cpp" />
     <ClCompile Include="Graphics\uniforms.cpp" />
@@ -190,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Shaders\acubedepthmapvs.glsl" />
     <None Include="Shaders\ashadowfs.glsl" />
     <None Include="Shaders\ashadowvs.glsl" />
     <None Include="Shaders\colorfs.glsl" />
