@@ -323,46 +323,7 @@ namespace Graphics {
 		unsigned mesh_id, unsigned material_id) {
 		// TODO
 
-		std::vector<AnimatedNormalMappedVertex> vertices;
-		std::vector<unsigned> indices;
-
-		vertices.reserve(mesh->mNumVertices);
-		indices.reserve(mesh->mNumFaces);
-
-		for (unsigned i = 0; i < mesh->mNumVertices; i++) {
-			const aiVector3D* p_pos = &(mesh->mVertices[i]);
-			const aiVector3D* p_normal = &(mesh->mNormals[i]);
-			const aiVector3D* p_tex_coord = &(mesh->mTextureCoords[0][i]);
-			const aiVector3D* p_tangent = &(mesh->mTangents[i]);
-			const aiVector3D* p_bitangent = &(mesh->mBitangents[i]);
-
-			vertices.push_back(std::move(AnimatedNormalMappedVertex{
-				glm::vec3(p_pos->x, p_pos->y, p_pos->z),
-				glm::vec3(p_normal->x, p_normal->y, p_normal->z),
-				glm::vec2(p_tex_coord->x, p_tex_coord->y),
-				glm::vec3(p_tangent->x, p_tangent->y, p_tangent->z),
-				glm::vec3(p_bitangent->x, p_bitangent->y, p_bitangent->z),
-				glm::ivec4(),
-				glm::vec4() }));
-		}
-
-		for (unsigned i = 0; i < mesh->mNumFaces; i++) {
-#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
-			assert(mesh->mFaces[i].mNumIndices == 3);
-#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
-
-			indices.push_back(mesh->mFaces[i].mIndices[0]);
-			indices.push_back(mesh->mFaces[i].mIndices[1]);
-			indices.push_back(mesh->mFaces[i].mIndices[2]);
-		}
-
-		m_mesh.m_name = m_path + std::to_string(mesh_id) + mesh->mName.C_Str();
-
-		m_mesh.create(m_mesh.m_name,
-			m_material_base_index + material_id,
-			vertices, indices);
-
-		return GraphicsManager::getInstance().addMesh(m_mesh);
+		return 0;
 	}
 
 	bool AssimpLoader::loadMaterials(const aiMaterial* material,

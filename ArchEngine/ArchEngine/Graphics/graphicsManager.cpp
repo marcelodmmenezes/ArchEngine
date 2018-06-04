@@ -191,21 +191,9 @@ namespace Graphics {
 				m_shaders[it.depth_shader].setFloat(
 					"u_far_plane", it.far_plane);
 
-				//---------------------------------------------------------------- TEST
-				int xablau = 0;
-				//---------------------------------------------------------------------
 				for (auto& entity : g_entities) {
 					m_shaders[it.depth_shader].setMat4("u_model_matrix",
 						entity.model_matrix);
-					//------------------------------------------------------------ TEST
-					if (xablau++ == 25) {
-						m_shaders[it.depth_shader].setBool("u_rigged", true);
-						for (unsigned i = 0; i < 28; i++)
-							m_shaders[it.depth_shader].setMat4("u_bones[" + std::to_string(i) + "]", glm::mat4(1.0f));
-					}
-					else
-						m_shaders[it.depth_shader].setBool("u_rigged", false);
-					//-----------------------------------------------------------------
 					m_shaders[it.depth_shader].update();
 
 					for (unsigned i : entity.meshes)
@@ -223,9 +211,6 @@ namespace Graphics {
 		glViewport(0, 0, m_screen_width, m_screen_height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//---------------------------------------------------------------- TEST
-		int xablau = 0;
-		//---------------------------------------------------------------------
 		for (auto& it : g_entities) {
 			m_shaders[it.shader].bind();
 
@@ -235,16 +220,6 @@ namespace Graphics {
 				m_cameras[m_active_camera].getViewMatrix());
 			m_shaders[it.shader].setMat4("u_model_matrix",
 				it.model_matrix);
-
-			//------------------------------------------------------------ TEST
-			if (xablau++ == 25)
-				for (unsigned i = 0; i < 28; i++)
-					m_shaders[it.shader].setMat4("u_bones[" + std::to_string(i) + "]", glm::mat4(1.0f));
-			else
-				m_shaders[it.shader].setMat3("u_trn_inv_up_model",
-					glm::transpose(glm::inverse(glm::mat3(
-						it.model_matrix))));
-			//-----------------------------------------------------------------
 
 			m_shaders[it.shader].setVec3("u_view_pos",
 				m_cameras[m_active_camera].getPosition());
