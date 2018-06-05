@@ -138,6 +138,7 @@ void loadData() {
 				{
 					normalshader,
 					loaded_meshes_ids,
+					std::vector<unsigned>(),
 					glm::scale(glm::translate(glm::mat4(1.0f),
 					glm::vec3(i * 20.0f, 0.0f, k * 20.0f)),
 					glm::vec3(10.0f, 1.0f, 10.0f))

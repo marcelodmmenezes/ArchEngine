@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 28/05/2018                                                 *
+ * Last Modified: 05/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -160,20 +160,23 @@ namespace Core {
 
 			while (m_timer.getCurrentTicks() > next_game_tick &&
 				update_loops < m_max_frameskip) {
-				// TODO: update the game
+				PhysicsManager::getInstance().update(
+					(float)m_timer.getDeltaTime());
 
 				next_game_tick += m_skip_ticks;
 				update_loops++;
+
+				m_timer.calc();
 			}
 
 			//------------------------------------------------- Scene rendering
 			GraphicsManager::getInstance().update(
 				(float)m_timer.getDeltaTime());
-			
+
 			std::cout << "Seconds between frames: " <<
 				std::setprecision(6) << m_timer.getDeltaTime() << " - FPS: " <<
 				std::setprecision(3) << m_timer.getFrameRate() << "      \r";
-			
+
 			m_window.update();
 		}
 	}
@@ -272,8 +275,10 @@ namespace Core {
 
 		//------------------------------------------- Engine configuration file
 		LuaScript engine_config;
-		engine_config.initialize(
-			lua_context.get<std::string>("files.engineConfig"));
+		
+		if (!engine_config.initialize(
+			lua_context.get<std::string>("files.engineConfig")))
+			return false;
 
 		m_ticks_per_second = engine_config.get<int>("ticks_per_second");
 		m_skip_ticks = engine_config.get<int>("skip_ticks");

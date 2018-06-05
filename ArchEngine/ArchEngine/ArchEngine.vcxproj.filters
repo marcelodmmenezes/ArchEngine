@@ -75,9 +75,6 @@
     <ClInclude Include="Physics\physicsManager.hpp">
       <Filter>Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Physics\world.hpp">
-      <Filter>Physics</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\glad_3_3_core.hpp">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -165,9 +162,6 @@
       <Filter>Testers</Filter>
     </ClCompile>
     <ClCompile Include="Physics\physicsManager.cpp">
-      <Filter>Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\world.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\glad_3_3_core.cpp">
@@ -328,6 +322,9 @@
     </None>
     <None Include="Shaders\terrainvs.glsl">
       <Filter>Shaders</Filter>
+    </None>
+    <None Include="Testers\physicsConfig.lua">
+      <Filter>Testers</Filter>
     </None>
   </ItemGroup>
 </Project>
