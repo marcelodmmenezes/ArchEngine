@@ -84,9 +84,11 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Bullet\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Bullet\libDebug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BulletSoftBody_Debug.lib;BulletDynamics_Debug.lib;BulletCollision_Debug.lib;LinearMath_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -106,11 +108,13 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>C:\Bullet\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BulletSoftBody.lib;BulletDynamics.lib;BulletCollision.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

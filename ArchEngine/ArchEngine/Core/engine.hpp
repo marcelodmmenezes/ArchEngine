@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 26/05/2018                                                 *
+ * Last Modified: 04/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -23,6 +23,7 @@
 #include "../Graphics/graphicsManager.hpp"
 #include "../OS/inputManager.hpp"
 #include "../OS/window.hpp"
+#include "../Physics/physicsManager.hpp"
 #include "../Script/engineLuaAPI.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"

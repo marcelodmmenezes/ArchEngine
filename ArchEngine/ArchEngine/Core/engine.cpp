@@ -19,6 +19,7 @@
 
 using namespace Graphics;
 using namespace OS;
+using namespace Physics;
 using namespace Script;
 using namespace Utils;
 
@@ -284,6 +285,13 @@ namespace Core {
 		//---------------------------------- Graphics system configuration file
 		if (!GraphicsManager::getInstance().initializeFromConfigFile(
 			lua_context.get<std::string>("files.graphicsConfig"))) {
+			lua_context.destroy();
+			return false;
+		}
+
+		//----------------------------------- Physics system configuration file
+		if (!PhysicsManager::getInstance().initializeFromConfigFile(
+			lua_context.get<std::string>("files.physicsConfig"))) {
 			lua_context.destroy();
 			return false;
 		}

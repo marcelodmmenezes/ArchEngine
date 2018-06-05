@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 12/05/2018                                                 *
+ * Last Modified: 04/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -42,28 +42,27 @@ namespace Physics {
 		CollisionConfigType collision_config,
 		BroadphaseType broadphase,
 		ConstraintSolverType solver) {
+		// TODO: fill in the missing cases
+
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
 		assert(m_state != INITIALIZED);
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
 
-		switch (world) {
-		case WORLD_DISCRETE_DYNAMICS:
-			break;
-		case WORLD_SOFT_RIGID_DYNAMICS:
-			break;
-		}
-
 		switch (collision_config) {
 		case DEFAULT_COLLISION_CONFIGURATION:
+			m_collision_config = new btDefaultCollisionConfiguration();
 			break;
 		case SOFT_RIGID_COLLISION_CONFIGURATION:
 			break;
 		}
 
+		m_dispatcher = new btCollisionDispatcher(m_collision_config);
+
 		switch (broadphase) {
 		case AXIS_SWEEP_BROADPHASE:
 			break;
 		case DBVT_BROADPHASE:
+			m_broadphase = new btDbvtBroadphase();
 			break;
 		case MULTI_SAP_BROADPHASE:
 			break;
@@ -73,12 +72,22 @@ namespace Physics {
 
 		switch (solver) {
 		case SEQUENTIAL_IMPULSE_SOLVER:
+			m_solver = new btSequentialImpulseConstraintSolver();
 			break;
 		case MLCP_SOLVER:
 			break;
 		case MULTI_BODY_SOLVER:
 			break;
 		case NNGC_SOLVER:
+			break;
+		}
+
+		switch (world) {
+		case WORLD_DISCRETE_DYNAMICS:
+			m_world = new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase,
+				m_solver, m_collision_config);
+			break;
+		case WORLD_SOFT_RIGID_DYNAMICS:
 			break;
 		}
 
@@ -92,7 +101,7 @@ namespace Physics {
 		lua_context.initialize(path);
 
 		initialize(
-			(WorldType)lua_context.get<int>("world"),
+			(WorldType)lua_context.get<int>("world_type"),
 			(CollisionConfigType)lua_context.get<int>("collision_config"),
 			(BroadphaseType)lua_context.get<int>("broadphase"),
 			(ConstraintSolverType)lua_context.get<int>("solver"));

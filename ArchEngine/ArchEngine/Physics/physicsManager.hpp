@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 12/05/2018                                                 *
+ * Last Modified: 04/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -19,6 +19,8 @@
 
 #include <btBulletCollisionCommon.h>
 
+#include <string>
+
 
 namespace Physics {
 	class PhysicsManager {
@@ -29,6 +31,8 @@ namespace Physics {
 		void operator=(const PhysicsManager&) = delete;
 
 		static PhysicsManager& getInstance();
+		
+		bool initializeFromConfigFile(const std::string& path);
 
 	private:
 		PhysicsManager();
