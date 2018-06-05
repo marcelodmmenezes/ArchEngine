@@ -181,6 +181,12 @@ namespace Core {
 	void Engine::exit() {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Destroying PhysicsManager");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		PhysicsManager::getInstance().destroy();
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Destroying GraphicsManager");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 		GraphicsManager::getInstance().destroy();

@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 12/05/2018                                                 *
+ * Last Modified: 04/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -60,8 +60,6 @@ namespace Physics {
 			CollisionConfigType collision_config,
 			BroadphaseType broadphase,
 			ConstraintSolverType solver);
-
-		bool initializeFromConfigFile(const std::string& path);
 
 		void update(float delta_time);
 

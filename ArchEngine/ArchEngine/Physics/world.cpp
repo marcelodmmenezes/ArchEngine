@@ -96,21 +96,6 @@ namespace Physics {
 		return true;
 	}
 
-	bool World::initializeFromConfigFile(const std::string& path) {
-		LuaScript lua_context;
-		lua_context.initialize(path);
-
-		initialize(
-			(WorldType)lua_context.get<int>("world_type"),
-			(CollisionConfigType)lua_context.get<int>("collision_config"),
-			(BroadphaseType)lua_context.get<int>("broadphase"),
-			(ConstraintSolverType)lua_context.get<int>("solver"));
-
-		lua_context.destroy();
-
-		return true;
-	}
-
 	void World::update(float delta_time) {
 		m_world->stepSimulation(delta_time);
 	}

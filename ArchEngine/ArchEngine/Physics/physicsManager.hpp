@@ -14,12 +14,14 @@
 
 
 #include "../Config/engineMacros.hpp"
+#include "world.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 #include <btBulletCollisionCommon.h>
 
 #include <string>
+#include <vector>
 
 
 namespace Physics {
@@ -33,9 +35,17 @@ namespace Physics {
 		static PhysicsManager& getInstance();
 		
 		bool initializeFromConfigFile(const std::string& path);
+		void destroy();
+
+		bool addWorld(int world_type, int collision_config,
+			int broadphase, int solver);
 
 	private:
 		PhysicsManager();
+
+		unsigned m_active_world;
+
+		std::vector<World> m_worlds;
 	};
 }
 
