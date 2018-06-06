@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 05/06/2018                                                 *
+ * Last Modified: 06/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -141,7 +141,7 @@ namespace Core {
 
 		int next_game_tick = m_timer.getCurrentTicks();
 		// Game update loop counter
-		int update_loops;
+		//int update_loops;
 		
 		while (m_running) {
 			//---------------------------------------------------- Time control
@@ -156,7 +156,7 @@ namespace Core {
 			InputManager::getInstance().update(m_running);
 
 			//----------------------------------------------- Game logic update
-			update_loops = 0;
+			/*update_loops = 0;
 
 			while (m_timer.getCurrentTicks() > next_game_tick &&
 				update_loops < m_max_frameskip) {
@@ -167,7 +167,10 @@ namespace Core {
 				update_loops++;
 
 				m_timer.calc();
-			}
+			}*/
+
+			PhysicsManager::getInstance().update(
+				(float)m_timer.getDeltaTime());
 
 			//------------------------------------------------- Scene rendering
 			GraphicsManager::getInstance().update(
@@ -226,8 +229,7 @@ namespace Core {
 	}
 
 	bool Engine::isInitialized() const { return m_initialized; }
-
-
+	
 #if defined(ARCH_ENGINE_HOT_RELOAD_ON)
 	bool Engine::watchFile(const std::string& path) {
 		return m_file_watcher.addFile(path);

@@ -1,11 +1,13 @@
 /*===========================================================================*
  * Arch Engine - "Physics/physicsManager.cpp"                                *
  *                                                                           *
- * TODO: description                                                         *
+ * Class responsible for representing the physics world.                     *
+ * All physics objects, collisions and simulations are contained and         *
+ * calculated in a physics world.                                            *
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 05/06/2018                                                 *
+ * Last Modified: 06/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -17,6 +19,18 @@ using namespace Utils;
 
 
 namespace Physics {
+	void btTransformToGlmMat4(const btTransform& bt, glm::mat4& gm) {
+		btScalar m[16];
+		bt.getOpenGLMatrix(m);
+
+		gm = glm::mat4(
+			m[0], m[1], m[2], m[3],
+			m[4], m[5], m[6], m[7],
+			m[8], m[9], m[10], m[11],
+			m[12], m[13], m[14], m[15]
+		);
+	}
+
 	PhysicsManager::PhysicsManager() : m_state(CONSTRUCTED) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
@@ -120,15 +134,10 @@ namespace Physics {
 			else {
 				// If it.first is not in the above ifs,
 				// the input file is wrong.
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-				ServiceLocator::getFileLogger()->log<LOG_ERROR>(
-					"Could not create " + path + " physics world");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-
-#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
-				// Should never get here
-				assert(false);
-#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+				ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+					"Unidentified value in physics config: " + it.first);
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			}
 		}
 
@@ -138,6 +147,9 @@ namespace Physics {
 			(ConstraintSolverType)solver))
 			return false;
 
+		auto gravity = lua_context.getFloatVector("gravity");
+		m_world->setGravity(btVector3(gravity[0], gravity[1], gravity[2]));
+
 		lua_context.destroy();
 
 		return true;
@@ -145,32 +157,35 @@ namespace Physics {
 
 	void PhysicsManager::update(float delta_time) {
 		m_world->stepSimulation(delta_time);
+
+		auto objs = m_world->getCollisionObjectArray();
+
+		for (auto& it : g_entities)
+			for (unsigned i = 0; i < it.bodies.size(); i++)
+				btTransformToGlmMat4(objs[it.bodies[i]]->getWorldTransform(),
+					it.transforms[i]);
 	}
 
 	void PhysicsManager::destroy() {
-		auto objects = m_world->getCollisionObjectArray();
-
 		for (int i = m_world->getNumCollisionObjects() - 1; i >= 0; i--) {
-			btCollisionObject* obj = objects[i];
+			btCollisionObject* obj = m_world->getCollisionObjectArray()[i];
 
-			btRigidBody* body = dynamic_cast<btRigidBody*>(obj);
+			m_world->removeCollisionObject(obj);
+
+			btRigidBody* body = btRigidBody::upcast(obj);
 
 			if (body) {
-				m_world->removeCollisionObject(obj);
-				btMotionState* motion = body->getMotionState();
-				btCollisionShape* shape = body->getCollisionShape();
-				delete shape;
-				delete motion;
-				delete obj;
+				delete body->getMotionState();
+				delete body->getCollisionShape();
 			}
 			else {
-				btSoftBody* body = dynamic_cast<btSoftBody*>(obj);
+				btSoftBody* body = btSoftBody::upcast(obj);
 
-				m_world->removeCollisionObject(body);
-				btCollisionShape* shape = body->getCollisionShape();
-				delete shape;
-				delete obj;
+				if (body)
+					delete body->getCollisionShape();
 			}
+
+			delete obj;
 		}
 
 		delete m_world;
@@ -181,4 +196,32 @@ namespace Physics {
 
 		m_state = SAFE_TO_DESTROY;
 	}
+
+	void PhysicsManager::setGravity(const glm::vec3& gravity) {
+		m_world->setGravity(btVector3(gravity.x, gravity.y, gravity.z));
+	}
+
+	//---------------------------------------------------------------- TEST
+	unsigned PhysicsManager::addCube(const glm::vec3& sides,
+		const glm::vec3& pos, float mass, float friction) {
+		btTransform t;
+		t.setIdentity();
+		t.setOrigin(btVector3(pos.x, pos.y, pos.z));
+
+		btBoxShape* cube = new btBoxShape(btVector3(sides.x, sides.y, sides.z));
+
+		btVector3 inertia(0.0f, 0.0f, 0.0f);
+		if (mass != 0.0f)
+			cube->calculateLocalInertia(mass, inertia);
+
+		btMotionState* motion = new btDefaultMotionState(t);
+		btRigidBody::btRigidBodyConstructionInfo info(mass, motion, cube, inertia);
+		info.m_friction = friction;
+		btRigidBody* body = new btRigidBody(info);
+
+		m_world->addRigidBody(body);
+
+		return m_world->getNumCollisionObjects() - 1;
+	}
+	//---------------------------------------------------------------------
 }

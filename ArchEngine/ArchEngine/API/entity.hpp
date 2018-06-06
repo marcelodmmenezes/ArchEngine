@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 26/05/2018                                                       *
- * Last Modified: 05/06/2018                                                 *
+ * Last Modified: 06/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -25,7 +25,8 @@ struct Entity {
 	std::vector<unsigned> meshes;
 	// Stores the corresponding PhysicsManager's rigid bodies ids
 	std::vector<unsigned> bodies;
-	glm::mat4 model_matrix;
+	// One for each mesh
+	std::vector<glm::mat4> transforms;
 };
 
 extern std::vector<Entity> g_entities;

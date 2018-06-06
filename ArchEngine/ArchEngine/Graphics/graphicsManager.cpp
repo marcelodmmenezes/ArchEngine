@@ -142,7 +142,7 @@ namespace Graphics {
 		m_shaders[0].bind();
 		m_shaders[0].setMat4("u_projection_matrix", m_projection);
 		m_shaders[0].setMat4("u_view_matrix", m_cameras[m_active_camera].getViewMatrix());
-		m_shaders[0].setMat4("u_model_matrix", glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 45.0f)), glm::vec3(0.2f, 0.2f, 0.2f)));
+		m_shaders[0].setMat4("u_model_matrix", glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 20.0f)), glm::vec3(0.2f, 0.2f, 0.2f)));
 		m_shaders[0].setVec3("u_color", glm::vec3(1.0f, 1.0f, 1.0f));
 		m_shaders[0].update();
 		m_meshes[m_meshes.size() - 1].first.draw();
@@ -158,19 +158,24 @@ namespace Graphics {
 		for (auto& it : m_directional_lights) {
 			if (it.emit_shadows) {
 				it.depth_map.bind();
+
 				glViewport(0, 0, it.dmw, it.dmh);
 				glClear(GL_DEPTH_BUFFER_BIT);
+
 				m_shaders[it.depth_shader].bind();
+
 				m_shaders[it.depth_shader].setMat4("u_light_space_matrix",
 					it.projection * it.view);
 
 				for (auto& entity : g_entities) {
-					m_shaders[it.depth_shader].setMat4("u_model_matrix",
-						entity.model_matrix);
-					m_shaders[it.depth_shader].update();
+					for (unsigned i = 0; i < entity.meshes.size(); i++) {
+						m_shaders[it.depth_shader].setMat4("u_model_matrix",
+							entity.transforms[i]);
 
-					for (unsigned i : entity.meshes)
-						m_meshes[i].first.draw();
+						m_shaders[it.depth_shader].update();
+
+						m_meshes[entity.meshes[i]].first.draw();
+					}
 				}
 			}
 		}
@@ -178,8 +183,10 @@ namespace Graphics {
 		for (auto& it : m_point_lights) {
 			if (it.emit_shadows) {
 				it.depth_map.bind();
+
 				glViewport(0, 0, it.dmw, it.dmh);
 				glClear(GL_DEPTH_BUFFER_BIT);
+
 				m_shaders[it.depth_shader].bind();
 
 				for (int i = 0; i < 6; i++)
@@ -188,16 +195,19 @@ namespace Graphics {
 
 				m_shaders[it.depth_shader].setVec3(
 					"u_light_pos", it.position);
+
 				m_shaders[it.depth_shader].setFloat(
 					"u_far_plane", it.far_plane);
 
 				for (auto& entity : g_entities) {
-					m_shaders[it.depth_shader].setMat4("u_model_matrix",
-						entity.model_matrix);
-					m_shaders[it.depth_shader].update();
+					for (unsigned i = 0; i < entity.meshes.size(); i++) {
+						m_shaders[it.depth_shader].setMat4("u_model_matrix",
+							entity.transforms[i]);
 
-					for (unsigned i : entity.meshes)
-						m_meshes[i].first.draw();
+						m_shaders[it.depth_shader].update();
+
+						m_meshes[entity.meshes[i]].first.draw();
+					}
 				}
 			}
 		}
@@ -216,21 +226,25 @@ namespace Graphics {
 
 			m_shaders[it.shader].setMat4("u_projection_matrix",
 				m_projection);
+
 			m_shaders[it.shader].setMat4("u_view_matrix",
 				m_cameras[m_active_camera].getViewMatrix());
-			m_shaders[it.shader].setMat4("u_model_matrix",
-				it.model_matrix);
 
 			m_shaders[it.shader].setVec3("u_view_pos",
 				m_cameras[m_active_camera].getPosition());
 
 			bindLights(m_shaders[it.shader]);
 
-			for (unsigned i : it.meshes) {
+			for (unsigned i = 0; i < it.meshes.size(); i++) {
 				bind2DTextures(m_shaders[it.shader],
-					m_meshes[i].first.m_material_id);
+					m_meshes[it.meshes[i]].first.m_material_id);
+
+				m_shaders[it.shader].setMat4("u_model_matrix",
+					it.transforms[i]);
+
 				m_shaders[it.shader].update();
-				m_meshes[i].first.draw();
+
+				m_meshes[it.meshes[i]].first.draw();
 			}
 		}
 	}

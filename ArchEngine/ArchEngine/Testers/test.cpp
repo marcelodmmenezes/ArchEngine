@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 05/06/2018                                                 *
+ * Last Modified: 06/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -19,6 +19,7 @@
 #include "../Graphics/assimpLoader.hpp"
 #include "../Graphics/graphicsManager.hpp"
 #include "../OS/inputManager.hpp"
+#include "../Physics/physicsManager.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 #include <cstdlib>
@@ -29,6 +30,7 @@
 using namespace Core;
 using namespace Graphics;
 using namespace OS;
+using namespace Physics;
 using namespace Utils;
 
 
@@ -108,6 +110,11 @@ void loadData() {
 		"../../ArchEngine/Shaders/colorfs.glsl"
 	);
 
+	unsigned objshader = GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Shaders/shadowvs.glsl",
+		"../../ArchEngine/Shaders/shadowfs.glsl"
+	);
+
 	unsigned normalshader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/nmshadowvs.glsl",
 		"../../ArchEngine/Shaders/nmshadowfs.glsl"
@@ -139,13 +146,45 @@ void loadData() {
 					normalshader,
 					loaded_meshes_ids,
 					std::vector<unsigned>(),
-					glm::scale(glm::translate(glm::mat4(1.0f),
-					glm::vec3(i * 20.0f, 0.0f, k * 20.0f)),
-					glm::vec3(10.0f, 1.0f, 10.0f))
+					std::vector<glm::mat4>(loaded_meshes_ids.size(),
+						glm::scale(glm::translate(glm::mat4(1.0f),
+							glm::vec3(i * 20.0f, 0.0f, k * 20.0f)),
+							glm::vec3(10.0f, 1.0f, 10.0f)))
 				}
 			);
 		}
 	}
+
+	loaded_meshes_ids.clear();
+	loader.importScene(
+		"../../../../GameEngineLearning/assets/cube/cube_wooden.obj",
+		aiPostProcessSteps(
+			//aiProcess_GenSmoothNormals |
+			//aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType |
+			aiProcess_FlipUVs
+		),
+		loaded_meshes_ids
+	);
+
+	std::vector<unsigned> bodies;
+	bodies.resize(loaded_meshes_ids.size());
+	
+	for (auto& it : bodies)
+		it = PhysicsManager::getInstance().addCube(
+			glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 20.0f, 0.0f), 1.0f);
+
+	g_entities.push_back(
+		{
+			objshader,
+			loaded_meshes_ids,
+			bodies,
+			std::vector<glm::mat4>(loaded_meshes_ids.size(),
+				glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f)))
+		}
+	);
 
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/sphere/sphere_brick.obj",
@@ -160,7 +199,7 @@ void loadData() {
 		loaded_meshes_ids
 	);
 
-	glm::vec3 plight_pos(0.0f, 10.0f, 0.0f);
+	glm::vec3 plight_pos(0.0f, 10.0f, 20.0f);
 	glm::mat4 plight_proj =
 		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
 
@@ -210,7 +249,6 @@ void onContextEvent(EventPtr e) {
 			"\n" << std::endl;
 	}
 }
-
 
 void onInputActionEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputActionEvent>(e);

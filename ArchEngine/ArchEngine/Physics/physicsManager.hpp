@@ -1,11 +1,13 @@
 /*===========================================================================*
  * Arch Engine - "Physics/physicsManager.hpp"                                *
  *                                                                           *
- * TODO: description                                                         *
+ * Class responsible for representing the physics world.                     *
+ * All physics objects, collisions and simulations are contained and         *
+ * calculated in a physics world.                                            *
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 05/06/2018                                                 *
+ * Last Modified: 06/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -13,10 +15,12 @@
 #define PHYSICS_PHYSICS_MANAGER_HPP
 
 
+#include "../API/entity.hpp"
 #include "../Config/engineMacros.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
+#include <glm/glm.hpp>
 #include <btBulletDynamicsCommon.h>
 #include <BulletSoftBody/btSoftBody.h>
 
@@ -69,6 +73,13 @@ namespace Physics {
 		bool initializeFromConfigFile(const std::string& path);
 		void update(float delta_time);
 		void destroy();
+
+		void setGravity(const glm::vec3& gravity);
+
+		//---------------------------------------------------------------- TEST
+		unsigned addCube(const glm::vec3& sides,
+			const glm::vec3& pos, float mass, float friction = 0.5f);
+		//---------------------------------------------------------------------
 
 	private:
 		enum State {
