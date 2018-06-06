@@ -24,6 +24,7 @@ export LIBRARY_PATH
 OUTDIR = GCCOutput
 OBJDIR = GCCOutput/Intermediate
 
+API = ArchEngine/API
 CORE = ArchEngine/Core
 GRAPHICS = ArchEngine/Graphics
 OS = ArchEngine/OS
@@ -51,6 +52,9 @@ creates the necessary directories for compilation"
 
 COMPILEOBJ = $(CXX) -c -o $@ $< $(CXXFLAGS)
 
+$(OBJDIR)/$(API)/entity.o : $(API)/entity.cpp
+	$(COMPILEOBJ)
+
 $(OBJDIR)/$(CORE)/engine.o : $(CORE)/engine.cpp
 	$(COMPILEOBJ)
 $(OBJDIR)/$(CORE)/event.o : $(CORE)/event.cpp
@@ -58,7 +62,11 @@ $(OBJDIR)/$(CORE)/event.o : $(CORE)/event.cpp
 $(OBJDIR)/$(CORE)/eventManager.o : $(CORE)/eventManager.cpp
 	$(COMPILEOBJ)
 
+$(OBJDIR)/$(GRAPHICS)/animation.o : $(GRAPHICS)/animation.cpp
+	$(COMPILEOBJ)
 $(OBJDIR)/$(GRAPHICS)/assimpLoader.o : $(GRAPHICS)/assimpLoader.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(GRAPHICS)/bone.o : $(GRAPHICS)/bone.cpp
 	$(COMPILEOBJ)
 $(OBJDIR)/$(GRAPHICS)/debugCamera.o : $(GRAPHICS)/debugCamera.cpp
 	$(COMPILEOBJ)
@@ -73,6 +81,8 @@ $(OBJDIR)/$(GRAPHICS)/materialManager.o : $(GRAPHICS)/materialManager.cpp
 $(OBJDIR)/$(GRAPHICS)/mesh.o : $(GRAPHICS)/mesh.cpp
 	$(COMPILEOBJ)
 $(OBJDIR)/$(GRAPHICS)/shader.o : $(GRAPHICS)/shader.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(GRAPHICS)/skeleton.o : $(GRAPHICS)/skeleton.cpp
 	$(COMPILEOBJ)
 $(OBJDIR)/$(GRAPHICS)/stb_image.o : $(GRAPHICS)/stb_image.cpp
 	$(COMPILEOBJ)
@@ -109,11 +119,13 @@ $(OBJDIR)/$(UTILS)/serviceLocator.o : $(UTILS)/serviceLocator.cpp
 $(OBJDIR)/$(UTILS)/timer.o : $(UTILS)/timer.cpp
 	$(COMPILEOBJ)
 
-_OBJ = $(CORE)/engine.o $(CORE)/event.o $(CORE)/eventManager.o \
-	$(GRAPHICS)/assimpLoader.o $(GRAPHICS)/debugCamera.o \
-	$(GRAPHICS)/framebuffer.o $(GRAPHICS)/glad_3_3_core.o \
-	$(GRAPHICS)/graphicsManager.o $(GRAPHICS)/materialManager.o \
-	$(GRAPHICS)/shader.o $(GRAPHICS)/mesh.o $(GRAPHICS)/shader.o \
+_OBJ = $(API)/entity.o $(CORE)/engine.o $(CORE)/event.o \
+	$(CORE)/eventManager.o $(GRAPHICS)/animation.o \
+	$(GRAPHICS)/assimpLoader.o $(GRAPHICS)/bone.o \
+	$(GRAPHICS)/debugCamera.o $(GRAPHICS)/framebuffer.o \
+	$(GRAPHICS)/glad_3_3_core.o $(GRAPHICS)/graphicsManager.o \
+	$(GRAPHICS)/materialManager.o $(GRAPHICS)/mesh.o \
+	$(GRAPHICS)/shader.o  $(GRAPHICS)/skeleton.o \
 	$(GRAPHICS)/stb_image.o $(GRAPHICS)/uniforms.o $(OS)/inputContext.o \
 	$(OS)/inputManager.o $(OS)/window.o $(PHYSICS)/physicsManager.o \
 	$(PHYSICS)/world.o $(SCRIPT)/engineLuaAPI.o $(SCRIPT)/luaScript.o \
@@ -133,6 +145,8 @@ create_directories:
 	if [ ! -d GCCOutput/Intermediate ]; then mkdir GCCOutput/Intermediate; fi
 	if [ ! -d GCCOutput/Intermediate/ArchEngine ]; then \
 		mkdir GCCOutput/Intermediate/ArchEngine; fi
+	if [ ! -d GCCOutput/Intermediate/$(API) ]; then \
+		mkdir GCCOutput/Intermediate/$(API); fi
 	if [ ! -d GCCOutput/Intermediate/$(CORE) ]; then \
 		mkdir GCCOutput/Intermediate/$(CORE); fi
 	if [ ! -d GCCOutput/Intermediate/$(ECS) ]; then \
