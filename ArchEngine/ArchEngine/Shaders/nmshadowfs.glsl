@@ -1,7 +1,7 @@
 #version 330 core
 
 #define NR_DIR_LIGHTS 1
-#define NR_POINT_LIGHTS 3
+#define NR_POINT_LIGHTS 1
 #define NR_SPOT_LIGHTS 1
 
 struct DirLight {
@@ -179,10 +179,13 @@ float calcDirShadows(vec4 frag_pos_light_space, vec3 normal, vec3 light_dir, int
 
 	//------------------------------------------------------------------------------------------------------------- PCF
 	float shadow = 0.0f;
-	vec2 texel_size = 1.0f / textureSize(u_dir_shadow_map[light_index], 0);
+
+	vec2 texel_size = 1.0f / textureSize(u_dir_shadow_map[0], 0);
+
 	for(int x = -2; x <= 2; x++) {
 		for(int y = -2; y <= 2; y++) {
-			float pcf_depth = texture(u_dir_shadow_map[light_index], proj_coords.xy + vec2(x, y) * texel_size).r; 
+    	// TODO: find how to access sampler2D array dinamically
+			float pcf_depth = texture(u_dir_shadow_map[0], proj_coords.xy + vec2(x, y) * texel_size).r; 
 			shadow += current_depth - bias > pcf_depth ? 1.0 : 0.0;        
 		}    
 	}
@@ -202,9 +205,10 @@ float calcPointShadows(int light_index) {
     float view_distance = length(u_view_pos - f_frag_pos);
 
 	float disk_radius = (1.0f + (view_distance / u_far_plane)) / 25.0f;
-    
+
     for(int i = 0; i < samples; i++) {
-        float closest_depth = texture(u_point_shadow_map[light_index], frag_to_light + g_grid_sampling_disk[i] * disk_radius).r;
+    	// TODO: find how to access samplerCube array dinamically
+    	float closest_depth = texture(u_point_shadow_map[0], frag_to_light + g_grid_sampling_disk[i] * disk_radius).r;
 		closest_depth *= u_far_plane;
         if(current_depth - bias > closest_depth)
             shadow += 1.0f;

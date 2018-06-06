@@ -1,14 +1,14 @@
 /*===========================================================================*
-* Arch Engine - "Testers/test.cpp"                                          *
-*                                                                           *
-* This is a tester file. It's purpose is to test some functionalities, thus *
-* should be removed from releases.                                          *
-* Expect some hard coded, bizarre stuff. You've been warned ;)              *
-*                                                                           *
-* Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
-* Created: 30/04/2018                                                       *
-* Last Modified: 31/05/2018                                                 *
-*===========================================================================*/
+ * Arch Engine - "Testers/test.cpp"                                          *
+ *                                                                           *
+ * This is a tester file. It's purpose is to test some functionalities, thus *
+ * should be removed from releases.                                          *
+ * Expect some hard coded, bizarre stuff. You've been warned ;)              *
+ *                                                                           *
+ * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
+ * Created: 30/04/2018                                                       *
+ * Last Modified: 05/06/2018                                                 *
+ *===========================================================================*/
 
 
 #include "../Config/engineMacros.hpp"
@@ -78,12 +78,12 @@ int main(int argc, char* argv[]) {
 
 		Engine::getInstance().run();
 	}
-	else {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+	else {
 		ServiceLocator::getFileLogger()->log<LOG_ERROR>(
 			"Failed to initialize ArchEngine");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 	}
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 
 	Engine::getInstance().exit();
 }

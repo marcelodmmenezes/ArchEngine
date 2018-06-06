@@ -98,8 +98,6 @@ $(OBJDIR)/$(OS)/window.o : $(OS)/window.cpp
 
 $(OBJDIR)/$(PHYSICS)/physicsManager.o : $(PHYSICS)/physicsManager.cpp
 	$(COMPILEOBJ)
-$(OBJDIR)/$(PHYSICS)/world.o : $(PHYSICS)/world.cpp
-	$(COMPILEOBJ)
 
 $(OBJDIR)/$(SCRIPT)/engineLuaAPI.o : $(SCRIPT)/engineLuaAPI.cpp
 	$(COMPILEOBJ)
@@ -128,9 +126,9 @@ _OBJ = $(API)/entity.o $(CORE)/engine.o $(CORE)/event.o \
 	$(GRAPHICS)/shader.o  $(GRAPHICS)/skeleton.o \
 	$(GRAPHICS)/stb_image.o $(GRAPHICS)/uniforms.o $(OS)/inputContext.o \
 	$(OS)/inputManager.o $(OS)/window.o $(PHYSICS)/physicsManager.o \
-	$(PHYSICS)/world.o $(SCRIPT)/engineLuaAPI.o $(SCRIPT)/luaScript.o \
-	$(TESTERS)/test.o $(UTILS)/debugging.o $(UTILS)/fileWatcher.o \
-	$(UTILS)/serviceLocator.o $(UTILS)/timer.o
+	$(SCRIPT)/engineLuaAPI.o $(SCRIPT)/luaScript.o $(TESTERS)/test.o \
+	$(UTILS)/debugging.o $(UTILS)/fileWatcher.o $(UTILS)/serviceLocator.o \
+	$(UTILS)/timer.o
 OBJ = $(patsubst %, $(OBJDIR)/%, $(_OBJ))
 
 build: $(OBJ)
