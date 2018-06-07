@@ -55,7 +55,8 @@ namespace Core {
 	EventType ClosestRayTestEvent::getType() const { return m_type; }
 	long ClosestRayTestEvent::getObjectId() { return m_obj; }
 
-	AllRayTestEvent::AllRayTestEvent() : IEvent(EVENT_RAY_TEST_ALL) {}
+	AllRayTestEvent::AllRayTestEvent(std::vector<long>&& objs) :
+		IEvent(EVENT_RAY_TEST_ALL), m_obj_ids(std::move(objs)) {}
 	AllRayTestEvent::~AllRayTestEvent() {}
 	EventType AllRayTestEvent::getType() const { return m_type; }
 }

@@ -139,7 +139,7 @@ namespace Core {
 
 	class AllRayTestEvent : public IEvent {
 	public:
-		AllRayTestEvent();
+		AllRayTestEvent(std::vector<long>&& objs);
 		~AllRayTestEvent();
 
 		EventType getType() const override;

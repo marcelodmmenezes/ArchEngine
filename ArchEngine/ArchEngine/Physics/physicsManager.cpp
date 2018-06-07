@@ -253,7 +253,31 @@ namespace Physics {
 
 	void PhysicsManager::allObjectsRayTest(const glm::vec3& pos,
 		const glm::vec3& front) {
+		btCollisionWorld::AllHitsRayResultCallback
+			rayCallback(btVector3(pos.x, pos.y, pos.z),
+				btVector3(front.x, front.y, front.z));
 
+		m_world->rayTest(btVector3(pos.x, pos.y, pos.z),
+			btVector3(front.x, front.y, front.z), rayCallback);
+
+		if (rayCallback.hasHit()) {
+			std::vector<long> objs;
+			objs.resize(rayCallback.m_collisionObjects.size());
+
+			for (int i = 0; i < rayCallback.m_collisionObjects.size(); i++) {
+				auto obj = static_cast<PhysicsObject*>(
+					rayCallback.m_collisionObjects[i]->getUserPointer());
+
+				if (!obj)
+					continue;
+
+				objs[i] = obj->id;
+			}
+
+			EventPtr evnt = std::make_shared<AllRayTestEvent>(
+				AllRayTestEvent(std::move(objs)));
+			EventManager::getInstance().sendEvent(evnt);
+		}
 	}
 
 	//---------------------------------------------------------------- TEST

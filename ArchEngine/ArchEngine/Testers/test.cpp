@@ -270,7 +270,7 @@ void loadData() {
 				physics_id++,
 				1.0f,
 				//glm::vec3((rand() % 80 - 40) * 1.0f, i * 20.0f, (rand() % 80 - 40) * 1.0f),
-				glm::vec3(0.0f, i * 40.0f, 0.0f),
+				glm::vec3(0.0f, 40.0f, i * 5.0f),
 				1.0f);
 	}
 
@@ -397,7 +397,7 @@ void onCollisionEvent(EventPtr e) {
 	long id1, id2;
 	evnt->getObjectIds(id1, id2);
 
-	//std::cout << "Collision: " << id1 << " " << id2 << std::endl;
+	std::cout << "Collision: " << id1 << " " << id2 << std::endl;
 }
 
 void onClosestRayTestEvent(EventPtr e) {
