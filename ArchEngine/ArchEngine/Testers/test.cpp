@@ -91,6 +91,8 @@ int main(int argc, char* argv[]) {
 }
 
 void loadData() {
+	srand(time(nullptr));
+
 	AssimpLoader loader;
 	std::vector<unsigned> loaded_meshes_ids;
 
@@ -155,11 +157,14 @@ void loadData() {
 		}
 	}
 
+	PhysicsManager::getInstance().addCube(
+		glm::vec3(50.0f, 0.0f, 50.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.0f);
+	
 	loaded_meshes_ids.clear();
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/cube/cube_wooden.obj",
 		aiPostProcessSteps(
-			//aiProcess_GenSmoothNormals |
+			aiProcess_GenSmoothNormals |
 			//aiProcess_CalcTangentSpace |
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices |
@@ -171,26 +176,29 @@ void loadData() {
 
 	std::vector<unsigned> bodies;
 	bodies.resize(loaded_meshes_ids.size());
-	
-	for (auto& it : bodies)
-		it = PhysicsManager::getInstance().addCube(
-			glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 20.0f, 0.0f), 1.0f);
 
-	g_entities.push_back(
-		{
-			objshader,
-			loaded_meshes_ids,
-			bodies,
-			std::vector<glm::mat4>(loaded_meshes_ids.size(),
-				glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f)))
-		}
-	);
+	for (unsigned i = 1; i < 5; i++) {
+		for (auto& it : bodies)
+			it = PhysicsManager::getInstance().addCube(
+				glm::vec3(1.0f, 1.0f, 1.0f),
+				glm::vec3((rand() % 80 - 40) * 1.0f, i * 20.0f, (rand() % 80 - 40) * 1.0f), 100.0f);
 
+		g_entities.push_back(
+			{
+				objshader,
+				loaded_meshes_ids,
+				bodies,
+				std::vector<glm::mat4>(loaded_meshes_ids.size(), glm::mat4(1.0f))
+			}
+		);
+	}
+	/*
+	loaded_meshes_ids.clear();
 	loader.importScene(
-		"../../../../GameEngineLearning/assets/sphere/sphere_brick.obj",
+		"../../../../GameEngineLearning/assets/sponza/mergedSponza.obj",
 		aiPostProcessSteps(
-			//aiProcess_GenSmoothNormals |
-			//aiProcess_CalcTangentSpace |
+			aiProcess_GenSmoothNormals |
+			aiProcess_CalcTangentSpace |
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices |
 			aiProcess_SortByPType |
@@ -199,7 +207,52 @@ void loadData() {
 		loaded_meshes_ids
 	);
 
-	glm::vec3 plight_pos(0.0f, 10.0f, 20.0f);
+	bodies.clear();
+	std::vector<glm::mat4> transforms(loaded_meshes_ids.size(), glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f)));
+
+	g_entities.push_back(
+		{
+			normalshader,
+			loaded_meshes_ids,
+			bodies,
+			transforms
+		}
+	);
+	*/
+	loaded_meshes_ids.clear();
+	loader.importScene(
+		"../../../../GameEngineLearning/assets/sphere/sphere_brick.obj",
+		aiPostProcessSteps(
+			aiProcess_GenSmoothNormals |
+			aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType |
+			aiProcess_FlipUVs
+		),
+		loaded_meshes_ids
+	);
+
+	bodies.clear();
+	bodies.resize(loaded_meshes_ids.size());
+
+	for (unsigned i = 1; i < 5; i++) {
+		for (auto& it : bodies)
+			it = PhysicsManager::getInstance().addSphere(
+				1.0f,
+				glm::vec3((rand() % 80 - 40) * 1.0f, i * 20.0f, (rand() % 80 - 40) * 1.0f), 250.0f);
+
+		g_entities.push_back(
+			{
+				normalshader,
+				loaded_meshes_ids,
+				bodies,
+				std::vector<glm::mat4>(loaded_meshes_ids.size(), glm::mat4(1.0f))
+			}
+		);
+	}
+
+	glm::vec3 plight_pos(0.0f, 10.0f, 0.0f);
 	glm::mat4 plight_proj =
 		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
 
@@ -207,8 +260,10 @@ void loadData() {
 		plight_pos,
 		64.0f,
 		1.0f,
-		0.007,
-		0.0002f,
+		//0.007,
+		//0.0002f,
+		0.0007,
+		0.00014,
 		glm::vec3(0.1f, 0.1f, 0.1f),
 		glm::vec3(1.0f, 1.0f, 1.0f),
 		glm::vec3(1.0f, 1.0f, 1.0f),

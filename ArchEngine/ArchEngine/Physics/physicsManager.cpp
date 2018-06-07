@@ -156,7 +156,7 @@ namespace Physics {
 	}
 
 	void PhysicsManager::update(float delta_time) {
-		m_world->stepSimulation(delta_time);
+		m_world->stepSimulation(delta_time, 10.0f);
 
 		auto objs = m_world->getCollisionObjectArray();
 
@@ -208,14 +208,41 @@ namespace Physics {
 		t.setIdentity();
 		t.setOrigin(btVector3(pos.x, pos.y, pos.z));
 
-		btBoxShape* cube = new btBoxShape(btVector3(sides.x, sides.y, sides.z));
+		btBoxShape* cube = new btBoxShape(
+			btVector3(sides.x, sides.y, sides.z));
 
 		btVector3 inertia(0.0f, 0.0f, 0.0f);
 		if (mass != 0.0f)
 			cube->calculateLocalInertia(mass, inertia);
 
 		btMotionState* motion = new btDefaultMotionState(t);
-		btRigidBody::btRigidBodyConstructionInfo info(mass, motion, cube, inertia);
+		btRigidBody::btRigidBodyConstructionInfo info(
+			mass, motion, cube, inertia);
+
+		info.m_friction = friction;
+		btRigidBody* body = new btRigidBody(info);
+
+		m_world->addRigidBody(body);
+
+		return m_world->getNumCollisionObjects() - 1;
+	}
+
+	unsigned PhysicsManager::addSphere(float radius,
+		const glm::vec3& pos, float mass, float friction) {
+		btTransform t;
+		t.setIdentity();
+		t.setOrigin(btVector3(pos.x, pos.y, pos.z));
+
+		btSphereShape* sphere = new btSphereShape(radius);
+
+		btVector3 inertia(0.0f, 0.0f, 0.0f);
+		if (mass != 0.0f)
+			sphere->calculateLocalInertia(mass, inertia);
+
+		btMotionState* motion = new btDefaultMotionState(t);
+		btRigidBody::btRigidBodyConstructionInfo info(
+			mass, motion, sphere, inertia);
+
 		info.m_friction = friction;
 		btRigidBody* body = new btRigidBody(info);
 

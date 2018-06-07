@@ -200,7 +200,7 @@ float calcPointShadows(int light_index) {
 	vec3 frag_to_light = f_frag_pos - u_point_lights[light_index].position;
 	float current_depth = length(frag_to_light);
     float shadow = 0.0;
-    float bias = 0.0015f;
+    float bias = 0.00015f;
     int samples = 20;
     float view_distance = length(u_view_pos - f_frag_pos);
 

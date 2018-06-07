@@ -79,6 +79,9 @@ namespace Physics {
 		//---------------------------------------------------------------- TEST
 		unsigned addCube(const glm::vec3& sides,
 			const glm::vec3& pos, float mass, float friction = 0.5f);
+
+		unsigned addSphere(float radius,
+			const glm::vec3& pos, float mass, float friction = 0.5f);
 		//---------------------------------------------------------------------
 
 	private:
