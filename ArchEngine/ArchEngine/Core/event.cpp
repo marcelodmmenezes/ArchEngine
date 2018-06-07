@@ -48,4 +48,14 @@ namespace Core {
 		obj1 = m_obj1;
 		obj2 = m_obj2;
 	}
+
+	ClosestRayTestEvent::ClosestRayTestEvent(long obj) :
+		IEvent(EVENT_RAY_TEST_CLOSEST), m_obj(obj) {}
+	ClosestRayTestEvent::~ClosestRayTestEvent() {}
+	EventType ClosestRayTestEvent::getType() const { return m_type; }
+	long ClosestRayTestEvent::getObjectId() { return m_obj; }
+
+	AllRayTestEvent::AllRayTestEvent() : IEvent(EVENT_RAY_TEST_ALL) {}
+	AllRayTestEvent::~AllRayTestEvent() {}
+	EventType AllRayTestEvent::getType() const { return m_type; }
 }

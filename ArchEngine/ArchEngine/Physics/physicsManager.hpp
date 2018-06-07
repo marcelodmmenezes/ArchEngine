@@ -90,6 +90,11 @@ namespace Physics {
 
 		void setGravity(const glm::vec3& gravity);
 
+		void closestObjectRayTest(const glm::vec3& pos,
+			const glm::vec3& front);
+		void allObjectsRayTest(const glm::vec3& pos, 
+			const glm::vec3& front);
+
 		//---------------------------------------------------------------- TEST
 		unsigned addCube(long id, const glm::vec3& sides,
 			const glm::vec3& pos, float mass, float friction = 0.5f);

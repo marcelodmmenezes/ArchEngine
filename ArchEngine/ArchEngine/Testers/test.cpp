@@ -50,6 +50,8 @@ void onInputActionEvent(EventPtr e);
 void onInputStateEvent(EventPtr e);
 void onInputRangeEvent(EventPtr e);
 void onCollisionEvent(EventPtr e);
+void onClosestRayTestEvent(EventPtr e);
+void onAllRayTestEvent(EventPtr e);
 
 
 int main(int argc, char* argv[]) {
@@ -80,6 +82,14 @@ int main(int argc, char* argv[]) {
 		listener.bind<&onCollisionEvent>();
 		EventManager::getInstance().addListener(
 			listener, EVENT_COLLISION);
+
+		listener.bind<&onClosestRayTestEvent>();
+		EventManager::getInstance().addListener(
+			listener, EVENT_RAY_TEST_CLOSEST);
+
+		listener.bind<&onAllRayTestEvent>();
+		EventManager::getInstance().addListener(
+			listener, EVENT_RAY_TEST_ALL);
 
 		InputManager::getInstance().pushContext("test1");
 
@@ -259,7 +269,8 @@ void loadData() {
 			it = PhysicsManager::getInstance().addSphere(
 				physics_id++,
 				1.0f,
-				glm::vec3((rand() % 80 - 40) * 1.0f, i * 20.0f, (rand() % 80 - 40) * 1.0f),
+				//glm::vec3((rand() % 80 - 40) * 1.0f, i * 20.0f, (rand() % 80 - 40) * 1.0f),
+				glm::vec3(0.0f, i * 40.0f, 0.0f),
 				1.0f);
 	}
 
@@ -386,7 +397,23 @@ void onCollisionEvent(EventPtr e) {
 	long id1, id2;
 	evnt->getObjectIds(id1, id2);
 
-	std::cout << id1 << " " << id2 << std::endl;
+	//std::cout << "Collision: " << id1 << " " << id2 << std::endl;
+}
+
+void onClosestRayTestEvent(EventPtr e) {
+	auto evnt = std::static_pointer_cast<ClosestRayTestEvent>(e);
+	std::cout << "ClosestRayTest: " << evnt->getObjectId() << std::endl;
+}
+
+void onAllRayTestEvent(EventPtr e) {
+	auto evnt = std::static_pointer_cast<AllRayTestEvent>(e);
+
+	std::cout << "AllRayTest: ";
+
+	for (auto& it : evnt->m_obj_ids)
+		std::cout << it << " ";
+
+	std::cout << std::endl;
 }
 
 

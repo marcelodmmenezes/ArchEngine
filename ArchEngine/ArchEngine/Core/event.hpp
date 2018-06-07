@@ -18,16 +18,12 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 
 namespace Core {
 	//------------------------------------------------------------- Event types
 	enum EventType {
-		//--- Test events
-		EVENT_TEST_1,
-		EVENT_TEST_2,
-		EVENT_TEST_3,
-
 		//--- Core events
 		EVENT_CORE_QUIT,
 		EVENT_CORE_TIMER,
@@ -41,8 +37,10 @@ namespace Core {
 		EVENT_INPUT_RANGE,
 		EVENT_INPUT_CONTEXT,
 
-		//--- Collision events
+		//--- Physics events
 		EVENT_COLLISION,
+		EVENT_RAY_TEST_CLOSEST,
+		EVENT_RAY_TEST_ALL,
 
 		//--- File watcher events
 		EVENT_FILE_MODIFIED,
@@ -125,6 +123,28 @@ namespace Core {
 	private:
 		long m_obj1;
 		long m_obj2;
+	};
+
+	class ClosestRayTestEvent : public IEvent {
+	public:
+		ClosestRayTestEvent(long obj);
+		~ClosestRayTestEvent();
+
+		EventType getType() const override;
+		long getObjectId();
+
+	private:
+		long m_obj;
+	};
+
+	class AllRayTestEvent : public IEvent {
+	public:
+		AllRayTestEvent();
+		~AllRayTestEvent();
+
+		EventType getType() const override;
+
+		std::vector<long> m_obj_ids;
 	};
 	//-------------------------------------------------------------------------
 }

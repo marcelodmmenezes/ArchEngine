@@ -229,6 +229,33 @@ namespace Physics {
 		m_world->setGravity(btVector3(gravity.x, gravity.y, gravity.z));
 	}
 
+	void PhysicsManager::closestObjectRayTest(const glm::vec3& pos,
+		const glm::vec3& front) {
+		btCollisionWorld::ClosestRayResultCallback
+			rayCallback(btVector3(pos.x, pos.y, pos.z),
+				btVector3(front.x, front.y, front.z));
+
+		m_world->rayTest(btVector3(pos.x, pos.y, pos.z),
+			btVector3(front.x, front.y, front.z), rayCallback);
+
+		if (rayCallback.hasHit()) {
+			auto obj = static_cast<PhysicsObject*>(
+				rayCallback.m_collisionObject->getUserPointer());
+
+			if (!obj)
+				return;
+
+			EventPtr evnt = std::make_shared<ClosestRayTestEvent>(
+				ClosestRayTestEvent(obj->id));
+			EventManager::getInstance().sendEvent(evnt);
+		}
+	}
+
+	void PhysicsManager::allObjectsRayTest(const glm::vec3& pos,
+		const glm::vec3& front) {
+
+	}
+
 	//---------------------------------------------------------------- TEST
 	unsigned PhysicsManager::addCube(long id, const glm::vec3& sides,
 		const glm::vec3& pos, float mass, float friction) {

@@ -172,6 +172,12 @@ namespace Core {
 			PhysicsManager::getInstance().update(
 				(float)m_timer.getDeltaTime());
 
+			//------------------------------------------------------------ TEST
+			PhysicsManager::getInstance().closestObjectRayTest(
+				glm::vec3(0.0f, 5.0f, 500.0f), glm::vec3(0.0f, 5.0f, -500.0f)
+			);
+			//-----------------------------------------------------------------
+
 			//------------------------------------------------- Scene rendering
 			GraphicsManager::getInstance().update(
 				(float)m_timer.getDeltaTime());
