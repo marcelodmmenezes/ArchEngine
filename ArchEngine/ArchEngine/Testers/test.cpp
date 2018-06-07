@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 06/06/2018                                                 *
+ * Last Modified: 07/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -49,6 +49,7 @@ void onContextEvent(EventPtr e);
 void onInputActionEvent(EventPtr e);
 void onInputStateEvent(EventPtr e);
 void onInputRangeEvent(EventPtr e);
+void onCollisionEvent(EventPtr e);
 
 
 int main(int argc, char* argv[]) {
@@ -76,6 +77,10 @@ int main(int argc, char* argv[]) {
 		EventManager::getInstance().addListener(
 			listener, EVENT_INPUT_RANGE);
 
+		listener.bind<&onCollisionEvent>();
+		EventManager::getInstance().addListener(
+			listener, EVENT_COLLISION);
+
 		InputManager::getInstance().pushContext("test1");
 
 		Engine::getInstance().run();
@@ -92,6 +97,8 @@ int main(int argc, char* argv[]) {
 
 void loadData() {
 	srand(time(nullptr));
+
+	long physics_id = 0l;
 
 	AssimpLoader loader;
 	std::vector<unsigned> loaded_meshes_ids;
@@ -157,9 +164,9 @@ void loadData() {
 		}
 	}
 
-	PhysicsManager::getInstance().addCube(
+	PhysicsManager::getInstance().addCube(physics_id++,
 		glm::vec3(50.0f, 0.0f, 50.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.0f);
-	
+
 	loaded_meshes_ids.clear();
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/cube/cube_wooden.obj",
@@ -178,11 +185,6 @@ void loadData() {
 	bodies.resize(loaded_meshes_ids.size());
 
 	for (unsigned i = 1; i < 5; i++) {
-		for (auto& it : bodies)
-			it = PhysicsManager::getInstance().addCube(
-				glm::vec3(1.0f, 1.0f, 1.0f),
-				glm::vec3((rand() % 80 - 40) * 1.0f, i * 20.0f, (rand() % 80 - 40) * 1.0f), 100.0f);
-
 		g_entities.push_back(
 			{
 				objshader,
@@ -191,6 +193,13 @@ void loadData() {
 				std::vector<glm::mat4>(loaded_meshes_ids.size(), glm::mat4(1.0f))
 			}
 		);
+
+		for (auto& it : g_entities[g_entities.size() - 1].physics_objects)
+			it = PhysicsManager::getInstance().addCube(
+				physics_id++,
+				glm::vec3(1.0f, 1.0f, 1.0f),
+				glm::vec3((rand() % 80 - 40) * 1.0f, i * 20.0f, (rand() % 80 - 40) * 1.0f),
+				1.0f);
 	}
 	/*
 	loaded_meshes_ids.clear();
@@ -237,11 +246,6 @@ void loadData() {
 	bodies.resize(loaded_meshes_ids.size());
 
 	for (unsigned i = 1; i < 5; i++) {
-		for (auto& it : bodies)
-			it = PhysicsManager::getInstance().addSphere(
-				1.0f,
-				glm::vec3((rand() % 80 - 40) * 1.0f, i * 20.0f, (rand() % 80 - 40) * 1.0f), 250.0f);
-
 		g_entities.push_back(
 			{
 				normalshader,
@@ -250,6 +254,13 @@ void loadData() {
 				std::vector<glm::mat4>(loaded_meshes_ids.size(), glm::mat4(1.0f))
 			}
 		);
+
+		for (auto& it : g_entities[g_entities.size() - 1].physics_objects)
+			it = PhysicsManager::getInstance().addSphere(
+				physics_id++,
+				1.0f,
+				glm::vec3((rand() % 80 - 40) * 1.0f, i * 20.0f, (rand() % 80 - 40) * 1.0f),
+				1.0f);
 	}
 
 	glm::vec3 plight_pos(0.0f, 10.0f, 0.0f);
@@ -367,6 +378,15 @@ void onInputRangeEvent(EventPtr e) {
 		camera->look(0.0f, (float)evnt->getValue().m_value);
 		break;
 	}
+}
+
+void onCollisionEvent(EventPtr e) {
+	auto evnt = std::static_pointer_cast<CollisionEvent>(e);
+
+	long id1, id2;
+	evnt->getObjectIds(id1, id2);
+
+	std::cout << id1 << " " << id2 << std::endl;
 }
 
 

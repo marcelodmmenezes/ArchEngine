@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 20/05/2018                                                 *
+ * Last Modified: 07/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -40,6 +40,9 @@ namespace Core {
 		EVENT_INPUT_STATE,
 		EVENT_INPUT_RANGE,
 		EVENT_INPUT_CONTEXT,
+
+		//--- Collision events
+		EVENT_COLLISION,
 
 		//--- File watcher events
 		EVENT_FILE_MODIFIED,
@@ -104,6 +107,24 @@ namespace Core {
 	private:
 		int m_width;
 		int m_height;
+	};
+	//-------------------------------------------------------------------------
+
+
+	//-------------------
+	//---- Physics events
+	//-------------------
+	class CollisionEvent : public IEvent {
+	public:
+		CollisionEvent(long obj1, long obj2);
+		~CollisionEvent();
+
+		EventType getType() const override;
+		void getObjectIds(long& obj1, long& obj2);
+
+	private:
+		long m_obj1;
+		long m_obj2;
 	};
 	//-------------------------------------------------------------------------
 }

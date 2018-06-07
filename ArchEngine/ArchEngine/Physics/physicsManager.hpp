@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 06/06/2018                                                 *
+ * Last Modified: 07/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -17,6 +17,7 @@
 
 #include "../API/entity.hpp"
 #include "../Config/engineMacros.hpp"
+#include "../Core/eventManager.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -24,7 +25,6 @@
 #include <btBulletDynamicsCommon.h>
 #include <BulletSoftBody/btSoftBody.h>
 
-#include <map>
 #include <string>
 #include <vector>
 
@@ -54,6 +54,20 @@ namespace Physics {
 		NNGC_SOLVER
 	};
 
+	//----------------------------------- Bullet collision object encapsulation
+	enum PhysicsObjectType {
+		PHYSICS_OBJECT_CUBE,
+		PHYSICS_OBJECT_SPHERE
+	};
+
+	struct PhysicsObject {
+		PhysicsObjectType type;
+		// User specified id
+		long id;
+		// Id in m_user_objects
+		unsigned physics_manager_id;
+	};
+	//-------------------------------------------------------------------------
 
 	class PhysicsManager {
 	public:
@@ -77,11 +91,11 @@ namespace Physics {
 		void setGravity(const glm::vec3& gravity);
 
 		//---------------------------------------------------------------- TEST
-		unsigned addCube(const glm::vec3& sides,
+		unsigned addCube(long id, const glm::vec3& sides,
 			const glm::vec3& pos, float mass, float friction = 0.5f);
 
-		unsigned addSphere(float radius,
-			const glm::vec3& pos, float mass, float friction = 0.5f);
+		unsigned addSphere(long id, float radius, const glm::vec3& pos,
+			float mass, float friction = 0.5f);
 		//---------------------------------------------------------------------
 
 	private:
@@ -94,6 +108,8 @@ namespace Physics {
 		PhysicsManager();
 		
 		State m_state;
+
+		std::vector<PhysicsObject*> m_user_objects;
 
 		btDynamicsWorld* m_world;
 		btDispatcher* m_dispatcher;

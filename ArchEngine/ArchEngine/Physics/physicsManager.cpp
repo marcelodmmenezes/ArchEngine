@@ -14,6 +14,7 @@
 #include "physicsManager.hpp"
 
 
+using namespace Core;
 using namespace Script;
 using namespace Utils;
 
@@ -29,6 +30,27 @@ namespace Physics {
 			m[8], m[9], m[10], m[11],
 			m[12], m[13], m[14], m[15]
 		);
+	}
+
+	bool collisionCallback(btManifoldPoint& cp,
+		const btCollisionObjectWrapper *obj1, int id1, int index1,
+		const btCollisionObjectWrapper *obj2, int id2, int index2) {
+		auto pobj1 =
+			static_cast<PhysicsObject*>(
+				obj1->getCollisionObject()->getUserPointer());
+
+		auto pobj2 =
+			static_cast<PhysicsObject*>(
+				obj2->getCollisionObject()->getUserPointer());
+
+		if (!pobj1 || !pobj2)
+			return false;
+
+		EventPtr evnt = std::make_shared<CollisionEvent>(
+			CollisionEvent(pobj1->id, pobj2->id));
+		EventManager::getInstance().sendEvent(evnt);
+
+		return false;
 	}
 
 	PhysicsManager::PhysicsManager() : m_state(CONSTRUCTED) {
@@ -108,6 +130,8 @@ namespace Physics {
 			break;
 		}
 
+		gContactAddedCallback = Physics::collisionCallback;
+
 		m_state = INITIALIZED;
 
 		return true;
@@ -161,12 +185,16 @@ namespace Physics {
 		auto objs = m_world->getCollisionObjectArray();
 
 		for (auto& it : g_entities)
-			for (unsigned i = 0; i < it.bodies.size(); i++)
-				btTransformToGlmMat4(objs[it.bodies[i]]->getWorldTransform(),
+			for (unsigned i = 0; i < it.physics_objects.size(); i++)
+				btTransformToGlmMat4(
+					objs[it.physics_objects[i]]->getWorldTransform(),
 					it.transforms[i]);
 	}
 
 	void PhysicsManager::destroy() {
+		for (auto& it : m_user_objects)
+			delete it;
+
 		for (int i = m_world->getNumCollisionObjects() - 1; i >= 0; i--) {
 			btCollisionObject* obj = m_world->getCollisionObjectArray()[i];
 
@@ -202,7 +230,7 @@ namespace Physics {
 	}
 
 	//---------------------------------------------------------------- TEST
-	unsigned PhysicsManager::addCube(const glm::vec3& sides,
+	unsigned PhysicsManager::addCube(long id, const glm::vec3& sides,
 		const glm::vec3& pos, float mass, float friction) {
 		btTransform t;
 		t.setIdentity();
@@ -222,12 +250,26 @@ namespace Physics {
 		info.m_friction = friction;
 		btRigidBody* body = new btRigidBody(info);
 
+		// TODO: make dynamic later
+		body->setCollisionFlags(body->getCollisionFlags() |
+			btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+
+		m_user_objects.push_back(
+			new PhysicsObject {
+				PHYSICS_OBJECT_CUBE,
+				id,
+				m_user_objects.size()
+			}
+		);
+
+		body->setUserPointer(m_user_objects[m_user_objects.size() - 1]);
+
 		m_world->addRigidBody(body);
 
 		return m_world->getNumCollisionObjects() - 1;
 	}
 
-	unsigned PhysicsManager::addSphere(float radius,
+	unsigned PhysicsManager::addSphere(long id, float radius,
 		const glm::vec3& pos, float mass, float friction) {
 		btTransform t;
 		t.setIdentity();
@@ -245,6 +287,20 @@ namespace Physics {
 
 		info.m_friction = friction;
 		btRigidBody* body = new btRigidBody(info);
+
+		// TODO: make dynamic later
+		body->setCollisionFlags(body->getCollisionFlags() |
+			btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+
+		m_user_objects.push_back(
+			new PhysicsObject{
+				PHYSICS_OBJECT_SPHERE,
+				id,
+				m_user_objects.size()
+			}
+		);
+
+		body->setUserPointer(m_user_objects[m_user_objects.size() - 1]);
 
 		m_world->addRigidBody(body);
 

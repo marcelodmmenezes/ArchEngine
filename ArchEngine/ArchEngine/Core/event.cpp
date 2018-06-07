@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 06/05/2018                                                       *
- * Last Modified: 20/05/2018                                                 *
+ * Last Modified: 07/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -37,5 +37,15 @@ namespace Core {
 	void WindowResizeEvent::getSize(int& width, int& height) {
 		width = m_width;
 		height = m_height;
+	}
+
+	//-------------------------------------------------------- Collision events
+	CollisionEvent::CollisionEvent(long obj1, long obj2) :
+		IEvent(EVENT_COLLISION), m_obj1(obj1), m_obj2(obj2) {}
+	CollisionEvent::~CollisionEvent() {}
+	EventType CollisionEvent::getType() const { return m_type; }
+	void CollisionEvent::getObjectIds(long& obj1, long& obj2) {
+		obj1 = m_obj1;
+		obj2 = m_obj2;
 	}
 }
