@@ -156,6 +156,8 @@ namespace Core {
 			InputManager::getInstance().update(m_running);
 
 			//----------------------------------------------- Game logic update
+			// TODO: framerate independent game update
+
 			/*update_loops = 0;
 
 			while (m_timer.getCurrentTicks() > next_game_tick &&

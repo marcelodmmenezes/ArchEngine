@@ -108,6 +108,10 @@ namespace Graphics {
 
 		m_active_camera = active_camera;
 
+		//---------------------------------------------------------------- TEST
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//---------------------------------------------------------------------
+
 		return true;
 	}
 
@@ -140,6 +144,7 @@ namespace Graphics {
 		renderScene();
 
 		//---------------------------------------------------------------- TEST
+		/*
 		m_shaders[0].bind();
 		m_shaders[0].setMat4("u_projection_matrix", m_projection);
 		m_shaders[0].setMat4("u_view_matrix", m_cameras[m_active_camera].getViewMatrix());
@@ -147,6 +152,15 @@ namespace Graphics {
 		m_shaders[0].setVec3("u_color", glm::vec3(1.0f, 1.0f, 1.0f));
 		m_shaders[0].update();
 		m_meshes[m_meshes.size() - 1].first.draw();
+		*/
+		m_shaders[3].bind();
+		m_shaders[3].setMat4("u_projection_matrix", m_projection);
+		m_shaders[3].setMat4("u_view_matrix", m_cameras[m_active_camera].getViewMatrix());
+		m_shaders[3].setMat4("u_model_matrix", glm::mat4(1.0f));
+		m_shaders[3].setMat3("u_trn_inv_up_model", glm::transpose(glm::inverse(glm::mat3(1.0f))));
+		m_shaders[3].setFloat("u_magnitude", 1.0f);
+		m_shaders[3].update();
+		m_meshes[0].first.draw(GL_TRIANGLES);
 		//---------------------------------------------------------------------
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
@@ -176,7 +190,7 @@ namespace Graphics {
 
 						m_shaders[it.depth_shader].update();
 
-						m_meshes[entity.meshes[i]].first.draw();
+						m_meshes[entity.meshes[i]].first.draw(GL_TRIANGLES);
 					}
 				}
 			}
@@ -208,7 +222,7 @@ namespace Graphics {
 
 						m_shaders[it.depth_shader].update();
 
-						m_meshes[entity.meshes[i]].first.draw();
+						m_meshes[entity.meshes[i]].first.draw(GL_TRIANGLES);
 					}
 				}
 			}
@@ -249,7 +263,7 @@ namespace Graphics {
 
 				m_shaders[it.shader].update();
 
-				m_meshes[it.meshes[i]].first.draw();
+				m_meshes[it.meshes[i]].first.draw(GL_TRIANGLES);
 			}
 		}
 	}

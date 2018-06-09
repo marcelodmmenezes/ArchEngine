@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 01/06/2018                                                 *
+ * Last Modified: 09/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -463,12 +463,13 @@ namespace Graphics {
 				nullptr, info_log);
 			glDeleteProgram(m_program_id);
 
-			delete info_log;
-
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
-				"\n\n    Program linking failed\n");
+				"\n\n    Program linking failed\n" +
+				std::string(info_log));
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+
+			delete info_log;
 
 			return false;
 		}

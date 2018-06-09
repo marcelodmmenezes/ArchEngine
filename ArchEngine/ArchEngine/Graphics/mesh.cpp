@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/05/2018                                                       *
- * Last Modified: 22/05/2018                                                 *
+ * Last Modified: 09/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -268,9 +268,9 @@ namespace Graphics {
 		glBindVertexArray(0);
 	}
 
-	void Mesh::draw() {
+	void Mesh::draw(GLenum primitive) {
 		glBindVertexArray(m_vao_id);
-		glDrawElements(GL_TRIANGLES, m_number_of_indices, GL_UNSIGNED_INT, 0);
+		glDrawElements(primitive, m_number_of_indices, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 	}
 

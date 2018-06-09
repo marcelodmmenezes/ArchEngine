@@ -59,7 +59,7 @@ namespace Graphics {
 			const std::vector<InstancedAnimatedVertex>& vertices,
 			const std::vector<unsigned>& indices);
 
-		void draw();
+		void draw(GLenum primitive);
 		void instancedDraw(int amount);
 
 		void destroy();

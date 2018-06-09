@@ -149,6 +149,7 @@
     <ClInclude Include="Graphics\skeleton.hpp" />
     <ClInclude Include="Graphics\stb_image.hpp" />
     <ClInclude Include="Graphics\materialManager.hpp" />
+    <ClInclude Include="Graphics\terrainGenerator.hpp" />
     <ClInclude Include="Graphics\uniforms.hpp" />
     <ClInclude Include="OS\inputContext.hpp" />
     <ClInclude Include="OS\inputManager.hpp" />
@@ -181,6 +182,7 @@
     <ClCompile Include="Graphics\skeleton.cpp" />
     <ClCompile Include="Graphics\stb_image.cpp" />
     <ClCompile Include="Graphics\materialManager.cpp" />
+    <ClCompile Include="Graphics\terrainGenerator.cpp" />
     <ClCompile Include="Graphics\uniforms.cpp" />
     <ClCompile Include="OS\inputContext.cpp" />
     <ClCompile Include="OS\inputManager.cpp" />
@@ -205,6 +207,9 @@
     <None Include="Shaders\cubemapvs.glsl" />
     <None Include="Shaders\depthmapfs.glsl" />
     <None Include="Shaders\depthmapvs.glsl" />
+    <None Include="Shaders\normaldebugfs.glsl" />
+    <None Include="Shaders\normaldebuggs.glsl" />
+    <None Include="Shaders\normaldebugvs.glsl" />
     <None Include="Shaders\objfs.glsl" />
     <None Include="Shaders\objvs.glsl" />
     <None Include="Shaders\cubedepthmapfs.glsl" />

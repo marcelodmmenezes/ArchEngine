@@ -18,6 +18,7 @@
 #include "../Core/engine.hpp"
 #include "../Graphics/assimpLoader.hpp"
 #include "../Graphics/graphicsManager.hpp"
+#include "../Graphics/terrainGenerator.hpp"
 #include "../OS/inputManager.hpp"
 #include "../Physics/physicsManager.hpp"
 #include "../Utils/serviceLocator.hpp"
@@ -106,13 +107,6 @@ int main(int argc, char* argv[]) {
 }
 
 void loadData() {
-	srand(time(nullptr));
-
-	long physics_id = 0l;
-
-	AssimpLoader loader;
-	std::vector<unsigned> loaded_meshes_ids;
-
 	GraphicsManager::getInstance().setProjectionMatrix(
 		glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f));
 
@@ -123,11 +117,6 @@ void loadData() {
 
 	GraphicsManager::getInstance().setActiveCamera(
 		GraphicsManager::getInstance().addCamera(camera));
-
-	unsigned colorshader = GraphicsManager::getInstance().addShader(
-		"../../ArchEngine/Shaders/colorvs.glsl",
-		"../../ArchEngine/Shaders/colorfs.glsl"
-	);
 
 	unsigned objshader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/shadowvs.glsl",
@@ -145,134 +134,11 @@ void loadData() {
 		"../../ArchEngine/Shaders/cubedepthmapfs.glsl"
 	);
 
-	loader.importScene(
-		"../../../../GameEngineLearning/assets/plane/plane_brick.obj",
-		aiPostProcessSteps(
-			aiProcess_GenSmoothNormals |
-			aiProcess_CalcTangentSpace |
-			aiProcess_Triangulate |
-			aiProcess_JoinIdenticalVertices |
-			aiProcess_SortByPType |
-			aiProcess_FlipUVs
-		),
-		loaded_meshes_ids
+	unsigned normal_debug_shader = GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Shaders/normaldebugvs.glsl",
+		"../../ArchEngine/Shaders/normaldebuggs.glsl",
+		"../../ArchEngine/Shaders/normaldebugfs.glsl"
 	);
-
-	for (int i = -2; i <= 2; i++) {
-		for (int k = -2; k <= 2; k++) {
-			g_entities.push_back(
-				{
-					normalshader,
-					loaded_meshes_ids,
-					std::vector<unsigned>(),
-					std::vector<glm::mat4>(loaded_meshes_ids.size(),
-						glm::scale(glm::translate(glm::mat4(1.0f),
-							glm::vec3(i * 20.0f, 0.0f, k * 20.0f)),
-							glm::vec3(10.0f, 1.0f, 10.0f)))
-				}
-			);
-		}
-	}
-
-	PhysicsManager::getInstance().addCube(physics_id++,
-		glm::vec3(50.0f, 0.0f, 50.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.0f);
-
-	loaded_meshes_ids.clear();
-	loader.importScene(
-		"../../../../GameEngineLearning/assets/cube/cube_wooden.obj",
-		aiPostProcessSteps(
-			aiProcess_GenSmoothNormals |
-			//aiProcess_CalcTangentSpace |
-			aiProcess_Triangulate |
-			aiProcess_JoinIdenticalVertices |
-			aiProcess_SortByPType |
-			aiProcess_FlipUVs
-		),
-		loaded_meshes_ids
-	);
-
-	std::vector<unsigned> bodies;
-	bodies.resize(loaded_meshes_ids.size());
-
-	for (unsigned i = 1; i < 5; i++) {
-		g_entities.push_back(
-			{
-				objshader,
-				loaded_meshes_ids,
-				bodies,
-				std::vector<glm::mat4>(loaded_meshes_ids.size(), glm::mat4(1.0f))
-			}
-		);
-
-		for (auto& it : g_entities[g_entities.size() - 1].physics_objects)
-			it = PhysicsManager::getInstance().addCube(
-				physics_id++,
-				glm::vec3(1.0f, 1.0f, 1.0f),
-				glm::vec3((rand() % 80 - 40) * 1.0f, i * 20.0f, (rand() % 80 - 40) * 1.0f),
-				1.0f);
-	}
-	/*
-	loaded_meshes_ids.clear();
-	loader.importScene(
-		"../../../../GameEngineLearning/assets/sponza/mergedSponza.obj",
-		aiPostProcessSteps(
-			aiProcess_GenSmoothNormals |
-			aiProcess_CalcTangentSpace |
-			aiProcess_Triangulate |
-			aiProcess_JoinIdenticalVertices |
-			aiProcess_SortByPType |
-			aiProcess_FlipUVs
-		),
-		loaded_meshes_ids
-	);
-
-	bodies.clear();
-	std::vector<glm::mat4> transforms(loaded_meshes_ids.size(), glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f)));
-
-	g_entities.push_back(
-		{
-			normalshader,
-			loaded_meshes_ids,
-			bodies,
-			transforms
-		}
-	);
-	*/
-	loaded_meshes_ids.clear();
-	loader.importScene(
-		"../../../../GameEngineLearning/assets/sphere/sphere_brick.obj",
-		aiPostProcessSteps(
-			aiProcess_GenSmoothNormals |
-			aiProcess_CalcTangentSpace |
-			aiProcess_Triangulate |
-			aiProcess_JoinIdenticalVertices |
-			aiProcess_SortByPType |
-			aiProcess_FlipUVs
-		),
-		loaded_meshes_ids
-	);
-
-	bodies.clear();
-	bodies.resize(loaded_meshes_ids.size());
-
-	for (unsigned i = 1; i < 5; i++) {
-		g_entities.push_back(
-			{
-				normalshader,
-				loaded_meshes_ids,
-				bodies,
-				std::vector<glm::mat4>(loaded_meshes_ids.size(), glm::mat4(1.0f))
-			}
-		);
-
-		for (auto& it : g_entities[g_entities.size() - 1].physics_objects)
-			it = PhysicsManager::getInstance().addSphere(
-				physics_id++,
-				1.0f,
-				//glm::vec3((rand() % 80 - 40) * 1.0f, i * 20.0f, (rand() % 80 - 40) * 1.0f),
-				glm::vec3(0.0f, 40.0f, i * 5.0f),
-				1.0f);
-	}
 
 	glm::vec3 plight_pos(0.0f, 10.0f, 0.0f);
 	glm::mat4 plight_proj =
@@ -282,8 +148,6 @@ void loadData() {
 		plight_pos,
 		64.0f,
 		1.0f,
-		//0.007,
-		//0.0002f,
 		0.0007,
 		0.00014,
 		glm::vec3(0.1f, 0.1f, 0.1f),
@@ -310,6 +174,37 @@ void loadData() {
 	};
 
 	GraphicsManager::getInstance().addPointLight(plight);
+
+	TerrainGenerator tg;
+	unsigned terrain = tg.genHeightMapTerrain(10, 10,
+		"../../../../GameEngineLearning/assets/miscTextures/heightMaps/height_map.png");
+
+	std::vector<unsigned> loaded_meshes_ids;
+	AssimpLoader loader;
+	loader.importScene(
+		"../../../../GameEngineLearning/assets/plane/plane_brick.obj",
+		aiPostProcessSteps(
+			aiProcess_GenSmoothNormals |
+			//aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType |
+			aiProcess_FlipUVs
+		),
+		loaded_meshes_ids
+	);
+
+	loaded_meshes_ids.clear();
+	loaded_meshes_ids.push_back(terrain);
+
+	g_entities.push_back(
+		{
+			objshader,
+			loaded_meshes_ids,
+			std::vector<unsigned>(),
+			std::vector<glm::mat4>(1, glm::mat4(1.0f))
+		}
+	);
 }
 
 void onContextEvent(EventPtr e) {

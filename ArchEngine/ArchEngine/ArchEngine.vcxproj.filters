@@ -126,6 +126,9 @@
     <ClInclude Include="Graphics\skeleton.hpp">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\terrainGenerator.hpp">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -210,6 +213,9 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\skeleton.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\terrainGenerator.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -325,6 +331,15 @@
     </None>
     <None Include="Testers\physicsConfig.lua">
       <Filter>Testers</Filter>
+    </None>
+    <None Include="Shaders\normaldebugfs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\normaldebuggs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\normaldebugvs.glsl">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>
