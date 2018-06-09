@@ -66,11 +66,11 @@ namespace Graphics {
 
 				// Indices
 				indices.push_back(index);
-				indices.push_back(next_row_index);
 				indices.push_back(index + 1);
+				indices.push_back(next_row_index);
 
-				indices.push_back(index + 1);
 				indices.push_back(next_row_index);
+				indices.push_back(index + 1);
 				indices.push_back(next_row_index + 1);
 			}
 		}
@@ -108,7 +108,7 @@ namespace Graphics {
 	}
 
 	void TerrainGenerator::calcNormals(int terrain_width, int terrain_height,
-		std::vector<BasicVertex>& vertices) {/*
+		std::vector<BasicVertex>& vertices) {
 		// Corner normals
 		// "0, 0"
 		vertices[0].normal = glm::cross(
@@ -136,8 +136,8 @@ namespace Graphics {
 			vertices[(terrain_width - 1) * terrain_height - 1].position -
 				vertices[terrain_height * terrain_width - 1].position
 		);
-		*/
-		/*
+		
+		
 		// Border normals
 		for (int i = 1; i < terrain_width - 1; i++) {
 			vertices[i].normal = glm::mix(
@@ -175,7 +175,7 @@ namespace Graphics {
 				0.5f
 			);
 		}
-		*/
+		
 
 		for (int i = 1; i < terrain_height - 1; i++) {
 			vertices[terrain_width * i].normal = glm::mix(
@@ -207,7 +207,7 @@ namespace Graphics {
 			);*/
 		}
 		
-		/*
+		
 		// Interior normals
 		for (int i = 1; i < terrain_width - 1; i++) {
 			for (int j = 1; j < terrain_height - 1; j++) {
@@ -221,6 +221,6 @@ namespace Graphics {
 						vertices[index].position
 				);
 			}
-		}*/
+		}
 	}
 }

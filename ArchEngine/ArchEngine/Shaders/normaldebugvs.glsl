@@ -12,5 +12,5 @@ out vec3 g_normal;
 
 void main() {
 	gl_Position = u_projection_matrix * u_view_matrix * u_model_matrix * vec4(v_position, 1.0f);
-	g_normal = normalize(vec3(u_projection_matrix * vec4(u_trn_inv_up_model * v_normal, 0.0f)));
+	g_normal = normalize(vec3(u_projection_matrix * u_view_matrix * vec4(u_trn_inv_up_model * v_normal, 0.0f)));
 }

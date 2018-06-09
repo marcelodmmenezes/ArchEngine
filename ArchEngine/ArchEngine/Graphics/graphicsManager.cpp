@@ -153,6 +153,7 @@ namespace Graphics {
 		m_shaders[0].update();
 		m_meshes[m_meshes.size() - 1].first.draw();
 		*/
+		glDisable(GL_CULL_FACE);
 		m_shaders[3].bind();
 		m_shaders[3].setMat4("u_projection_matrix", m_projection);
 		m_shaders[3].setMat4("u_view_matrix", m_cameras[m_active_camera].getViewMatrix());
@@ -161,6 +162,7 @@ namespace Graphics {
 		m_shaders[3].setFloat("u_magnitude", 1.0f);
 		m_shaders[3].update();
 		m_meshes[0].first.draw(GL_TRIANGLES);
+		glEnable(GL_CULL_FACE);
 		//---------------------------------------------------------------------
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
