@@ -4,9 +4,12 @@
  * Representation of different kinds of terrains. Procedurally generated or  *
  * created with a height map.                                                *
  *                                                                           *
+ * Based in:                                                                 *
+ * - (http://www.lighthouse3d.com/opengl/terrain/index.php?introduction)     *
+ *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 08/06/2018                                                       *
- * Last Modified: 09/06/2018                                                 *
+ * Last Modified: 10/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -28,6 +31,7 @@ namespace Graphics {
 	class TerrainGenerator {
 	public:
 		unsigned genHeightMapTerrain(int terrain_width, int terrain_length,
+			float block_width, float block_length, float maximum_height,
 			const std::string& height_map_path);
 
 		// Procedural generation
@@ -36,9 +40,6 @@ namespace Graphics {
 		void genMPDTerrain();
 
 	private:
-		unsigned char* rgbToGreyScale(unsigned char* image,
-			int width, int height, int size_of_pixel);
-
 		void calcNormals(int terrain_width, int terrain_length,
 			std::vector<BasicVertex>& vertices);
 	};

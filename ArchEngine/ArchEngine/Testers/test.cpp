@@ -176,7 +176,7 @@ void loadData() {
 	GraphicsManager::getInstance().addPointLight(plight);
 
 	TerrainGenerator tg;
-	unsigned terrain = tg.genHeightMapTerrain(5, 15,
+	unsigned terrain = tg.genHeightMapTerrain(100, 100, 5, 5, 30.0f,
 		"../../../../GameEngineLearning/assets/miscTextures/heightMaps/height_map.png");
 
 	std::vector<unsigned> loaded_meshes_ids;
