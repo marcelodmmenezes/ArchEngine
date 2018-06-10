@@ -108,7 +108,7 @@ namespace Graphics {
 	}
 
 	void TerrainGenerator::calcNormals(int terrain_width, int terrain_length,
-		std::vector<BasicVertex>& vertices) {/*
+		std::vector<BasicVertex>& vertices) {
 		// Corner normals
 		// "0, 0"
 		vertices[0].normal = glm::cross(
@@ -175,7 +175,6 @@ namespace Graphics {
 				0.5f
 			);
 		}
-		*/
 		
 		for (int i = 1; i < terrain_length - 1; i++) {
 			vertices[terrain_width * i].normal = glm::mix(
@@ -193,21 +192,22 @@ namespace Graphics {
 				),
 				0.5f
 			);
-			
-			//vertices[terrain_width * (i + 1) - 1].normal = glm::vec3(0.0f, 1.0f, 0.0f);
-				/*glm::mix(
+
+			vertices[terrain_width * (i + 1) - 1].normal = glm::mix(
 				glm::cross(
-					vertices[terrain_width * i].position -
-						vertices[terrain_width * i].position,
-					vertices[terrain_width * (i + 1) - 1].position -
-						vertices[terrain_width * i - 1].position),
+					vertices[terrain_width * i - 1].position -
+						vertices[terrain_width * (i + 1) - 1].position,
+					vertices[terrain_width * (i + 1) - 2].position -
+						vertices[terrain_width * (i + 1) - 1].position
+				),
 				glm::cross(
-					vertices[terrain_width * (i - 1) - 1].position -
-						vertices[terrain_width * i - 1].position,
-					vertices[terrain_width * i].position -
-						vertices[terrain_width * i - 1].position),
+					vertices[terrain_width * (i + 1) - 2].position -
+						vertices[terrain_width * (i + 1) - 1].position,
+					vertices[terrain_width * (i + 2) - 1].position -
+						vertices[terrain_width * (i + 1) - 1].position
+				),
 				0.5f
-			);*/
+			);
 		}
 		
 		/*
