@@ -140,8 +140,12 @@ namespace Graphics {
 		for (auto& it : m_cameras)
 			it.m_delta_time = delta_time;
 
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // TEST
 		renderDepthMaps();
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // TEST
+		glDisable(GL_CULL_FACE); // TEST
 		renderScene();
+		glEnable(GL_CULL_FACE); // TEST
 
 		//---------------------------------------------------------------- TEST
 		/*
@@ -153,16 +157,16 @@ namespace Graphics {
 		m_shaders[0].update();
 		m_meshes[m_meshes.size() - 1].first.draw();
 		*/
-		glDisable(GL_CULL_FACE);
+
+		glDisable(GL_CULL_FACE); // TEST
 		m_shaders[3].bind();
 		m_shaders[3].setMat4("u_projection_matrix", m_projection);
 		m_shaders[3].setMat4("u_view_matrix", m_cameras[m_active_camera].getViewMatrix());
 		m_shaders[3].setMat4("u_model_matrix", glm::mat4(1.0f));
-		m_shaders[3].setMat3("u_trn_inv_up_model", glm::transpose(glm::inverse(glm::mat3(1.0f))));
 		m_shaders[3].setFloat("u_magnitude", 1.0f);
 		m_shaders[3].update();
 		m_meshes[0].first.draw(GL_TRIANGLES);
-		glEnable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE); // TEST
 		//---------------------------------------------------------------------
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR

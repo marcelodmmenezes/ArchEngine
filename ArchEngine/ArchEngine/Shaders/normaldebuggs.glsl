@@ -3,14 +3,14 @@
 layout (triangles) in;
 layout (line_strip, max_vertices = 6) out;
 
-in vec3 g_normal[];
+in vec4 g_normal[];
 
 uniform float u_magnitude;
 
 void generateLine(int id) {
 	gl_Position = gl_in[id].gl_Position;
 	EmitVertex();
-	gl_Position = gl_in[id].gl_Position + vec4(g_normal[id], 0.0f) * u_magnitude;
+	gl_Position = gl_in[id].gl_Position + g_normal[id] * u_magnitude;
 	EmitVertex();
 	EndPrimitive();
 }

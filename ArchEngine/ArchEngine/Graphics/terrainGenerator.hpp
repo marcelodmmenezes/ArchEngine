@@ -27,7 +27,7 @@
 namespace Graphics {
 	class TerrainGenerator {
 	public:
-		unsigned genHeightMapTerrain(int terrain_width, int terrain_height,
+		unsigned genHeightMapTerrain(int terrain_width, int terrain_length,
 			const std::string& height_map_path);
 
 		// Procedural generation
@@ -39,7 +39,7 @@ namespace Graphics {
 		unsigned char* rgbToGreyScale(unsigned char* image,
 			int width, int height, int size_of_pixel);
 
-		void calcNormals(int terrain_width, int terrain_height,
+		void calcNormals(int terrain_width, int terrain_length,
 			std::vector<BasicVertex>& vertices);
 	};
 }
