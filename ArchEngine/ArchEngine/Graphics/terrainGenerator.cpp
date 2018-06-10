@@ -210,20 +210,47 @@ namespace Graphics {
 			);
 		}
 		
-		/*
 		// Interior normals
 		for (int i = 1; i < terrain_width - 1; i++) {
-			for (int j = 1; j < terrain_height - 1; j++) {
-				int index = i * terrain_width + j;
-				int next_row_index = (i + 1) * terrain_width + j;
+			for (int j = 1; j < terrain_length - 1; j++) {
+				int index = j * terrain_width + i;
 
-				vertices[index].normal = glm::cross(
-					vertices[index + 1].position -
+				glm::vec3 vec1 = glm::cross(
+					vertices[(j - 1) * terrain_width + i].position -
 						vertices[index].position,
-					vertices[next_row_index].position -
+					vertices[index - 1].position -
 						vertices[index].position
 				);
+				
+				glm::vec3 vec2 = glm::cross(
+					vertices[index - 1].position -
+						vertices[index].position,
+					vertices[(j + 1) * terrain_width + i].position -
+						vertices[index].position
+				);
+				
+				glm::vec3 vec3 = glm::cross(
+					vertices[(j + 1) * terrain_width + i].position -
+						vertices[index].position,
+					vertices[index + 1].position -
+						vertices[index].position
+				);
+				
+				glm::vec3 vec4 = glm::cross(
+					vertices[index + 1].position -
+						vertices[index].position,
+					vertices[(j - 1) * terrain_width + i].position -
+						vertices[index].position
+				);
+				
+				vertices[index].normal = glm::mix(
+					glm::mix(
+						glm::mix(vec1, vec2, 0.5f),
+						vec3, 0.5f
+					),
+					vec4, 0.4f
+				);
 			}
-		}*/
+		}
 	}
 }
