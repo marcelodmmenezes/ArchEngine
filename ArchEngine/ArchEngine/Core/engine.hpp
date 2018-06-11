@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 04/06/2018                                                 *
+ * Last Modified: 11/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -76,7 +76,9 @@ namespace Core {
 		void handleEvents(EventPtr evnt);
 
 		bool isInitialized() const;
-		
+
+		static Utils::Delegate<void()> loopDelegate;
+
 #if defined(ARCH_ENGINE_HOT_RELOAD_ON)
 		bool watchFile(const std::string& path);
 		bool unwatchFile(const std::string& path);

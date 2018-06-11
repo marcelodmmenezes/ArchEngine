@@ -54,6 +54,7 @@ void onInputRangeEvent(EventPtr e);
 void onCollisionEvent(EventPtr e);
 void onClosestRayTestEvent(EventPtr e);
 void onAllRayTestEvent(EventPtr e);
+void loopCallback();
 
 
 int main(int argc, char* argv[]) {
@@ -94,6 +95,8 @@ int main(int argc, char* argv[]) {
 			listener, EVENT_RAY_TEST_ALL);
 
 		InputManager::getInstance().pushContext("test1");
+
+		Engine::getInstance().loopDelegate.bind<loopCallback>();
 
 		Engine::getInstance().run();
 	}
@@ -441,6 +444,11 @@ void onAllRayTestEvent(EventPtr e) {
 		std::cout << it << " ";
 
 	std::cout << std::endl;
+}
+
+void loopCallback() {
+	if (mouse_clicked)
+		std::cout << "Loop callback" << std::endl;
 }
 
 
