@@ -193,6 +193,7 @@ float calcPointShadows(int light_index) {
 	float current_depth = length(frag_to_light);
     float shadow = 0.0;
     float bias = 0.00015f;
+	//float bias = 0.15f;
     int samples = 20;
     float view_distance = length(u_view_pos - f_frag_pos);
 

@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 07/06/2018                                                 *
+ * Last Modified: 10/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -18,6 +18,7 @@
 #include "../API/entity.hpp"
 #include "../Config/engineMacros.hpp"
 #include "../Core/eventManager.hpp"
+#include "../Graphics/primitives.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -101,6 +102,10 @@ namespace Physics {
 
 		unsigned addSphere(long id, float radius, const glm::vec3& pos,
 			float mass, float friction = 0.5f);
+
+		unsigned addStaticBody(
+			const std::vector<Graphics::BasicVertex>& vertices,
+			const std::vector<unsigned>& indices);
 		//---------------------------------------------------------------------
 
 	private:

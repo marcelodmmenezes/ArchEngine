@@ -128,6 +128,11 @@ void loadData() {
 		"../../ArchEngine/Shaders/nmshadowfs.glsl"
 	);
 
+	unsigned dir_depth_shader = GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Shaders/depthmapvs.glsl",
+		"../../ArchEngine/Shaders/depthmapgs.glsl"
+	);
+
 	unsigned point_depth_shader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/cubedepthmapvs.glsl",
 		"../../ArchEngine/Shaders/cubedepthmapgs.glsl",
@@ -140,10 +145,10 @@ void loadData() {
 		"../../ArchEngine/Shaders/normaldebugfs.glsl"
 	);
 
-	glm::vec3 plight_pos(0.0f, 10.0f, 0.0f);
+	glm::vec3 plight_pos(0.0f, 50.0f, 0.0f);
 	glm::mat4 plight_proj =
 		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
-
+	
 	PointLight plight = {
 		plight_pos,
 		64.0f,
@@ -174,15 +179,37 @@ void loadData() {
 	};
 
 	GraphicsManager::getInstance().addPointLight(plight);
+	
+	/*
+	DirectionalLight dlight = {
+		glm::vec3(-0.6f, -1.0f, -0.5f),
+		32.0f,
+		glm::vec3(0.1f, 0.1f, 0.05f),
+		glm::vec3(0.8f, 0.8f, 0.4f),
+		glm::vec3(0.8f, 0.8f, 0.4f),
+		true,
+		glm::ortho(-150.0f, 150.0f, -150.0f, 150.0f, 0.1f, 1000.0f),
+		glm::lookAt(glm::vec3(60.0, 100.0, 50.0f),
+		glm::vec3(-0.6f, -1.0f, -0.5f),
+		glm::vec3(0.0f, 1.0f, 0.0f)),
+		dir_depth_shader,
+		4000,
+		4000
+	};
 
+	GraphicsManager::getInstance().addDirectionalLight(dlight);
+	*/
 	TerrainGenerator tg;
-	unsigned terrain = tg.genHeightMapTerrain(100, 100, 5, 5, 30.0f,
-		"../../../../GameEngineLearning/assets/miscTextures/heightMaps/height_map.png");
+	//unsigned terrain = tg.genHeightMapTerrain(52, 43, 100, 100, 30.0f,
+	//	"../../../../GameEngineLearning/assets/miscTextures/heightMaps/height_map2.jpg");
+
+	auto terrain = tg.genHeightMapTerrain(256, 256, 0.5f, 0.5f, 50.0f,
+		"../../../../GameEngineLearning/assets/miscTextures/heightMaps/height_map3.png");
 
 	std::vector<unsigned> loaded_meshes_ids;
 	AssimpLoader loader;
 	loader.importScene(
-		"../../../../GameEngineLearning/assets/plane/plane_brick.obj",
+		"../../../../GameEngineLearning/assets/plane/plane_terrain.obj",
 		aiPostProcessSteps(
 			aiProcess_GenSmoothNormals |
 			//aiProcess_CalcTangentSpace |
@@ -195,7 +222,7 @@ void loadData() {
 	);
 
 	loaded_meshes_ids.clear();
-	loaded_meshes_ids.push_back(terrain);
+	loaded_meshes_ids.push_back(terrain.first);
 
 	g_entities.push_back(
 		{
@@ -205,6 +232,42 @@ void loadData() {
 			std::vector<glm::mat4>(1, glm::mat4(1.0f))
 		}
 	);
+
+	loaded_meshes_ids.clear();
+	loader.importScene(
+		"../../../../GameEngineLearning/assets/cube/cube_wooden.obj",
+		aiPostProcessSteps(
+			aiProcess_GenSmoothNormals |
+			//aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType |
+			aiProcess_FlipUVs
+		),
+		loaded_meshes_ids
+	);
+
+	std::vector<unsigned> bodies;
+	bodies.resize(loaded_meshes_ids.size());
+	int physics_id = 0;
+
+	for (unsigned i = 1; i < 5; i++) {
+		g_entities.push_back(
+			{
+				objshader,
+				loaded_meshes_ids,
+				bodies,
+				std::vector<glm::mat4>(loaded_meshes_ids.size(), glm::mat4(1.0f))
+			}
+		);
+
+		for (auto& it : g_entities[g_entities.size() - 1].physics_objects)
+			it = PhysicsManager::getInstance().addCube(
+				physics_id++,
+				glm::vec3(1.0f, 1.0f, 1.0f),
+				glm::vec3((rand() % 100 - 50) * 1.0f, i * 100.0f, (rand() % 100 - 50) * 1.0f),
+				1.0f);
+	}
 }
 
 void onContextEvent(EventPtr e) {

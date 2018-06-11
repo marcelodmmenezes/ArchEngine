@@ -13,19 +13,21 @@
 #include "terrainGenerator.hpp"
 
 
+using namespace Physics;
 using namespace Utils;
 
 
 namespace Graphics {
-	unsigned TerrainGenerator::genHeightMapTerrain(int terrain_width,
-		int terrain_length, float block_width, float block_length,
-		float maximum_height, const std::string& height_map_path) {
+	std::pair<unsigned, unsigned> TerrainGenerator::genHeightMapTerrain(
+		int terrain_width, int terrain_length, float block_width,
+		float block_length, float maximum_height,
+		const std::string& height_map_path) {
 		if (terrain_width < 2 || terrain_length < 2) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
 				"Terrain width and height must be at least 2 units");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-			return 0; // TODO
+			return std::make_pair(0, 0); // TODO
 		}
 
 		std::vector<BasicVertex> vertices;
@@ -35,6 +37,24 @@ namespace Graphics {
 
 		unsigned char* height_map = stbi_load(height_map_path.c_str(),
 			&width, &height, &n_components, channel_count);
+
+		if (!height_map) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
+				"Could not load " + height_map_path);
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			return std::make_pair(0, 0); // TODO
+		}
+
+		float max_pixel_height = height_map[0];
+		float min_pixel_height = height_map[0];
+		int image_size = width * height * channel_count;
+		for (int i = 0; i < image_size; i++) {
+			if (height_map[i] > max_pixel_height)
+				max_pixel_height = height_map[i];
+			if (height_map[i] < min_pixel_height)
+				min_pixel_height = height_map[i];
+		}
 
 		vertices.resize(terrain_width * terrain_length);
 		indices.reserve(terrain_width * terrain_length * 6);
@@ -57,7 +77,10 @@ namespace Graphics {
 					(terrain_width / 2 - i);
 
 				vertices[index].position.y = (0.30 * pixel_offset[0] + 0.59 *
-					pixel_offset[1] + 0.11 * pixel_offset[2]) / 2.0f;
+					pixel_offset[1] + 0.11 * pixel_offset[2]);
+				vertices[index].position.y -= min_pixel_height;
+				vertices[index].position.y /= max_pixel_height;
+				vertices[index].position.y *= maximum_height;
 
 				vertices[index].position.z = block_length *
 					(terrain_length / 2 - j);
@@ -87,12 +110,12 @@ namespace Graphics {
 		}
 
 		stbi_image_free(height_map);
-		//delete[] new_height_map;
 
 		Mesh mesh;
 		mesh.create("testterrain", 1, vertices, indices);
 
-		return GraphicsManager::getInstance().addMesh(mesh);
+		return std::make_pair(GraphicsManager::getInstance().addMesh(mesh),
+			PhysicsManager::getInstance().addStaticBody(vertices, indices));
 	}
 
 	void TerrainGenerator::genFaultTerrain() {

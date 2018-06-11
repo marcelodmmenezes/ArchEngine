@@ -20,6 +20,7 @@
 #include "graphicsManager.hpp"
 #include "primitives.hpp"
 #include "stb_image.hpp"
+#include "../Physics/physicsManager.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 #include <glm/glm.hpp>
@@ -30,9 +31,9 @@
 namespace Graphics {
 	class TerrainGenerator {
 	public:
-		unsigned genHeightMapTerrain(int terrain_width, int terrain_length,
-			float block_width, float block_length, float maximum_height,
-			const std::string& height_map_path);
+		std::pair<unsigned, unsigned> genHeightMapTerrain(int terrain_width,
+			int terrain_length, float block_width, float block_length,
+			float maximum_height, const std::string& height_map_path);
 
 		// Procedural generation
 		void genFaultTerrain();

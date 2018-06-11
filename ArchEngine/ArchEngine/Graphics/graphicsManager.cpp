@@ -103,6 +103,10 @@ namespace Graphics {
 
 		m_screen_width = view_port[2];
 		m_screen_height = view_port[3];
+
+		m_projection = glm::perspective(glm::radians(45.0f),
+			(float)m_screen_width / (float)m_screen_height, 0.1f, 1000.0f);
+
 		glViewport(view_port[0], view_port[1], view_port[2], view_port[3]);
 		glClearColor(color.r, color.g, color.b, color.a);
 

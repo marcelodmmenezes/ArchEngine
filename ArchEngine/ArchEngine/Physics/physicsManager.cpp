@@ -280,7 +280,7 @@ namespace Physics {
 		}
 	}
 
-	//---------------------------------------------------------------- TEST
+	//-------------------------------------------------------------------- TEST
 	unsigned PhysicsManager::addCube(long id, const glm::vec3& sides,
 		const glm::vec3& pos, float mass, float friction) {
 		btTransform t;
@@ -357,5 +357,46 @@ namespace Physics {
 
 		return m_world->getNumCollisionObjects() - 1;
 	}
-	//---------------------------------------------------------------------
+
+	unsigned PhysicsManager::addStaticBody(
+		const std::vector<Graphics::BasicVertex>& vertices,
+		const std::vector<unsigned>& indices) {
+		btTransform t;
+		t.setIdentity();
+		t.setOrigin(btVector3(0.f, 0.f, 0.f));
+
+		btTriangleMesh* mesh = new btTriangleMesh();
+
+		for (unsigned i = 0; i < indices.size(); i += 3) {
+			mesh->addTriangle(
+				btVector3(
+					vertices[indices[i]].position.x,
+					vertices[indices[i]].position.y,
+					vertices[indices[i]].position.z
+				),
+				btVector3(
+					vertices[indices[i + 1]].position.x,
+					vertices[indices[i + 1]].position.y,
+					vertices[indices[i + 1]].position.z
+				),
+				btVector3(
+					vertices[indices[i + 2]].position.x,
+					vertices[indices[i + 2]].position.y,
+					vertices[indices[i + 2]].position.z
+				)
+			);
+		}
+
+		btCollisionShape* shape =
+			new btBvhTriangleMeshShape(mesh, true);
+
+		btMotionState* motion = new btDefaultMotionState(t);
+		btRigidBody::btRigidBodyConstructionInfo info(0.f, motion, shape);
+		btRigidBody* body = new btRigidBody(info);
+
+		this->m_world->addRigidBody(body);
+
+		return m_world->getNumCollisionObjects() - 1;
+	}
+	//-------------------------------------------------------------------------
 }
