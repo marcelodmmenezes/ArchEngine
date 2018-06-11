@@ -360,7 +360,8 @@ namespace Physics {
 
 	unsigned PhysicsManager::addStaticBody(
 		const std::vector<Graphics::BasicVertex>& vertices,
-		const std::vector<unsigned>& indices) {
+		const std::vector<unsigned>& indices,
+		const glm::mat4& transform) {
 		btTransform t;
 		t.setIdentity();
 		t.setOrigin(btVector3(0.f, 0.f, 0.f));
@@ -368,22 +369,17 @@ namespace Physics {
 		btTriangleMesh* mesh = new btTriangleMesh();
 
 		for (unsigned i = 0; i < indices.size(); i += 3) {
+			glm::vec3 v1 = glm::vec3(transform *
+				glm::vec4(vertices[indices[i]].position, 1.0f));
+			glm::vec3 v2 = glm::vec3(transform *
+				glm::vec4(vertices[indices[i + 1]].position, 1.0f));
+			glm::vec3 v3 = glm::vec3(transform *
+				glm::vec4(vertices[indices[i + 2]].position, 1.0f));
+
 			mesh->addTriangle(
-				btVector3(
-					vertices[indices[i]].position.x,
-					vertices[indices[i]].position.y,
-					vertices[indices[i]].position.z
-				),
-				btVector3(
-					vertices[indices[i + 1]].position.x,
-					vertices[indices[i + 1]].position.y,
-					vertices[indices[i + 1]].position.z
-				),
-				btVector3(
-					vertices[indices[i + 2]].position.x,
-					vertices[indices[i + 2]].position.y,
-					vertices[indices[i + 2]].position.z
-				)
+				btVector3(v1.x, v1.y, v1.z),
+				btVector3(v2.x, v2.y, v2.z),
+				btVector3(v3.x, v3.y, v3.z)
 			);
 		}
 

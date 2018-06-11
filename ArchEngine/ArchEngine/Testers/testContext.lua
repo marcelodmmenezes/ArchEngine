@@ -23,7 +23,6 @@
 
 context = {
 	actions = {
-		SDL_BUTTON_LEFT = 0,
 		SDLK_SPACE = 1,
 		SDLK_ESCAPE = 2
 	},
@@ -35,7 +34,8 @@ context = {
 		SDLK_d = 3,
 		SDLK_q = 4,
 		SDLK_e = 5,
-		SDLK_LSHIFT = 6
+		SDLK_LSHIFT = 6,
+		SDL_BUTTON_LEFT = 7
 	},
 
 	ranges = {

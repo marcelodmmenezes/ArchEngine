@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 08/06/2018                                                       *
- * Last Modified: 10/06/2018                                                 *
+ * Last Modified: 11/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -115,7 +115,7 @@ namespace Graphics {
 		mesh.create("testterrain", 1, vertices, indices);
 
 		return std::make_pair(GraphicsManager::getInstance().addMesh(mesh),
-			PhysicsManager::getInstance().addStaticBody(vertices, indices));
+			PhysicsManager::getInstance().addStaticBody(vertices, indices, glm::mat4(1.0f))); // TODO
 	}
 
 	void TerrainGenerator::genFaultTerrain() {

@@ -41,7 +41,8 @@ enum GameInputActions {
 };
 
 enum GameInputStates {
-	TEST_STATE
+	TEST_STATE,
+	MOUSE_CLICK_STATE = 6
 };
 
 
@@ -199,15 +200,14 @@ void loadData() {
 
 	GraphicsManager::getInstance().addDirectionalLight(dlight);
 	*/
+
 	TerrainGenerator tg;
-	//unsigned terrain = tg.genHeightMapTerrain(52, 43, 100, 100, 30.0f,
-	//	"../../../../GameEngineLearning/assets/miscTextures/heightMaps/height_map2.jpg");
-
-	auto terrain = tg.genHeightMapTerrain(256, 256, 0.5f, 0.5f, 50.0f,
+	auto terrain = tg.genHeightMapTerrain(256, 256, 2.0f, 2.0f, 50.0f,
 		"../../../../GameEngineLearning/assets/miscTextures/heightMaps/height_map3.png");
-
+	
 	std::vector<unsigned> loaded_meshes_ids;
 	AssimpLoader loader;
+	
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/plane/plane_terrain.obj",
 		aiPostProcessSteps(
@@ -223,7 +223,7 @@ void loadData() {
 
 	loaded_meshes_ids.clear();
 	loaded_meshes_ids.push_back(terrain.first);
-
+	
 	g_entities.push_back(
 		{
 			objshader,
@@ -232,7 +232,32 @@ void loadData() {
 			std::vector<glm::mat4>(1, glm::mat4(1.0f))
 		}
 	);
+	
+	int physics_id = 0;
+	std::vector<unsigned> bodies;
+	/*
+	loader.importScene(
+		"../../../../GameEngineLearning/assets/sponza/mergedSponza.obj",
+		aiPostProcessSteps(
+			aiProcess_GenSmoothNormals |
+			aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType |
+			aiProcess_FlipUVs
+		),
+		loaded_meshes_ids
+	);
 
+	g_entities.push_back(
+		{
+			normalshader,
+			loaded_meshes_ids,
+			bodies,
+			std::vector<glm::mat4>(loaded_meshes_ids.size(), glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f)))
+		}
+	);
+	*/
 	loaded_meshes_ids.clear();
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/cube/cube_wooden.obj",
@@ -246,10 +271,9 @@ void loadData() {
 		),
 		loaded_meshes_ids
 	);
-
-	std::vector<unsigned> bodies;
+	
+	bodies.clear();
 	bodies.resize(loaded_meshes_ids.size());
-	int physics_id = 0;
 
 	for (unsigned i = 1; i < 5; i++) {
 		g_entities.push_back(
@@ -268,6 +292,43 @@ void loadData() {
 				glm::vec3((rand() % 100 - 50) * 1.0f, i * 100.0f, (rand() % 100 - 50) * 1.0f),
 				1.0f);
 	}
+
+	loaded_meshes_ids.clear();
+	loader.importScene(
+		"../../../../GameEngineLearning/assets/sphere/sphere_brick.obj",
+		aiPostProcessSteps(
+			aiProcess_GenSmoothNormals |
+			aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType |
+			aiProcess_FlipUVs
+		),
+		loaded_meshes_ids
+	);
+
+	bodies.clear();
+	bodies.resize(loaded_meshes_ids.size());
+
+	for (unsigned i = 1; i < 10; i++) {
+		g_entities.push_back(
+			{
+				normalshader,
+				loaded_meshes_ids,
+				bodies,
+				std::vector<glm::mat4>(loaded_meshes_ids.size(), glm::mat4(1.0f))
+			}
+		);
+
+		for (auto& it : g_entities[g_entities.size() - 1].physics_objects)
+			it = PhysicsManager::getInstance().addSphere(
+				physics_id++,
+				1.0f,
+				glm::vec3((rand() % 100 - 50) * 1.0f, i * 100.0f, (rand() % 100 - 50) * 1.0f),
+				1.0f);
+	}
+	
+	Engine::getInstance().releaseMouse();
 }
 
 void onContextEvent(EventPtr e) {
@@ -298,6 +359,8 @@ void onInputActionEvent(EventPtr e) {
 		break;
 	}
 }
+
+bool mouse_clicked = false;
 
 void onInputStateEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputStateEvent>(e);
@@ -330,6 +393,12 @@ void onInputStateEvent(EventPtr e) {
 		else
 			camera->setSpeed(25.0f);
 		break;
+	case 7:
+		if (evnt->isOver())
+			mouse_clicked = false;
+		else
+			mouse_clicked = true;
+		break;
 	}
 }
 
@@ -341,10 +410,10 @@ void onInputRangeEvent(EventPtr e) {
 
 	switch (evnt->getValue().m_range) {
 	case 0:
-		camera->look((float)evnt->getValue().m_value, 0.0f);
+		if (mouse_clicked) camera->look((float)evnt->getValue().m_value, 0.0f);
 		break;
 	case 1:
-		camera->look(0.0f, (float)evnt->getValue().m_value);
+		if (mouse_clicked) camera->look(0.0f, (float)evnt->getValue().m_value);
 		break;
 	}
 }

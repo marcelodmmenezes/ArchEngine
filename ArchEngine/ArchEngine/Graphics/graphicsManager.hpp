@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 02/06/2018                                                 *
+ * Last Modified: 11/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -58,7 +58,8 @@ namespace Graphics {
 		static GraphicsManager& getInstance();
 
 		bool initialize(bool depth_test, bool face_culling,
-			int view_port[4], const glm::vec4& color, int active_camera);
+			int view_port[4], const glm::vec4& color,
+			float fov, int active_camera);
 		bool initializeFromConfigFile(const std::string& path);
 
 		void update(float delta_time);
@@ -138,6 +139,7 @@ namespace Graphics {
 		};
 		
 		//--------------------------------------------------- Projection matrix
+		float m_fov;
 		glm::mat4 m_projection;
 
 		//------------------------------------------------------------- Cameras

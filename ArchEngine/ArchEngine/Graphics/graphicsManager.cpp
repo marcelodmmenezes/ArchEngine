@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 02/06/2018                                                 *
+ * Last Modified: 11/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -88,7 +88,8 @@ namespace Graphics {
 	}
 
 	bool GraphicsManager::initialize(bool depth_test, bool face_culling,
-		int view_port[4], const glm::vec4& color, int active_camera) {
+		int view_port[4], const glm::vec4& color,
+		float fov, int active_camera) {
 		if (depth_test)
 			glEnable(GL_DEPTH_TEST);
 		if (face_culling)
@@ -104,7 +105,9 @@ namespace Graphics {
 		m_screen_width = view_port[2];
 		m_screen_height = view_port[3];
 
-		m_projection = glm::perspective(glm::radians(45.0f),
+		m_fov = fov;
+
+		m_projection = glm::perspective(glm::radians(m_fov),
 			(float)m_screen_width / (float)m_screen_height, 0.1f, 1000.0f);
 
 		glViewport(view_port[0], view_port[1], view_port[2], view_port[3]);
@@ -123,12 +126,14 @@ namespace Graphics {
 		bool face_culling = lua_context.get<bool>("face_culling");
 		auto color = lua_context.getFloatVector("clear_color");
 		auto view_port = lua_context.getIntVector("view_port");
+		float fov = lua_context.get<float>("fov");
 		int active_camera = lua_context.get<int>("active_camera");
 
 		lua_context.destroy();
 
 		return initialize(depth_test, face_culling, &view_port[0],
-			glm::vec4(color[0], color[1], color[2], color[3]), active_camera);
+			glm::vec4(color[0], color[1], color[2], color[3]),
+			fov, active_camera);
 	}
 
 	void GraphicsManager::update(float delta_time) {
@@ -694,7 +699,7 @@ namespace Graphics {
 		m_screen_width = w;
 		m_screen_height = h;
 
-		m_projection = glm::perspective(glm::radians(45.0f),
+		m_projection = glm::perspective(glm::radians(m_fov),
 			(float)w / (float)h, 0.1f, 1000.0f);
 
 		glViewport(0, 0, w, h);

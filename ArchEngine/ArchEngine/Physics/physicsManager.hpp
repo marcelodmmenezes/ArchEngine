@@ -105,7 +105,8 @@ namespace Physics {
 
 		unsigned addStaticBody(
 			const std::vector<Graphics::BasicVertex>& vertices,
-			const std::vector<unsigned>& indices);
+			const std::vector<unsigned>& indices,
+			const glm::mat4& transform);
 		//---------------------------------------------------------------------
 
 	private:
