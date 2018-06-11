@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 31/05/2018                                                 *
+ * Last Modified: 11/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -93,6 +93,12 @@ namespace OS {
 	InputRangeEvent::~InputRangeEvent() {}
 	EventType InputRangeEvent::getType() const { return m_type; }
 	RangeInfo InputRangeEvent::getValue() const { return m_value; }
+
+	InputMouseMoved::InputMouseMoved(int x, int y) :
+		IEvent(EVENT_MOUSE_MOVED), m_x(x), m_y(y) {}
+	InputMouseMoved::~InputMouseMoved() {}
+	Core::EventType InputMouseMoved::getType() const { return m_type; }
+	void InputMouseMoved::getValues(int& x, int&y) const { x = m_x; y = m_y; }
 
 	InputContextEvent::InputContextEvent() : IEvent(EVENT_INPUT_CONTEXT) {}
 	InputContextEvent::InputContextEvent(const std::string& name, bool state) :
@@ -234,6 +240,10 @@ namespace OS {
 						setAxisValue(MOUSE_AXIS_X, -x);
 						setAxisValue(MOUSE_AXIS_Y, -y);
 					}
+
+					EventPtr evnt = std::make_shared<InputMouseMoved>(
+						InputMouseMoved(x, y));
+					EventManager::getInstance().sendEvent(evnt);
 				}
 				else {
 					SDL_GetMouseState(&x, &y);
@@ -244,6 +254,10 @@ namespace OS {
 						setAxisValue(MOUSE_AXIS_X, m_mouse_last_x - x);
 						setAxisValue(MOUSE_AXIS_Y, m_mouse_last_y - y);
 					}
+
+					EventPtr evnt = std::make_shared<InputMouseMoved>(
+						InputMouseMoved(x, y));
+					EventManager::getInstance().sendEvent(evnt);
 				}
 
 				m_mouse_last_x = sdl_event.motion.x;

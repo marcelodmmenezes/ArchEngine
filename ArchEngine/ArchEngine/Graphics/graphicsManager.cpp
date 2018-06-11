@@ -152,15 +152,6 @@ namespace Graphics {
 
 		//---------------------------------------------------------------- TEST
 		/*
-		m_shaders[0].bind();
-		m_shaders[0].setMat4("u_projection_matrix", m_projection);
-		m_shaders[0].setMat4("u_view_matrix", m_cameras[m_active_camera].getViewMatrix());
-		m_shaders[0].setMat4("u_model_matrix", glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f)), glm::vec3(0.2f, 0.2f, 0.2f)));
-		m_shaders[0].setVec3("u_color", glm::vec3(1.0f, 1.0f, 1.0f));
-		m_shaders[0].update();
-		m_meshes[m_meshes.size() - 1].first.draw();
-		*/
-		/*
 		glDisable(GL_CULL_FACE); // TEST
 		m_shaders[3].bind();
 		m_shaders[3].setMat4("u_projection_matrix", m_projection);

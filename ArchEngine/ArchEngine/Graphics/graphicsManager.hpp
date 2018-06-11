@@ -139,15 +139,19 @@ namespace Graphics {
 		};
 		
 		//--------------------------------------------------- Projection matrix
+	public: // TEST
 		float m_fov;
 		glm::mat4 m_projection;
+	private: // TEST
 
 		//------------------------------------------------------------- Cameras
 		int m_active_camera;
 		std::vector<DebugCamera> m_cameras;
 
 		//------------------------------------------------------------- Shaders
+	public: // TEST
 		std::vector<Shader> m_shaders;
+	private: // TEST
 
 		//-------------------------------------------------------------- Meshes
 		// All the game meshes are stored here.

@@ -154,6 +154,7 @@
     <ClInclude Include="OS\inputContext.hpp" />
     <ClInclude Include="OS\inputManager.hpp" />
     <ClInclude Include="OS\window.hpp" />
+    <ClInclude Include="Physics\debugDraw.hpp" />
     <ClInclude Include="Physics\physicsManager.hpp" />
     <ClInclude Include="Script\engineLuaAPI.hpp" />
     <ClInclude Include="Script\luaScript.hpp" />
@@ -187,6 +188,7 @@
     <ClCompile Include="OS\inputContext.cpp" />
     <ClCompile Include="OS\inputManager.cpp" />
     <ClCompile Include="OS\window.cpp" />
+    <ClCompile Include="Physics\debugDraw.cpp" />
     <ClCompile Include="Physics\physicsManager.cpp" />
     <ClCompile Include="Script\engineLuaAPI.cpp" />
     <ClCompile Include="Script\luaScript.cpp" />
@@ -207,6 +209,8 @@
     <None Include="Shaders\cubemapvs.glsl" />
     <None Include="Shaders\depthmapfs.glsl" />
     <None Include="Shaders\depthmapvs.glsl" />
+    <None Include="Shaders\linefs.glsl" />
+    <None Include="Shaders\linevs.glsl" />
     <None Include="Shaders\normaldebugfs.glsl" />
     <None Include="Shaders\normaldebuggs.glsl" />
     <None Include="Shaders\normaldebugvs.glsl" />

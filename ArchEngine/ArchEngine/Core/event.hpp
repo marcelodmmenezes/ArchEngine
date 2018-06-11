@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 07/06/2018                                                 *
+ * Last Modified: 11/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -35,6 +35,7 @@ namespace Core {
 		EVENT_INPUT_ACTION,
 		EVENT_INPUT_STATE,
 		EVENT_INPUT_RANGE,
+		EVENT_MOUSE_MOVED,
 		EVENT_INPUT_CONTEXT,
 
 		//--- Physics events

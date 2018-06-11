@@ -22,11 +22,12 @@ namespace Graphics {
 #if defined(ARCH_ENGINE_HOT_RELOAD_ON)
 		m_watch_file = true;
 #endif	// ARCH_ENGINE_HOT_RELOAD_ON
-
+		
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Shader constructor");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+
 	}
 
 	Shader::~Shader() {

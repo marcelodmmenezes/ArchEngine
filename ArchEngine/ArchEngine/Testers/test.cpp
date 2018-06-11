@@ -51,6 +51,7 @@ void onContextEvent(EventPtr e);
 void onInputActionEvent(EventPtr e);
 void onInputStateEvent(EventPtr e);
 void onInputRangeEvent(EventPtr e);
+void onInputMouseMoved(EventPtr e);
 void onCollisionEvent(EventPtr e);
 void onClosestRayTestEvent(EventPtr e);
 void onAllRayTestEvent(EventPtr e);
@@ -81,6 +82,10 @@ int main(int argc, char* argv[]) {
 		listener.bind<&onInputRangeEvent>();
 		EventManager::getInstance().addListener(
 			listener, EVENT_INPUT_RANGE);
+
+		listener.bind<&onInputMouseMoved>();
+		EventManager::getInstance().addListener(
+			listener, EVENT_MOUSE_MOVED);
 
 		listener.bind<&onCollisionEvent>();
 		EventManager::getInstance().addListener(
@@ -122,12 +127,17 @@ void loadData() {
 	GraphicsManager::getInstance().setActiveCamera(
 		GraphicsManager::getInstance().addCamera(camera));
 
-	unsigned objshader = GraphicsManager::getInstance().addShader(
+	unsigned line_shader = GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Shaders/linevs.glsl",
+		"../../ArchEngine/Shaders/linefs.glsl"
+	);
+
+	unsigned obj_shader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/shadowvs.glsl",
 		"../../ArchEngine/Shaders/shadowfs.glsl"
 	);
 
-	unsigned normalshader = GraphicsManager::getInstance().addShader(
+	unsigned normal_shader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/nmshadowvs.glsl",
 		"../../ArchEngine/Shaders/nmshadowfs.glsl"
 	);
@@ -229,7 +239,7 @@ void loadData() {
 	
 	g_entities.push_back(
 		{
-			objshader,
+			obj_shader,
 			loaded_meshes_ids,
 			std::vector<unsigned>(),
 			std::vector<glm::mat4>(1, glm::mat4(1.0f))
@@ -281,7 +291,7 @@ void loadData() {
 	for (unsigned i = 1; i < 5; i++) {
 		g_entities.push_back(
 			{
-				objshader,
+				obj_shader,
 				loaded_meshes_ids,
 				bodies,
 				std::vector<glm::mat4>(loaded_meshes_ids.size(), glm::mat4(1.0f))
@@ -316,7 +326,7 @@ void loadData() {
 	for (unsigned i = 1; i < 10; i++) {
 		g_entities.push_back(
 			{
-				normalshader,
+				normal_shader,
 				loaded_meshes_ids,
 				bodies,
 				std::vector<glm::mat4>(loaded_meshes_ids.size(), glm::mat4(1.0f))
@@ -421,6 +431,29 @@ void onInputRangeEvent(EventPtr e) {
 	}
 }
 
+void onInputMouseMoved(EventPtr e) {
+	auto evnt = std::static_pointer_cast<InputMouseMoved>(e);
+
+	auto camera = GraphicsManager::getInstance().getActiveCamera();
+	if (!camera) return;
+
+	if (!mouse_clicked) {
+		int x, y;
+		evnt->getValues(x, y);
+
+		float n_x = (2.0f * x) / 800 - 1.0f;
+		float n_y = 1.0f - (2.0f * y) / 600;
+		glm::vec3 ray_nds(n_x, n_y, -1.0f);
+		glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0f, 1.0f);
+		glm::vec4 ray_eye = glm::inverse(GraphicsManager::getInstance().m_projection) * ray_clip;
+		ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
+		glm::vec3 ray_world = glm::vec3(glm::inverse(camera->getViewMatrix()) * ray_eye);
+		ray_world = glm::normalize(ray_world);
+
+		PhysicsManager::getInstance().closestObjectRayTest(ray_world, glm::vec3(camera->getFront()) * 1000.0f);
+	}
+}
+
 void onCollisionEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<CollisionEvent>(e);
 
@@ -446,10 +479,63 @@ void onAllRayTestEvent(EventPtr e) {
 	std::cout << std::endl;
 }
 
-void loopCallback() {
-	if (mouse_clicked)
-		std::cout << "Loop callback" << std::endl;
-}
+//-------------------------------------------------------------------------------- TESTÃO
+bool foi = false;
+unsigned vao;
 
+void loopCallback() {
+	if (!foi) {
+		unsigned vbo;
+
+		float vertices[] = {
+			 1000.0f,  100.0f,  0.0f,
+			-1000.0f,  100.0f,  0.0f
+		};
+
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glBindVertexArray(0);
+
+		foi = true;
+	}
+
+	GraphicsManager::getInstance().m_shaders[0].bind();
+	GraphicsManager::getInstance().m_shaders[0].setMat4(
+		"u_projection_matrix", GraphicsManager::getInstance().m_projection);
+	GraphicsManager::getInstance().m_shaders[0].setMat4(
+		"u_view_matrix", GraphicsManager::getInstance().getActiveCamera()->getViewMatrix());
+	GraphicsManager::getInstance().m_shaders[0].setVec3(
+		"u_color", glm::vec3(1.0f, 0.0f, 0.0f));
+	GraphicsManager::getInstance().m_shaders[0].update();
+
+	glDisable(GL_CULL_FACE);
+	glBindVertexArray(vao);
+	
+	float* data;
+
+	data = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+
+	if (data) {
+		data[0] = 0.0f;
+		data[1] = 0.0f;
+		data[2] = 0.0f;
+		data[3] = sin(Timer::getCurrentTicks());
+
+		glUnmapBuffer(GL_ARRAY_BUFFER);
+	}
+	
+	glDrawArrays(GL_LINES, 0, 2);
+	glBindVertexArray(0);
+	glEnable(GL_CULL_FACE);
+}
+//---------------------------------------------------------------------------------------
 
 #endif	// ARCH_ENGINE_TEST
