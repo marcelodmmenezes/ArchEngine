@@ -280,6 +280,15 @@ namespace Physics {
 		}
 	}
 
+	void PhysicsManager::setDebugDrawer(DebugDrawer* dd) {
+		m_world->setDebugDrawer(dd);
+	}
+
+	void PhysicsManager::debugDraw() {
+		m_world->debugDrawWorld();
+		static_cast<DebugDrawer*>(m_world->getDebugDrawer())->update();
+	}
+
 	//-------------------------------------------------------------------- TEST
 	unsigned PhysicsManager::addCube(long id, const glm::vec3& sides,
 		const glm::vec3& pos, float mass, float friction) {

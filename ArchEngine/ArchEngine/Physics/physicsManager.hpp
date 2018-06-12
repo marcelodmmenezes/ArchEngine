@@ -19,6 +19,7 @@
 #include "../Config/engineMacros.hpp"
 #include "../Core/eventManager.hpp"
 #include "../Graphics/primitives.hpp"
+#include "debugDraw.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -95,6 +96,9 @@ namespace Physics {
 			const glm::vec3& front);
 		void allObjectsRayTest(const glm::vec3& pos, 
 			const glm::vec3& front);
+
+		void setDebugDrawer(DebugDrawer* dd);
+		void debugDraw();
 
 		//---------------------------------------------------------------- TEST
 		unsigned addCube(long id, const glm::vec3& sides,

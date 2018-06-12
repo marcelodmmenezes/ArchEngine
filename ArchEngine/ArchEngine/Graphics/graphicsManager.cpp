@@ -540,6 +540,10 @@ namespace Graphics {
 		m_projection = matrix;
 	}
 
+	glm::mat4 GraphicsManager::getProjectionMatrix() {
+		return m_projection;
+	}
+
 	void GraphicsManager::setActiveCamera(int id) {
 		m_active_camera = id;
 	}
@@ -554,6 +558,10 @@ namespace Graphics {
 		}
 
 		return &m_cameras[m_active_camera];
+	}
+
+	Shader* GraphicsManager::getShader(int id) {
+		return &m_shaders[id];
 	}
 
 	//-------------------------------------------------------- Remove functions

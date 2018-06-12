@@ -93,9 +93,12 @@ namespace Graphics {
 
 		// Helpers
 		void setProjectionMatrix(const glm::mat4& matrix);
-		
+		glm::mat4 getProjectionMatrix();
+
 		void setActiveCamera(int id);
 		DebugCamera* getActiveCamera();
+
+		Shader* getShader(int id);
 
 		// Removes the component by handle
 		void removeCamera(unsigned handle);
@@ -137,21 +140,17 @@ namespace Graphics {
 			"u_texture_normals", // TODO
 			"u_texture_displacement", "u_texture_cube_texture"
 		};
-		
+
 		//--------------------------------------------------- Projection matrix
-	public: // TEST
 		float m_fov;
 		glm::mat4 m_projection;
-	private: // TEST
 
 		//------------------------------------------------------------- Cameras
 		int m_active_camera;
 		std::vector<DebugCamera> m_cameras;
 
 		//------------------------------------------------------------- Shaders
-	public: // TEST
 		std::vector<Shader> m_shaders;
-	private: // TEST
 
 		//-------------------------------------------------------------- Meshes
 		// All the game meshes are stored here.

@@ -58,7 +58,12 @@ void onAllRayTestEvent(EventPtr e);
 void loopCallback();
 
 
+DebugDrawer* dd;
+
+
 int main(int argc, char* argv[]) {
+	//srand(time(nullptr));
+
 	Engine::startLoggingServices();
 
 	if (Engine::getInstance().initialize("../../ArchEngine/Testers/"
@@ -113,6 +118,8 @@ int main(int argc, char* argv[]) {
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 
 	Engine::getInstance().exit();
+
+	delete dd;
 }
 
 void loadData() {
@@ -131,6 +138,10 @@ void loadData() {
 		"../../ArchEngine/Shaders/linevs.glsl",
 		"../../ArchEngine/Shaders/linefs.glsl"
 	);
+
+	dd = new DebugDrawer(line_shader);
+	dd->setDebugMode(btIDebugDraw::DBG_DrawAabb);
+	PhysicsManager::getInstance().setDebugDrawer(dd);
 
 	unsigned obj_shader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/shadowvs.glsl",
@@ -445,7 +456,7 @@ void onInputMouseMoved(EventPtr e) {
 		float n_y = 1.0f - (2.0f * y) / 600;
 		glm::vec3 ray_nds(n_x, n_y, -1.0f);
 		glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0f, 1.0f);
-		glm::vec4 ray_eye = glm::inverse(GraphicsManager::getInstance().m_projection) * ray_clip;
+		glm::vec4 ray_eye = glm::inverse(GraphicsManager::getInstance().getProjectionMatrix()) * ray_clip;
 		ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
 		glm::vec3 ray_world = glm::vec3(glm::inverse(camera->getViewMatrix()) * ray_eye);
 		ray_world = glm::normalize(ray_world);
@@ -479,63 +490,9 @@ void onAllRayTestEvent(EventPtr e) {
 	std::cout << std::endl;
 }
 
-//-------------------------------------------------------------------------------- TESTÃO
-bool foi = false;
-unsigned vao;
-
 void loopCallback() {
-	if (!foi) {
-		unsigned vbo;
-
-		float vertices[] = {
-			 1000.0f,  100.0f,  0.0f,
-			-1000.0f,  100.0f,  0.0f
-		};
-
-		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
-
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
-
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-		glBindVertexArray(0);
-
-		foi = true;
-	}
-
-	GraphicsManager::getInstance().m_shaders[0].bind();
-	GraphicsManager::getInstance().m_shaders[0].setMat4(
-		"u_projection_matrix", GraphicsManager::getInstance().m_projection);
-	GraphicsManager::getInstance().m_shaders[0].setMat4(
-		"u_view_matrix", GraphicsManager::getInstance().getActiveCamera()->getViewMatrix());
-	GraphicsManager::getInstance().m_shaders[0].setVec3(
-		"u_color", glm::vec3(1.0f, 0.0f, 0.0f));
-	GraphicsManager::getInstance().m_shaders[0].update();
-
-	glDisable(GL_CULL_FACE);
-	glBindVertexArray(vao);
-	
-	float* data;
-
-	data = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-
-	if (data) {
-		data[0] = 0.0f;
-		data[1] = 0.0f;
-		data[2] = 0.0f;
-		data[3] = sin(Timer::getCurrentTicks());
-
-		glUnmapBuffer(GL_ARRAY_BUFFER);
-	}
-	
-	glDrawArrays(GL_LINES, 0, 2);
-	glBindVertexArray(0);
-	glEnable(GL_CULL_FACE);
+	PhysicsManager::getInstance().debugDraw();
 }
-//---------------------------------------------------------------------------------------
+
 
 #endif	// ARCH_ENGINE_TEST
