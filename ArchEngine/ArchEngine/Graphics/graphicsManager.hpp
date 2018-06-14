@@ -100,6 +100,10 @@ namespace Graphics {
 
 		Shader* getShader(int id);
 
+		// Drawing helpers
+		void drawLine(const glm::vec3& from, const glm::vec3& to,
+			const glm::vec3& color);
+
 		// Removes the component by handle
 		void removeCamera(unsigned handle);
 		void removeShader(unsigned handle);
@@ -140,6 +144,11 @@ namespace Graphics {
 			"u_texture_normals", // TODO
 			"u_texture_displacement", "u_texture_cube_texture"
 		};
+
+		//------------------------------------------------ Some drawing helpers
+		unsigned m_line_shader;
+		unsigned m_line_vao;
+		unsigned m_line_vbo;
 
 		//--------------------------------------------------- Projection matrix
 		float m_fov;

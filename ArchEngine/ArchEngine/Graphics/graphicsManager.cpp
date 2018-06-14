@@ -68,7 +68,8 @@ int removeMesh(lua_State* lua) {
 
 
 namespace Graphics {
-	GraphicsManager::GraphicsManager() : m_state(CONSTRUCTED) {
+	GraphicsManager::GraphicsManager() : m_state(CONSTRUCTED),
+		m_line_vao(0) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"GraphicsManager constructor");
@@ -562,6 +563,44 @@ namespace Graphics {
 
 	Shader* GraphicsManager::getShader(int id) {
 		return &m_shaders[id];
+	}
+
+	void GraphicsManager::drawLine(const glm::vec3& from,
+		const glm::vec3& to, const glm::vec3& color) {
+		if (m_line_vao == 0)
+			glGenVertexArrays(1, &m_line_vao);
+
+		Shader* shader_ptr =
+			GraphicsManager::getInstance().getShader(m_line_shader);
+
+		shader_ptr->bind();
+		shader_ptr->setMat4("u_projection_matrix",
+			GraphicsManager::getInstance().getProjectionMatrix());
+		shader_ptr->setMat4("u_view_matrix",
+			GraphicsManager::getInstance().getActiveCamera()->getViewMatrix());
+		shader_ptr->setVec3("u_color", color);
+		shader_ptr->update();
+
+		glBindVertexArray(m_line_vao);
+
+		float vertices[] = {
+			from.x, from.y, from.z,
+			to.x, to.y, to.z
+		};
+
+		glGenBuffers(1, &m_line_vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, m_line_vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices),
+			vertices, GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glDrawArrays(GL_LINES, 0, 6);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+		glDeleteBuffers(1, &m_line_vbo);
 	}
 
 	//-------------------------------------------------------- Remove functions

@@ -62,7 +62,7 @@ DebugDrawer* dd;
 
 
 int main(int argc, char* argv[]) {
-	//srand(time(nullptr));
+	srand(time(nullptr));
 
 	Engine::startLoggingServices();
 
@@ -140,7 +140,8 @@ void loadData() {
 	);
 
 	dd = new DebugDrawer(line_shader);
-	dd->setDebugMode(btIDebugDraw::DBG_DrawAabb);
+	dd->setDebugMode(btIDebugDraw::DBG_DrawAabb | btIDebugDraw::DBG_DrawWireframe);
+	//dd->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	PhysicsManager::getInstance().setDebugDrawer(dd);
 
 	unsigned obj_shader = GraphicsManager::getInstance().addShader(
@@ -226,7 +227,9 @@ void loadData() {
 	*/
 
 	TerrainGenerator tg;
-	auto terrain = tg.genHeightMapTerrain(256, 256, 2.0f, 2.0f, 50.0f,
+	//auto terrain = tg.genHeightMapTerrain(256, 256, 2.0f, 2.0f, 50.0f,
+	//	"../../../../GameEngineLearning/assets/miscTextures/heightMaps/height_map3.png");
+	auto terrain = tg.genHeightMapTerrain(256, 256, 2.0f, 2.0f, 100.0f,
 		"../../../../GameEngineLearning/assets/miscTextures/heightMaps/height_map3.png");
 	
 	std::vector<unsigned> loaded_meshes_ids;
@@ -334,7 +337,7 @@ void loadData() {
 	bodies.clear();
 	bodies.resize(loaded_meshes_ids.size());
 
-	for (unsigned i = 1; i < 10; i++) {
+	for (unsigned i = 1; i < 5; i++) {
 		g_entities.push_back(
 			{
 				normal_shader,
@@ -451,7 +454,7 @@ void onInputMouseMoved(EventPtr e) {
 	if (!mouse_clicked) {
 		int x, y;
 		evnt->getValues(x, y);
-
+		
 		float n_x = (2.0f * x) / 800 - 1.0f;
 		float n_y = 1.0f - (2.0f * y) / 600;
 		glm::vec3 ray_nds(n_x, n_y, -1.0f);
@@ -460,8 +463,14 @@ void onInputMouseMoved(EventPtr e) {
 		ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
 		glm::vec3 ray_world = glm::vec3(glm::inverse(camera->getViewMatrix()) * ray_eye);
 		ray_world = glm::normalize(ray_world);
+		
+		std::cout << "(" << ray_world.x << "," << ray_world.y << "," << ray_world.z << ")                  \r";
+		
+		auto from = glm::vec3(0.5f, 0.5f, 0.0f) + camera->getPosition();
+		auto to = camera->getPosition() + (1000.0f * ray_world);
 
-		PhysicsManager::getInstance().closestObjectRayTest(ray_world, glm::vec3(camera->getFront()) * 1000.0f);
+		GraphicsManager::getInstance().drawLine(from, to, glm::vec3(1.0f, 0.0f, 0.0f));
+		PhysicsManager::getInstance().closestObjectRayTest(from, to);
 	}
 }
 
@@ -471,7 +480,7 @@ void onCollisionEvent(EventPtr e) {
 	long id1, id2;
 	evnt->getObjectIds(id1, id2);
 
-	std::cout << "Collision: " << id1 << " " << id2 << std::endl;
+	//std::cout << "Collision: " << id1 << " " << id2 << std::endl;
 }
 
 void onClosestRayTestEvent(EventPtr e) {
@@ -491,7 +500,7 @@ void onAllRayTestEvent(EventPtr e) {
 }
 
 void loopCallback() {
-	PhysicsManager::getInstance().debugDraw();
+	//PhysicsManager::getInstance().debugDraw();
 }
 
 
