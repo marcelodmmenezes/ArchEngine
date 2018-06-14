@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 11/06/2018                                                 *
+ * Last Modified: 14/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -563,6 +563,11 @@ namespace Graphics {
 
 	Shader* GraphicsManager::getShader(int id) {
 		return &m_shaders[id];
+	}
+
+	void GraphicsManager::getScreenSize(int& w, int&h) {
+		w = m_screen_width;
+		h = m_screen_height;
 	}
 
 	void GraphicsManager::drawLine(const glm::vec3& from,

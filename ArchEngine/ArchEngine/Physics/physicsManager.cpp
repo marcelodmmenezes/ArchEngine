@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 06/06/2018                                                 *
+ * Last Modified: 14/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -15,6 +15,7 @@
 
 
 using namespace Core;
+using namespace Graphics;
 using namespace Script;
 using namespace Utils;
 
@@ -53,7 +54,8 @@ namespace Physics {
 		return false;
 	}
 
-	PhysicsManager::PhysicsManager() : m_state(CONSTRUCTED) {
+	PhysicsManager::PhysicsManager() : m_state(CONSTRUCTED),
+		m_picking_constraint(nullptr), m_picked_obj(nullptr) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"PhysicsManager constructor");
@@ -195,6 +197,9 @@ namespace Physics {
 		for (auto& it : m_user_objects)
 			delete it;
 
+		// Assert that there arent constraints before destroying the world
+		removePickingConstraint();
+
 		for (int i = m_world->getNumCollisionObjects() - 1; i >= 0; i--) {
 			btCollisionObject* obj = m_world->getCollisionObjectArray()[i];
 
@@ -280,6 +285,151 @@ namespace Physics {
 		}
 	}
 
+	void PhysicsManager::createPickingConstraint(int x, int y,
+		float ray_size, bool limit_angular_motion) {
+		auto camera = GraphicsManager::getInstance().getActiveCamera();
+
+		int width, height;
+		GraphicsManager::getInstance().getScreenSize(width, height);
+
+		float n_x = (2.0f * x) / width - 1.0f;
+		float n_y = 1.0f - (2.0f * y) / height;
+
+		glm::vec4 ray_eye = glm::inverse(
+			GraphicsManager::getInstance().getProjectionMatrix()) *
+			glm::vec4(n_x, n_y, -1.0f, 1.0f);
+
+		ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
+
+		glm::vec3 ray_world = glm::normalize(
+			glm::vec3(glm::inverse(camera->getViewMatrix()) * ray_eye));
+
+		auto from = camera->getPosition();
+		auto to = from + ray_size * ray_world;
+
+		btCollisionWorld::ClosestRayResultCallback
+			rayCallback(btVector3(from.x, from.y, from.z),
+				btVector3(to.x, to.y, to.z));
+
+		m_world->rayTest(btVector3(from.x, from.y, from.z),
+			btVector3(to.x, to.y, to.z), rayCallback);
+
+		PhysicsObject* physics_obj = nullptr;
+
+		if (rayCallback.hasHit()) {
+			physics_obj = static_cast<PhysicsObject*>(
+				rayCallback.m_collisionObject->getUserPointer());
+
+			if (!physics_obj)
+				return;
+
+			m_picked_obj = static_cast<btRigidBody*>(
+				m_world->getCollisionObjectArray()
+				[physics_obj->m_world_id]);
+
+			if (!m_picked_obj)
+				return;
+
+			m_picked_obj->setActivationState(DISABLE_DEACTIVATION);
+
+			btVector3 local_pivot =
+				m_picked_obj->getCenterOfMassTransform().inverse() *
+				rayCallback.m_hitPointWorld;
+
+			btTransform pivot;
+			pivot.setIdentity();
+			pivot.setOrigin(local_pivot);
+
+			btGeneric6DofConstraint* dof6 =
+				new btGeneric6DofConstraint(*m_picked_obj, pivot, true);
+
+			if (limit_angular_motion) {
+				dof6->setAngularLowerLimit(btVector3(0, 0, 0));
+				dof6->setAngularUpperLimit(btVector3(0, 0, 0));
+			}
+
+			m_world->addConstraint(dof6, true);
+
+			m_picking_constraint = dof6;
+
+			float cfm = 0.5f;
+			dof6->setParam(BT_CONSTRAINT_STOP_CFM, cfm, 0);
+			dof6->setParam(BT_CONSTRAINT_STOP_CFM, cfm, 1);
+			dof6->setParam(BT_CONSTRAINT_STOP_CFM, cfm, 2);
+			dof6->setParam(BT_CONSTRAINT_STOP_CFM, cfm, 3);
+			dof6->setParam(BT_CONSTRAINT_STOP_CFM, cfm, 4);
+			dof6->setParam(BT_CONSTRAINT_STOP_CFM, cfm, 5);
+
+			float erp = 0.5f;
+			dof6->setParam(BT_CONSTRAINT_STOP_ERP, erp, 0);
+			dof6->setParam(BT_CONSTRAINT_STOP_ERP, erp, 1);
+			dof6->setParam(BT_CONSTRAINT_STOP_ERP, erp, 2);
+			dof6->setParam(BT_CONSTRAINT_STOP_ERP, erp, 3);
+			dof6->setParam(BT_CONSTRAINT_STOP_ERP, erp, 4);
+			dof6->setParam(BT_CONSTRAINT_STOP_ERP, erp, 5);
+
+			auto cam_pos = camera->getPosition();
+
+			m_old_picking_dist = (rayCallback.m_hitPointWorld -
+				btVector3(cam_pos.x, cam_pos.y, cam_pos.z)).length();
+		}
+	}
+
+	void PhysicsManager::pickingMotion(int x, int y, float ray_size) {
+		if (m_picked_obj) {
+			btGeneric6DofConstraint* pick_constraint =
+				static_cast<btGeneric6DofConstraint*>(m_picking_constraint);
+
+			if (!pick_constraint)
+				return;
+
+			auto camera = GraphicsManager::getInstance().getActiveCamera();
+
+			int width, height;
+			GraphicsManager::getInstance().getScreenSize(width, height);
+
+			float n_x = (2.0f * x) / width - 1.0f;
+			float n_y = 1.0f - (2.0f * y) / height;
+
+			glm::vec4 ray_eye = glm::inverse(
+				GraphicsManager::getInstance().getProjectionMatrix()) *
+				glm::vec4(n_x, n_y, -1.0f, 1.0f);
+
+			ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
+
+			glm::vec3 ray_world = glm::normalize(
+				glm::vec3(glm::inverse(camera->getViewMatrix()) * ray_eye));
+
+			auto from = camera->getPosition();
+			auto to = from + ray_size * ray_world;
+
+			glm::vec3 glm_dir = to - from;
+
+			btVector3 dir(glm_dir.x, glm_dir.y, glm_dir.z);
+			dir.normalize();
+
+			dir *= m_old_picking_dist;
+			btVector3 new_pivot =
+				btVector3(from.x, from.y, from.z) + dir;
+			pick_constraint->getFrameOffsetA().setOrigin(new_pivot);
+		}
+	}
+
+	void PhysicsManager::removePickingConstraint() {
+		if (!m_picking_constraint || !m_world)
+			return;
+
+		m_world->removeConstraint(m_picking_constraint);
+		
+		delete m_picking_constraint;
+
+		m_picked_obj->forceActivationState(ACTIVE_TAG);
+		m_picked_obj->setDeactivationTime(0.0f);
+
+		m_picking_constraint = nullptr;
+		m_picked_obj = nullptr;
+	}
+
 	void PhysicsManager::setDebugDrawer(DebugDrawer* dd) {
 		m_world->setDebugDrawer(dd);
 	}
@@ -314,11 +464,14 @@ namespace Physics {
 		body->setCollisionFlags(body->getCollisionFlags() |
 			btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
+		unsigned world_id = m_world->getNumCollisionObjects();
+
 		m_user_objects.push_back(
-			new PhysicsObject {
+			new PhysicsObject{
 				PHYSICS_OBJECT_CUBE,
 				id,
-				m_user_objects.size()
+				m_user_objects.size(),
+				world_id
 			}
 		);
 
@@ -326,7 +479,7 @@ namespace Physics {
 
 		m_world->addRigidBody(body);
 
-		return m_world->getNumCollisionObjects() - 1;
+		return world_id;
 	}
 
 	unsigned PhysicsManager::addSphere(long id, float radius,
@@ -352,11 +505,14 @@ namespace Physics {
 		body->setCollisionFlags(body->getCollisionFlags() |
 			btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
+		unsigned world_id = m_world->getNumCollisionObjects();
+
 		m_user_objects.push_back(
 			new PhysicsObject{
 				PHYSICS_OBJECT_SPHERE,
 				id,
-				m_user_objects.size()
+				m_user_objects.size(),
+				world_id
 			}
 		);
 
@@ -364,7 +520,7 @@ namespace Physics {
 
 		m_world->addRigidBody(body);
 
-		return m_world->getNumCollisionObjects() - 1;
+		return world_id;
 	}
 
 	unsigned PhysicsManager::addStaticBody(

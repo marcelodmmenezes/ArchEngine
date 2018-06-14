@@ -8,7 +8,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 18/05/2018                                                 *
+ * Last Modified: 14/06/2018                                                 *
  *===========================================================================*/
 ]]
 
@@ -35,7 +35,8 @@ context = {
 		SDLK_q = 4,
 		SDLK_e = 5,
 		SDLK_LSHIFT = 6,
-		SDL_BUTTON_LEFT = 7
+		SDL_BUTTON_LEFT = 7,
+		SDL_BUTTON_RIGHT = 8
 	},
 
 	ranges = {

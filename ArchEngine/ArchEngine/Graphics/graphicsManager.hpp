@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 11/06/2018                                                 *
+ * Last Modified: 14/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -99,6 +99,8 @@ namespace Graphics {
 		DebugCamera* getActiveCamera();
 
 		Shader* getShader(int id);
+
+		void getScreenSize(int& w, int&h);
 
 		// Drawing helpers
 		void drawLine(const glm::vec3& from, const glm::vec3& to,

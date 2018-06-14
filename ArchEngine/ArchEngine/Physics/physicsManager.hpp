@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 10/06/2018                                                 *
+ * Last Modified: 14/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -18,6 +18,7 @@
 #include "../API/entity.hpp"
 #include "../Config/engineMacros.hpp"
 #include "../Core/eventManager.hpp"
+#include "../Graphics/graphicsManager.hpp"
 #include "../Graphics/primitives.hpp"
 #include "debugDraw.hpp"
 #include "../Script/luaScript.hpp"
@@ -68,6 +69,8 @@ namespace Physics {
 		long id;
 		// Id in m_user_objects
 		unsigned physics_manager_id;
+		// World id
+		unsigned m_world_id;
 	};
 	//-------------------------------------------------------------------------
 
@@ -97,10 +100,14 @@ namespace Physics {
 		void allObjectsRayTest(const glm::vec3& pos, 
 			const glm::vec3& front);
 
+		void createPickingConstraint(int x, int y,
+			float ray_size, bool limit_angular_motion);
+		void pickingMotion(int x, int y, float ray_size);
+		void removePickingConstraint();
+
 		void setDebugDrawer(DebugDrawer* dd);
 		void debugDraw();
 
-		//---------------------------------------------------------------- TEST
 		unsigned addCube(long id, const glm::vec3& sides,
 			const glm::vec3& pos, float mass, float friction = 0.5f);
 
@@ -111,7 +118,6 @@ namespace Physics {
 			const std::vector<Graphics::BasicVertex>& vertices,
 			const std::vector<unsigned>& indices,
 			const glm::mat4& transform);
-		//---------------------------------------------------------------------
 
 	private:
 		enum State {
@@ -125,6 +131,12 @@ namespace Physics {
 		State m_state;
 
 		std::vector<PhysicsObject*> m_user_objects;
+
+		//----------------------------------------------- Picking ray variables
+		btGeneric6DofConstraint* m_picking_constraint;
+		btRigidBody* m_picked_obj;
+		btScalar m_old_picking_dist;
+		//---------------------------------------------------------------------
 
 		btDynamicsWorld* m_world;
 		btDispatcher* m_dispatcher;

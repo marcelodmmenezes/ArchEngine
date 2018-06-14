@@ -387,7 +387,8 @@ void onInputActionEvent(EventPtr e) {
 	}
 }
 
-bool mouse_clicked = false;
+bool mouse_left_clicked = false;
+bool mouse_right_clicked = false;
 
 void onInputStateEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputStateEvent>(e);
@@ -422,9 +423,15 @@ void onInputStateEvent(EventPtr e) {
 		break;
 	case 7:
 		if (evnt->isOver())
-			mouse_clicked = false;
+			mouse_left_clicked = false;
 		else
-			mouse_clicked = true;
+			mouse_left_clicked = true;
+		break;
+	case 8:
+		if (evnt->isOver())
+			mouse_right_clicked = false;
+		else
+			mouse_right_clicked = true;
 		break;
 	}
 }
@@ -437,13 +444,15 @@ void onInputRangeEvent(EventPtr e) {
 
 	switch (evnt->getValue().m_range) {
 	case 0:
-		if (mouse_clicked) camera->look((float)evnt->getValue().m_value, 0.0f);
+		if (mouse_right_clicked) camera->look((float)evnt->getValue().m_value, 0.0f);
 		break;
 	case 1:
-		if (mouse_clicked) camera->look(0.0f, (float)evnt->getValue().m_value);
+		if (mouse_right_clicked) camera->look(0.0f, (float)evnt->getValue().m_value);
 		break;
 	}
 }
+
+bool picking_constraint = false;
 
 void onInputMouseMoved(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputMouseMoved>(e);
@@ -451,27 +460,19 @@ void onInputMouseMoved(EventPtr e) {
 	auto camera = GraphicsManager::getInstance().getActiveCamera();
 	if (!camera) return;
 
-	if (!mouse_clicked) {
-		int x, y;
-		evnt->getValues(x, y);
-		
-		float n_x = (2.0f * x) / 800 - 1.0f;
-		float n_y = 1.0f - (2.0f * y) / 600;
-		glm::vec3 ray_nds(n_x, n_y, -1.0f);
-		glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0f, 1.0f);
-		glm::vec4 ray_eye = glm::inverse(GraphicsManager::getInstance().getProjectionMatrix()) * ray_clip;
-		ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
-		glm::vec3 ray_world = glm::vec3(glm::inverse(camera->getViewMatrix()) * ray_eye);
-		ray_world = glm::normalize(ray_world);
-		
-		std::cout << "(" << ray_world.x << "," << ray_world.y << "," << ray_world.z << ")                  \r";
-		
-		auto from = glm::vec3(0.5f, 0.5f, 0.0f) + camera->getPosition();
-		auto to = camera->getPosition() + (1000.0f * ray_world);
+	int x, y;
+	evnt->getValues(x, y);
 
-		GraphicsManager::getInstance().drawLine(from, to, glm::vec3(1.0f, 0.0f, 0.0f));
-		PhysicsManager::getInstance().closestObjectRayTest(from, to);
+	if (mouse_left_clicked && !picking_constraint) {
+		PhysicsManager::getInstance().createPickingConstraint(x, y, 1000.0f, true);
+		picking_constraint = true;
 	}
+	else if (!mouse_left_clicked && picking_constraint) {
+		PhysicsManager::getInstance().removePickingConstraint();
+		picking_constraint = false;
+	}
+
+	PhysicsManager::getInstance().pickingMotion(x, y, 1000.0f);
 }
 
 void onCollisionEvent(EventPtr e) {
@@ -480,7 +481,7 @@ void onCollisionEvent(EventPtr e) {
 	long id1, id2;
 	evnt->getObjectIds(id1, id2);
 
-	//std::cout << "Collision: " << id1 << " " << id2 << std::endl;
+	std::cout << "Collision: " << id1 << " " << id2 << std::endl;
 }
 
 void onClosestRayTestEvent(EventPtr e) {
