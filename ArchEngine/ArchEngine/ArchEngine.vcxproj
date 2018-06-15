@@ -207,6 +207,8 @@
     <None Include="Shaders\colorvs.glsl" />
     <None Include="Shaders\cubemapfs.glsl" />
     <None Include="Shaders\cubemapvs.glsl" />
+    <None Include="Shaders\debugdrawfs.glsl" />
+    <None Include="Shaders\debugdrawvs.glsl" />
     <None Include="Shaders\depthmapfs.glsl" />
     <None Include="Shaders\depthmapvs.glsl" />
     <None Include="Shaders\linefs.glsl" />

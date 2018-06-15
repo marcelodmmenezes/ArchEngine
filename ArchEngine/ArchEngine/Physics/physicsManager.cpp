@@ -439,7 +439,6 @@ namespace Physics {
 		static_cast<DebugDrawer*>(m_world->getDebugDrawer())->update();
 	}
 
-	//-------------------------------------------------------------------- TEST
 	unsigned PhysicsManager::addCube(long id, const glm::vec3& sides,
 		const glm::vec3& pos, float mass, float friction) {
 		btTransform t;
@@ -559,5 +558,4 @@ namespace Physics {
 
 		return m_world->getNumCollisionObjects() - 1;
 	}
-	//-------------------------------------------------------------------------
 }

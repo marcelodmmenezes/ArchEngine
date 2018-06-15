@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 11/06/2018                                                       *
- * Last Modified: 11/06/2018                                                 *
+ * Last Modified: 14/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -19,6 +19,11 @@
 
 
 namespace Physics {	
+	struct DebugDrawerVertex {
+		glm::vec3 position;
+		glm::vec3 color;
+	};
+
 	class DebugDrawer : public btIDebugDraw {
 	public:
 		DebugDrawer(unsigned shader_id);
@@ -46,6 +51,6 @@ namespace Physics {
 
 		int m_debug_mode;
 
-		std::vector<float> m_lines;
+		std::vector<DebugDrawerVertex> m_lines;
 	};
 }

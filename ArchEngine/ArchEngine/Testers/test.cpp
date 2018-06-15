@@ -139,9 +139,15 @@ void loadData() {
 		"../../ArchEngine/Shaders/linefs.glsl"
 	);
 
-	dd = new DebugDrawer(line_shader);
-	dd->setDebugMode(btIDebugDraw::DBG_DrawAabb | btIDebugDraw::DBG_DrawWireframe);
+	unsigned dd_shader = GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Shaders/debugdrawvs.glsl",
+		"../../ArchEngine/Shaders/debugdrawfs.glsl"
+	);
+
+	dd = new DebugDrawer(dd_shader);
+	//dd->setDebugMode(btIDebugDraw::DBG_DrawAabb);
 	//dd->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+	dd->setDebugMode(btIDebugDraw::DBG_DrawAabb | btIDebugDraw::DBG_DrawWireframe);
 	PhysicsManager::getInstance().setDebugDrawer(dd);
 
 	unsigned obj_shader = GraphicsManager::getInstance().addShader(
@@ -501,7 +507,7 @@ void onAllRayTestEvent(EventPtr e) {
 }
 
 void loopCallback() {
-	//PhysicsManager::getInstance().debugDraw();
+	PhysicsManager::getInstance().debugDraw();
 }
 
 

@@ -154,12 +154,12 @@ namespace Graphics {
 		//---------------------------------------------------------------- TEST
 		/*
 		glDisable(GL_CULL_FACE); // TEST
-		m_shaders[3].bind();
-		m_shaders[3].setMat4("u_projection_matrix", m_projection);
-		m_shaders[3].setMat4("u_view_matrix", m_cameras[m_active_camera].getViewMatrix());
-		m_shaders[3].setMat4("u_model_matrix", glm::mat4(1.0f));
-		m_shaders[3].setFloat("u_magnitude", 1.0f);
-		m_shaders[3].update();
+		m_shaders[6].bind();
+		m_shaders[6].setMat4("u_projection_matrix", m_projection);
+		m_shaders[6].setMat4("u_view_matrix", m_cameras[m_active_camera].getViewMatrix());
+		m_shaders[6].setMat4("u_model_matrix", glm::mat4(1.0f));
+		m_shaders[6].setFloat("u_magnitude", 1.0f);
+		m_shaders[6].update();
 		m_meshes[0].first.draw(GL_TRIANGLES);
 		glEnable(GL_CULL_FACE); // TEST
 		*/

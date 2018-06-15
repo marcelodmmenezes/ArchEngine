@@ -353,5 +353,11 @@
     <None Include="Shaders\linevs.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\debugdrawfs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\debugdrawvs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

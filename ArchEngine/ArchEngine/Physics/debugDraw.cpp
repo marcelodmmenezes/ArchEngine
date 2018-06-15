@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 11/06/2018                                                       *
- * Last Modified: 11/06/2018                                                 *
+ * Last Modified: 14/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -37,12 +37,18 @@ namespace Physics {
 
 	void DebugDrawer::drawLine(const btVector3& from, const btVector3& to,
 		const btVector3& color) {
-		m_lines.push_back(from.getX());
-		m_lines.push_back(from.getY());
-		m_lines.push_back(from.getZ());
-		m_lines.push_back(to.getX());
-		m_lines.push_back(to.getY());
-		m_lines.push_back(to.getZ());
+		m_lines.push_back(
+			{
+				glm::vec3(from.getX(), from.getY(), from.getZ()),
+				glm::vec3(color.getX(), color.getY(), color.getZ())
+			}
+		);
+		m_lines.push_back(
+			{
+				glm::vec3(to.getX(), to.getY(), to.getZ()),
+				glm::vec3(color.getX(), color.getY(), color.getZ())
+			}
+		);
 	}
 	
 	// TODO
@@ -67,6 +73,10 @@ namespace Physics {
 			m_created = true;
 		}
 
+		// If no lines were added
+		if (m_lines.size() < 2)
+			return;
+
 		Shader* shader_ptr =
 			GraphicsManager::getInstance().getShader(m_shader_id);
 
@@ -75,18 +85,24 @@ namespace Physics {
 			GraphicsManager::getInstance().getProjectionMatrix());
 		shader_ptr->setMat4("u_view_matrix",
 			GraphicsManager::getInstance().getActiveCamera()->getViewMatrix());
-		shader_ptr->setVec3("u_color", glm::vec3(1.0f, 0.0f, 0.0f));
 		shader_ptr->update();
 
 		glBindVertexArray(m_line_vao);
 
 		glGenBuffers(1, &m_line_vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, m_line_vbo);
-		glBufferData(GL_ARRAY_BUFFER, m_lines.size() * sizeof(float),
-			&m_lines[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, m_lines.size() *
+			sizeof(DebugDrawerVertex), &m_lines[0], GL_STATIC_DRAW);
 
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
+			sizeof(DebugDrawerVertex),
+			(void*)offsetof(DebugDrawerVertex, position));
+
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
+			sizeof(DebugDrawerVertex),
+			(void*)offsetof(DebugDrawerVertex, color));
 
 		glDrawArrays(GL_LINES, 0, m_lines.size());
 
