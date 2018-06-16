@@ -16,13 +16,12 @@ using namespace Utils;
 
 
 namespace Graphics {
-	Arcball::Arcball(const glm::vec3& pos, const glm::vec3& focus,
-		const glm::vec3& up) : m_position(pos), m_focus(focus),
-		m_up(up), m_is_rotating(false) {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
-		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
-			"Arcball constructor");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+	Arcball::Arcball(const glm::vec3& pos, const glm::vec3& front,
+		const glm::vec3& up) {
+		m_position = pos;
+		m_front = front;
+		m_up = up;
+		m_is_rotating = false;
 	}
 
 	Arcball::~Arcball() {
@@ -92,22 +91,6 @@ namespace Graphics {
 				view = LookAt(position, target, up);
 			}
 		}*/
-	}
-
-	glm::vec3 Arcball::getPosition() const {
-		return m_position;
-	}
-
-	glm::vec3 Arcball::getFocus() const {
-		return m_focus;
-	}
-
-	glm::mat4 Arcball::getViewMatrix() const {
-		return m_view_matrix;
-	}
-
-	void Arcball::reset() {
-
 	}
 
 	glm::vec3 Arcball::convertCoords(const glm::vec2& coords) {

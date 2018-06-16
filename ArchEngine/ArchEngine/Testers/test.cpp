@@ -17,6 +17,7 @@
 
 #include "../Core/engine.hpp"
 #include "../Graphics/assimpLoader.hpp"
+#include "../Graphics/arcball.hpp"
 #include "../Graphics/graphicsManager.hpp"
 #include "../Graphics/terrainGenerator.hpp"
 #include "../OS/inputManager.hpp"
@@ -37,6 +38,7 @@ using namespace Utils;
 
 enum GameInputActions {
 	TEST_ACTION,
+	CHANGE_CAMERA_ACTION = 1,
 	QUIT_ACTION = 2
 };
 
@@ -58,7 +60,12 @@ void onAllRayTestEvent(EventPtr e);
 void loopCallback();
 
 
-DebugCamera camera(
+Arcball arcball(
+	glm::vec3(0.0f, 15.0f, 15.0f),
+	glm::vec3(0.0f, 0.0f, -1.0f)
+);
+
+DebugCamera debug_camera(
 	glm::vec3(0.0f, 15.0f, 15.0f),
 	glm::vec3(0.0f, 0.0f, -1.0f)
 );
@@ -131,8 +138,9 @@ void loadData() {
 	GraphicsManager::getInstance().setProjectionMatrix(
 		glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f));
 
+	GraphicsManager::getInstance().addCamera(&arcball);
 	GraphicsManager::getInstance().setActiveCamera(
-		GraphicsManager::getInstance().addCamera(&camera));
+		GraphicsManager::getInstance().addCamera(&debug_camera));
 
 	unsigned line_shader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/linevs.glsl",
@@ -379,12 +387,21 @@ void onContextEvent(EventPtr e) {
 	}
 }
 
+int act_cm = 0;
+
 void onInputActionEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputActionEvent>(e);
 
 	switch (evnt->getValue()) {
 	case GameInputActions::TEST_ACTION:
 		std::cout << "ACTION" << std::endl;
+		break;
+	case GameInputActions::CHANGE_CAMERA_ACTION:
+		GraphicsManager::getInstance().setActiveCamera(act_cm);
+		if (act_cm == 0)
+			act_cm = 1;
+		else
+			act_cm = 0;
 		break;
 	case GameInputActions::QUIT_ACTION:
 		EventPtr evnt = std::make_shared<CoreQuitEvent>(CoreQuitEvent());
@@ -514,7 +531,7 @@ void onAllRayTestEvent(EventPtr e) {
 }
 
 void loopCallback() {
-	PhysicsManager::getInstance().debugDraw();
+	//PhysicsManager::getInstance().debugDraw();
 }
 
 

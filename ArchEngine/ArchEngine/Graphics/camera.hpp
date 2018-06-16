@@ -9,6 +9,10 @@
  *===========================================================================*/
 
 
+#ifndef GRAPHICS_CAMERA_HPP
+#define GRAPHICS_CAMERA_HPP
+
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -54,3 +58,6 @@ namespace Graphics {
 		float m_zoom;
 	};
 }
+
+
+#endif	// GRAPHICS_CAMERA_HPP
