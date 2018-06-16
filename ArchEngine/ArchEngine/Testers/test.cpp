@@ -58,6 +58,11 @@ void onAllRayTestEvent(EventPtr e);
 void loopCallback();
 
 
+DebugCamera camera(
+	glm::vec3(0.0f, 15.0f, 15.0f),
+	glm::vec3(0.0f, 0.0f, -1.0f)
+);
+
 DebugDrawer* dd;
 
 
@@ -126,13 +131,8 @@ void loadData() {
 	GraphicsManager::getInstance().setProjectionMatrix(
 		glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f));
 
-	DebugCamera camera(
-		glm::vec3(0.0f, 15.0f, 15.0f),
-		glm::vec3(0.0f, 0.0f, -1.0f)
-	);
-
 	GraphicsManager::getInstance().setActiveCamera(
-		GraphicsManager::getInstance().addCamera(camera));
+		GraphicsManager::getInstance().addCamera(&camera));
 
 	unsigned line_shader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/linevs.glsl",
@@ -399,11 +399,16 @@ bool mouse_right_clicked = false;
 void onInputStateEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputStateEvent>(e);
 
-	auto camera = GraphicsManager::getInstance().getActiveCamera();
+	auto camera = dynamic_cast<DebugCamera*>(
+		GraphicsManager::getInstance().getActiveCamera());
+
 	if (!camera) return;
 
 	switch (evnt->getValue()) {
 	case 0:
+		if (mouse_left_clicked)
+			PhysicsManager::getInstance().applyCentralForce(0, glm::normalize(camera->getFront()), 20.0f);
+
 		camera->move(CAMERA_FORWARD);
 		break;
 	case 1:
@@ -445,7 +450,9 @@ void onInputStateEvent(EventPtr e) {
 void onInputRangeEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputRangeEvent>(e);
 
-	auto camera = GraphicsManager::getInstance().getActiveCamera();
+	auto camera = dynamic_cast<DebugCamera*>(
+		GraphicsManager::getInstance().getActiveCamera());
+
 	if (!camera) return;
 
 	switch (evnt->getValue().m_range) {

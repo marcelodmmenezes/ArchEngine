@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 08/06/2018                                                       *
- * Last Modified: 11/06/2018                                                 *
+ * Last Modified: 16/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -76,7 +76,8 @@ namespace Graphics {
 				vertices[index].position.x = block_width *
 					(terrain_width / 2 - i);
 
-				vertices[index].position.y = (0.30 * pixel_offset[0] + 0.59 *
+				vertices[index].position.y = (float)
+					(0.30 * pixel_offset[0] + 0.59 *
 					pixel_offset[1] + 0.11 * pixel_offset[2]);
 				vertices[index].position.y -= min_pixel_height;
 				vertices[index].position.y /= max_pixel_height;

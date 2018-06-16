@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 14/06/2018                                                 *
+ * Last Modified: 16/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -557,5 +557,46 @@ namespace Physics {
 		this->m_world->addRigidBody(body);
 
 		return m_world->getNumCollisionObjects() - 1;
+	}
+	void PhysicsManager::applyForce(unsigned obj_id, const glm::vec3& dir,
+		const glm::vec3& rel_pos, float intensity) {
+		auto obj = btRigidBody::upcast(
+			m_world->getCollisionObjectArray()
+			[m_user_objects[obj_id]->m_world_id]);
+
+		if (obj)
+			obj->applyForce(
+				btVector3(dir.x, dir.y, dir.z) * intensity,
+				btVector3(rel_pos.x, rel_pos.y, rel_pos.z));
+	}
+
+	void PhysicsManager::applyTorque(unsigned obj_id, const glm::vec3& dir,
+		const glm::vec3& rel_pos, float intensity) {
+		// TODO
+	}
+
+	void PhysicsManager::applyImpulse(unsigned obj_id, const glm::vec3& dir,
+		const glm::vec3& rel_pos, float intensity) {
+		//TODO
+	}
+
+	void PhysicsManager::applyTorqueImpulse(unsigned obj_id,
+		const glm::vec3& dir, float intensity) {
+		// TODO
+	}
+
+	void PhysicsManager::applyCentralForce(unsigned obj_id,
+		const glm::vec3& dir, float intensity) {
+		auto obj = btRigidBody::upcast(
+			m_world->getCollisionObjectArray()
+			[m_user_objects[obj_id]->m_world_id]);
+
+		if (obj)
+			obj->applyCentralForce(btVector3(dir.x, dir.y, dir.z) * intensity);
+	}
+
+	void PhysicsManager::applyCentralImpulse(unsigned obj_id,
+		const glm::vec3& dir, float intensity) {
+		// TODO
 	}
 }

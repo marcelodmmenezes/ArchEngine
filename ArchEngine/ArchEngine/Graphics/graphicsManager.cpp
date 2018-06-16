@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 14/06/2018                                                 *
+ * Last Modified: 16/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -144,7 +144,7 @@ namespace Graphics {
 
 		// Passing delta time to cameras
 		for (auto& it : m_cameras)
-			it.m_delta_time = delta_time;
+			it->m_delta_time = delta_time;
 
 		renderDepthMaps();
 		glDisable(GL_CULL_FACE); // TEST
@@ -246,10 +246,10 @@ namespace Graphics {
 				m_projection);
 
 			m_shaders[it.shader].setMat4("u_view_matrix",
-				m_cameras[m_active_camera].getViewMatrix());
+				m_cameras[m_active_camera]->getViewMatrix());
 
 			m_shaders[it.shader].setVec3("u_view_pos",
-				m_cameras[m_active_camera].getPosition());
+				m_cameras[m_active_camera]->getPosition());
 
 			bindLights(m_shaders[it.shader]);
 
@@ -447,7 +447,7 @@ namespace Graphics {
 	}
 
 	//----------------------------------------------------------- Add functions
-	unsigned GraphicsManager::addCamera(const DebugCamera& camera) {
+	unsigned GraphicsManager::addCamera(Camera* camera) {
 		m_cameras.push_back(camera);
 		return m_cameras.size() - 1;
 	}
@@ -549,7 +549,7 @@ namespace Graphics {
 		m_active_camera = id;
 	}
 
-	DebugCamera* GraphicsManager::getActiveCamera() {
+	Camera* GraphicsManager::getActiveCamera() {
 		if (m_active_camera < 0 || m_active_camera >= (int)m_cameras.size()) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
@@ -558,7 +558,7 @@ namespace Graphics {
 			return nullptr;
 		}
 
-		return &m_cameras[m_active_camera];
+		return m_cameras[m_active_camera];
 	}
 
 	Shader* GraphicsManager::getShader(int id) {

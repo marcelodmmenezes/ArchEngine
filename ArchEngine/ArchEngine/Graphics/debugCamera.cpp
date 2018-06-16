@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/05/2018                                                       *
- * Last Modified: 18/05/2018                                                 *
+ * Last Modified: 16/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -19,48 +19,31 @@ using namespace OS;
 
 
 namespace Graphics {
-	const float DebugCamera::YAW = 0.0f;
-	const float DebugCamera::PITCH = 0.0f;
-	const float DebugCamera::SPEED = 5.0f;
-	const float DebugCamera::ZOOM = 45.0f;
-
 	DebugCamera::DebugCamera(glm::vec3 position, glm::vec3 front,
-		glm::vec3 up, float yaw, float pitch) :
-		m_position(position), m_front(front), m_world_up(up),
-		m_yaw(yaw), m_pitch(pitch), m_movement_speed(SPEED), m_zoom(ZOOM) {
+		glm::vec3 up, float yaw, float pitch) {
+		m_position = position;
+		m_front = front;
+		m_world_up = up;
+		m_yaw = yaw;
+		m_pitch = pitch;
+		m_movement_speed = SPEED;
+		m_zoom = ZOOM;
 		updateCameraVectors();
 	}
-
+	
 	DebugCamera::DebugCamera(float pos_x, float pos_y, float pos_z, float up_x,
-		float up_y, float up_z, float yaw, float pitch) :
-		m_front(glm::vec3(0.0f, 0.0f, -1.0f)),
-		m_movement_speed(SPEED), m_zoom(ZOOM) {
+		float up_y, float up_z, float yaw, float pitch) {
 		m_position = glm::vec3(pos_x, pos_y, pos_z);
+		m_front = glm::vec3(0.0f, 0.0f, -1.0f);
 		m_world_up = glm::vec3(up_x, up_y, up_z);
 		m_yaw = yaw;
 		m_pitch = pitch;
+		m_movement_speed = SPEED;
+		m_zoom = ZOOM;
 		updateCameraVectors();
 	}
 
-	glm::vec3 DebugCamera::getPosition() const {
-		return m_position;
-	}
-
-	glm::vec3 DebugCamera::getFront() const {
-		return m_front;
-	}
-
-	glm::mat4 DebugCamera::getViewMatrix() const {
-		return glm::lookAt(m_position, m_position + m_front, m_up);
-	}
-
-	void DebugCamera::setSpeed(float speed) {
-		m_movement_speed = speed;
-	}
-
-	float DebugCamera::getSpeed() {
-		return m_movement_speed;
-	}
+	DebugCamera::~DebugCamera() {}
 
 	void DebugCamera::move(CameraMovement direction) {
 		float velocity = m_movement_speed * m_delta_time;

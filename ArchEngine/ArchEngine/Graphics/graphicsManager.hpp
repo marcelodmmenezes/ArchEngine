@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 14/06/2018                                                 *
+ * Last Modified: 16/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -79,7 +79,7 @@ namespace Graphics {
 		// The functions below receives the path of the files which
 		// describes the entity to be added and returns the added component
 		// handle
-		unsigned addCamera(const DebugCamera& camera);
+		unsigned addCamera(Camera* camera);
 		unsigned addShader(const std::string& vs_path,
 			const std::string& fs_path);
 		unsigned addShader(const std::string& vs_path,
@@ -96,7 +96,7 @@ namespace Graphics {
 		glm::mat4 getProjectionMatrix();
 
 		void setActiveCamera(int id);
-		DebugCamera* getActiveCamera();
+		Camera* getActiveCamera();
 
 		Shader* getShader(int id);
 
@@ -158,7 +158,7 @@ namespace Graphics {
 
 		//------------------------------------------------------------- Cameras
 		int m_active_camera;
-		std::vector<DebugCamera> m_cameras;
+		std::vector<Camera*> m_cameras;
 
 		//------------------------------------------------------------- Shaders
 		std::vector<Shader> m_shaders;

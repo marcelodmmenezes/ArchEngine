@@ -100,10 +100,12 @@ namespace Physics {
 		void allObjectsRayTest(const glm::vec3& pos, 
 			const glm::vec3& front);
 
+		//------------------------------------------------------- Mouse picking
 		void createPickingConstraint(int x, int y,
 			float ray_size, bool limit_angular_motion);
 		void pickingMotion(int x, int y, float ray_size);
 		void removePickingConstraint();
+		//---------------------------------------------------------------------
 
 		void setDebugDrawer(DebugDrawer* dd);
 		void debugDraw();
@@ -119,6 +121,19 @@ namespace Physics {
 			const std::vector<unsigned>& indices,
 			const glm::mat4& transform);
 
+		void applyForce(unsigned obj_id, const glm::vec3& dir,
+			const glm::vec3& rel_pos,float intensity);
+		void applyTorque(unsigned obj_id, const glm::vec3& dir,
+			const glm::vec3& rel_pos, float intensity);
+		void applyImpulse(unsigned obj_id, const glm::vec3& dir,
+			const glm::vec3& rel_pos, float intensity);
+		void applyTorqueImpulse(unsigned obj_id,
+			const glm::vec3& dir, float intensity);
+		void applyCentralForce(unsigned obj_id,
+			const glm::vec3& dir, float intensity);
+		void applyCentralImpulse(unsigned obj_id,
+			const glm::vec3& dir, float intensity);
+
 	private:
 		enum State {
 			CONSTRUCTED,
@@ -132,7 +147,7 @@ namespace Physics {
 
 		std::vector<PhysicsObject*> m_user_objects;
 
-		//----------------------------------------------- Picking ray variables
+		//--------------------------------------------- Mouse picking variables
 		btGeneric6DofConstraint* m_picking_constraint;
 		btRigidBody* m_picked_obj;
 		btScalar m_old_picking_dist;
