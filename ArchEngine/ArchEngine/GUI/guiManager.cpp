@@ -37,15 +37,33 @@ namespace GUI {
 	}
 
 	GUIManager& GUIManager::getInstance() {
-		GUIManager instance;
+		static GUIManager instance;
 		return instance;
 	}
 
+	bool GUIManager::initialize() {
+		if (FT_Init_FreeType(&m_ft)) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
+				"Could not initialize FreeType");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+
+			return false;
+		}
+
+		return true;
+	}
+
 	bool GUIManager::initializeFromConfigFile(const std::string& path) {
+		bool success;
+
 		LuaScript lua_context;
 		lua_context.initialize(path);
+
+		success = initialize(); // TODO
+
 		lua_context.destroy();
 
-		return true; // TODO
+		return success;
 	}
 }

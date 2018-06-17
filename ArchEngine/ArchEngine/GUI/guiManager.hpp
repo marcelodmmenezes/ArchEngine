@@ -10,9 +10,16 @@
  *===========================================================================*/
 
 
+#ifndef GUI_GUI_MANAGER_HPP
+#define GUI_GUI_MANAGER_HPP
+
+
 #include "../Config/engineMacros.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include <string>
 
@@ -27,6 +34,7 @@ namespace GUI {
 
 		static GUIManager& getInstance();
 
+		bool initialize();
 		bool initializeFromConfigFile(const std::string& path);
 		
 	private:
@@ -39,5 +47,10 @@ namespace GUI {
 		GUIManager();
 
 		State m_state;
+
+		FT_Library m_ft;
 	};
 }
+
+
+#endif	// GUI_GUI_MANAGER_HPP
