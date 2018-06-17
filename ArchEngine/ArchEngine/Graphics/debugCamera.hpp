@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/05/2018                                                       *
- * Last Modified: 16/06/2018                                                 *
+ * Last Modified: 17/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -36,6 +36,8 @@ namespace Graphics {
 			float yaw, float pitch);
 
 		~DebugCamera();
+
+		glm::mat4 getViewMatrix() const override;
 
 		void move(CameraMovement direction);
 		void look(float x_offset, float y_offset);

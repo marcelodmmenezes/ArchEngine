@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/05/2018                                                       *
- * Last Modified: 16/06/2018                                                 *
+ * Last Modified: 17/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -60,6 +60,10 @@ namespace Graphics {
 			m_position.y += 1.0f * velocity;
 		else
 			m_position.y -= 1.0f * velocity;
+	}
+
+	glm::mat4 DebugCamera::getViewMatrix() const {
+		return glm::lookAt(m_position, m_position + m_front, m_up);
 	}
 
 	void DebugCamera::look(float x_offset, float y_offset) {

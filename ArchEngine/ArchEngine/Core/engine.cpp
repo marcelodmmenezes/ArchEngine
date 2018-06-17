@@ -64,7 +64,7 @@ int releaseMouse(lua_State* lua) {
 
 
 namespace Core {
-	Delegate<void()> Engine::loopDelegate;
+	Delegate<void(float)> Engine::loopDelegate;
 
 	//------------------------------------------------------------------ Engine
 	Engine::Engine() : m_initialized(false), m_running(false) {}
@@ -181,7 +181,7 @@ namespace Core {
 				(float)m_timer.getDeltaTime());
 
 			//--------------------------------------------------- User callback
-			loopDelegate.invoke();
+			loopDelegate.invoke((float)m_timer.getDeltaTime());
 			/*
 			std::cout << "Seconds between frames: " <<
 				std::setprecision(6) << m_timer.getDeltaTime() << " - FPS: " <<

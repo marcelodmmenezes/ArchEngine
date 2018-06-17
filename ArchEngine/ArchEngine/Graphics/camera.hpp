@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/06/2018                                                       *
- * Last Modified: 16/06/2018                                                 *
+ * Last Modified: 17/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -38,7 +38,7 @@ namespace Graphics {
 
 		glm::vec3 getPosition() const;
 		glm::vec3 getFront() const;
-		glm::mat4 getViewMatrix() const;
+		virtual glm::mat4 getViewMatrix() const = 0;
 
 		void setSpeed(float speed);
 		float getSpeed();

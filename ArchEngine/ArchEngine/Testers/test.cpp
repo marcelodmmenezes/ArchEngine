@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 07/06/2018                                                 *
+ * Last Modified: 17/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -17,9 +17,9 @@
 
 #include "../Core/engine.hpp"
 #include "../Graphics/assimpLoader.hpp"
-#include "../Graphics/arcball.hpp"
 #include "../Graphics/graphicsManager.hpp"
 #include "../Graphics/terrainGenerator.hpp"
+#include "../Graphics/thirdPersonCamera.hpp"
 #include "../OS/inputManager.hpp"
 #include "../Physics/physicsManager.hpp"
 #include "../Utils/serviceLocator.hpp"
@@ -57,13 +57,9 @@ void onInputMouseMoved(EventPtr e);
 void onCollisionEvent(EventPtr e);
 void onClosestRayTestEvent(EventPtr e);
 void onAllRayTestEvent(EventPtr e);
-void loopCallback();
+void loopCallback(float delta_time);
 
-Arcball arcball(
-	800, 600, 300,
-	glm::vec3(-15.0f, 100.0f, 15.0f),
-	glm::vec3(15.0f, -100.0f, -15.0f)
-);
+ThirdPersonCamera tpcamera(15.0f);
 
 DebugCamera debug_camera(
 	glm::vec3(0.0f, 15.0f, 15.0f),
@@ -135,10 +131,13 @@ int main(int argc, char* argv[]) {
 }
 
 void loadData() {
+	//PhysicsManager::getInstance().setGravity(glm::vec3(0.0f, 0.0f, 0.0f));
+
 	GraphicsManager::getInstance().setProjectionMatrix(
 		glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f));
 
-	GraphicsManager::getInstance().addCamera(&arcball);
+	//GraphicsManager::getInstance().addCamera(&arcball);
+	GraphicsManager::getInstance().addCamera(&tpcamera);
 	GraphicsManager::getInstance().setActiveCamera(
 		GraphicsManager::getInstance().addCamera(&debug_camera));
 
@@ -493,6 +492,21 @@ void onInputRangeEvent(EventPtr e) {
 			break;
 		}
 	}
+	else {
+		auto tpcamera = dynamic_cast<ThirdPersonCamera*>(
+			GraphicsManager::getInstance().getActiveCamera());
+
+		switch (evnt->getValue().m_range) {
+		case 0:
+			if (mouse_right_clicked)
+				tpcamera->calcYaw(evnt->getValue().m_value);
+			break;
+		case 1:
+			if (mouse_right_clicked)
+				tpcamera->calcPitch(evnt->getValue().m_value);
+			break;
+		}
+	}
 }
 
 bool picking_constraint = false;
@@ -514,16 +528,6 @@ void onInputMouseMoved(EventPtr e) {
 	}
 
 	PhysicsManager::getInstance().pickingMotion(x, y, 1000.0f);
-
-	//----------------------------------------------------------------- ARCBALL
-	if (auto arcball = dynamic_cast<Arcball*>(
-		GraphicsManager::getInstance().getActiveCamera())) {
-		if (mouse_right_clicked)
-			arcball->updateRotation(glm::vec2(x, y));
-		else
-			arcball->stopRotation();
-	}
-	//-------------------------------------------------------------------------
 }
 
 void onCollisionEvent(EventPtr e) {
@@ -551,8 +555,11 @@ void onAllRayTestEvent(EventPtr e) {
 	std::cout << std::endl;
 }
 
-void loopCallback() {
+void loopCallback(float delta_time) {
 	//PhysicsManager::getInstance().debugDraw();
+
+	auto xablau = g_entities[1].transforms[0];
+	tpcamera.update(glm::vec3(xablau[3][0], xablau[3][1], xablau[3][2]));
 }
 
 

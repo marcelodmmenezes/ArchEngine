@@ -132,9 +132,6 @@
     <ClInclude Include="Physics\debugDraw.hpp">
       <Filter>Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\arcball.hpp">
-      <Filter>Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\camera.hpp">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -232,9 +229,6 @@
     </ClCompile>
     <ClCompile Include="Physics\debugDraw.cpp">
       <Filter>Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\arcball.cpp">
-      <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\camera.cpp">
       <Filter>Graphics</Filter>
