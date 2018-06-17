@@ -31,6 +31,9 @@
     <Filter Include="API">
       <UniqueIdentifier>{88c15faf-10e5-4f85-9019-415f7a9d8177}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{a8a3e8ac-f1f6-458c-bbc8-c460bc9911c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils\logger.hpp">
@@ -138,6 +141,9 @@
     <ClInclude Include="Graphics\thirdPersonCamera.hpp">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\guiManager.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -235,6 +241,9 @@
     </ClCompile>
     <ClCompile Include="Graphics\thirdPersonCamera.cpp">
       <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\guiManager.cpp">
+      <Filter>GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
