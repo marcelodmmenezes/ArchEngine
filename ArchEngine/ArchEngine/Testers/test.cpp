@@ -137,9 +137,9 @@ void loadData() {
 		glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f));
 
 	//GraphicsManager::getInstance().addCamera(&arcball);
-	GraphicsManager::getInstance().addCamera(&tpcamera);
-	GraphicsManager::getInstance().setActiveCamera(
-		GraphicsManager::getInstance().addCamera(&debug_camera));
+	unsigned tpcam = GraphicsManager::getInstance().addCamera(&tpcamera);
+	unsigned dbcam = GraphicsManager::getInstance().addCamera(&debug_camera);
+	GraphicsManager::getInstance().setActiveCamera(tpcam);
 
 	unsigned line_shader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/linevs.glsl",
@@ -298,6 +298,7 @@ void loadData() {
 		}
 	);
 	*/
+
 	loaded_meshes_ids.clear();
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/cube/cube_wooden.obj",
@@ -311,7 +312,7 @@ void loadData() {
 		),
 		loaded_meshes_ids
 	);
-	
+
 	bodies.clear();
 	bodies.resize(loaded_meshes_ids.size());
 
@@ -322,7 +323,7 @@ void loadData() {
 				loaded_meshes_ids,
 				bodies,
 				std::vector<glm::mat4>(loaded_meshes_ids.size(),
-					glm::mat4(1.0f))
+				glm::mat4(1.0f))
 			}
 		);
 
@@ -331,7 +332,7 @@ void loadData() {
 				physics_id++,
 				glm::vec3(1.0f, 1.0f, 1.0f),
 				glm::vec3((rand() % 100 - 50) * 1.0f, i * 100.0f,
-					(rand() % 100 - 50) * 1.0f),
+				(rand() % 100 - 50) * 1.0f),
 				1.0f);
 	}
 
@@ -359,7 +360,7 @@ void loadData() {
 				loaded_meshes_ids,
 				bodies,
 				std::vector<glm::mat4>(loaded_meshes_ids.size(),
-					glm::mat4(1.0f))
+				glm::mat4(1.0f))
 			}
 		);
 
@@ -368,11 +369,11 @@ void loadData() {
 				physics_id++,
 				1.0f,
 				glm::vec3((rand() % 100 - 50) * 1.0f, i * 100.0f,
-					(rand() % 100 - 50) * 1.0f),
+				(rand() % 100 - 50) * 1.0f),
 				1.0f);
 	}
-	
-	Engine::getInstance().releaseMouse();
+
+	//Engine::getInstance().releaseMouse();
 }
 
 void onContextEvent(EventPtr e) {
@@ -421,35 +422,53 @@ void onInputStateEvent(EventPtr e) {
 
 	auto camera = GraphicsManager::getInstance().getActiveCamera();
 
+	auto trn = g_entities[1].transforms[0];
+	auto dir = glm::vec3(trn[3][0], trn[3][1], trn[3][2]) - camera->getPosition();
+	auto up = glm::vec3(0.0f, 1.0f, 0.0f);
+	auto left = glm::cross(up, glm::vec3(dir.x, 0.0f, dir.z));
+
 	switch (evnt->getValue()) {
 	case 0:
-		if (auto cm = dynamic_cast<DebugCamera*>(camera)) {
-			if (mouse_left_clicked)
-				PhysicsManager::getInstance().applyCentralForce(
-					0, glm::normalize(camera->getFront()), 20.0f);
-
+		if (auto cm = dynamic_cast<DebugCamera*>(camera))
 			cm->move(CAMERA_FORWARD);
-		}
+		else if (auto cm = dynamic_cast<ThirdPersonCamera*>(camera))
+			PhysicsManager::getInstance().applyCentralForce(
+				0, glm::normalize(dir), 20.0f);
 		break;
 	case 1:
 		if (auto cm = dynamic_cast<DebugCamera*>(camera))
 			cm->move(CAMERA_BACKWARD);
+		else if (auto cm = dynamic_cast<ThirdPersonCamera*>(camera))
+			PhysicsManager::getInstance().applyCentralForce(
+				0, glm::normalize(-dir), 20.0f);
 		break;
 	case 2:
 		if (auto cm = dynamic_cast<DebugCamera*>(camera))
 			cm->move(CAMERA_LEFT);
+		else if (auto cm = dynamic_cast<ThirdPersonCamera*>(camera))
+			PhysicsManager::getInstance().applyCentralForce(
+				0, glm::normalize(left), 20.0f);
 		break;
 	case 3:
 		if (auto cm = dynamic_cast<DebugCamera*>(camera))
 			cm->move(CAMERA_RIGHT);
+		else if (auto cm = dynamic_cast<ThirdPersonCamera*>(camera))
+			PhysicsManager::getInstance().applyCentralForce(
+				0, glm::normalize(-left), 20.0f);
 		break;
 	case 4:
 		if (auto cm = dynamic_cast<DebugCamera*>(camera))
 			cm->move(CAMERA_UP);
+		else if (auto cm = dynamic_cast<ThirdPersonCamera*>(camera))
+			PhysicsManager::getInstance().applyCentralForce(
+				0, glm::normalize(up), 20.0f);
 		break;
 	case 5:
 		if (auto cm = dynamic_cast<DebugCamera*>(camera))
 			cm->move(CAMERA_DOWN);
+		else if (auto cm = dynamic_cast<ThirdPersonCamera*>(camera))
+			PhysicsManager::getInstance().applyCentralForce(
+				0, glm::normalize(-up), 20.0f);
 		break;
 	case 6:
 		if (auto cm = dynamic_cast<DebugCamera*>(camera)) {
@@ -498,13 +517,16 @@ void onInputRangeEvent(EventPtr e) {
 
 		switch (evnt->getValue().m_range) {
 		case 0:
-			if (mouse_right_clicked)
+			//if (mouse_right_clicked)
 				tpcamera->calcYaw(evnt->getValue().m_value);
 			break;
 		case 1:
-			if (mouse_right_clicked)
+			//if (mouse_right_clicked)
 				tpcamera->calcPitch(evnt->getValue().m_value);
 			break;
+		case 2:
+			tpcamera->increaseDistanceFromTarget(
+				30 * evnt->getValue().m_value);
 		}
 	}
 }

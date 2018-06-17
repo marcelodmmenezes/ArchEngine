@@ -28,7 +28,15 @@ namespace Graphics {
 
 		glm::mat4 getViewMatrix() const override;
 
+		void increaseDistanceFromTarget(float delta);
+		float getDistanceFromTarget() const;
+
+		void setInterpolationFactor(float factor);
+		float getInterpolationFactor() const;
+
 	private:
 		float m_distance_from_target;
+		float m_interpolation_factor;
+		glm::vec3 m_old_target_pos;
 	};
 }

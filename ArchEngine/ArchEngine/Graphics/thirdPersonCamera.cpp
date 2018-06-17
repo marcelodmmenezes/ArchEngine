@@ -20,20 +20,27 @@ namespace Graphics {
 		m_yaw = yaw;
 		m_pitch = pitch;
 		m_distance_from_target = distance_from_target;
+		m_interpolation_factor = 0.95f;
 		m_up = glm::vec3(0.0f, 1.0f, 0.0f);
 	}
 
 	ThirdPersonCamera::~ThirdPersonCamera() {}
 
 	void ThirdPersonCamera::update(const glm::vec3& target) {
-		m_front = target;
+		glm::vec3 target_pos = glm::mix(
+			target,
+			m_old_target_pos,
+			m_interpolation_factor
+		);
 
-		m_position.x =
-			target.x + m_distance_from_target * cos(m_pitch) * sin(m_yaw);
-		m_position.y =
-			target.y + m_distance_from_target * sin(m_pitch);
-		m_position.z =
-			target.z + m_distance_from_target * cos(m_pitch) * cos(m_yaw);
+		m_old_target_pos = target_pos;
+		m_front = target_pos;
+
+		m_position = glm::vec3(
+			target_pos.x + m_distance_from_target * cos(m_pitch) * sin(m_yaw),
+			target_pos.y + m_distance_from_target * sin(m_pitch),
+			target_pos.z + m_distance_from_target * cos(m_pitch) * cos(m_yaw)
+		);
 	}
 	
 	void ThirdPersonCamera::calcYaw(float x) {
@@ -42,7 +49,7 @@ namespace Graphics {
 
 	void ThirdPersonCamera::calcPitch(float y) {
 		m_pitch -= m_delta_time * y;
-
+		
 		if (m_pitch > G_PI / 2.0f - 0.1f)
 			m_pitch = G_PI / 2.0f - 0.1f;
 		else if (m_pitch < -G_PI / 2.0f + 0.1f)
@@ -51,5 +58,21 @@ namespace Graphics {
 
 	glm::mat4 ThirdPersonCamera::getViewMatrix() const {
 		return glm::lookAt(m_position, m_front, m_up);
+	}
+
+	void ThirdPersonCamera::increaseDistanceFromTarget(float dist) {
+		m_distance_from_target -= dist;
+	}
+
+	float ThirdPersonCamera::getDistanceFromTarget() const {
+		return m_distance_from_target;
+	}
+
+	void ThirdPersonCamera::setInterpolationFactor(float factor) {
+		m_interpolation_factor = factor;
+	}
+
+	float ThirdPersonCamera::getInterpolationFactor() const {
+		return m_interpolation_factor;
 	}
 }
