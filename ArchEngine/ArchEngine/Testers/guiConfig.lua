@@ -13,3 +13,6 @@
 ]]
 
 
+fonts = {
+	"../../../../GameEngineLearning/assets/fonts/ironman/IRON MAN OF WAR 002 NCV.ttf",
+}

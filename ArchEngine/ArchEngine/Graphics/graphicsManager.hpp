@@ -58,7 +58,7 @@ namespace Graphics {
 		static GraphicsManager& getInstance();
 
 		bool initialize(bool depth_test, bool face_culling,
-			int view_port[4], const glm::vec4& color,
+			bool blending, int view_port[4], const glm::vec4& color,
 			float fov, int active_camera);
 		bool initializeFromConfigFile(const std::string& path);
 

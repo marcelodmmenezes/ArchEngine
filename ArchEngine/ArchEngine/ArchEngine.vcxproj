@@ -217,6 +217,8 @@
     <None Include="Shaders\debugdrawvs.glsl" />
     <None Include="Shaders\depthmapfs.glsl" />
     <None Include="Shaders\depthmapvs.glsl" />
+    <None Include="Shaders\glyphfs.glsl" />
+    <None Include="Shaders\glyphvs.glsl" />
     <None Include="Shaders\linefs.glsl" />
     <None Include="Shaders\linevs.glsl" />
     <None Include="Shaders\normaldebugfs.glsl" />

@@ -89,12 +89,16 @@ namespace Graphics {
 	}
 
 	bool GraphicsManager::initialize(bool depth_test, bool face_culling,
-		int view_port[4], const glm::vec4& color,
+		bool blending, int view_port[4], const glm::vec4& color,
 		float fov, int active_camera) {
 		if (depth_test)
 			glEnable(GL_DEPTH_TEST);
 		if (face_culling)
 			glEnable(GL_CULL_FACE);
+		if (blending) {
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		}
 
 		//------------------------------------------------------ Event handlers
 		m_window_size_listener.bind
@@ -125,6 +129,7 @@ namespace Graphics {
 
 		bool depth_test = lua_context.get<bool>("depth_test");
 		bool face_culling = lua_context.get<bool>("face_culling");
+		bool blending = lua_context.get<bool>("blending");
 		auto color = lua_context.getFloatVector("clear_color");
 		auto view_port = lua_context.getIntVector("view_port");
 		float fov = lua_context.get<float>("fov");
@@ -132,8 +137,8 @@ namespace Graphics {
 
 		lua_context.destroy();
 
-		return initialize(depth_test, face_culling, &view_port[0],
-			glm::vec4(color[0], color[1], color[2], color[3]),
+		return initialize(depth_test, face_culling, blending,
+			&view_port[0], glm::vec4(color[0], color[1], color[2], color[3]),
 			fov, active_camera);
 	}
 

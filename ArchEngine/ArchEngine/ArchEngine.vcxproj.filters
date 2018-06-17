@@ -383,5 +383,11 @@
     <None Include="Testers\guiConfig.lua">
       <Filter>Testers</Filter>
     </None>
+    <None Include="Shaders\glyphfs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\glyphvs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
