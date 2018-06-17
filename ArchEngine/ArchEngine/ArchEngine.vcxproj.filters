@@ -380,5 +380,8 @@
     <None Include="Shaders\debugdrawvs.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Testers\guiConfig.lua">
+      <Filter>Testers</Filter>
+    </None>
   </ItemGroup>
 </Project>

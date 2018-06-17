@@ -5,12 +5,11 @@
  * the game loop and other stuff I'll add as the egine grows...              *
  *                                                                           *
  * Game loop based in:                                                       *
- * - (http://www.koonsolo.com/news/dewitters-gameloop/)                      *
  * - (https://gafferongames.com/post/fix_your_timestep/)                     *
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 07/06/2018                                                 *
+ * Last Modified: 17/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -18,6 +17,7 @@
 
 
 using namespace Graphics;
+using namespace GUI;
 using namespace OS;
 using namespace Physics;
 using namespace Script;
@@ -312,6 +312,13 @@ namespace Core {
 		//----------------------------------- Physics system configuration file
 		if (!PhysicsManager::getInstance().initializeFromConfigFile(
 			lua_context.get<std::string>("files.physicsConfig"))) {
+			lua_context.destroy();
+			return false;
+		}
+
+		//--------------------------------------- GUI system configuration file
+		if (!GUIManager::getInstance().initializeFromConfigFile(
+			lua_context.get<std::string>("files.guiConfig"))) {
 			lua_context.destroy();
 			return false;
 		}

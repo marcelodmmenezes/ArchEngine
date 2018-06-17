@@ -5,7 +5,6 @@
  * the game loop and other stuff I'll add as the egine grows...              *
  *                                                                           *
  * Game loop based in:                                                       *
- * - (http://www.koonsolo.com/news/dewitters-gameloop/)                      *
  * - (https://gafferongames.com/post/fix_your_timestep/)                     *
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
@@ -21,6 +20,7 @@
 #include "event.hpp"
 #include "../Config/engineMacros.hpp"
 #include "../Graphics/graphicsManager.hpp"
+#include "../GUI/guiManager.hpp"
 #include "../OS/inputManager.hpp"
 #include "../OS/window.hpp"
 #include "../Physics/physicsManager.hpp"

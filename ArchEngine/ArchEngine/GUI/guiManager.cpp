@@ -42,6 +42,10 @@ namespace GUI {
 	}
 
 	bool GUIManager::initializeFromConfigFile(const std::string& path) {
+		LuaScript lua_context;
+		lua_context.initialize(path);
+		lua_context.destroy();
 
+		return true; // TODO
 	}
 }
