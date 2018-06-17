@@ -59,10 +59,10 @@ void onClosestRayTestEvent(EventPtr e);
 void onAllRayTestEvent(EventPtr e);
 void loopCallback();
 
-
 Arcball arcball(
-	glm::vec3(0.0f, 15.0f, 15.0f),
-	glm::vec3(0.0f, 0.0f, -1.0f)
+	800, 600, 300,
+	glm::vec3(-15.0f, 100.0f, 15.0f),
+	glm::vec3(15.0f, -100.0f, -15.0f)
 );
 
 DebugCamera debug_camera(
@@ -322,7 +322,8 @@ void loadData() {
 				obj_shader,
 				loaded_meshes_ids,
 				bodies,
-				std::vector<glm::mat4>(loaded_meshes_ids.size(), glm::mat4(1.0f))
+				std::vector<glm::mat4>(loaded_meshes_ids.size(),
+					glm::mat4(1.0f))
 			}
 		);
 
@@ -330,7 +331,8 @@ void loadData() {
 			it = PhysicsManager::getInstance().addCube(
 				physics_id++,
 				glm::vec3(1.0f, 1.0f, 1.0f),
-				glm::vec3((rand() % 100 - 50) * 1.0f, i * 100.0f, (rand() % 100 - 50) * 1.0f),
+				glm::vec3((rand() % 100 - 50) * 1.0f, i * 100.0f,
+					(rand() % 100 - 50) * 1.0f),
 				1.0f);
 	}
 
@@ -357,7 +359,8 @@ void loadData() {
 				normal_shader,
 				loaded_meshes_ids,
 				bodies,
-				std::vector<glm::mat4>(loaded_meshes_ids.size(), glm::mat4(1.0f))
+				std::vector<glm::mat4>(loaded_meshes_ids.size(),
+					glm::mat4(1.0f))
 			}
 		);
 
@@ -365,7 +368,8 @@ void loadData() {
 			it = PhysicsManager::getInstance().addSphere(
 				physics_id++,
 				1.0f,
-				glm::vec3((rand() % 100 - 50) * 1.0f, i * 100.0f, (rand() % 100 - 50) * 1.0f),
+				glm::vec3((rand() % 100 - 50) * 1.0f, i * 100.0f,
+					(rand() % 100 - 50) * 1.0f),
 				1.0f);
 	}
 	
@@ -416,38 +420,45 @@ bool mouse_right_clicked = false;
 void onInputStateEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputStateEvent>(e);
 
-	auto camera = dynamic_cast<DebugCamera*>(
-		GraphicsManager::getInstance().getActiveCamera());
-
-	if (!camera) return;
+	auto camera = GraphicsManager::getInstance().getActiveCamera();
 
 	switch (evnt->getValue()) {
 	case 0:
-		if (mouse_left_clicked)
-			PhysicsManager::getInstance().applyCentralForce(0, glm::normalize(camera->getFront()), 20.0f);
+		if (auto cm = dynamic_cast<DebugCamera*>(camera)) {
+			if (mouse_left_clicked)
+				PhysicsManager::getInstance().applyCentralForce(
+					0, glm::normalize(camera->getFront()), 20.0f);
 
-		camera->move(CAMERA_FORWARD);
+			cm->move(CAMERA_FORWARD);
+		}
 		break;
 	case 1:
-		camera->move(CAMERA_BACKWARD);
+		if (auto cm = dynamic_cast<DebugCamera*>(camera))
+			cm->move(CAMERA_BACKWARD);
 		break;
 	case 2:
-		camera->move(CAMERA_LEFT);
+		if (auto cm = dynamic_cast<DebugCamera*>(camera))
+			cm->move(CAMERA_LEFT);
 		break;
 	case 3:
-		camera->move(CAMERA_RIGHT);
+		if (auto cm = dynamic_cast<DebugCamera*>(camera))
+			cm->move(CAMERA_RIGHT);
 		break;
 	case 4:
-		camera->move(CAMERA_UP);
+		if (auto cm = dynamic_cast<DebugCamera*>(camera))
+			cm->move(CAMERA_UP);
 		break;
 	case 5:
-		camera->move(CAMERA_DOWN);
+		if (auto cm = dynamic_cast<DebugCamera*>(camera))
+			cm->move(CAMERA_DOWN);
 		break;
 	case 6:
-		if (evnt->isOver())
-			camera->setSpeed(10.0f);
-		else
-			camera->setSpeed(25.0f);
+		if (auto cm = dynamic_cast<DebugCamera*>(camera)) {
+			if (evnt->isOver())
+				cm->setSpeed(10.0f);
+			else
+				cm->setSpeed(25.0f);
+		}
 		break;
 	case 7:
 		if (evnt->isOver())
@@ -470,15 +481,17 @@ void onInputRangeEvent(EventPtr e) {
 	auto camera = dynamic_cast<DebugCamera*>(
 		GraphicsManager::getInstance().getActiveCamera());
 
-	if (!camera) return;
-
-	switch (evnt->getValue().m_range) {
-	case 0:
-		if (mouse_right_clicked) camera->look((float)evnt->getValue().m_value, 0.0f);
-		break;
-	case 1:
-		if (mouse_right_clicked) camera->look(0.0f, (float)evnt->getValue().m_value);
-		break;
+	if (camera) {
+		switch (evnt->getValue().m_range) {
+		case 0:
+			if (mouse_right_clicked)
+				camera->look((float)evnt->getValue().m_value, 0.0f);
+			break;
+		case 1:
+			if (mouse_right_clicked)
+				camera->look(0.0f, (float)evnt->getValue().m_value);
+			break;
+		}
 	}
 }
 
@@ -487,14 +500,12 @@ bool picking_constraint = false;
 void onInputMouseMoved(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputMouseMoved>(e);
 
-	auto camera = GraphicsManager::getInstance().getActiveCamera();
-	if (!camera) return;
-
 	int x, y;
 	evnt->getValues(x, y);
 
 	if (mouse_left_clicked && !picking_constraint) {
-		PhysicsManager::getInstance().createPickingConstraint(x, y, 1000.0f, true);
+		PhysicsManager::getInstance().createPickingConstraint(
+			x, y, 1000.0f, true);
 		picking_constraint = true;
 	}
 	else if (!mouse_left_clicked && picking_constraint) {
@@ -503,6 +514,16 @@ void onInputMouseMoved(EventPtr e) {
 	}
 
 	PhysicsManager::getInstance().pickingMotion(x, y, 1000.0f);
+
+	//----------------------------------------------------------------- ARCBALL
+	if (auto arcball = dynamic_cast<Arcball*>(
+		GraphicsManager::getInstance().getActiveCamera())) {
+		if (mouse_right_clicked)
+			arcball->updateRotation(glm::vec2(x, y));
+		else
+			arcball->stopRotation();
+	}
+	//-------------------------------------------------------------------------
 }
 
 void onCollisionEvent(EventPtr e) {
@@ -511,7 +532,7 @@ void onCollisionEvent(EventPtr e) {
 	long id1, id2;
 	evnt->getObjectIds(id1, id2);
 
-	std::cout << "Collision: " << id1 << " " << id2 << std::endl;
+	//std::cout << "Collision: " << id1 << " " << id2 << std::endl;
 }
 
 void onClosestRayTestEvent(EventPtr e) {

@@ -138,6 +138,9 @@
     <ClInclude Include="Graphics\camera.hpp">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\thirdPersonCamera.hpp">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -234,6 +237,9 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\camera.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\thirdPersonCamera.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>

@@ -30,7 +30,8 @@ namespace Graphics {
 
 	class Arcball : public Camera {
 	public:
-		Arcball(const glm::vec3& pos = glm::vec3(0.0f, 0.0f, 5.0f),
+		Arcball(int width, int height, float radius,
+			const glm::vec3& pos = glm::vec3(0.0f, 0.0f, 5.0f),
 			const glm::vec3& front = glm::vec3(0.0f, 0.0f, 0.0f),
 			const glm::vec3& up = glm::vec3(0.0f, 1.0f, 0.0f));
 		~Arcball();
@@ -38,13 +39,13 @@ namespace Graphics {
 		void setWidthHeight(int width, int height);
 		void setRadius(float radius);
 
-		void startRotation(const glm::vec2& pos);
 		void updateRotation(const glm::vec2& pos);
 		void stopRotation();
 		void calc();
 		void reset();
 
 	private:
+		void startRotation(const glm::vec2& pos);
 		glm::vec3 convertCoords(const glm::vec2& coords);
 
 		int m_width;
