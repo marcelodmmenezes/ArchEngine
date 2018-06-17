@@ -16,10 +16,12 @@
 
 #include "../Config/engineMacros.hpp"
 #include "../Graphics/glad_3_3_core.hpp"
+#include "../Graphics/shader.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -53,6 +55,11 @@ namespace GUI {
 		bool initialize(const std::vector<std::string>& fonts);
 		bool initializeFromConfigFile(const std::string& path);
 		
+		void destroy();
+
+		void renderText(const std::string& text, float x,
+			float y, float scale, const glm::vec3& color);
+
 	private:
 		enum State {
 			CONSTRUCTED,
@@ -64,12 +71,20 @@ namespace GUI {
 
 		bool loadFont(const std::string& font);
 		void loadCharacters();
+		void generateQuads();
 
 		State m_state;
 
 		FT_Library m_ft;
 
 		Font m_font; // TODO: multiple fonts
+		
+		Graphics::Shader m_shader;
+
+		glm::mat4 m_projection;
+
+		unsigned m_quad_vao;
+		unsigned m_quad_vbo;
 	};
 }
 

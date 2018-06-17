@@ -16,3 +16,7 @@
 fonts = {
 	"../../../../GameEngineLearning/assets/fonts/ironman/IRON MAN OF WAR 002 NCV.ttf",
 }
+
+vsshader = "../../ArchEngine/Shaders/glyphvs.glsl"
+fsshader = "../../ArchEngine/Shaders/glyphfs.glsl"	
+		

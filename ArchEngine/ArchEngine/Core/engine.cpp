@@ -183,15 +183,24 @@ namespace Core {
 			//--------------------------------------------------- User callback
 			loopDelegate.invoke((float)m_timer.getDeltaTime());
 			
-			std::cout << "Seconds between frames: " <<
+			std::stringstream ss;
+			ss << "Seconds between frames: " <<
 				std::setprecision(6) << m_timer.getDeltaTime() << " - FPS: " <<
-				std::setprecision(3) << m_timer.getFrameRate() << "      \r";
-			
+				std::setprecision(3) << m_timer.getFrameRate();
+
+			GUIManager::getInstance().renderText(ss.str(), 25.0f, 25.0f, 0.5f, glm::vec3(0.5f, 0.8f, 0.2f));
+
 			m_window.update();
 		}
 	}
 
 	void Engine::exit() {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		ServiceLocator::getFileLogger()->log<LOG_INFO>(
+			"Destroying GUIManager");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
+		GUIManager::getInstance().destroy();
+
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 		ServiceLocator::getFileLogger()->log<LOG_INFO>(
 			"Destroying PhysicsManager");

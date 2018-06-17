@@ -18,10 +18,10 @@ title = "ArchEngine"
 -- Window position and size
 pos_x = -1 -- -1 for SDL_WINDOWPOS_CENTERED
 pos_y = -1 -- -1 for SDL_WINDOWPOS_CENTERED
-width = 800
-height = 600
---width = 1920
---height = 1080
+--width = 800
+--height = 600
+width = 1920
+height = 1080
 
 -- Color bits
 r_size = 8
@@ -34,7 +34,7 @@ depth_size = 8
 stencil_size = 8
 
 vsync = false -- Just a hint, the driver does what it wants
-fullscreen = false
+fullscreen = true
 
 -- Antialiasing
 ms_n_buffers = 1

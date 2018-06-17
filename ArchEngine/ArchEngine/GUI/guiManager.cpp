@@ -32,7 +32,7 @@ namespace GUI {
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
-			"GUIManager constructor");
+			"GUIManager destructor");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 	}
 
@@ -58,7 +58,9 @@ namespace GUI {
 				break;
 		}
 
-		FT_Done_Face(m_font.face);
+		generateQuads();
+
+		FT_Done_Face(m_font.face); // TODO: correct resources
 		FT_Done_FreeType(m_ft);
 
 		return success;
@@ -72,11 +74,80 @@ namespace GUI {
 
 		auto fonts = lua_context.getStringVector("fonts");
 
+		m_shader.initialize(
+			lua_context.get<std::string>("vsshader"),
+			lua_context.get<std::string>("fsshader")
+		);
+
+		// TODO: dynamic load projetion matrix
+		m_projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f); 
+
 		success = initialize(fonts);
 
 		lua_context.destroy();
 
 		return success;
+	}
+
+	void GUIManager::destroy() {
+		for (auto& it : m_font.characters)
+			if (glIsTexture(it.second.texture_id))
+				glDeleteTextures(1, &it.second.texture_id);
+
+		if (glIsBuffer(m_quad_vbo))
+			glDeleteBuffers(1, &m_quad_vbo);
+
+		if (glIsVertexArray(m_quad_vao))
+			glDeleteVertexArrays(1, &m_quad_vao);
+
+		m_shader.destroy();
+
+		m_state = SAFE_TO_DESTROY;
+	}
+
+	void GUIManager::renderText(const std::string& text, float x,
+		float y, float scale, const glm::vec3& color) {
+		m_shader.bind();
+
+		m_shader.setMat4("u_projection_matrix", m_projection);
+		m_shader.setInt("u_texture", 0);
+		m_shader.setVec3("u_color", color);
+
+		m_shader.update();
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindVertexArray(m_quad_vao);
+
+		std::string::const_iterator c;
+		for (c = text.begin(); c != text.end(); c++) {
+			Character ch = m_font.characters[*c];
+
+			float xpos = x + ch.bearing.x * scale;
+			float ypos = y - (ch.size.y - ch.bearing.y) * scale;
+
+			float w = ch.size.x * scale;
+			float h = ch.size.y * scale;
+
+			float vertices[6][4] = {
+				{ xpos,     ypos + h,   0.0, 0.0 },
+				{ xpos,     ypos,       0.0, 1.0 },
+				{ xpos + w, ypos,       1.0, 1.0 },
+				{ xpos,     ypos + h,   0.0, 0.0 },
+				{ xpos + w, ypos,       1.0, 1.0 },
+				{ xpos + w, ypos + h,   1.0, 0.0 }
+			};
+
+			glBindTexture(GL_TEXTURE_2D, ch.texture_id);
+			glBindBuffer(GL_ARRAY_BUFFER, m_quad_vbo);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+
+			x += (ch.advance >> 6) * scale;
+		}
+
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	bool GUIManager::loadFont(const std::string& font) {
@@ -141,5 +212,22 @@ namespace GUI {
 			m_font.characters.insert(
 				std::pair<GLchar, Character>(c, character));
 		}
+	}
+
+	void GUIManager::generateQuads() {
+		glGenVertexArrays(1, &m_quad_vao);
+		glBindVertexArray(m_quad_vao);
+
+		glGenBuffers(1, &m_quad_vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, m_quad_vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4,
+			nullptr, GL_DYNAMIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE,
+			4 * sizeof(float), (void*)0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
 	}
 }

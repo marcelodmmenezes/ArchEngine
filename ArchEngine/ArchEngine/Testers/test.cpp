@@ -20,6 +20,7 @@
 #include "../Graphics/graphicsManager.hpp"
 #include "../Graphics/terrainGenerator.hpp"
 #include "../Graphics/thirdPersonCamera.hpp"
+#include "../GUI/guiManager.hpp"
 #include "../OS/inputManager.hpp"
 #include "../Physics/physicsManager.hpp"
 #include "../Utils/serviceLocator.hpp"
@@ -31,6 +32,7 @@
 
 using namespace Core;
 using namespace Graphics;
+using namespace GUI;
 using namespace OS;
 using namespace Physics;
 using namespace Utils;
