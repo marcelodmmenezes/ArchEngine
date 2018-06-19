@@ -129,12 +129,12 @@ namespace GUI {
 			float h = ch.size.y * scale;
 
 			float vertices[6][4] = {
-				{ xpos,     ypos + h,   0.0, 0.0 },
-				{ xpos,     ypos,       0.0, 1.0 },
-				{ xpos + w, ypos,       1.0, 1.0 },
-				{ xpos,     ypos + h,   0.0, 0.0 },
-				{ xpos + w, ypos,       1.0, 1.0 },
-				{ xpos + w, ypos + h,   1.0, 0.0 }
+				{ xpos,     ypos + h,   0.0f, 0.0f },
+				{ xpos,     ypos,       0.0f, 1.0f },
+				{ xpos + w, ypos,       1.0f, 1.0f },
+				{ xpos,     ypos + h,   0.0f, 0.0f },
+				{ xpos + w, ypos,       1.0f, 1.0f },
+				{ xpos + w, ypos + h,   1.0f, 0.0f }
 			};
 
 			glBindTexture(GL_TEXTURE_2D, ch.texture_id);
@@ -159,7 +159,7 @@ namespace GUI {
 			return false;
 		}
 
-		m_font.size = 48;
+		m_font.size = 96;
 		FT_Set_Pixel_Sizes(m_font.face, 0, m_font.size); // TODO: dynamic size
 
 		loadCharacters();

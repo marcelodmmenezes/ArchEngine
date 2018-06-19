@@ -350,12 +350,6 @@
     <None Include="Shaders\acubedepthmapvs.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\terrainfs.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\terrainvs.glsl">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Testers\physicsConfig.lua">
       <Filter>Testers</Filter>
     </None>

@@ -185,7 +185,7 @@ void loadData() {
 		"../../ArchEngine/Shaders/normaldebuggs.glsl",
 		"../../ArchEngine/Shaders/normaldebugfs.glsl"
 	);
-
+	
 	glm::vec3 plight_pos(0.0f, 50.0f, 0.0f);
 	glm::mat4 plight_proj =
 		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
@@ -214,8 +214,8 @@ void loadData() {
 		glm::lookAt(plight_pos, plight_pos +
 			glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
 		point_depth_shader,
-		1024,
-		1024,
+		2000,
+		2000,
 		1000.0f
 	};
 
@@ -240,15 +240,15 @@ void loadData() {
 
 	GraphicsManager::getInstance().addDirectionalLight(dlight);
 	*/
-
-	TerrainGenerator tg;
-	//auto terrain = tg.genHeightMapTerrain(256, 256, 2.0f, 2.0f, 50.0f,
-	//	"../../../../GameEngineLearning/assets/miscTextures/heightMaps/height_map3.png");
-	auto terrain = tg.genHeightMapTerrain(256, 256, 2.0f, 2.0f, 100.0f,
-		"../../../../GameEngineLearning/assets/miscTextures/heightMaps/height_map3.png");
 	
 	std::vector<unsigned> loaded_meshes_ids;
 	AssimpLoader loader;
+
+	
+	TerrainGenerator tg;
+	auto terrain = tg.genHeightMapTerrain(256, 256, 2.0f, 2.0f, 100.0f,
+		"../../../../GameEngineLearning/assets/miscTextures/heightMaps/height_map3.png");
+	
 	
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/plane/plane_terrain.obj",
@@ -277,7 +277,9 @@ void loadData() {
 	
 	int physics_id = 0;
 	std::vector<unsigned> bodies;
+
 	/*
+	loaded_meshes_ids.clear();
 	loader.importScene(
 		"../../../../GameEngineLearning/assets/sponza/mergedSponza.obj",
 		aiPostProcessSteps(
@@ -293,7 +295,7 @@ void loadData() {
 
 	g_entities.push_back(
 		{
-			normalshader,
+			normal_shader,
 			loaded_meshes_ids,
 			bodies,
 			std::vector<glm::mat4>(loaded_meshes_ids.size(), glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f)))

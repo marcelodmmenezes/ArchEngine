@@ -239,8 +239,6 @@
     <None Include="Shaders\simplevs.glsl" />
     <None Include="Shaders\skyboxfs.glsl" />
     <None Include="Shaders\skyboxvs.glsl" />
-    <None Include="Shaders\terrainfs.glsl" />
-    <None Include="Shaders\terrainvs.glsl" />
     <None Include="Testers\core_engine_test_engine_config.lua" />
     <None Include="Testers\engineConfig.lua" />
     <None Include="Testers\graphicsConfig.lua" />
