@@ -9,7 +9,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/04/2018                                                       *
- * Last Modified: 17/06/2018                                                 *
+ * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -188,7 +188,8 @@ namespace Core {
 				std::setprecision(6) << m_timer.getDeltaTime() << " - FPS: " <<
 				std::setprecision(3) << m_timer.getFrameRate();
 
-			GUIManager::getInstance().renderText(ss.str(), 25.0f, 25.0f, 0.2f, glm::vec3(0.5f, 0.8f, 0.2f));
+			GUIManager::getInstance().renderText(0, ss.str(), 25.0f, 25.0f,
+				0.2f, glm::vec3(0.5f, 0.8f, 0.2f));
 
 			m_window.update();
 		}

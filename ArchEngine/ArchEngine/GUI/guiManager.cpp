@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 17/07/2018                                                       *
- * Last Modified: 17/06/2018                                                 *
+ * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -42,28 +42,41 @@ namespace GUI {
 	}
 
 	bool GUIManager::initialize(const std::vector<std::string>& fonts) {
-		bool success;
+		glGenVertexArrays(1, &m_quad_vao);
+		glBindVertexArray(m_quad_vao);
 
-		if (FT_Init_FreeType(&m_ft)) {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
-				"Could not initialize FreeType");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-			return false;
+		glGenBuffers(1, &m_quad_vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, m_quad_vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4,
+			nullptr, GL_DYNAMIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE,
+			4 * sizeof(float), (void*)0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
+		bool success = true;
+
+		for (unsigned i = 0; i < fonts.size(); i += 2) {
+			try {
+				if (addFont(fonts[i], std::stoi(fonts[i + 1])) == -1) {
+					success = false;
+					break;
+				}
+			}
+			catch (...) {
+				if (!addFont(fonts[i], 12) == -1) {
+					success = false;
+					break;
+				}
+
+				i--;
+			}
 		}
 
-		for (auto& it : fonts) {
-			success = loadFont(it);
-			if (!success)
-				break;
-		}
-
-		generateQuads();
-
-		FT_Done_Face(m_font.face); // TODO: correct resources
-		FT_Done_FreeType(m_ft);
-
-		return success;
+		return true;
 	}
 
 	bool GUIManager::initializeFromConfigFile(const std::string& path) {
@@ -79,8 +92,18 @@ namespace GUI {
 			lua_context.get<std::string>("fsshader")
 		);
 
-		// TODO: dynamic load projetion matrix
-		m_projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f); 
+		auto proj = lua_context.getFloatVector("projection");
+
+		if (proj.size() == 4)
+			m_projection = glm::ortho(proj[0], proj[1], proj[2], proj[3]);
+		else {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				path + " projection matrix not informed correctly."
+				"Assigning default");
+#endif ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			m_projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
+		}
 
 		success = initialize(fonts);
 
@@ -90,9 +113,10 @@ namespace GUI {
 	}
 
 	void GUIManager::destroy() {
-		for (auto& it : m_font.characters)
-			if (glIsTexture(it.second.texture_id))
-				glDeleteTextures(1, &it.second.texture_id);
+		for (auto& it : m_fonts)
+			for (auto& c : it.characters)
+				if (glIsTexture(c.second.texture_id))
+					glDeleteTextures(1, &c.second.texture_id);
 
 		if (glIsBuffer(m_quad_vbo))
 			glDeleteBuffers(1, &m_quad_vbo);
@@ -105,8 +129,57 @@ namespace GUI {
 		m_state = SAFE_TO_DESTROY;
 	}
 
-	void GUIManager::renderText(const std::string& text, float x,
-		float y, float scale, const glm::vec3& color) {
+	int GUIManager::addFont(const std::string& path, int size) {
+		FT_Library ft;
+		FT_Face face;
+		Font font;
+
+		if (FT_Init_FreeType(&ft)) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
+				"Could not initialize FreeType");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			return -1;
+		}
+
+		if (FT_New_Face(ft, path.c_str(), 0, &face)) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
+				"Could not load " + path + " font");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+			return -1;
+		}
+
+		font.size = size;
+		FT_Set_Pixel_Sizes(face, 0, size);
+
+		loadCharacters(face, font);
+
+		FT_Done_Face(face);
+		FT_Done_FreeType(ft);
+
+		m_fonts.push_back(font);
+		return m_fonts.size() - 1;
+	}
+
+	void GUIManager::setProjection(const glm::mat4& proj) {
+		m_projection = proj;
+	}
+
+	glm::mat4 GUIManager::getProjection() const {
+		return m_projection;
+	}
+
+	void GUIManager::renderText(unsigned font_id, const std::string& text,
+		float x, float y, float scale, const glm::vec3& color) {
+		if (font_id >= m_fonts.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Font id higher than font vector size");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
 		m_shader.bind();
 
 		m_shader.setMat4("u_projection_matrix", m_projection);
@@ -120,7 +193,7 @@ namespace GUI {
 
 		std::string::const_iterator c;
 		for (c = text.begin(); c != text.end(); c++) {
-			Character ch = m_font.characters[*c];
+			Character ch = m_fonts[font_id].characters[*c];
 
 			float xpos = x + ch.bearing.x * scale;
 			float ypos = y - (ch.size.y - ch.bearing.y) * scale;
@@ -150,28 +223,11 @@ namespace GUI {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	bool GUIManager::loadFont(const std::string& font) {
-		if (FT_New_Face(m_ft, font.c_str(), 0, &m_font.face)) {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-			ServiceLocator::getFileLogger()->log<LOG_ERROR>(
-				"Could not load " + font + " font");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-			return false;
-		}
-
-		m_font.size = 96;
-		FT_Set_Pixel_Sizes(m_font.face, 0, m_font.size); // TODO: dynamic size
-
-		loadCharacters();
-
-		return true;
-	}
-
-	void GUIManager::loadCharacters() {
+	void GUIManager::loadCharacters(const FT_Face& face, Font& font) {
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 		for (unsigned c = 0; c < 128; c++) {
-			if (FT_Load_Char(m_font.face, c, FT_LOAD_RENDER)) {
+			if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 				ServiceLocator::getFileLogger()->log<LOG_WARNING>(
 					"Could not load " + (char)c);
@@ -185,10 +241,10 @@ namespace GUI {
 			glBindTexture(GL_TEXTURE_2D, texture_id);
 			
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RED,
-				m_font.face->glyph->bitmap.width,
-				m_font.face->glyph->bitmap.rows,
+				face->glyph->bitmap.width,
+				face->glyph->bitmap.rows,
 				0, GL_RED, GL_UNSIGNED_BYTE,
-				m_font.face->glyph->bitmap.buffer
+				face->glyph->bitmap.buffer
 			);
 
 			glTexParameteri(GL_TEXTURE_2D,
@@ -202,32 +258,18 @@ namespace GUI {
 
 			Character character = {
 				texture_id,
-				glm::ivec2(m_font.face->glyph->bitmap.width,
-					m_font.face->glyph->bitmap.rows),
-				glm::ivec2(m_font.face->glyph->bitmap_left,
-					m_font.face->glyph->bitmap_top),
-				m_font.face->glyph->advance.x
+				glm::ivec2(face->glyph->bitmap.width,
+					face->glyph->bitmap.rows),
+				glm::ivec2(face->glyph->bitmap_left,
+					face->glyph->bitmap_top),
+				face->glyph->advance.x
 			};
 
-			m_font.characters.insert(
+			font.characters.insert(
 				std::pair<GLchar, Character>(c, character));
 		}
 	}
 
 	void GUIManager::generateQuads() {
-		glGenVertexArrays(1, &m_quad_vao);
-		glBindVertexArray(m_quad_vao);
-
-		glGenBuffers(1, &m_quad_vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, m_quad_vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4,
-			nullptr, GL_DYNAMIC_DRAW);
-
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE,
-			4 * sizeof(float), (void*)0);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
 	}
 }

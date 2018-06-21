@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 17/07/2018                                                       *
- * Last Modified: 17/06/2018                                                 *
+ * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -27,6 +27,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 
 namespace GUI {
@@ -38,7 +39,6 @@ namespace GUI {
 	};
 
 	struct Font {
-		FT_Face face;
 		int size;
 		std::map<char, Character> characters;
 	};
@@ -57,8 +57,13 @@ namespace GUI {
 		
 		void destroy();
 
-		void renderText(const std::string& text, float x,
-			float y, float scale, const glm::vec3& color);
+		int addFont(const std::string& path, int size);
+
+		void setProjection(const glm::mat4& proj);
+		glm::mat4 getProjection() const;
+
+		void renderText(unsigned font_id, const std::string& text,
+			float x, float y, float scale, const glm::vec3& color);
 
 	private:
 		enum State {
@@ -69,15 +74,12 @@ namespace GUI {
 
 		GUIManager();
 
-		bool loadFont(const std::string& font);
-		void loadCharacters();
+		void loadCharacters(const FT_Face& face, Font& font);
 		void generateQuads();
 
 		State m_state;
 
-		FT_Library m_ft;
-
-		Font m_font; // TODO: multiple fonts
+		std::vector<Font> m_fonts;
 		
 		Graphics::Shader m_shader;
 

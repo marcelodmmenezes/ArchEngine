@@ -7,7 +7,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 30/04/2018                                                       *
- * Last Modified: 17/06/2018                                                 *
+ * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -586,6 +586,8 @@ void loopCallback(float delta_time) {
 
 	auto xablau = g_entities[1].transforms[0];
 	tpcamera.update(glm::vec3(xablau[3][0], xablau[3][1], xablau[3][2]));
+
+	GUIManager::getInstance().renderText(2, "XABLAU", 550, 550, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
 
