@@ -9,7 +9,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 08/06/2018                                                       *
- * Last Modified: 10/06/2018                                                 *
+ * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -33,7 +33,8 @@ namespace Graphics {
 	public:
 		std::pair<unsigned, unsigned> genHeightMapTerrain(int terrain_width,
 			int terrain_length, float block_width, float block_length,
-			float maximum_height, const std::string& height_map_path);
+			float maximum_height, int texture_factor,
+			const std::string& height_map_path);
 
 		// Procedural generation
 		void genFaultTerrain();

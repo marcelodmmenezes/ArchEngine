@@ -156,6 +156,9 @@ namespace Graphics {
 		float m_fov;
 		glm::mat4 m_projection;
 
+		//--------------------------------- Post processing effects framebuffer
+		Framebuffer m_pp_framebuffer;
+
 		//------------------------------------------------------------- Cameras
 		int m_active_camera;
 		std::vector<Camera*> m_cameras;

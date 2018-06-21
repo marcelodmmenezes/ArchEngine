@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 08/06/2018                                                       *
- * Last Modified: 16/06/2018                                                 *
+ * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -20,7 +20,7 @@ using namespace Utils;
 namespace Graphics {
 	std::pair<unsigned, unsigned> TerrainGenerator::genHeightMapTerrain(
 		int terrain_width, int terrain_length, float block_width,
-		float block_length, float maximum_height,
+		float block_length, float maximum_height, int texture_factor,
 		const std::string& height_map_path) {
 		if (terrain_width < 2 || terrain_length < 2) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
@@ -87,8 +87,12 @@ namespace Graphics {
 					(terrain_length / 2 - j);
 
 				// Texture Coords
-				vertices[index].texture_coords.x = (float)i / terrain_width;
-				vertices[index].texture_coords.y = (float)j / terrain_length;
+				vertices[index].texture_coords.x = fmod(
+					texture_factor * (float)i / terrain_width,
+					terrain_width);
+				vertices[index].texture_coords.y = fmod(
+					texture_factor * (float)j / terrain_length,
+					terrain_length);
 			}
 		}
 
@@ -101,12 +105,12 @@ namespace Graphics {
 
 				// Indices
 				indices.push_back(index);
-				indices.push_back(index + 1);
 				indices.push_back(next_row_index);
+				indices.push_back(index + 1);
 
 				indices.push_back(next_row_index);
-				indices.push_back(index + 1);
 				indices.push_back(next_row_index + 1);
+				indices.push_back(index + 1);
 			}
 		}
 
