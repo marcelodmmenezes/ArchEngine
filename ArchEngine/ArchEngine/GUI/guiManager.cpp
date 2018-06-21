@@ -13,6 +13,7 @@
 #include "guiManager.hpp"
 
 
+using namespace Core;
 using namespace Script;
 using namespace Utils;
 
@@ -56,6 +57,13 @@ namespace GUI {
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
+
+		//------------------------------------------------------ Event handlers
+		m_window_size_listener.bind
+			<GUIManager, &GUIManager::onWindowResizeEvent>(this);
+		EventManager::getInstance().addListener(
+			m_window_size_listener, EVENT_WINDOW_RESIZE);
+		//---------------------------------------------------------------------
 
 		bool success = true;
 
@@ -270,6 +278,12 @@ namespace GUI {
 		}
 	}
 
-	void GUIManager::generateQuads() {
+	void GUIManager::onWindowResizeEvent(EventPtr e) {
+		auto evnt = std::static_pointer_cast<WindowResizeEvent>(e);
+
+		int w, h;
+		evnt->getSize(w, h);
+
+		m_projection = glm::ortho(0.0f, (float)w, 0.0f, (float)h);
 	}
 }

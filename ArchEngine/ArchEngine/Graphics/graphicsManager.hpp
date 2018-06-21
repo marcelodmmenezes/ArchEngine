@@ -105,6 +105,7 @@ namespace Graphics {
 		// Drawing helpers
 		void drawLine(const glm::vec3& from, const glm::vec3& to,
 			const glm::vec3& color);
+		void drawQuad(const glm::mat4& model, unsigned texture_id);
 
 		// Removes the component by handle
 		void removeCamera(unsigned handle);
@@ -151,6 +152,10 @@ namespace Graphics {
 		unsigned m_line_shader;
 		unsigned m_line_vao;
 		unsigned m_line_vbo;
+
+		unsigned m_quad_shader;
+		unsigned m_quad_vao;
+		unsigned m_quad_vbo;
 
 		//--------------------------------------------------- Projection matrix
 		float m_fov;

@@ -15,6 +15,7 @@
 
 
 #include "../Config/engineMacros.hpp"
+#include "../Core/eventManager.hpp"
 #include "../Graphics/glad_3_3_core.hpp"
 #include "../Graphics/shader.hpp"
 #include "../Script/luaScript.hpp"
@@ -75,7 +76,9 @@ namespace GUI {
 		GUIManager();
 
 		void loadCharacters(const FT_Face& face, Font& font);
-		void generateQuads();
+		void onWindowResizeEvent(Core::EventPtr e);
+
+		Core::EventListener m_window_size_listener;
 
 		State m_state;
 

@@ -59,6 +59,7 @@ void onInputMouseMoved(EventPtr e);
 void onCollisionEvent(EventPtr e);
 void onClosestRayTestEvent(EventPtr e);
 void onAllRayTestEvent(EventPtr e);
+void onWindowResizeEvent(EventPtr e);
 void loopCallback(float delta_time);
 
 ThirdPersonCamera tpcamera(15.0f);
@@ -113,6 +114,10 @@ int main(int argc, char* argv[]) {
 		listener.bind<&onAllRayTestEvent>();
 		EventManager::getInstance().addListener(
 			listener, EVENT_RAY_TEST_ALL);
+
+		listener.bind<&onWindowResizeEvent>();
+		EventManager::getInstance().addListener(
+			listener, EVENT_WINDOW_RESIZE);
 
 		InputManager::getInstance().pushContext("test1");
 
@@ -581,13 +586,22 @@ void onAllRayTestEvent(EventPtr e) {
 	std::cout << std::endl;
 }
 
+int g_screen_width = 800;
+int g_screen_height = 600;
+
+void onWindowResizeEvent(EventPtr e) {
+	auto evnt = std::static_pointer_cast<WindowResizeEvent>(e);
+	evnt->getSize(g_screen_width, g_screen_height);
+}
+
 void loopCallback(float delta_time) {
 	//PhysicsManager::getInstance().debugDraw();
 
 	auto xablau = g_entities[1].transforms[0];
 	tpcamera.update(glm::vec3(xablau[3][0], xablau[3][1], xablau[3][2]));
 
-	GUIManager::getInstance().renderText(2, "XABLAU", 550, 550, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
+	GUIManager::getInstance().renderText(2, "XABLAU", g_screen_width - 150,
+		g_screen_height - 50, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
 

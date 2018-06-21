@@ -405,6 +405,23 @@ namespace Graphics {
 	void GraphicsManager::destroy() {
 		// TODO
 
+		//------------------------------------------------------------- Helpers
+		if (glIsBuffer(m_line_vbo))
+			glDeleteBuffers(1, &m_line_vbo);
+
+		if (glIsVertexArray(m_line_vao))
+			glDeleteVertexArrays(1, &m_line_vao);
+
+		if (glIsBuffer(m_quad_vbo))
+			glDeleteBuffers(1, &m_quad_vbo);
+
+		if (glIsVertexArray(m_quad_vao))
+			glDeleteVertexArrays(1, &m_quad_vao);
+		//---------------------------------------------------------------------
+
+		for (auto& it : m_meshes)
+			it.first.destroy();
+
 		for (auto& it : m_shaders)
 			it.destroy();
 
@@ -612,6 +629,10 @@ namespace Graphics {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 		glDeleteBuffers(1, &m_line_vbo);
+	}
+
+	void GraphicsManager::drawQuad(const glm::mat4& model,
+		unsigned texture_id) {
 	}
 
 	//-------------------------------------------------------- Remove functions

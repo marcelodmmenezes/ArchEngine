@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 11/06/2018                                                 *
+ * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -318,6 +318,15 @@ namespace OS {
 							m_mod_prev_state[m_sdl_modifiers[i]]);
 						m_mod_prev_state[m_sdl_modifiers[i]] = false;
 					}
+				}
+				break;
+
+			case SDL_WINDOWEVENT:
+				if (sdl_event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+					EventPtr evnt = std::make_shared<WindowResizeEvent>(
+						WindowResizeEvent(sdl_event.window.data1,
+							sdl_event.window.data2));
+					EventManager::getInstance().sendEvent(evnt);
 				}
 				break;
 			}
