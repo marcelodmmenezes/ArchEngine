@@ -81,14 +81,16 @@ namespace Core {
 
 	class LoopFinishedEvent : public IEvent {
 	public:
-		LoopFinishedEvent(float delta_time);
+		LoopFinishedEvent(double delta_time, double frame_rate);
 		~LoopFinishedEvent();
 
 		EventType getType() const override;
-		unsigned getDeltaTime() const;
+		double getDeltaTime() const;
+		double getFrameRate() const;
 
 	private:
-		float m_delta_time;
+		double m_delta_time;
+		double m_frame_rate;
 	};
 	//-------------------------------------------------------------------------
 

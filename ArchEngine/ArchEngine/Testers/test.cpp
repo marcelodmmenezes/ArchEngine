@@ -604,6 +604,14 @@ void onLoopFinishedEvent(EventPtr e) {
 
 	//PhysicsManager::getInstance().debugDraw();
 
+	std::stringstream ss;
+	ss << "Seconds between frames: " <<
+		std::setprecision(6) << evnt->getDeltaTime() << " - FPS: " <<
+		std::setprecision(3) << evnt->getFrameRate();
+
+	GUIManager::getInstance().renderText(0, ss.str(), 25.0f, 25.0f,
+		0.2f, glm::vec3(0.5f, 0.8f, 0.2f));
+
 	auto xablau = g_entities[player].transforms[0];
 	tpcamera.update(glm::vec3(xablau[3][0], xablau[3][1], xablau[3][2]));
 

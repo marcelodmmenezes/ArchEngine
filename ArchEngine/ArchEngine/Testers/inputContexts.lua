@@ -8,14 +8,15 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 25/04/2018                                                 *
+ * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 ]]
 
 
 contexts = {
 	test1 = "../../ArchEngine/Testers/testContext.lua",
-	test2 = "../../ArchEngine/Testers/testContext2.lua"
+	test2 = "../../ArchEngine/Testers/testContext2.lua",
+	writing_context = "../../ArchEngine/Testers/writingContext.lua"
 }
 
 hot_reload = true

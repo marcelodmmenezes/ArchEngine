@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/04/2018                                                       *
- * Last Modified: 07/05/2018                                                 *
+ * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -206,7 +206,7 @@ namespace OS {
 		lua_context.initialize(path);
 
 		// TODO: The table names must be exactly like these. Change later.
-
+		
 		//------------------------------------------------------- INPUT ACTIONS
 		std::vector<std::pair<std::string, std::string>> mapping =
 			lua_context.getTablePairs("context.actions");
@@ -299,55 +299,62 @@ namespace OS {
 			"MOUSE_AXIS_X", "MOUSE_AXIS_Y", "MOUSE_WHEEL"
 		};
 
-		for (unsigned i = 0; i < N_AXES; i++) {
-			mapping = lua_context.getTablePairs(
-				"context.ranges." + axis_names[i]);
+		mapping = lua_context.getTablePairs("context.ranges");
 
-			RangeInfo aux_range; // Auxiliary variable to parse the ranges
+		if (mapping.size() > 0) {
+			for (unsigned i = 0; i < N_AXES; i++) {
+				mapping = lua_context.getTablePairs(
+					"context.ranges." + axis_names[i]);
 
-			for (auto& it : mapping) {
-				if (it.first == "range")
-					aux_range.m_range = std::stoi(it.second);
-				else if (it.first == "min_input")
-					aux_range.m_min_input = std::stod(it.second);
-				else if (it.first == "max_input")
-					aux_range.m_max_input = std::stod(it.second);
-				else if (it.first == "min_output")
-					aux_range.m_min_output = std::stod(it.second);
-				else if (it.first == "max_output")
-					aux_range.m_max_output = std::stod(it.second);
-				else if (it.first == "sensitivity")
-					aux_range.m_sensitivity = std::stod(it.second);
-				else {
-					// If it.first is not in the above ifs,
-					// the input file is wrong.
+				if (mapping.size() == 0)
+					continue;
+
+				RangeInfo aux_range; // Auxiliary variable to parse the ranges
+
+				for (auto& it : mapping) {
+					if (it.first == "range")
+						aux_range.m_range = std::stoi(it.second);
+					else if (it.first == "min_input")
+						aux_range.m_min_input = std::stod(it.second);
+					else if (it.first == "max_input")
+						aux_range.m_max_input = std::stod(it.second);
+					else if (it.first == "min_output")
+						aux_range.m_min_output = std::stod(it.second);
+					else if (it.first == "max_output")
+						aux_range.m_max_output = std::stod(it.second);
+					else if (it.first == "sensitivity")
+						aux_range.m_sensitivity = std::stod(it.second);
+					else {
+						// If it.first is not in the above ifs,
+						// the input file is wrong.
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-					ServiceLocator::getFileLogger()->log<LOG_ERROR>(
-						"Could not map " + path + " input context");
+						ServiceLocator::getFileLogger()->log<LOG_ERROR>(
+							"Could not map " + path + " input context");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+						assert(false);
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+					}
+				}
+
+				// Checks if the range values are correct
+				if (aux_range.m_min_input >= aux_range.m_max_input ||
+					aux_range.m_min_output >= aux_range.m_max_output) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
+					ServiceLocator::getFileLogger()->log<LOG_ERROR>(path +
+						" has ranges with min values higher than max values");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 
 #ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
 					assert(false);
 #endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
 				}
+
+				// Hard coded assuming there's only the mouse axes
+				// and they are in the right order
+				m_ranges[(ControllerAxis)i] = aux_range;
 			}
-
-			// Checks if the range values are correct
-			if (aux_range.m_min_input >= aux_range.m_max_input ||
-				aux_range.m_min_output >= aux_range.m_max_output) {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-				ServiceLocator::getFileLogger()->log<LOG_ERROR>(path +
-					" has ranges with min values higher than max values");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
-
-#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
-				assert(false);
-#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
-			}
-
-			// Hard coded assuming there's only the mouse axes
-			// and they are in the right order
-			m_ranges[(ControllerAxis)i] = aux_range;
 		}
 		//---------------------------------------------------------------------
 

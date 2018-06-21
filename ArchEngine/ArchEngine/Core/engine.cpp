@@ -179,16 +179,9 @@ namespace Core {
 				(float)m_timer.getDeltaTime());
 
 			//----------------------------------------------------- Loop ending
-			std::stringstream ss;
-			ss << "Seconds between frames: " <<
-				std::setprecision(6) << m_timer.getDeltaTime() << " - FPS: " <<
-				std::setprecision(3) << m_timer.getFrameRate();
-
-			GUIManager::getInstance().renderText(0, ss.str(), 25.0f, 25.0f,
-				0.2f, glm::vec3(0.5f, 0.8f, 0.2f));
-
 			EventPtr evnt = std::make_shared<LoopFinishedEvent>(
-				LoopFinishedEvent(m_timer.getDeltaTime()));
+				LoopFinishedEvent(m_timer.getDeltaTime(),
+					m_timer.getFrameRate()));
 			EventManager::getInstance().sendEvent(evnt);
 
 			m_window.update();

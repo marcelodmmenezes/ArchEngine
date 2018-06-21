@@ -206,7 +206,9 @@ namespace Script {
 			lua_remove(m_lua, -2);
 		}
 
-		lua_pcall(m_lua, 1, 1, 0); // execute function
+		// Execute function
+		if (lua_pcall(m_lua, 1, 1, 0)) // Error
+			return std::vector<std::pair<std::string, std::string>>();
 
 		std::string test = lua_tostring(m_lua, -1);
 		std::vector<std::pair<std::string, std::string>> pairs;

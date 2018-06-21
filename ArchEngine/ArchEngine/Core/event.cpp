@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 06/05/2018                                                       *
- * Last Modified: 07/06/2018                                                 *
+ * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -23,11 +23,13 @@ namespace Core {
 	CoreQuitEvent::~CoreQuitEvent() {}
 	EventType CoreQuitEvent::getType() const { return m_type; }
 
-	LoopFinishedEvent::LoopFinishedEvent(float delta_time) :
-		IEvent(EVENT_LOOP_FINISHED), m_delta_time(delta_time) {}
+	LoopFinishedEvent::LoopFinishedEvent(double delta_time, double frame_rate)
+		: IEvent(EVENT_LOOP_FINISHED), m_delta_time(delta_time),
+		m_frame_rate(frame_rate) {}
 	LoopFinishedEvent::~LoopFinishedEvent() {}
 	EventType LoopFinishedEvent::getType() const { return m_type; }
-	unsigned LoopFinishedEvent::getDeltaTime() const { return m_delta_time; }
+	double LoopFinishedEvent::getDeltaTime() const { return m_delta_time; }
+	double LoopFinishedEvent::getFrameRate() const { return m_frame_rate; }
 
 	//----------------------------------------------------------- Window events
 	WindowResizeEvent::WindowResizeEvent(int width, int height) :

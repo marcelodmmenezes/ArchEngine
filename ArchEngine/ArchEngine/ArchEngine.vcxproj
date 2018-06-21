@@ -251,6 +251,7 @@
     <None Include="Testers\testfs.glsl" />
     <None Include="Testers\testvs.glsl" />
     <None Include="Testers\windowConfig.lua" />
+    <None Include="Testers\writingContext.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
