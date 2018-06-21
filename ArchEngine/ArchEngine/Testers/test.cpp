@@ -39,7 +39,7 @@ using namespace Utils;
 
 
 enum GameInputActions {
-	TEST_ACTION,
+	CHANGE_PLAYER = 0,
 	CHANGE_CAMERA_ACTION = 1,
 	QUIT_ACTION = 2
 };
@@ -60,7 +60,7 @@ void onCollisionEvent(EventPtr e);
 void onClosestRayTestEvent(EventPtr e);
 void onAllRayTestEvent(EventPtr e);
 void onWindowResizeEvent(EventPtr e);
-void loopCallback(float delta_time);
+void onLoopFinishedEvent(EventPtr e);
 
 ThirdPersonCamera tpcamera(15.0f);
 
@@ -119,9 +119,11 @@ int main(int argc, char* argv[]) {
 		EventManager::getInstance().addListener(
 			listener, EVENT_WINDOW_RESIZE);
 
-		InputManager::getInstance().pushContext("test1");
+		listener.bind<&onLoopFinishedEvent>();
+		EventManager::getInstance().addListener(
+			listener, EVENT_LOOP_FINISHED);
 
-		Engine::getInstance().loopDelegate.bind<loopCallback>();
+		InputManager::getInstance().pushContext("test1");
 
 		Engine::getInstance().run();
 	}
@@ -143,7 +145,6 @@ void loadData() {
 	GraphicsManager::getInstance().setProjectionMatrix(
 		glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f));
 
-	//GraphicsManager::getInstance().addCamera(&arcball);
 	unsigned tpcam = GraphicsManager::getInstance().addCamera(&tpcamera);
 	unsigned dbcam = GraphicsManager::getInstance().addCamera(&debug_camera);
 	GraphicsManager::getInstance().setActiveCamera(tpcam);
@@ -401,13 +402,17 @@ void onContextEvent(EventPtr e) {
 }
 
 int act_cm = 0;
+int player = 1;
 
 void onInputActionEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputActionEvent>(e);
 
 	switch (evnt->getValue()) {
-	case GameInputActions::TEST_ACTION:
-		std::cout << "ACTION" << std::endl;
+	case GameInputActions::CHANGE_PLAYER:
+		if (player == 1)
+			player = 5;
+		else
+			player = 1;
 		break;
 	case GameInputActions::CHANGE_CAMERA_ACTION:
 		GraphicsManager::getInstance().setActiveCamera(act_cm);
@@ -431,7 +436,7 @@ void onInputStateEvent(EventPtr e) {
 
 	auto camera = GraphicsManager::getInstance().getActiveCamera();
 
-	auto trn = g_entities[1].transforms[0];
+	auto trn = g_entities[player].transforms[0];
 	auto dir = glm::vec3(trn[3][0], trn[3][1], trn[3][2]) - camera->getPosition();
 	auto up = glm::vec3(0.0f, 1.0f, 0.0f);
 	auto left = glm::cross(up, glm::vec3(dir.x, 0.0f, dir.z));
@@ -442,42 +447,42 @@ void onInputStateEvent(EventPtr e) {
 			cm->move(CAMERA_FORWARD);
 		else if (auto cm = dynamic_cast<ThirdPersonCamera*>(camera))
 			PhysicsManager::getInstance().applyCentralForce(
-				0, glm::normalize(dir), 20.0f);
+				player - 1, glm::normalize(dir), 20.0f);
 		break;
 	case 1:
 		if (auto cm = dynamic_cast<DebugCamera*>(camera))
 			cm->move(CAMERA_BACKWARD);
 		else if (auto cm = dynamic_cast<ThirdPersonCamera*>(camera))
 			PhysicsManager::getInstance().applyCentralForce(
-				0, glm::normalize(-dir), 20.0f);
+				player - 1, glm::normalize(-dir), 20.0f);
 		break;
 	case 2:
 		if (auto cm = dynamic_cast<DebugCamera*>(camera))
 			cm->move(CAMERA_LEFT);
 		else if (auto cm = dynamic_cast<ThirdPersonCamera*>(camera))
 			PhysicsManager::getInstance().applyCentralForce(
-				0, glm::normalize(left), 20.0f);
+				player - 1, glm::normalize(left), 20.0f);
 		break;
 	case 3:
 		if (auto cm = dynamic_cast<DebugCamera*>(camera))
 			cm->move(CAMERA_RIGHT);
 		else if (auto cm = dynamic_cast<ThirdPersonCamera*>(camera))
 			PhysicsManager::getInstance().applyCentralForce(
-				0, glm::normalize(-left), 20.0f);
+				player - 1, glm::normalize(-left), 20.0f);
 		break;
 	case 4:
 		if (auto cm = dynamic_cast<DebugCamera*>(camera))
 			cm->move(CAMERA_UP);
 		else if (auto cm = dynamic_cast<ThirdPersonCamera*>(camera))
 			PhysicsManager::getInstance().applyCentralForce(
-				0, glm::normalize(up), 20.0f);
+				player - 1, glm::normalize(up), 20.0f);
 		break;
 	case 5:
 		if (auto cm = dynamic_cast<DebugCamera*>(camera))
 			cm->move(CAMERA_DOWN);
 		else if (auto cm = dynamic_cast<ThirdPersonCamera*>(camera))
 			PhysicsManager::getInstance().applyCentralForce(
-				0, glm::normalize(-up), 20.0f);
+				player - 1, glm::normalize(-up), 20.0f);
 		break;
 	case 6:
 		if (auto cm = dynamic_cast<DebugCamera*>(camera)) {
@@ -594,10 +599,12 @@ void onWindowResizeEvent(EventPtr e) {
 	evnt->getSize(g_screen_width, g_screen_height);
 }
 
-void loopCallback(float delta_time) {
+void onLoopFinishedEvent(EventPtr e) {
+	auto evnt = std::static_pointer_cast<LoopFinishedEvent>(e);
+
 	//PhysicsManager::getInstance().debugDraw();
 
-	auto xablau = g_entities[1].transforms[0];
+	auto xablau = g_entities[player].transforms[0];
 	tpcamera.update(glm::vec3(xablau[3][0], xablau[3][1], xablau[3][2]));
 
 	GUIManager::getInstance().renderText(2, "XABLAU", g_screen_width - 150,

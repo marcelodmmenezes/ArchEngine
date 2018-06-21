@@ -23,11 +23,11 @@ namespace Core {
 	CoreQuitEvent::~CoreQuitEvent() {}
 	EventType CoreQuitEvent::getType() const { return m_type; }
 
-	CoreTimerEvent::CoreTimerEvent(unsigned time) :
-		IEvent(EVENT_CORE_TIMER), m_time(time) {}
-	CoreTimerEvent::~CoreTimerEvent() {}
-	EventType CoreTimerEvent::getType() const { return m_type; }
-	unsigned CoreTimerEvent::getTime() const { return m_time; }
+	LoopFinishedEvent::LoopFinishedEvent(float delta_time) :
+		IEvent(EVENT_LOOP_FINISHED), m_delta_time(delta_time) {}
+	LoopFinishedEvent::~LoopFinishedEvent() {}
+	EventType LoopFinishedEvent::getType() const { return m_type; }
+	unsigned LoopFinishedEvent::getDeltaTime() const { return m_delta_time; }
 
 	//----------------------------------------------------------- Window events
 	WindowResizeEvent::WindowResizeEvent(int width, int height) :

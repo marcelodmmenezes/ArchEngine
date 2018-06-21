@@ -23,6 +23,7 @@
 
 context = {
 	actions = {
+		SDLK_c = 0,
 		SDLK_SPACE = 1,
 		SDLK_ESCAPE = 2
 	},

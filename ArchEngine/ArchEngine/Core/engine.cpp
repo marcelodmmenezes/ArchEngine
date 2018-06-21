@@ -64,8 +64,6 @@ int releaseMouse(lua_State* lua) {
 
 
 namespace Core {
-	Delegate<void(float)> Engine::loopDelegate;
-
 	//------------------------------------------------------------------ Engine
 	Engine::Engine() : m_initialized(false), m_running(false) {}
 
@@ -180,9 +178,7 @@ namespace Core {
 			GraphicsManager::getInstance().update(
 				(float)m_timer.getDeltaTime());
 
-			//--------------------------------------------------- User callback
-			loopDelegate.invoke((float)m_timer.getDeltaTime());
-			
+			//----------------------------------------------------- Loop ending
 			std::stringstream ss;
 			ss << "Seconds between frames: " <<
 				std::setprecision(6) << m_timer.getDeltaTime() << " - FPS: " <<
@@ -190,6 +186,10 @@ namespace Core {
 
 			GUIManager::getInstance().renderText(0, ss.str(), 25.0f, 25.0f,
 				0.2f, glm::vec3(0.5f, 0.8f, 0.2f));
+
+			EventPtr evnt = std::make_shared<LoopFinishedEvent>(
+				LoopFinishedEvent(m_timer.getDeltaTime()));
+			EventManager::getInstance().sendEvent(evnt);
 
 			m_window.update();
 		}

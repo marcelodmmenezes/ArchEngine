@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 11/06/2018                                                 *
+ * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -26,7 +26,7 @@ namespace Core {
 	enum EventType {
 		//--- Core events
 		EVENT_CORE_QUIT,
-		EVENT_CORE_TIMER,
+		EVENT_LOOP_FINISHED,
 
 		//--- Window events
 		EVENT_WINDOW_RESIZE,
@@ -79,16 +79,16 @@ namespace Core {
 		EventType getType() const override;
 	};
 
-	class CoreTimerEvent : public IEvent {
+	class LoopFinishedEvent : public IEvent {
 	public:
-		CoreTimerEvent(unsigned time);
-		~CoreTimerEvent();
+		LoopFinishedEvent(float delta_time);
+		~LoopFinishedEvent();
 
 		EventType getType() const override;
-		unsigned getTime() const;
+		unsigned getDeltaTime() const;
 
 	private:
-		unsigned m_time;
+		float m_delta_time;
 	};
 	//-------------------------------------------------------------------------
 
