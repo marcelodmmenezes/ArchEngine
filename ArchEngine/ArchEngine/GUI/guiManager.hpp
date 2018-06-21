@@ -5,7 +5,7 @@
  * associated stuff.                                                         *
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
- * Created: 17/07/2018                                                       *
+ * Created: 17/06/2018                                                       *
  * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 
@@ -63,8 +63,10 @@ namespace GUI {
 		void setProjection(const glm::mat4& proj);
 		glm::mat4 getProjection() const;
 
-		void renderText(unsigned font_id, const std::string& text,
+		float renderText(unsigned font_id, const std::string& text,
 			float x, float y, float scale, const glm::vec3& color);
+
+		float getCharLength(char c, unsigned font_id, float scale) const;
 
 	private:
 		enum State {

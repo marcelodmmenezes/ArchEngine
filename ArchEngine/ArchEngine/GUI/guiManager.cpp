@@ -5,7 +5,7 @@
  * associated stuff.                                                         *
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
- * Created: 17/07/2018                                                       *
+ * Created: 17/06/2018                                                       *
  * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 
@@ -178,14 +178,14 @@ namespace GUI {
 		return m_projection;
 	}
 
-	void GUIManager::renderText(unsigned font_id, const std::string& text,
+	float GUIManager::renderText(unsigned font_id, const std::string& text,
 		float x, float y, float scale, const glm::vec3& color) {
 		if (font_id >= m_fonts.size()) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
 				"Font id higher than font vector size");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			return;
+			return 0.0f;
 		}
 
 		m_shader.bind();
@@ -229,6 +229,14 @@ namespace GUI {
 
 		glBindVertexArray(0);
 		glBindTexture(GL_TEXTURE_2D, 0);
+
+		return x;
+	}
+
+	float GUIManager::getCharLength(char c,
+		unsigned font_id, float scale) const {
+		Character ch = m_fonts[font_id].characters.at(c);
+		return (ch.advance >> 6) * scale;
 	}
 
 	void GUIManager::loadCharacters(const FT_Face& face, Font& font) {

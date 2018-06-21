@@ -16,7 +16,22 @@
 context = {
 	-- Mapping characters to its ASCII values
 	actions = {
-		SDLK_SPACE = 0,
+		SDLK_LSHIFT = 0,
+		SDLK_TAB = 9,
+		SDLK_RETURN = 13,
+		SDLK_ESCAPE = 27,
+		SDLK_SPACE = 32,
+
+		SDLK_0 = 48,
+		SDLK_1 = 49,
+		SDLK_2 = 50,
+		SDLK_3 = 51,
+		SDLK_4 = 52,
+		SDLK_5 = 53,
+		SDLK_6 = 54,
+		SDLK_7 = 55,
+		SDLK_8 = 56,
+		SDLK_9 = 57,
 
 		SDLK_a = 97,
 		SDLK_b = 98,
@@ -44,16 +59,9 @@ context = {
 		SDLK_x = 120,
 		SDLK_y = 121,
 		SDLK_z = 122,
+	},
 
-		SDLK_0 = 48,
-		SDLK_1 = 49,
-		SDLK_2 = 50,
-		SDLK_3 = 51,
-		SDLK_4 = 52,
-		SDLK_5 = 53,
-		SDLK_6 = 54,
-		SDLK_7 = 55,
-		SDLK_8 = 56,
-		SDLK_9 = 57,
-	}
+	states = {
+		SDLK_BACKSPACE = 8,
+	},
 }
