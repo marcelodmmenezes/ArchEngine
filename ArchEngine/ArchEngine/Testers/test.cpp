@@ -124,6 +124,7 @@ int main(int argc, char* argv[]) {
 			listener, EVENT_LOOP_FINISHED);
 
 		InputManager::getInstance().pushContext("test1");
+		InputManager::getInstance().pushContext("writingContext");
 
 		Engine::getInstance().run();
 	}
@@ -384,6 +385,7 @@ void loadData() {
 	}
 
 	//Engine::getInstance().releaseMouse();
+	//PhysicsManager::getInstance().setGravity(glm::vec3(0.0f, 0.0f, 0.0f));
 }
 
 void onContextEvent(EventPtr e) {
@@ -403,12 +405,22 @@ void onContextEvent(EventPtr e) {
 
 int act_cm = 0;
 int player = 1;
+int context_priority = 0;
 
 void onInputActionEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputActionEvent>(e);
 
 	switch (evnt->getValue()) {
 	case GameInputActions::CHANGE_PLAYER:
+		if (context_priority == 0) {
+			context_priority = 1;
+			InputManager::getInstance().prioritize("writing_context", true);
+		}
+		else {
+			context_priority = 0;
+			InputManager::getInstance().prioritize("test1", true);
+		}
+
 		if (player == 1)
 			player = 5;
 		else

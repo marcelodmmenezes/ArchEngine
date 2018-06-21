@@ -113,7 +113,8 @@ namespace OS {
 
 	//------------------------------------------------------------ InputManager
 	InputManager::InputManager() : m_mouse_first(true),
-		m_mouse_last_x(0), m_mouse_last_y(0) {
+		m_mouse_last_x(0), m_mouse_last_y(0), m_priority(-1),
+		m_only_prioritized(false) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Input Manager constructor");
@@ -352,6 +353,8 @@ namespace OS {
 			if (m_contexts[it->second] == m_contexts[*it2])
 				return;
 
+		m_priority = it->second;
+
 		m_active_contexts.push_back(it->second);
 
 		EventPtr evnt = std::make_shared<InputContextEvent>(
@@ -384,10 +387,30 @@ namespace OS {
 		if (it2 != m_active_contexts.end()) {
 			m_active_contexts.pop_back();
 
+			if (m_priority == it->second)
+				m_priority = -1;
+
 			EventPtr evnt = std::make_shared<InputContextEvent>(
 				InputContextEvent(context, false));
 			EventManager::getInstance().sendEvent(evnt);
 		}
+	}
+
+	void InputManager::prioritize(const std::string& context,
+		bool only_priority) {
+		auto it = m_mapped_contexts.find(context);
+
+		if (it == m_mapped_contexts.end()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				context + " wasn't mapped");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+
+			return;
+		}
+
+		m_priority = it->second;
+		m_only_prioritized = only_priority;
 	}
 
 	void InputManager::setKeyState(SDL_Keycode key,
@@ -472,8 +495,18 @@ namespace OS {
 	}
 
 	void InputManager::setAxisValue(ControllerAxis axis, double value) {
+		RangeInfo range;
+
+		if (m_contexts[m_priority].mapAxisToRange(axis, range)) {
+			range.calc(value);
+			m_current_input.m_ranges.insert(range);
+			return;
+		}
+
+		if (m_only_prioritized)
+			return;
+
 		for (unsigned it : m_active_contexts) {
-			RangeInfo range;
 
 			if (m_contexts[it].mapAxisToRange(axis, range)) {
 				range.calc(value);
@@ -515,6 +548,12 @@ namespace OS {
 
 	//--- Action triggers
 	bool InputManager::triggerKeyAction(SDL_Keycode key, InputAction& action) {
+		if (m_contexts[m_priority].mapKeyToAction(key, action))
+			return true;
+
+		if (m_only_prioritized)
+			return false;
+
 		for (unsigned it : m_active_contexts)
 			if (m_contexts[it].mapKeyToAction(key, action))
 				return true;
@@ -523,6 +562,12 @@ namespace OS {
 	}
 
 	bool InputManager::triggerModAction(SDL_Keymod mod, InputAction& action) {
+		if (m_contexts[m_priority].mapModToAction(mod, action))
+			return true;
+
+		if (m_only_prioritized)
+			return false;
+
 		for (unsigned it : m_active_contexts)
 			if (m_contexts[it].mapModToAction(mod, action))
 				return true;
@@ -531,6 +576,12 @@ namespace OS {
 	}
 
 	bool InputManager::triggerMBAction(MouseButton mb, InputAction& action) {
+		if (m_contexts[m_priority].mapMBToAction(mb, action))
+			return true;
+
+		if (m_only_prioritized)
+			return false;
+
 		for (unsigned it : m_active_contexts)
 			if (m_contexts[it].mapMBToAction(mb, action))
 				return true;
@@ -540,6 +591,12 @@ namespace OS {
 
 	//--- State triggers
 	bool InputManager::triggerKeyState(SDL_Keycode key, InputState& state) {
+		if (m_contexts[m_priority].mapKeyToState(key, state))
+			return true;
+
+		if (m_only_prioritized)
+			return false;
+
 		for (unsigned it : m_active_contexts)
 			if (m_contexts[it].mapKeyToState(key, state))
 				return true;
@@ -548,6 +605,12 @@ namespace OS {
 	}
 
 	bool InputManager::triggerModState(SDL_Keymod mod, InputState& state) {
+		if (m_contexts[m_priority].mapModToState(mod, state))
+			return true;
+
+		if (m_only_prioritized)
+			return false;
+
 		for (unsigned it : m_active_contexts)
 			if (m_contexts[it].mapModToState(mod, state))
 				return true;
@@ -556,6 +619,13 @@ namespace OS {
 	}
 
 	bool InputManager::triggerMBState(MouseButton mb, InputState& state) {
+		if (m_contexts[m_priority].mapMBToState(mb, state))
+			return true;
+
+		if (m_only_prioritized)
+			return false;
+
+
 		for (unsigned it : m_active_contexts)
 			if (m_contexts[it].mapMBToState(mb, state))
 				return true;

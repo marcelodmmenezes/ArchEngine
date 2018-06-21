@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 11/06/2018                                                 *
+ * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -161,6 +161,9 @@ namespace OS {
 		void pushContext(const std::string& context);
 		void popContext(const std::string& context);
 
+		// Gives priority to specific context
+		void prioritize(const std::string& context, bool only_priority);
+
 	private:
 		InputManager();
 
@@ -192,6 +195,10 @@ namespace OS {
 		bool m_mouse_first; 
 		int m_mouse_last_x;
 		int m_mouse_last_y;
+
+		// Prioritary context
+		int m_priority;
+		bool m_only_prioritized;
 
 		// List of sdl key modifiers for iteration,
 		// for it's not a sequential enumeration.
