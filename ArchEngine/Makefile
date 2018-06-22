@@ -96,7 +96,11 @@ $(OBJDIR)/$(GRAPHICS)/thirdPersonCamera.o : $(GRAPHICS)/thirdPersonCamera.cpp
 $(OBJDIR)/$(GRAPHICS)/uniforms.o : $(GRAPHICS)/uniforms.cpp
 	$(COMPILEOBJ)
 
+$(OBJDIR)/$(GUI)/guiComponent.o : $(GUI)/guiComponent.cpp
+	$(COMPILEOBJ)
 $(OBJDIR)/$(GUI)/guiManager.o : $(GUI)/guiManager.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(GUI)/writableComponent.o : $(GUI)/writableComponent.cpp
 	$(COMPILEOBJ)
 
 $(OBJDIR)/$(OS)/inputContext.o : $(OS)/inputContext.cpp
@@ -137,11 +141,12 @@ _OBJ = $(API)/entity.o $(CORE)/engine.o $(CORE)/event.o \
 	$(GRAPHICS)/materialManager.o $(GRAPHICS)/mesh.o \
 	$(GRAPHICS)/shader.o  $(GRAPHICS)/skeleton.o $(GRAPHICS)/stb_image.o \
 	$(GRAPHICS)/terrainGenerator.o $(GRAPHICS)/thirdPersonCamera.o \
-	$(GRAPHICS)/uniforms.o $(GUI)/guiManager.o $(OS)/inputContext.o \
-	$(OS)/inputManager.o $(OS)/window.o $(PHYSICS)/debugDraw.o \
-	$(PHYSICS)/physicsManager.o $(SCRIPT)/engineLuaAPI.o \
-	$(SCRIPT)/luaScript.o $(TESTERS)/test.o $(UTILS)/debugging.o \
-	$(UTILS)/fileWatcher.o $(UTILS)/serviceLocator.o $(UTILS)/timer.o
+	$(GRAPHICS)/uniforms.o $(GUI)/guiComponent.o $(GUI)/guiManager.o \
+	$(GUI)/writableComponent.o $(OS)/inputContext.o $(OS)/inputManager.o \
+	$(OS)/window.o $(PHYSICS)/debugDraw.o $(PHYSICS)/physicsManager.o \
+	$(SCRIPT)/engineLuaAPI.o $(SCRIPT)/luaScript.o $(TESTERS)/test.o \
+	$(UTILS)/debugging.o $(UTILS)/fileWatcher.o $(UTILS)/serviceLocator.o \
+	$(UTILS)/timer.o
 OBJ = $(patsubst %, $(OBJDIR)/%, $(_OBJ))
 
 build: $(OBJ)

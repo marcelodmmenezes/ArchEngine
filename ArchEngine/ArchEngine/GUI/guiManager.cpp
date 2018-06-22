@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 17/06/2018                                                       *
- * Last Modified: 21/06/2018                                                 *
+ * Last Modified: 22/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -109,7 +109,7 @@ namespace GUI {
 			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
 				path + " projection matrix not informed correctly."
 				"Assigning default");
-#endif ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			m_projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
 		}
 
