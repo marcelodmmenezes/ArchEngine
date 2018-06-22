@@ -150,6 +150,9 @@
     <ClInclude Include="GUI\guiComponent.hpp">
       <Filter>GUI</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\renderableComponent.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -255,6 +258,9 @@
       <Filter>GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\guiComponent.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\renderableComponent.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
   </ItemGroup>

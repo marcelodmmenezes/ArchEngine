@@ -52,6 +52,7 @@ namespace GUI {
 			else if (m_current_line > 0) {
 				m_current_line--;
 				m_text.pop_back();
+				m_text[m_current_line].text.pop_back();
 			}
 		}
 		else {

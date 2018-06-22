@@ -201,7 +201,7 @@ void loadData() {
 	glm::vec3 plight_pos(0.0f, 50.0f, 0.0f);
 	glm::mat4 plight_proj =
 		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
-	
+	/*
 	PointLight plight = {
 		plight_pos,
 		64.0f,
@@ -232,8 +232,8 @@ void loadData() {
 	};
 
 	GraphicsManager::getInstance().addPointLight(plight);
+	*/
 	
-	/*
 	DirectionalLight dlight = {
 		glm::vec3(-0.6f, -1.0f, -0.5f),
 		32.0f,
@@ -241,17 +241,17 @@ void loadData() {
 		glm::vec3(0.8f, 0.8f, 0.4f),
 		glm::vec3(0.8f, 0.8f, 0.4f),
 		true,
-		glm::ortho(-150.0f, 150.0f, -150.0f, 150.0f, 0.1f, 1000.0f),
-		glm::lookAt(glm::vec3(60.0, 100.0, 50.0f),
-		glm::vec3(-0.6f, -1.0f, -0.5f),
-		glm::vec3(0.0f, 1.0f, 0.0f)),
+		//glm::ortho(-150.0f, 150.0f, -150.0f, 150.0f, 0.1f, 1000.0f),
+		glm::ortho(-1000.0f, 1000.0f, -1000.0f, 1000.0f, 0.1f, 1000.0f),
+		//glm::lookAt(glm::vec3(60.0, 100.0, 50.0f), glm::vec3(-0.6f, -1.0f, -0.5f), glm::vec3(0.0f, 1.0f, 0.0f)),
+		glm::lookAt(glm::vec3(300.0, 500.0, 250.0f), glm::vec3(-0.6f, -1.0f, -0.5f), glm::vec3(0.0f, 1.0f, 0.0f)),
 		dir_depth_shader,
-		4000,
-		4000
+		12000,
+		12000
 	};
 
 	GraphicsManager::getInstance().addDirectionalLight(dlight);
-	*/
+	
 	
 	std::vector<unsigned> loaded_meshes_ids;
 	AssimpLoader loader;

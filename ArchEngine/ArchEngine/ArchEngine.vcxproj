@@ -171,6 +171,7 @@
     <ClInclude Include="Graphics\uniforms.hpp" />
     <ClInclude Include="GUI\guiComponent.hpp" />
     <ClInclude Include="GUI\guiManager.hpp" />
+    <ClInclude Include="GUI\renderableComponent.hpp" />
     <ClInclude Include="GUI\writableComponent.hpp" />
     <ClInclude Include="OS\inputContext.hpp" />
     <ClInclude Include="OS\inputManager.hpp" />
@@ -210,6 +211,7 @@
     <ClCompile Include="Graphics\uniforms.cpp" />
     <ClCompile Include="GUI\guiComponent.cpp" />
     <ClCompile Include="GUI\guiManager.cpp" />
+    <ClCompile Include="GUI\renderableComponent.cpp" />
     <ClCompile Include="GUI\writableComponent.cpp" />
     <ClCompile Include="OS\inputContext.cpp" />
     <ClCompile Include="OS\inputManager.cpp" />
