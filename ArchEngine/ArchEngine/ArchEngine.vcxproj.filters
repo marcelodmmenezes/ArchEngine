@@ -144,6 +144,12 @@
     <ClInclude Include="GUI\guiManager.hpp">
       <Filter>GUI</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\writableComponent.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\guiComponent.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -243,6 +249,12 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="GUI\guiManager.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\writableComponent.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\guiComponent.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
   </ItemGroup>

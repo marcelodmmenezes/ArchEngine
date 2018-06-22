@@ -21,6 +21,7 @@
 #include "../Graphics/terrainGenerator.hpp"
 #include "../Graphics/thirdPersonCamera.hpp"
 #include "../GUI/guiManager.hpp"
+#include "../GUI/writableComponent.hpp"
 #include "../OS/inputManager.hpp"
 #include "../Physics/physicsManager.hpp"
 #include "../Utils/serviceLocator.hpp"
@@ -62,6 +63,7 @@ void onAllRayTestEvent(EventPtr e);
 void onWindowResizeEvent(EventPtr e);
 void onLoopFinishedEvent(EventPtr e);
 
+
 ThirdPersonCamera tpcamera(15.0f);
 
 DebugCamera debug_camera(
@@ -70,6 +72,8 @@ DebugCamera debug_camera(
 );
 
 DebugDrawer* dd;
+WritableComponent wc(nullptr, glm::vec2(25.0f, 500.0f), 0, 0.5f, 50.0f,
+	glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 725.0f, 0.0f, 300.0f));
 
 
 int main(int argc, char* argv[]) {
@@ -123,8 +127,9 @@ int main(int argc, char* argv[]) {
 		EventManager::getInstance().addListener(
 			listener, EVENT_LOOP_FINISHED);
 
+		InputManager::getInstance().pushContext("writing_context");
 		InputManager::getInstance().pushContext("test1");
-		InputManager::getInstance().pushContext("writingContext");
+		InputManager::getInstance().prioritize("test1", true);
 
 		Engine::getInstance().run();
 	}
@@ -415,16 +420,19 @@ void onInputActionEvent(EventPtr e) {
 		if (context_priority == 0) {
 			context_priority = 1;
 			InputManager::getInstance().prioritize("writing_context", true);
+			Engine::getInstance().releaseMouse();
 		}
 		else {
 			context_priority = 0;
 			InputManager::getInstance().prioritize("test1", true);
+			Engine::getInstance().captureMouse();
 		}
 
 		if (player == 1)
 			player = 5;
 		else
 			player = 1;
+
 		break;
 	case GameInputActions::CHANGE_CAMERA_ACTION:
 		GraphicsManager::getInstance().setActiveCamera(act_cm);
@@ -438,6 +446,9 @@ void onInputActionEvent(EventPtr e) {
 		EventManager::getInstance().sendEvent(evnt);
 		break;
 	}
+
+	if (context_priority == 1)
+		wc.write(evnt->getValue());
 }
 
 bool mouse_left_clicked = false;
@@ -452,6 +463,11 @@ void onInputStateEvent(EventPtr e) {
 	auto dir = glm::vec3(trn[3][0], trn[3][1], trn[3][2]) - camera->getPosition();
 	auto up = glm::vec3(0.0f, 1.0f, 0.0f);
 	auto left = glm::cross(up, glm::vec3(dir.x, 0.0f, dir.z));
+
+	if (context_priority == 1) {
+		wc.write(evnt->getValue());
+		return;
+	}
 
 	switch (evnt->getValue()) {
 	case 0:
@@ -609,12 +625,16 @@ int g_screen_height = 600;
 void onWindowResizeEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<WindowResizeEvent>(e);
 	evnt->getSize(g_screen_width, g_screen_height);
+	wc.setPosition(glm::vec2(25.0f, g_screen_height - 75.0f));
+	wc.setMaximumBox(glm::vec4(0.0f, g_screen_width, 0.0f, g_screen_height));
 }
 
 void onLoopFinishedEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<LoopFinishedEvent>(e);
 
 	//PhysicsManager::getInstance().debugDraw();
+
+	glDisable(GL_DEPTH_TEST);
 
 	std::stringstream ss;
 	ss << "Seconds between frames: " <<
@@ -629,6 +649,10 @@ void onLoopFinishedEvent(EventPtr e) {
 
 	GUIManager::getInstance().renderText(2, "XABLAU", g_screen_width - 150,
 		g_screen_height - 50, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
+
+	wc.update();
+
+	glEnable(GL_DEPTH_TEST);
 }
 
 
