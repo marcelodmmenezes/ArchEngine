@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Graphics/guiManager.hpp"                                   *
+ * Arch Engine - "GUI/guiManager.hpp"                                        *
  *                                                                           *
  * Class responsible for managing all the Graphical User Interface           *
  * associated stuff.                                                         *

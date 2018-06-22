@@ -16,7 +16,7 @@
 context = {
 	-- Mapping characters to its ASCII values
 	actions = {
-		--SDLK_LSHIFT = 0,
+		SDLK_LSHIFT = 0,
 		SDLK_BACKSPACE = 8,
 		SDLK_TAB = 9,
 		SDLK_RETURN = 13,

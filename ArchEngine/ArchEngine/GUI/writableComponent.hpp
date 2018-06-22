@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Graphics/writableComponent.hpp"                            *
+ * Arch Engine - "GUI/writableComponent.hpp"                                 *
  *                                                                           *
  * Component to manage text input.                                           *
  *                                                                           *
@@ -9,7 +9,12 @@
  *===========================================================================*/
 
 
+#ifndef GUI_WRITABLE_COMPONENT_HPP
+#define GUI_WRITABLE_COMPONENT_HPP
+
+
 #include "../Config/engineMacros.hpp"
+#include "guiComponent.hpp"
 #include "guiManager.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -27,10 +32,10 @@ namespace GUI {
 
 	};
 
-	class WritableComponent {
+	class WritableComponent : public GUIComponent {
 	public:
-		WritableComponent(unsigned font_id, float scale,
-			const glm::vec2& position, int spacing,
+		WritableComponent(GUIComponent* parent, const glm::vec2& position,
+			unsigned font_id, float scale, int spacing,
 			const glm::vec3& color, const glm::vec4& maximum_box);
 
 		void write(char c);
@@ -55,7 +60,6 @@ namespace GUI {
 		unsigned m_font_id;
 		float m_text_scale;
 		int m_spacing;
-		glm::vec2 m_start_position;
 		glm::vec3 m_text_color;
 		glm::vec4 m_maximum_box;
 
@@ -64,3 +68,6 @@ namespace GUI {
 		std::vector<TextLine> m_text;
 	};
 }
+
+
+#endif	// GUI_WRITABLE_COMPONENT_HPP

@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Graphics/writableComponent.cpp"                            *
+ * Arch Engine - "GUI/writableComponent.cpp"                                 *
  *                                                                           *
  * Component to manage text input.                                           *
  *                                                                           *
@@ -16,19 +16,20 @@ using namespace Utils;
 
 
 namespace GUI {
-	WritableComponent::WritableComponent(unsigned font_id, float scale,
-		const glm::vec2& position, int spacing, const glm::vec3& color,
-		const glm::vec4& maximum_box) :
-		m_font_id(font_id), m_text_scale(scale),
-		m_start_position(position), m_spacing(spacing),
+	WritableComponent::WritableComponent(GUIComponent* parent,
+		const glm::vec2& position, unsigned font_id, float scale,
+		int spacing, const glm::vec3& color, const glm::vec4& maximum_box) :
+		m_font_id(font_id), m_text_scale(scale), m_spacing(spacing),
 		m_text_color(color), m_maximum_box(maximum_box) {
+		m_parent = parent;
+		m_position = position;
 	}
 
 	void WritableComponent::write(char c) {
 		if (m_text.size() == 0) {
 			TextLine tl;
 			tl.text = "";
-			tl.start_position = m_start_position;
+			tl.start_position = m_position;
 			tl.m_width = 0;
 			m_text.push_back(tl);
 			m_current_line = 0;
@@ -54,7 +55,7 @@ namespace GUI {
 			if (m_text[m_current_line].m_width + width > m_maximum_box[1]) {
 				TextLine tl;
 				tl.text = "";
-				tl.start_position = glm::vec2(m_start_position.x,
+				tl.start_position = glm::vec2(m_position.x,
 					m_text[m_current_line].start_position.y - m_spacing);
 				tl.m_width = 0;
 				m_text.push_back(tl);
@@ -82,11 +83,11 @@ namespace GUI {
 	}
 
 	void WritableComponent::setPosition(const glm::vec2& pos) {
-		m_start_position = pos;
+		m_position = pos;
 
 		for (unsigned i = 0; i < m_text.size(); i++)
-			m_text[i].start_position = glm::vec2(m_start_position.x,
-				m_start_position.y + i * m_spacing);
+			m_text[i].start_position = glm::vec2(m_position.x,
+				m_position.y + i * m_spacing);
 	}
 
 	void WritableComponent::setColor(const glm::vec3& color) {
@@ -107,7 +108,7 @@ namespace GUI {
 	}
 
 	glm::vec2 WritableComponent::getPosition() const {
-		return m_start_position;
+		return m_position;
 	}
 
 	glm::vec3 WritableComponent::getColor() const {

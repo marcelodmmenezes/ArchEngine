@@ -72,7 +72,8 @@ DebugCamera debug_camera(
 );
 
 DebugDrawer* dd;
-WritableComponent wc(0, 0.5f, glm::vec2(25.0f, 500.0f), 50.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 725.0f, 0.0f, 300.0f));
+WritableComponent wc(nullptr, glm::vec2(25.0f, 500.0f), 0, 0.5f, 50.0f,
+	glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 725.0f, 0.0f, 300.0f));
 
 
 int main(int argc, char* argv[]) {

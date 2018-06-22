@@ -1,5 +1,5 @@
 /*===========================================================================*
- * Arch Engine - "Graphics/guiManager.hpp"                                   *
+ * Arch Engine - "GUI/guiManager.cpp"                                        *
  *                                                                           *
  * Class responsible for managing all the Graphical User Interface           *
  * associated stuff.                                                         *
@@ -75,7 +75,7 @@ namespace GUI {
 				}
 			}
 			catch (...) {
-				if (!addFont(fonts[i], 12) == -1) {
+				if (addFont(fonts[i], 12) == -1) {
 					success = false;
 					break;
 				}
@@ -278,7 +278,7 @@ namespace GUI {
 					face->glyph->bitmap.rows),
 				glm::ivec2(face->glyph->bitmap_left,
 					face->glyph->bitmap_top),
-				face->glyph->advance.x
+				(unsigned)face->glyph->advance.x
 			};
 
 			font.characters.insert(

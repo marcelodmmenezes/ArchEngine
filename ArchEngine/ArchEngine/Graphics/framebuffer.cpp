@@ -106,8 +106,6 @@ namespace Graphics {
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 			GL_TEXTURE_2D, m_texture, 0);
 
-		checkOpenGLErrors("fb");
-
 		//-------------------------------------------------------- Renderbuffer
 		glGenRenderbuffers(1, &m_rbo);
 		glBindRenderbuffer(GL_RENDERBUFFER, m_rbo);

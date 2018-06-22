@@ -115,8 +115,8 @@ namespace Graphics {
 		m_projection = glm::perspective(glm::radians(m_fov),
 			(float)m_screen_width / (float)m_screen_height, 0.1f, 1000.0f);
 
-		m_pp_framebuffer.initialize(FB_COLOR_BUFFER,
-			m_screen_width, m_screen_height);
+		//m_pp_framebuffer.initialize(FB_COLOR_BUFFER,
+		//	m_screen_width, m_screen_height);
 
 		glViewport(view_port[0], view_port[1], view_port[2], view_port[3]);
 		glClearColor(color.r, color.g, color.b, color.a);
