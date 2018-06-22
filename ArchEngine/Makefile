@@ -152,12 +152,15 @@ OBJ = $(patsubst %, $(OBJDIR)/%, $(_OBJ))
 build: $(OBJ)
 	$(CXX) -o $(OUTDIR)/Build/ArchEngine $^ $(CXXFLAGS) $(LIBS)
 
+release: $(OBJ)
+	$(CXX) -Ofast -o $(OUTDIR)/Release/ArchEngine $^ $(CXXFLAGS) $(LIBS)
 
 #------------------------------------------------------------------------ Utils
 
 create_directories:
 	if [ ! -d GCCOutput ]; then mkdir GCCOutput; fi
 	if [ ! -d GCCOutput/Build ]; then mkdir GCCOutput/Build; fi
+	if [ ! -d GCCOutput/Release ]; then mkdir GCCOutput/Release; fi
 	if [ ! -d GCCOutput/Intermediate ]; then mkdir GCCOutput/Intermediate; fi
 	if [ ! -d GCCOutput/Intermediate/ArchEngine ]; then \
 		mkdir GCCOutput/Intermediate/ArchEngine; fi

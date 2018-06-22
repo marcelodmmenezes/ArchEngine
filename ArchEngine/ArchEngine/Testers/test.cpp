@@ -183,7 +183,7 @@ void loadData() {
 
 	unsigned dir_depth_shader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/depthmapvs.glsl",
-		"../../ArchEngine/Shaders/depthmapgs.glsl"
+		"../../ArchEngine/Shaders/depthmapfs.glsl"
 	);
 
 	unsigned point_depth_shader = GraphicsManager::getInstance().addShader(
