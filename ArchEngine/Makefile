@@ -7,7 +7,7 @@
 #*                                                                           *
 #* Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
 #* Created: 10/04/2018                                                       *
-#* Last Modified: 26/05/2018                                                 *
+#* Last Modified: 22/06/2018                                                 *
 #*===========================================================================*/
 
 
@@ -27,6 +27,7 @@ OBJDIR = GCCOutput/Intermediate
 API = ArchEngine/API
 CORE = ArchEngine/Core
 GRAPHICS = ArchEngine/Graphics
+GUI = ArchEngine/GUI
 OS = ArchEngine/OS
 PHYSICS = ArchEngine/Physics
 SCRIPT = ArchEngine/Script
@@ -36,9 +37,9 @@ UTILS = ArchEngine/Utils
 #------------------------------------------------------------ Compiler settings
 
 CXX = g++
-CXXFLAGS = -std=c++11 -I/usr/include/lua5.3
+CXXFLAGS = -std=c++11 -I/usr/include/lua5.3 -I/usr/include/freetype2
 LIBS = -pthread -ldl -lSDL2 -llua5.3 -lBulletSoftBody -lBulletDynamics \
-	-lBulletCollision -lLinearMath -lassimp
+	-lBulletCollision -lLinearMath -lassimp -lfreetype
 
 #------------------------------------------------------------------------ Rules
 
@@ -68,6 +69,8 @@ $(OBJDIR)/$(GRAPHICS)/assimpLoader.o : $(GRAPHICS)/assimpLoader.cpp
 	$(COMPILEOBJ)
 $(OBJDIR)/$(GRAPHICS)/bone.o : $(GRAPHICS)/bone.cpp
 	$(COMPILEOBJ)
+$(OBJDIR)/$(GRAPHICS)/camera.o : $(GRAPHICS)/camera.cpp
+	$(COMPILEOBJ)
 $(OBJDIR)/$(GRAPHICS)/debugCamera.o : $(GRAPHICS)/debugCamera.cpp
 	$(COMPILEOBJ)
 $(OBJDIR)/$(GRAPHICS)/framebuffer.o : $(GRAPHICS)/framebuffer.cpp
@@ -86,7 +89,14 @@ $(OBJDIR)/$(GRAPHICS)/skeleton.o : $(GRAPHICS)/skeleton.cpp
 	$(COMPILEOBJ)
 $(OBJDIR)/$(GRAPHICS)/stb_image.o : $(GRAPHICS)/stb_image.cpp
 	$(COMPILEOBJ)
+$(OBJDIR)/$(GRAPHICS)/terrainGenerator.o : $(GRAPHICS)/terrainGenerator.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(GRAPHICS)/thirdPersonCamera.o : $(GRAPHICS)/thirdPersonCamera.cpp
+	$(COMPILEOBJ)
 $(OBJDIR)/$(GRAPHICS)/uniforms.o : $(GRAPHICS)/uniforms.cpp
+	$(COMPILEOBJ)
+
+$(OBJDIR)/$(GUI)/guiManager.o : $(GUI)/guiManager.cpp
 	$(COMPILEOBJ)
 
 $(OBJDIR)/$(OS)/inputContext.o : $(OS)/inputContext.cpp
@@ -96,6 +106,8 @@ $(OBJDIR)/$(OS)/inputManager.o : $(OS)/inputManager.cpp
 $(OBJDIR)/$(OS)/window.o : $(OS)/window.cpp
 	$(COMPILEOBJ)
 
+$(OBJDIR)/$(PHYSICS)/debugDraw.o : $(PHYSICS)/debugDraw.cpp
+	$(COMPILEOBJ)
 $(OBJDIR)/$(PHYSICS)/physicsManager.o : $(PHYSICS)/physicsManager.cpp
 	$(COMPILEOBJ)
 
@@ -119,16 +131,17 @@ $(OBJDIR)/$(UTILS)/timer.o : $(UTILS)/timer.cpp
 
 _OBJ = $(API)/entity.o $(CORE)/engine.o $(CORE)/event.o \
 	$(CORE)/eventManager.o $(GRAPHICS)/animation.o \
-	$(GRAPHICS)/assimpLoader.o $(GRAPHICS)/bone.o \
+	$(GRAPHICS)/assimpLoader.o $(GRAPHICS)/bone.o $(GRAPHICS)/camera.o \
 	$(GRAPHICS)/debugCamera.o $(GRAPHICS)/framebuffer.o \
 	$(GRAPHICS)/glad_3_3_core.o $(GRAPHICS)/graphicsManager.o \
 	$(GRAPHICS)/materialManager.o $(GRAPHICS)/mesh.o \
-	$(GRAPHICS)/shader.o  $(GRAPHICS)/skeleton.o \
-	$(GRAPHICS)/stb_image.o $(GRAPHICS)/uniforms.o $(OS)/inputContext.o \
-	$(OS)/inputManager.o $(OS)/window.o $(PHYSICS)/physicsManager.o \
-	$(SCRIPT)/engineLuaAPI.o $(SCRIPT)/luaScript.o $(TESTERS)/test.o \
-	$(UTILS)/debugging.o $(UTILS)/fileWatcher.o $(UTILS)/serviceLocator.o \
-	$(UTILS)/timer.o
+	$(GRAPHICS)/shader.o  $(GRAPHICS)/skeleton.o $(GRAPHICS)/stb_image.o \
+	$(GRAPHICS)/terrainGenerator.o $(GRAPHICS)/thirdPersonCamera.o \
+	$(GRAPHICS)/uniforms.o $(GUI)/guiManager.o $(OS)/inputContext.o \
+	$(OS)/inputManager.o $(OS)/window.o $(PHYSICS)/debugDraw.o \
+	$(PHYSICS)/physicsManager.o $(SCRIPT)/engineLuaAPI.o \
+	$(SCRIPT)/luaScript.o $(TESTERS)/test.o $(UTILS)/debugging.o \
+	$(UTILS)/fileWatcher.o $(UTILS)/serviceLocator.o $(UTILS)/timer.o
 OBJ = $(patsubst %, $(OBJDIR)/%, $(_OBJ))
 
 build: $(OBJ)
@@ -151,6 +164,8 @@ create_directories:
 		mkdir GCCOutput/Intermediate/$(ECS); fi
 	if [ ! -d GCCOutput/Intermediate/$(GRAPHICS) ]; then \
 		mkdir GCCOutput/Intermediate/$(GRAPHICS); fi
+	if [ ! -d GCCOutput/Intermediate/$(GUI) ]; then \
+		mkdir GCCOutput/Intermediate/$(GUI); fi
 	if [ ! -d GCCOutput/Intermediate/$(OS) ]; then \
 		mkdir GCCOutput/Intermediate/$(OS); fi
 	if [ ! -d GCCOutput/Intermediate/$(PHYSICS) ]; then \
@@ -172,6 +187,8 @@ install_dependencies:
 		sudo apt-get install libglm-dev; fi
 	if ! locate libassimp-dev; then \
 		sudo apt-get install libassimp-dev; fi
+	if ! locate libfreetype6-dev; then \
+		sudo apt-get install libfreetype6-dev; fi
 
 .PHONY: clean
 
