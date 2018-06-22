@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 17/06/2018                                                       *
- * Last Modified: 21/06/2018                                                 *
+ * Last Modified: 22/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -66,6 +66,7 @@ namespace GUI {
 		float renderText(unsigned font_id, const std::string& text,
 			float x, float y, float scale, const glm::vec3& color);
 
+		int getFontSize(unsigned font_id);
 		float getCharLength(char c, unsigned font_id, float scale) const;
 
 	private:

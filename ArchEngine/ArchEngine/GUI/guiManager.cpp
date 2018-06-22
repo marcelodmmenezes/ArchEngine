@@ -233,8 +233,28 @@ namespace GUI {
 		return x;
 	}
 
+	int GUIManager::getFontSize(unsigned font_id) {
+		if (font_id > m_fonts.size() - 1) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Font id higher than font vector size");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return 0;
+		}
+
+		return m_fonts[font_id].size;
+	}
+
 	float GUIManager::getCharLength(char c,
 		unsigned font_id, float scale) const {
+		if (font_id > m_fonts.size() - 1) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Font id higher than font vector size");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return 0.0f;
+		}
+
 		Character ch = m_fonts[font_id].characters.at(c);
 		return (ch.advance >> 6) * scale;
 	}

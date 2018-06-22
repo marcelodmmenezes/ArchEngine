@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 21/06/2018                                                       *
- * Last Modified: 21/06/2018                                                 *
+ * Last Modified: 22/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -36,7 +36,7 @@ namespace GUI {
 	public:
 		WritableComponent(GUIComponent* parent, const glm::vec2& position,
 			unsigned font_id, float scale, int spacing,
-			const glm::vec3& color, const glm::vec4& maximum_box);
+			const glm::vec3& color, const glm::vec2& maximum_size);
 
 		void write(char c);
 
@@ -46,13 +46,13 @@ namespace GUI {
 		void setScale(float scale);
 		void setPosition(const glm::vec2& pos);
 		void setColor(const glm::vec3& color);
-		void setMaximumBox(const glm::vec4& box);
+		void setMaximumSize(const glm::vec2& size);
 
 		unsigned getFont() const;
 		float getScale() const;
 		glm::vec2 getPosition() const;
 		glm::vec3 getColor() const;
-		glm::vec4 getMaximumBox() const;
+		glm::vec2 getMaximumSize() const;
 
 	private:
 		void format();
@@ -61,9 +61,11 @@ namespace GUI {
 		float m_text_scale;
 		int m_spacing;
 		glm::vec3 m_text_color;
-		glm::vec4 m_maximum_box;
+		glm::vec2 m_maximum_size;
 
+		int m_font_size;
 		int m_current_line;
+		int m_max_show_line_number;
 
 		std::vector<TextLine> m_text;
 	};

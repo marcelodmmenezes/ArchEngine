@@ -72,8 +72,7 @@ DebugCamera debug_camera(
 );
 
 DebugDrawer* dd;
-WritableComponent wc(nullptr, glm::vec2(25.0f, 500.0f), 0, 0.5f, 50.0f,
-	glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 725.0f, 0.0f, 300.0f));
+WritableComponent* wc;
 
 
 int main(int argc, char* argv[]) {
@@ -142,6 +141,7 @@ int main(int argc, char* argv[]) {
 
 	Engine::getInstance().exit();
 
+	delete wc;
 	delete dd;
 }
 
@@ -391,6 +391,9 @@ void loadData() {
 
 	//Engine::getInstance().releaseMouse();
 	//PhysicsManager::getInstance().setGravity(glm::vec3(0.0f, 0.0f, 0.0f));
+	
+	wc = new WritableComponent(nullptr, glm::vec2(25.0f, 500.0f), 0, 0.5f, 50.0f,
+		glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(700.0f, 200.0f));
 }
 
 void onContextEvent(EventPtr e) {
@@ -448,7 +451,7 @@ void onInputActionEvent(EventPtr e) {
 	}
 
 	if (context_priority == 1)
-		wc.write(evnt->getValue());
+		wc->write(evnt->getValue());
 }
 
 bool mouse_left_clicked = false;
@@ -465,7 +468,7 @@ void onInputStateEvent(EventPtr e) {
 	auto left = glm::cross(up, glm::vec3(dir.x, 0.0f, dir.z));
 
 	if (context_priority == 1) {
-		wc.write(evnt->getValue());
+		wc->write(evnt->getValue());
 		return;
 	}
 
@@ -625,8 +628,9 @@ int g_screen_height = 600;
 void onWindowResizeEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<WindowResizeEvent>(e);
 	evnt->getSize(g_screen_width, g_screen_height);
-	wc.setPosition(glm::vec2(25.0f, g_screen_height - 75.0f));
-	wc.setMaximumBox(glm::vec4(0.0f, g_screen_width, 0.0f, g_screen_height));
+	wc->setPosition(glm::vec2(25.0f, g_screen_height - 75.0f));
+	wc->setMaximumSize(glm::vec2(g_screen_width - 100.0f,
+		g_screen_height - 100.0f));
 }
 
 void onLoopFinishedEvent(EventPtr e) {
@@ -650,7 +654,7 @@ void onLoopFinishedEvent(EventPtr e) {
 	GUIManager::getInstance().renderText(2, "XABLAU", g_screen_width - 150,
 		g_screen_height - 50, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
 
-	wc.update();
+	wc->update();
 
 	glEnable(GL_DEPTH_TEST);
 }
