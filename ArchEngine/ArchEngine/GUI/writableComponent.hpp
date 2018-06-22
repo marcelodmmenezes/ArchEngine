@@ -41,13 +41,17 @@ namespace GUI {
 		void setScale(float scale);
 		void setPosition(const glm::vec2& pos);
 		void setColor(const glm::vec3& color);
+		void setMaximumBox(const glm::vec4& box);
 
 		unsigned getFont() const;
 		float getScale() const;
 		glm::vec2 getPosition() const;
 		glm::vec3 getColor() const;
+		glm::vec4 getMaximumBox() const;
 
 	private:
+		void format();
+
 		unsigned m_font_id;
 		float m_text_scale;
 		int m_spacing;

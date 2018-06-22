@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/05/2018                                                       *
- * Last Modified: 31/05/2018                                                 *
+ * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -84,6 +84,10 @@ namespace Graphics {
 	}
 
 	bool Framebuffer::initializeColorBuffer() {
+		//--------------------------------------------------------- Framebuffer
+		glGenFramebuffers(1, &m_fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+
 		//------------------------------------------------------------- Texture
 		glGenTextures(1, &m_texture);
 		glBindTexture(GL_TEXTURE_2D, m_texture);
@@ -95,12 +99,14 @@ namespace Graphics {
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
+	
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		// Attaching texture to currently bound framebuffer
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 			GL_TEXTURE_2D, m_texture, 0);
+
+		checkOpenGLErrors("fb");
 
 		//-------------------------------------------------------- Renderbuffer
 		glGenRenderbuffers(1, &m_rbo);
@@ -108,10 +114,6 @@ namespace Graphics {
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8,
 			m_width, m_height);
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-		//--------------------------------------------------------- Framebuffer
-		glGenFramebuffers(1, &m_fbo);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
 
 		// Attaching renderbuffer to currently bound framebuffer
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER,

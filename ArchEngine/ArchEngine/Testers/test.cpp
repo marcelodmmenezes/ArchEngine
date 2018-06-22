@@ -72,7 +72,7 @@ DebugCamera debug_camera(
 );
 
 DebugDrawer* dd;
-WritableComponent wc(0, 0.5f, glm::vec2(25.0f, 500.0f), 50.0f, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec4(0.0f, 800.0f, 0.0f, 600.0f));
+WritableComponent wc(0, 0.5f, glm::vec2(25.0f, 500.0f), 50.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 725.0f, 0.0f, 300.0f));
 
 
 int main(int argc, char* argv[]) {
@@ -419,10 +419,12 @@ void onInputActionEvent(EventPtr e) {
 		if (context_priority == 0) {
 			context_priority = 1;
 			InputManager::getInstance().prioritize("writing_context", true);
+			Engine::getInstance().releaseMouse();
 		}
 		else {
 			context_priority = 0;
 			InputManager::getInstance().prioritize("test1", true);
+			Engine::getInstance().captureMouse();
 		}
 
 		if (player == 1)
@@ -622,12 +624,16 @@ int g_screen_height = 600;
 void onWindowResizeEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<WindowResizeEvent>(e);
 	evnt->getSize(g_screen_width, g_screen_height);
+	wc.setPosition(glm::vec2(25.0f, g_screen_height - 75.0f));
+	wc.setMaximumBox(glm::vec4(0.0f, g_screen_width, 0.0f, g_screen_height));
 }
 
 void onLoopFinishedEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<LoopFinishedEvent>(e);
 
 	//PhysicsManager::getInstance().debugDraw();
+
+	glDisable(GL_DEPTH_TEST);
 
 	std::stringstream ss;
 	ss << "Seconds between frames: " <<
@@ -644,6 +650,8 @@ void onLoopFinishedEvent(EventPtr e) {
 		g_screen_height - 50, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
 
 	wc.update();
+
+	glEnable(GL_DEPTH_TEST);
 }
 
 

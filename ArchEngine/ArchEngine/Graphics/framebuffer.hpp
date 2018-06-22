@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/05/2018                                                       *
- * Last Modified: 31/05/2018                                                 *
+ * Last Modified: 21/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -17,6 +17,7 @@
 #include "../Core/eventManager.hpp"
 #include "glad_3_3_core.hpp"
 #include "../Utils/serviceLocator.hpp"
+#include "../Utils/debugging.hpp"
 
 #include <cassert>
 

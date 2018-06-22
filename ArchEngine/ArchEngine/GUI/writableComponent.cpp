@@ -21,16 +21,19 @@ namespace GUI {
 		const glm::vec4& maximum_box) :
 		m_font_id(font_id), m_text_scale(scale),
 		m_start_position(position), m_spacing(spacing),
-		m_text_color(color), m_maximum_box(maximum_box), m_current_line(0) {
-		TextLine tl;
-		tl.text = "";
-		tl.start_position = m_start_position;
-		tl.m_width = 0;
-
-		m_text.push_back(tl);
+		m_text_color(color), m_maximum_box(maximum_box) {
 	}
 
 	void WritableComponent::write(char c) {
+		if (m_text.size() == 0) {
+			TextLine tl;
+			tl.text = "";
+			tl.start_position = m_start_position;
+			tl.m_width = 0;
+			m_text.push_back(tl);
+			m_current_line = 0;
+		}
+
 		if (c == 8) { // Backspace
 			std::string& text = m_text[m_current_line].text;
 
@@ -90,6 +93,11 @@ namespace GUI {
 		m_text_color = color;
 	}
 
+	void WritableComponent::setMaximumBox(const glm::vec4& box) {
+		m_maximum_box = box;
+		format();
+	}
+
 	unsigned WritableComponent::getFont() const {
 		return m_font_id;
 	}
@@ -104,5 +112,21 @@ namespace GUI {
 
 	glm::vec3 WritableComponent::getColor() const {
 		return m_text_color;
+	}
+
+	glm::vec4 WritableComponent::getMaximumBox() const {
+		return m_maximum_box;
+	}
+
+	void WritableComponent::format() {
+		std::string text;
+
+		for (auto& it : m_text)
+			text += it.text;
+
+		m_text.clear();
+
+		for (auto& it : text)
+			write(it);
 	}
 }
