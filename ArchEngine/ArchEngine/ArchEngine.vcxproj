@@ -109,7 +109,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Bullet\libDebug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>BulletSoftBody.lib;BulletDynamics.lib;BulletCollision.lib;LinearMath;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>BulletSoftBody_Debug.lib;BulletDynamics_Debug.lib;BulletCollision_Debug.lib;LinearMath_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
