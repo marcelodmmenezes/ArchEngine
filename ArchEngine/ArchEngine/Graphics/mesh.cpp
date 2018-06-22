@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 16/05/2018                                                       *
- * Last Modified: 09/06/2018                                                 *
+ * Last Modified: 22/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -37,7 +37,7 @@ namespace Graphics {
 		const std::vector<unsigned>& indices) {
 		m_name = name;
 		m_material_id = material_id;
-		m_number_of_indices = indices.size();
+		m_number_of_indices = (unsigned)indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
 		glBindVertexArray(m_vao_id);
@@ -69,7 +69,7 @@ namespace Graphics {
 		const std::vector<unsigned>& indices) {
 		m_name = name;
 		m_material_id = material_id;
-		m_number_of_indices = indices.size();
+		m_number_of_indices = (unsigned)indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
 		glBindVertexArray(m_vao_id);
@@ -96,7 +96,7 @@ namespace Graphics {
 		const std::vector<unsigned>& indices) {
 		m_name = name;
 		m_material_id = material_id;
-		m_number_of_indices = indices.size();
+		m_number_of_indices = (unsigned)indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
 		glBindVertexArray(m_vao_id);
@@ -125,7 +125,7 @@ namespace Graphics {
 		const std::vector<unsigned>& indices) {
 		m_name = name;
 		m_material_id = material_id;
-		m_number_of_indices = indices.size();
+		m_number_of_indices = (unsigned)indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
 		glBindVertexArray(m_vao_id);
@@ -154,7 +154,7 @@ namespace Graphics {
 		const std::vector<unsigned>& indices) {
 		m_name = name;
 		m_material_id = material_id;
-		m_number_of_indices = indices.size();
+		m_number_of_indices = (unsigned)indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
 		glBindVertexArray(m_vao_id);
@@ -182,7 +182,7 @@ namespace Graphics {
 		const std::vector<unsigned>& indices) {
 		m_name = name;
 		m_material_id = material_id;
-		m_number_of_indices = indices.size();
+		m_number_of_indices = (unsigned)indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
 		glBindVertexArray(m_vao_id);
@@ -213,7 +213,7 @@ namespace Graphics {
 		const std::vector<unsigned>& indices) {
 		m_name = name;
 		m_material_id = material_id;
-		m_number_of_indices = indices.size();
+		m_number_of_indices = (unsigned)indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
 		glBindVertexArray(m_vao_id);
@@ -243,7 +243,7 @@ namespace Graphics {
 		const std::vector<unsigned>& indices) {
 		m_name = name;
 		m_material_id = material_id;
-		m_number_of_indices = indices.size();
+		m_number_of_indices = (unsigned)indices.size();
 
 		glGenVertexArrays(1, &m_vao_id);
 		glBindVertexArray(m_vao_id);

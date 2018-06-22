@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/05/2018                                                       *
- * Last Modified: 31/05/2018                                                 *
+ * Last Modified: 22/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -67,8 +67,9 @@ namespace Graphics {
 			// If there aren't spaces available from previous removes
 			if (m_2d_textures_unused_spaces.empty()) {
 				m_2d_textures.push_back(std::make_pair(texture_id, 1));
-				m_2d_texture_path_to_handle[path] = m_2d_textures.size() - 1;
-				handle = m_2d_textures.size() - 1;
+				m_2d_texture_path_to_handle[path] =
+					(unsigned)m_2d_textures.size() - 1;
+				handle = (unsigned)m_2d_textures.size() - 1;
 			}
 			else {
 				handle = m_2d_textures_unused_spaces.top();
@@ -197,8 +198,8 @@ namespace Graphics {
 			if (m_cube_textures_unused_spaces.empty()) {
 				m_cube_textures.push_back(std::make_pair(texture_id, 1));
 				m_cube_texture_path_to_handle[path[0]] =
-					m_cube_textures.size() - 1;
-				handle = m_cube_textures.size() - 1;
+					(unsigned)m_cube_textures.size() - 1;
+				handle = (unsigned)m_cube_textures.size() - 1;
 			}
 			else {
 				handle = m_cube_textures_unused_spaces.top();

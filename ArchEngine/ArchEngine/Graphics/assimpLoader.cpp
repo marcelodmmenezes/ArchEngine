@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 03/06/2018                                                 *
+ * Last Modified: 22/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -334,10 +334,10 @@ namespace Graphics {
 			aiString str;
 			material->GetTexture(type, 0, &str);
 
-			int index = m_path.find_last_of('/');
+			int index = (int)m_path.find_last_of('/');
 			path = m_path.substr(0, index) + "/" + str.C_Str();
 
-			index = path.find_last_of('.');
+			index = (int)path.find_last_of('.');
 
 			// TODO
 			// Stbi is failing to load tga images.

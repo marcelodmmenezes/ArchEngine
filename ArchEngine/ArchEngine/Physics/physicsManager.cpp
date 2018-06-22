@@ -182,7 +182,7 @@ namespace Physics {
 	}
 
 	void PhysicsManager::update(float delta_time) {
-		m_world->stepSimulation(delta_time, 10.0f);
+		m_world->stepSimulation(delta_time, 10);
 
 		auto objs = m_world->getCollisionObjectArray();
 
@@ -469,7 +469,7 @@ namespace Physics {
 			new PhysicsObject{
 				PHYSICS_OBJECT_CUBE,
 				id,
-				m_user_objects.size(),
+				(unsigned)m_user_objects.size(),
 				world_id
 			}
 		);
@@ -504,13 +504,13 @@ namespace Physics {
 		body->setCollisionFlags(body->getCollisionFlags() |
 			btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
-		unsigned world_id = m_world->getNumCollisionObjects();
+		unsigned world_id = (unsigned int)m_world->getNumCollisionObjects();
 
 		m_user_objects.push_back(
 			new PhysicsObject{
 				PHYSICS_OBJECT_SPHERE,
 				id,
-				m_user_objects.size(),
+				(unsigned)m_user_objects.size(),
 				world_id
 			}
 		);

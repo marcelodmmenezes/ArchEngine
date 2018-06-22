@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 08/06/2018                                                       *
- * Last Modified: 21/06/2018                                                 *
+ * Last Modified: 22/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -87,10 +87,10 @@ namespace Graphics {
 					(terrain_length / 2 - j);
 
 				// Texture Coords
-				vertices[index].texture_coords.x = fmod(
+				vertices[index].texture_coords.x = (float)fmod(
 					texture_factor * (float)i / terrain_width,
 					terrain_width);
-				vertices[index].texture_coords.y = fmod(
+				vertices[index].texture_coords.y = (float)fmod(
 					texture_factor * (float)j / terrain_length,
 					terrain_length);
 			}

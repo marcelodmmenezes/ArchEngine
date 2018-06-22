@@ -27,7 +27,7 @@ namespace Graphics {
 
 		glm::mat4 concatenated;
 
-		for (int i = matrices.size() - 1; i >= 0; i--)
+		for (int i = (int)matrices.size() - 1; i >= 0; i--)
 			concatenated *= matrices[i];
 
 		return concatenated;

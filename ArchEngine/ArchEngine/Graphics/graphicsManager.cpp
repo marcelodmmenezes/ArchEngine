@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 16/06/2018                                                 *
+ * Last Modified: 22/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -278,7 +278,7 @@ namespace Graphics {
 
 	void GraphicsManager::bindLights(Shader& shader) {
 		if (shader.hasDirLights()) {
-			shader.setInt("u_nr_dir_lights", m_directional_lights.size());
+			shader.setInt("u_nr_dir_lights", (int)m_directional_lights.size());
 
 			for (unsigned i = 0; i < m_directional_lights.size(); i++) {
 				shader.setVec3("u_dir_lights[" + std::to_string(i) +
@@ -310,7 +310,7 @@ namespace Graphics {
 		}
 
 		if (shader.hasPointLights()) {
-			shader.setInt("u_nr_point_lights", m_point_lights.size());
+			shader.setInt("u_nr_point_lights", (int)m_point_lights.size());
 
 			for (unsigned i = 0; i < m_point_lights.size(); i++) {
 				shader.setVec3("u_point_lights[" + std::to_string(i) +
@@ -347,7 +347,7 @@ namespace Graphics {
 		}
 
 		if (shader.hasSpotLights()) {
-			shader.setInt("u_nr_spot_lights", m_spot_lights.size());
+			shader.setInt("u_nr_spot_lights", (int)m_spot_lights.size());
 
 			for (unsigned i = 0; i < m_spot_lights.size(); i++) {
 				shader.setVec3("u_spot_lights[" + std::to_string(i) +
@@ -466,13 +466,13 @@ namespace Graphics {
 	}
 
 	unsigned GraphicsManager::numberOfMeshes() {
-		return m_meshes.size() - 1;
+		return (unsigned)m_meshes.size() - 1;
 	}
 
 	//----------------------------------------------------------- Add functions
 	unsigned GraphicsManager::addCamera(Camera* camera) {
 		m_cameras.push_back(camera);
-		return m_cameras.size() - 1;
+		return (unsigned)m_cameras.size() - 1;
 	}
 
 	unsigned GraphicsManager::addShader(const std::string& vs_path,
@@ -481,7 +481,7 @@ namespace Graphics {
 		// to keep the instance reference
 		m_shaders.push_back(Shader());
 		m_shaders[m_shaders.size() - 1].initialize(vs_path, fs_path);
-		return m_shaders.size() - 1;
+		return (unsigned)m_shaders.size() - 1;
 	}
 
 	unsigned GraphicsManager::addShader(const std::string& vs_path,
@@ -491,7 +491,7 @@ namespace Graphics {
 		m_shaders.push_back(Shader());
 		m_shaders[m_shaders.size() - 1].initialize(
 			vs_path, gs_path, fs_path);
-		return m_shaders.size() - 1;
+		return (unsigned)m_shaders.size() - 1;
 	}
 
 	unsigned GraphicsManager::addMesh(const Mesh& mesh) {
@@ -504,8 +504,8 @@ namespace Graphics {
 			// If there aren't spaces available from previous removes
 			if (m_meshes_unused_spaces.empty()) {
 				m_meshes.push_back(std::move(std::make_pair(mesh, 1)));
-				m_mesh_name_to_handle[mesh.m_name] = m_meshes.size() - 1;
-				handle = m_meshes.size() - 1;
+				m_mesh_name_to_handle[mesh.m_name] = (unsigned)m_meshes.size() - 1;
+				handle = (unsigned)m_meshes.size() - 1;
 			}
 			else {
 				handle = m_meshes_unused_spaces.top();
@@ -525,12 +525,12 @@ namespace Graphics {
 
 	unsigned GraphicsManager::addAnimation(const Animation& animation) {
 		m_animations.push_back(animation);
-		return m_animations.size() - 1;
+		return (unsigned)m_animations.size() - 1;
 	}
 
 	unsigned GraphicsManager::addMaterial(const Material& material) {
 		m_materials.push_back(material);
-		return m_materials.size() - 1;
+		return (unsigned)m_materials.size() - 1;
 	}
 
 	unsigned GraphicsManager::addDirectionalLight(
@@ -540,7 +540,7 @@ namespace Graphics {
 		m_directional_lights[m_directional_lights.size() - 1].
 			depth_map.initialize(FB_DEPTH_MAP, light.dmw, light.dmh);
 
-		return m_directional_lights.size() - 1;
+		return (unsigned)m_directional_lights.size() - 1;
 	}
 
 	unsigned GraphicsManager::addPointLight(
@@ -550,13 +550,13 @@ namespace Graphics {
 		m_point_lights[m_point_lights.size() - 1].
 			depth_map.initialize(FB_DEPTH_CUBE_MAP, light.dmw, light.dmh);
 
-		return m_point_lights.size() - 1;
+		return (unsigned)m_point_lights.size() - 1;
 	}
 
 	unsigned GraphicsManager::addSpotLight(
 		const SpotLight& light) {
 		m_spot_lights.push_back(light);
-		return m_spot_lights.size() - 1;
+		return (unsigned)m_spot_lights.size() - 1;
 	}
 
 	//----------------------------------------------------------------- Helpers
