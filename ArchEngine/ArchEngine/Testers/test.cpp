@@ -75,6 +75,7 @@ DebugCamera debug_camera(
 DebugDrawer* dd;
 WritableComponent* wc;
 RenderableComponent* rc;
+RenderableComponent* rc2;
 
 
 int main(int argc, char* argv[]) {
@@ -143,6 +144,7 @@ int main(int argc, char* argv[]) {
 
 	Engine::getInstance().exit();
 
+	delete rc2;
 	delete rc;
 	delete wc;
 	delete dd;
@@ -395,8 +397,11 @@ void loadData() {
 	//Engine::getInstance().releaseMouse();
 	//PhysicsManager::getInstance().setGravity(glm::vec3(0.0f, 0.0f, 0.0f));
 	
-	wc = new WritableComponent(nullptr, glm::vec2(25.0f, 550.0f), 1, 1.0f, 15.0f,
+	wc = new WritableComponent(nullptr, glm::vec2(800, 600),
+		glm::vec2(25.0f, 550.0f), 1, 1.0f, 15.0f,
 		glm::vec3(0.8f, 0.8f, 0.0f), glm::vec2(165.0f, 500.0f));
+	wc->setHoverColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	wc->trackMouse();
 
 	unsigned quad_shader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/quadvs.glsl",
@@ -408,6 +413,14 @@ void loadData() {
 	rc->setColor(glm::vec4(0.1f, 0.1f, 0.12f, 1.0f));
 	rc->setBorderColor(glm::vec4(0.09f, 0.135f, 0.135f, 0.8f));
 	rc->setBorderWidth(1);
+	rc->trackMouse();
+
+	rc2 = new RenderableComponent(quad_shader,
+		glm::vec4(25.0f, 50.0f, 200.0f, 600.0f), "");
+	rc2->setColor(glm::vec4(0.2f, 0.2f, 0.25f, 1.0f));
+	rc2->setBorderColor(glm::vec4(0.09f, 0.135f, 0.135f, 0.8f));
+	rc2->setBorderWidth(2);
+	rc2->trackMouse();
 }
 
 void onContextEvent(EventPtr e) {

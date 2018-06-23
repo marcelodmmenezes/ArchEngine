@@ -12,7 +12,6 @@
 #include "renderableComponent.hpp"
 
 
-using namespace Core;
 using namespace Graphics;
 using namespace OS;
 
@@ -20,19 +19,16 @@ using namespace OS;
 namespace GUI {
 	RenderableComponent::RenderableComponent(unsigned shader_id,
 		const glm::vec4& limits, const std::string& texture_path) :
-		m_shader_id(shader_id), m_limits(limits), m_has_color(false),
+		m_shader_id(shader_id), m_has_color(false),
 		m_has_border(false) {
+		m_limits = limits;
+
 		if (texture_path != "") {
 			m_has_texture = true;
 			m_texture_id =
 				MaterialManager::getInstance().add2DTexture(texture_path);
 		}
 		else m_has_texture = false;
-
-		m_mouse_moved_listener.bind<RenderableComponent,
-			&RenderableComponent::onMouseMovedEvent>(this);
-		EventManager::getInstance().addListener(
-			m_mouse_moved_listener, EVENT_MOUSE_MOVED);
 	}
 
 	RenderableComponent::~RenderableComponent() {
@@ -161,19 +157,7 @@ namespace GUI {
 	}
 
 	void RenderableComponent::mouseOut() {
+		auto a = m_limits;
 		m_border_color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-	}
-
-	void RenderableComponent::onMouseMovedEvent(EventPtr e) {
-		std::static_pointer_cast<InputMouseMoved>(e)
-			->getValues(m_mouse_x, m_mouse_y);
-
-		// Checking if mouse is inside control
-		if (m_mouse_x >= m_limits.x && m_mouse_x <= m_limits.z &&
-			m_mouse_y >= m_limits.y && m_mouse_y <= m_limits.w) {
-			mouseHover();
-		}
-		else
-			mouseOut();
 	}
 }

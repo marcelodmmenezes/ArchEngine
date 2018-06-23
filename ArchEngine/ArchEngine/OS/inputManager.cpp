@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 21/06/2018                                                 *
+ * Last Modified: 23/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -94,11 +94,12 @@ namespace OS {
 	EventType InputRangeEvent::getType() const { return m_type; }
 	RangeInfo InputRangeEvent::getValue() const { return m_value; }
 
-	InputMouseMoved::InputMouseMoved(int x, int y) :
-		IEvent(EVENT_MOUSE_MOVED), m_x(x), m_y(y) {}
+	InputMouseMoved::InputMouseMoved(int x, int y, bool locked) :
+		IEvent(EVENT_MOUSE_MOVED), m_x(x), m_y(y), m_locked(locked) {}
 	InputMouseMoved::~InputMouseMoved() {}
 	Core::EventType InputMouseMoved::getType() const { return m_type; }
 	void InputMouseMoved::getValues(int& x, int&y) const { x = m_x; y = m_y; }
+	bool InputMouseMoved::isLocked() const { return m_locked; }
 
 	InputContextEvent::InputContextEvent() : IEvent(EVENT_INPUT_CONTEXT) {}
 	InputContextEvent::InputContextEvent(const std::string& name, bool state) :
@@ -243,7 +244,7 @@ namespace OS {
 					}
 
 					EventPtr evnt = std::make_shared<InputMouseMoved>(
-						InputMouseMoved(x, y));
+						InputMouseMoved(x, y, true));
 					EventManager::getInstance().sendEvent(evnt);
 				}
 				else {
@@ -257,7 +258,7 @@ namespace OS {
 					}
 
 					EventPtr evnt = std::make_shared<InputMouseMoved>(
-						InputMouseMoved(x, y));
+						InputMouseMoved(x, y, false));
 					EventManager::getInstance().sendEvent(evnt);
 				}
 

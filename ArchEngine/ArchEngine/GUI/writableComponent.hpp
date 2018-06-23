@@ -34,9 +34,11 @@ namespace GUI {
 
 	class WritableComponent : public GUIComponent {
 	public:
-		WritableComponent(GUIComponent* parent, const glm::vec2& position,
+		WritableComponent(GUIComponent* parent,
+			const glm::vec2& screen_size, const glm::vec2& position,
 			unsigned font_id, float scale, int spacing,
 			const glm::vec3& color, const glm::vec2& maximum_size);
+		~WritableComponent();
 
 		void write(char c);
 		void write(const std::string& text);
@@ -47,21 +49,30 @@ namespace GUI {
 		void setScale(float scale);
 		void setPosition(const glm::vec2& pos);
 		void setColor(const glm::vec3& color);
+		void setHoverColor(const glm::vec3& color);
 		void setMaximumSize(const glm::vec2& size);
 
 		unsigned getFont() const;
 		float getScale() const;
 		glm::vec2 getPosition() const;
 		glm::vec3 getColor() const;
+		glm::vec3 getHoverColor() const;
 		glm::vec2 getMaximumSize() const;
 
 	private:
+		void mouseHover() override;
+		void mouseOut() override;
+
 		void format();
+
+		// TODO: window resize
 
 		unsigned m_font_id;
 		float m_text_scale;
 		int m_spacing;
 		glm::vec3 m_text_color;
+		glm::vec3 m_hover_color;
+		glm::vec3 m_current_color;
 		glm::vec2 m_maximum_size;
 
 		int m_font_size;

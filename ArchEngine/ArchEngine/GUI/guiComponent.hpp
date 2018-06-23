@@ -14,7 +14,9 @@
 
 
 #include "../Config/engineMacros.hpp"
+#include "../Core/eventManager.hpp"
 #include "guiManager.hpp"
+#include "../OS/inputManager.hpp"
 #include "../Utils/serviceLocator.hpp"
 
 
@@ -27,12 +29,28 @@ namespace GUI {
 	class GUIComponent {
 	public:
 		GUIComponent();
-		~GUIComponent();
+		virtual ~GUIComponent() = 0;
+
+		void trackMouse();
+		void untrackMouse();
 
 	protected:
+		//------------------------------------------------------ Mouse tracking
+		virtual void mouseHover() = 0;
+		virtual void mouseOut() = 0;
+
+		void onMouseMovedEvent(Core::EventPtr e);
+		Core::EventListener m_mouse_moved_listener;
+
+		int m_mouse_x;
+		int m_mouse_y;
+		//---------------------------------------------------------------------
+
 		glm::vec2 m_position;
-		glm::vec2 m_size;
+		glm::vec4 m_limits;
+
 		GUIComponent* m_parent;
+		std::vector<GUIComponent*> m_children;
 	};
 }
 

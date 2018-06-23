@@ -17,18 +17,34 @@ using namespace Utils;
 
 namespace GUI {
 	WritableComponent::WritableComponent(GUIComponent* parent,
-		const glm::vec2& position, unsigned font_id, float scale,
-		int spacing, const glm::vec3& color, const glm::vec2& m_maximum_size) :
+		const glm::vec2& screen_size, const glm::vec2& position,
+		unsigned font_id, float scale, int spacing, const glm::vec3& color,
+		const glm::vec2& maximum_size)
+		:
 		m_font_id(font_id), m_text_scale(scale), m_spacing(spacing),
-		m_text_color(color), m_maximum_size(m_maximum_size) {
+		m_text_color(color), m_maximum_size(maximum_size)
+	{
+		m_current_color = m_text_color;
+		m_hover_color = m_text_color;
 		m_parent = parent;
 		m_position = position;
 
 		m_font_size = GUIManager::getInstance().getFontSize(m_font_id);
 
+		float real_start = m_position.y + m_font_size * m_text_scale;
+
+		m_limits = glm::vec4(
+			m_position.x,
+			screen_size.y - real_start,
+			m_position.x + m_maximum_size.x,
+			(screen_size.y - real_start) + m_maximum_size.y
+		);
+
 		m_max_show_line_number = m_maximum_size.y /
-			(m_font_size * m_text_scale + spacing);
+			(m_font_size * m_text_scale + m_spacing);
 	}
+
+	WritableComponent::~WritableComponent() {}
 
 	void WritableComponent::write(char c) {
 		if (m_text.size() == 0) {
@@ -102,7 +118,7 @@ namespace GUI {
 				m_text[i].start_position.x,
 				m_text[i].start_position.y + offset,
 				m_text_scale,
-				m_text_color
+				m_current_color
 			);
 		}
 	}
@@ -127,6 +143,10 @@ namespace GUI {
 		m_text_color = color;
 	}
 
+	void WritableComponent::setHoverColor(const glm::vec3& color) {
+		m_hover_color = color;
+	}
+
 	void WritableComponent::setMaximumSize(const glm::vec2& size) {
 		m_maximum_size = size;
 		format();
@@ -148,8 +168,20 @@ namespace GUI {
 		return m_text_color;
 	}
 
+	glm::vec3 WritableComponent::getHoverColor() const {
+		return m_hover_color;
+	}
+
 	glm::vec2 WritableComponent::getMaximumSize() const {
 		return m_maximum_size;
+	}
+
+	void WritableComponent::mouseHover() {
+		m_current_color = m_hover_color;
+	}
+
+	void WritableComponent::mouseOut() {
+		m_current_color = m_text_color;
 	}
 
 	void WritableComponent::format() {
