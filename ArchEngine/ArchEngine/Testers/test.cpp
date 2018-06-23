@@ -395,8 +395,8 @@ void loadData() {
 	//Engine::getInstance().releaseMouse();
 	//PhysicsManager::getInstance().setGravity(glm::vec3(0.0f, 0.0f, 0.0f));
 	
-	wc = new WritableComponent(nullptr, glm::vec2(25.0f, 500.0f), 0, 0.5f, 50.0f,
-		glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(700.0f, 200.0f));
+	wc = new WritableComponent(nullptr, glm::vec2(25.0f, 550.0f), 1, 1.0f, 15.0f,
+		glm::vec3(0.8f, 0.8f, 0.0f), glm::vec2(165.0f, 500.0f));
 
 	unsigned quad_shader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/quadvs.glsl",
@@ -404,10 +404,10 @@ void loadData() {
 	);
 
 	rc = new RenderableComponent(quad_shader,
-		glm::vec4(100.0f, 100.0f, 200.0f, 200.0f), "");
-	rc->setColor(glm::vec4(0.18f, 0.27f, 0.27f, 0.5f));
-	rc->setBorderColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-	rc->setBorderWidth(10);
+		glm::vec4(0.0f, 0.0f, 200.0f, 600.0f), "");
+	rc->setColor(glm::vec4(0.1f, 0.1f, 0.12f, 1.0f));
+	rc->setBorderColor(glm::vec4(0.09f, 0.135f, 0.135f, 0.8f));
+	rc->setBorderWidth(1);
 }
 
 void onContextEvent(EventPtr e) {
@@ -559,6 +559,8 @@ void onInputRangeEvent(EventPtr e) {
 		GraphicsManager::getInstance().getActiveCamera());
 
 	if (camera) {
+		Engine::getInstance().releaseMouse();
+
 		switch (evnt->getValue().m_range) {
 		case 0:
 			if (mouse_right_clicked)
@@ -571,6 +573,8 @@ void onInputRangeEvent(EventPtr e) {
 		}
 	}
 	else {
+		Engine::getInstance().captureMouse();
+
 		auto tpcamera = dynamic_cast<ThirdPersonCamera*>(
 			GraphicsManager::getInstance().getActiveCamera());
 
@@ -592,23 +596,22 @@ void onInputRangeEvent(EventPtr e) {
 
 bool picking_constraint = false;
 
+int g_x, g_y;
+
 void onInputMouseMoved(EventPtr e) {
 	auto evnt = std::static_pointer_cast<InputMouseMoved>(e);
 
-	int x, y;
-	evnt->getValues(x, y);
+	evnt->getValues(g_x, g_y);
 
 	if (mouse_left_clicked && !picking_constraint) {
 		PhysicsManager::getInstance().createPickingConstraint(
-			x, y, 1000.0f, true);
+			g_x, g_y, 1000.0f, true);
 		picking_constraint = true;
 	}
 	else if (!mouse_left_clicked && picking_constraint) {
 		PhysicsManager::getInstance().removePickingConstraint();
 		picking_constraint = false;
 	}
-
-	PhysicsManager::getInstance().pickingMotion(x, y, 1000.0f);
 }
 
 void onCollisionEvent(EventPtr e) {
@@ -652,15 +655,20 @@ void onLoopFinishedEvent(EventPtr e) {
 
 	//PhysicsManager::getInstance().debugDraw();
 
+	PhysicsManager::getInstance().pickingMotion(g_x, g_y, 1000.0f);
+
+	rc->render(glm::ortho(0.0f, 800.0f, 0.0f, 600.0f));
+
 	glDisable(GL_DEPTH_TEST);
 
 	std::stringstream ss;
-	ss << "Seconds between frames: " <<
-		std::setprecision(6) << evnt->getDeltaTime() << " - FPS: " <<
-		std::setprecision(3) << evnt->getFrameRate();
+	ss << "SBF: " <<
+		std::setprecision(6) << evnt->getDeltaTime() << "\nFPS: " <<
+		std::setprecision(3) << "  " << evnt->getFrameRate();
 
-	GUIManager::getInstance().renderText(0, ss.str(), 25.0f, 25.0f,
-		0.2f, glm::vec3(0.5f, 0.8f, 0.2f));
+	//GUIManager::getInstance().renderText(0, ss.str(), 25.0f, 25.0f,
+	//	0.2f, glm::vec3(0.5f, 0.8f, 0.2f));
+	wc->write(ss.str());
 
 	auto xablau = g_entities[player].transforms[0];
 	tpcamera.update(glm::vec3(xablau[3][0], xablau[3][1], xablau[3][2]));
@@ -668,8 +676,6 @@ void onLoopFinishedEvent(EventPtr e) {
 	wc->update();
 
 	glEnable(GL_DEPTH_TEST);
-
-	rc->render(glm::ortho(0.0f, (float)g_screen_width, 0.0f, (float)g_screen_height));
 }
 
 

@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 21/06/2018                                                       *
- * Last Modified: 22/06/2018                                                 *
+ * Last Modified: 23/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -55,6 +55,15 @@ namespace GUI {
 				m_text[m_current_line].text.pop_back();
 			}
 		}
+		else if (c == 10) { // New line
+			TextLine tl;
+			tl.text = "";
+			tl.start_position = glm::vec2(m_position.x,
+				m_text[m_current_line].start_position.y - m_spacing);
+			tl.m_width = 0;
+			m_text.push_back(tl);
+			m_current_line++;
+		}
 		else {
 			float width = GUIManager::getInstance().getCharLength(c,
 				m_font_id, m_text_scale);
@@ -75,6 +84,13 @@ namespace GUI {
 		}
 	}
 
+	void WritableComponent::write(const std::string& text) {
+		m_text.clear();
+
+		for (auto& it : text)
+			write(it);
+	}
+
 	void WritableComponent::update() {
 		int start = std::max(0, m_current_line - m_max_show_line_number);
 		int offset = start * m_font_size * m_text_scale + m_spacing;
@@ -89,12 +105,6 @@ namespace GUI {
 				m_text_color
 			);
 		}
-		/*
-		for (auto& it : m_text)
-			GUIManager::getInstance().renderText(m_font_id, it.text,
-				it.start_position.x, it.start_position.y, m_text_scale,
-				m_text_color);
-		*/
 	}
 
 	void WritableComponent::setFont(unsigned id) {

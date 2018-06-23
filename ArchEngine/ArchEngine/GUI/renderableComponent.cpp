@@ -12,7 +12,9 @@
 #include "renderableComponent.hpp"
 
 
+using namespace Core;
 using namespace Graphics;
+using namespace OS;
 
 
 namespace GUI {
@@ -26,6 +28,11 @@ namespace GUI {
 				MaterialManager::getInstance().add2DTexture(texture_path);
 		}
 		else m_has_texture = false;
+
+		m_mouse_moved_listener.bind<RenderableComponent,
+			&RenderableComponent::onMouseMovedEvent>(this);
+		EventManager::getInstance().addListener(
+			m_mouse_moved_listener, EVENT_MOUSE_MOVED);
 	}
 
 	RenderableComponent::~RenderableComponent() {
@@ -127,6 +134,13 @@ namespace GUI {
 			sh->setVec4("u_color", m_border_color);
 			sh->update();
 
+			bool depth_test = false;
+
+			if (glIsEnabled(GL_DEPTH_TEST))
+				depth_test = true;
+			else
+				glEnable(GL_DEPTH_TEST);
+
 			glDepthFunc(GL_NOTEQUAL);
 
 			GraphicsManager::getInstance().drawQuad(m_limits +
@@ -134,6 +148,32 @@ namespace GUI {
 					2 * m_border_width, 2 * m_border_width));
 
 			glDepthFunc(GL_LESS);
+
+			// Setting depth test to the state it was
+			// when this function was called
+			if (!depth_test)
+				glDisable(GL_DEPTH_TEST);
 		}
+	}
+
+	void RenderableComponent::mouseHover() {
+		m_border_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
+	void RenderableComponent::mouseOut() {
+		m_border_color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	}
+
+	void RenderableComponent::onMouseMovedEvent(EventPtr e) {
+		std::static_pointer_cast<InputMouseMoved>(e)
+			->getValues(m_mouse_x, m_mouse_y);
+
+		// Checking if mouse is inside control
+		if (m_mouse_x >= m_limits.x && m_mouse_x <= m_limits.z &&
+			m_mouse_y >= m_limits.y && m_mouse_y <= m_limits.w) {
+			mouseHover();
+		}
+		else
+			mouseOut();
 	}
 }

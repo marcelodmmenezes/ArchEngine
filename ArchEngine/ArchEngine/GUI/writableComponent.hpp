@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 21/06/2018                                                       *
- * Last Modified: 22/06/2018                                                 *
+ * Last Modified: 23/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -39,6 +39,7 @@ namespace GUI {
 			const glm::vec3& color, const glm::vec2& maximum_size);
 
 		void write(char c);
+		void write(const std::string& text);
 
 		void update();
 

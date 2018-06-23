@@ -15,8 +15,7 @@
 
 fonts = {
 	"../../../../GameEngineLearning/assets/fonts/coalition/Coalition_v2.ttf", 96,
-	"../../../../GameEngineLearning/assets/fonts/campus/CAMPUS PERSONAL USE.ttf",
-	"../../../../GameEngineLearning/assets/fonts/ironman/IRON MAN OF WAR 002 NCV.ttf", 96,
+	"../../../../GameEngineLearning/assets/fonts/monospace/nk57-monospace-ex-rg.ttf", 12,
 }
 
 vsshader = "../../ArchEngine/Shaders/glyphvs.glsl"

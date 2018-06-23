@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 22/06/2018                                                       *
- * Last Modified: 22/06/2018                                                 *
+ * Last Modified: 23/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -13,8 +13,10 @@
 #define GUI_RENDERABLE_COMPONENT_HPP
 
 
+#include "../Core/eventManager.hpp"
 #include "../Graphics/graphicsManager.hpp"
 #include "../Graphics/materialManager.hpp"
+#include "../OS/inputManager.hpp"
 #include "guiComponent.hpp"
 
 #include <glm/glm.hpp>
@@ -50,6 +52,17 @@ namespace GUI {
 		void render(const glm::mat4& projection);
 
 	private:
+		void mouseHover();
+		void mouseOut();
+
+		//------------------------------------------------------ Mouse tracking
+		void onMouseMovedEvent(Core::EventPtr e);
+		Core::EventListener m_mouse_moved_listener;
+
+		int m_mouse_x;
+		int m_mouse_y;
+		//---------------------------------------------------------------------
+
 		unsigned m_texture_id;
 		glm::vec4 m_color;
 		glm::vec4 m_border_color;
