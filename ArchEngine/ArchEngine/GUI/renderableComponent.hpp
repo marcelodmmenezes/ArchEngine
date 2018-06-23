@@ -25,7 +25,7 @@ namespace GUI {
 	class RenderableComponent : public GUIComponent {
 	public:
 		RenderableComponent(unsigned shader_id,
-			const glm::vec4& limits,
+			const glm::vec2& screen_size, const glm::vec4& limits,
 			const std::string& texture_path = "");
 		~RenderableComponent();
 
@@ -53,6 +53,8 @@ namespace GUI {
 	private:
 		void mouseHover() override;
 		void mouseOut() override;
+
+		glm::vec4 m_limits;
 
 		unsigned m_texture_id;
 		glm::vec4 m_color;

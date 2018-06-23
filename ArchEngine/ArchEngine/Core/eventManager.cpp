@@ -45,7 +45,7 @@ namespace Core {
 		EventType evnt) {
 		auto it = m_event_listeners.find(evnt);
 		auto aux_it = it;
-
+/*
 		// Iterates through registered listeners,
 		// to avoid inserting duplicate listener
 		while (it != m_event_listeners.end() &&
@@ -54,7 +54,7 @@ namespace Core {
 				return false;
 			++it;
 		}
-
+*/
 		m_event_listeners.insert(std::make_pair(evnt, listener));
 
 		return true;

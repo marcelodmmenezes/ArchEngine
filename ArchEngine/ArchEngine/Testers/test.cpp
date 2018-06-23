@@ -139,18 +139,18 @@ void loadData() {
 	wc->setHoverColor(glm::vec3(0.94f, 0.94f, 0.94f));
 	wc->trackMouse();
 
-	rc = new RenderableComponent(quad_shader,
+	rc = new RenderableComponent(quad_shader, glm::vec2(800, 600),
 		glm::vec4(0.0f, 0.0f, 205.0f, 600.0f), "");
 	rc->setColor(glm::vec4(0.22f, 0.22f, 0.24f, 1.0f));
 	rc->setBorderColor(glm::vec4(0.3f, 0.6f, 0.3f, 1.0f));
-	rc->setBorderWidth(1);
+	rc->setBorderWidth(2);
 	rc->trackMouse();
 
-	rc2 = new RenderableComponent(quad_shader,
+	rc2 = new RenderableComponent(quad_shader, glm::vec2(800, 600),
 		glm::vec4(20.0f, 538.0f, 165.0f, 42.0f), "");
 	rc2->setColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
 	rc2->setBorderColor(glm::vec4(0.05f, 0.05f, 0.05f, 1.0f));
-	rc2->setBorderWidth(1);
+	rc2->setBorderWidth(2);
 	rc2->trackMouse();
 
 	Engine::getInstance().releaseMouse();
@@ -228,8 +228,8 @@ void onLoopFinishedEvent(EventPtr e) {
 	std::stringstream ss;
 	ss << "SBF: " <<
 		std::setprecision(6) << evnt->getDeltaTime() << "\nFPS: " <<
-		std::setprecision(3) << "  " << evnt->getFrameRate();
-	//wc->write(ss.str());
+		std::setprecision(3) << " " << evnt->getFrameRate();
+	wc->write(ss.str());
 
 	wc->update();
 

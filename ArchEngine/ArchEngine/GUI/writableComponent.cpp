@@ -12,6 +12,8 @@
 #include "writableComponent.hpp"
 
 
+using namespace Core;
+using namespace OS;
 using namespace Utils;
 
 
@@ -29,7 +31,7 @@ namespace GUI {
 
 		m_font_size = GUIManager::getInstance().getFontSize(m_font_id);
 
-		m_limits = glm::vec4(
+		m_mouse_space = glm::vec4(
 			m_position.x,
 			screen_size.y - m_position.y,
 			m_position.x + m_maximum_size.x,
@@ -38,9 +40,6 @@ namespace GUI {
 
 		m_max_show_line_number = 1 + (int)((m_maximum_size.y -
 			m_font_size * m_text_scale) / m_spacing);
-
-		//m_max_show_line_number = m_maximum_size.y /
-		//	(m_font_size * m_text_scale + m_spacing);
 	}
 
 	WritableComponent::~WritableComponent() {}

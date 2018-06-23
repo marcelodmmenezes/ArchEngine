@@ -5,23 +5,32 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 22/06/2018                                                       *
- * Last Modified: 22/06/2018                                                 *
+ * Last Modified: 23/06/2018                                                 *
  *===========================================================================*/
 
 
 #include "renderableComponent.hpp"
 
 
+using namespace Core;
 using namespace Graphics;
 using namespace OS;
 
 
 namespace GUI {
 	RenderableComponent::RenderableComponent(unsigned shader_id,
-		const glm::vec4& limits, const std::string& texture_path) :
+		const glm::vec2& screen_size, const glm::vec4& limits,
+		const std::string& texture_path) :
 		m_shader_id(shader_id), m_has_color(false),
 		m_has_border(false) {
 		m_limits = limits;
+
+		m_mouse_space = glm::vec4(
+			m_limits.x,
+			screen_size.y - m_limits.y - limits.w,
+			m_limits.x + m_limits.z,
+			screen_size.y - m_limits.y
+		);
 
 		if (texture_path != "") {
 			m_has_texture = true;
@@ -157,7 +166,6 @@ namespace GUI {
 	}
 
 	void RenderableComponent::mouseOut() {
-		auto a = m_limits;
 		m_border_color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 }

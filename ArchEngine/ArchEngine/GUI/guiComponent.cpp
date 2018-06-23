@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 21/06/2018                                                       *
- * Last Modified: 21/06/2018                                                 *
+ * Last Modified: 23/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -41,10 +41,11 @@ namespace GUI {
 
 		if (!evnt->isLocked()) {
 			// Checking if mouse is inside control
-			if (m_mouse_x >= m_limits.x && m_mouse_x <= m_limits.z &&
-				m_mouse_y >= m_limits.y && m_mouse_y <= m_limits.w) {
+			if (m_mouse_x >= m_mouse_space.x &&
+				m_mouse_x <= m_mouse_space.z &&
+				m_mouse_y >= m_mouse_space.y &&
+				m_mouse_y <= m_mouse_space.w)
 				mouseHover();
-			}
 			else
 				mouseOut();
 		}

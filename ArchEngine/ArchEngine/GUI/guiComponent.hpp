@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 21/06/2018                                                       *
- * Last Modified: 21/06/2018                                                 *
+ * Last Modified: 23/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -31,8 +31,10 @@ namespace GUI {
 		GUIComponent();
 		virtual ~GUIComponent() = 0;
 
+		//------------------------------------------------------ Mouse tracking
 		void trackMouse();
 		void untrackMouse();
+		//---------------------------------------------------------------------
 
 	protected:
 		//------------------------------------------------------ Mouse tracking
@@ -44,10 +46,11 @@ namespace GUI {
 
 		int m_mouse_x;
 		int m_mouse_y;
+
+		glm::vec4 m_mouse_space;
 		//---------------------------------------------------------------------
 
 		glm::vec2 m_position;
-		glm::vec4 m_limits;
 
 		GUIComponent* m_parent;
 		std::vector<GUIComponent*> m_children;
