@@ -89,7 +89,8 @@ namespace Utils {
 		Delegate() : m_func(nullptr, nullptr) {}
 
 		bool operator==(const Delegate<T(ARG0)>& dlgt) {
-			return m_func.second == dlgt.m_func.second;
+			return m_func.first == dlgt.m_func.first &&
+				m_func.second == dlgt.m_func.second;
 		}
 
 		// Binds a function to this instance
