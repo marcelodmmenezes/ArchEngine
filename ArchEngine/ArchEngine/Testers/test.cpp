@@ -396,29 +396,29 @@ void loadData() {
 
 	//Engine::getInstance().releaseMouse();
 	//PhysicsManager::getInstance().setGravity(glm::vec3(0.0f, 0.0f, 0.0f));
-	
-	wc = new WritableComponent(nullptr, glm::vec2(800, 600),
-		glm::vec2(25.0f, 550.0f), 1, 1.0f, 15.0f,
-		glm::vec3(0.8f, 0.8f, 0.0f), glm::vec2(165.0f, 500.0f));
-	wc->setHoverColor(glm::vec3(1.0f, 1.0f, 1.0f));
-	wc->trackMouse();
 
 	unsigned quad_shader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/quadvs.glsl",
 		"../../ArchEngine/Shaders/quadfs.glsl"
 	);
 
+	wc = new WritableComponent(nullptr, glm::vec2(800, 600),
+		glm::vec2(25.0f, 563.0f), 1, 1.0f, 15.0f,
+		glm::vec3(0.8f, 0.8f, 0.0f), glm::vec2(160.0f, 575.0f));
+	wc->setHoverColor(glm::vec3(0.94f, 0.94f, 0.94f));
+	wc->trackMouse();
+
 	rc = new RenderableComponent(quad_shader,
-		glm::vec4(0.0f, 0.0f, 200.0f, 600.0f), "");
-	rc->setColor(glm::vec4(0.1f, 0.1f, 0.12f, 1.0f));
-	rc->setBorderColor(glm::vec4(0.09f, 0.135f, 0.135f, 0.8f));
+		glm::vec4(0.0f, 0.0f, 205.0f, 600.0f), "");
+	rc->setColor(glm::vec4(0.22f, 0.22f, 0.24f, 1.0f));
+	rc->setBorderColor(glm::vec4(0.3f, 0.6f, 0.3f, 1.0f));
 	rc->setBorderWidth(1);
 	rc->trackMouse();
 
 	rc2 = new RenderableComponent(quad_shader,
-		glm::vec4(25.0f, 50.0f, 200.0f, 600.0f), "");
-	rc2->setColor(glm::vec4(0.2f, 0.2f, 0.25f, 1.0f));
-	rc2->setBorderColor(glm::vec4(0.09f, 0.135f, 0.135f, 0.8f));
+		glm::vec4(20.0f, 20.0f, 165.0f, 560.0f), "");
+	rc2->setColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
+	rc2->setBorderColor(glm::vec4(0.67f, 0.67f, 0.68f, 1.0f));
 	rc2->setBorderWidth(2);
 	rc2->trackMouse();
 }
@@ -658,9 +658,13 @@ int g_screen_height = 600;
 void onWindowResizeEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<WindowResizeEvent>(e);
 	evnt->getSize(g_screen_width, g_screen_height);
-	wc->setPosition(glm::vec2(25.0f, g_screen_height - 75.0f));
-	wc->setMaximumSize(glm::vec2(g_screen_width - 100.0f,
+
+	wc->setPosition(glm::vec2(25.0f, g_screen_height - 37.0f));
+	wc->setMaximumSize(glm::vec2(wc->getMaximumSize().x,
 		g_screen_height - 100.0f));
+
+	rc->setLimits(glm::vec4(0.0f, 0.0f, 205.0f, g_screen_height));
+	rc2->setLimits(glm::vec4(20.0f, 20.0f, 165.0f, g_screen_height - 40.0f));
 }
 
 void onLoopFinishedEvent(EventPtr e) {
@@ -669,8 +673,10 @@ void onLoopFinishedEvent(EventPtr e) {
 	//PhysicsManager::getInstance().debugDraw();
 
 	PhysicsManager::getInstance().pickingMotion(g_x, g_y, 1000.0f);
-
-	rc->render(glm::ortho(0.0f, 800.0f, 0.0f, 600.0f));
+	
+	rc->render(glm::ortho(0.0f, (float)g_screen_width, 0.0f, (float)g_screen_height));
+	glClear(GL_DEPTH_BUFFER_BIT);
+	rc2->render(glm::ortho(0.0f, (float)g_screen_width, 0.0f, (float)g_screen_height));
 
 	glDisable(GL_DEPTH_TEST);
 

@@ -65,8 +65,6 @@ namespace GUI {
 
 		void format();
 
-		// TODO: window resize
-
 		unsigned m_font_id;
 		float m_text_scale;
 		int m_spacing;
