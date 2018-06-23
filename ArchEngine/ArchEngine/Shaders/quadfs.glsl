@@ -20,5 +20,4 @@ void main() {
 		result += u_color;
 
 	out_color = result;
-	out_color = vec4(0.18f, 0.27f, 0.27f, 0.5f);
 }

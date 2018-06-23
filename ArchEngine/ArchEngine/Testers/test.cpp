@@ -405,8 +405,9 @@ void loadData() {
 
 	rc = new RenderableComponent(quad_shader,
 		glm::vec4(100.0f, 100.0f, 200.0f, 200.0f), "");
-	rc->setColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	rc->setColor(glm::vec4(0.18f, 0.27f, 0.27f, 0.5f));
 	rc->setBorderColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	rc->setBorderWidth(10);
 }
 
 void onContextEvent(EventPtr e) {
@@ -664,10 +665,11 @@ void onLoopFinishedEvent(EventPtr e) {
 	auto xablau = g_entities[player].transforms[0];
 	tpcamera.update(glm::vec3(xablau[3][0], xablau[3][1], xablau[3][2]));
 
-	rc->render(glm::ortho(0.0f, (float)g_screen_width, 0.0f, (float)g_screen_height));
 	wc->update();
 
 	glEnable(GL_DEPTH_TEST);
+
+	rc->render(glm::ortho(0.0f, (float)g_screen_width, 0.0f, (float)g_screen_height));
 }
 
 

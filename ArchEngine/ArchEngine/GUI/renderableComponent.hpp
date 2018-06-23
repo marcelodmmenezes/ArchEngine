@@ -30,6 +30,7 @@ namespace GUI {
 
 		void setColor(const glm::vec4& color);
 		void setBorderColor(const glm::vec4& color);
+		void setBorderWidth(int width);
 		void setLimits(const glm::vec4& limits);
 		
 		void removeTexture();
@@ -38,6 +39,8 @@ namespace GUI {
 
 		unsigned getTextureId() const;
 		glm::vec4 getColor() const;
+		glm::vec4 getBorderColor() const;
+		int getBorderWidth() const;
 		glm::vec4 getLimits() const;
 
 		bool hasTexture() const;
@@ -50,6 +53,7 @@ namespace GUI {
 		unsigned m_texture_id;
 		glm::vec4 m_color;
 		glm::vec4 m_border_color;
+		int m_border_width;
 		glm::vec4 m_limits;
 
 		bool m_has_texture;

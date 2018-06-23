@@ -42,6 +42,10 @@ namespace GUI {
 		m_has_border = true;
 	}
 
+	void RenderableComponent::setBorderWidth(int width) {
+		m_border_width = width;
+	}
+
 	void RenderableComponent::setLimits(const glm::vec4& limits) {
 		m_limits = limits;
 	}
@@ -66,6 +70,14 @@ namespace GUI {
 		return m_color;
 	}
 
+	glm::vec4 RenderableComponent::getBorderColor() const {
+		return m_border_color;
+	}
+
+	int RenderableComponent::getBorderWidth() const {
+		return m_border_width;
+	}
+
 	glm::vec4 RenderableComponent::getLimits() const {
 		return m_limits;
 	}
@@ -87,13 +99,7 @@ namespace GUI {
 		sh->bind();
 
 		sh->setMat4("u_projection_matrix", projection);
-
-		if (m_has_border) {
-			sh->setVec4("u_color", m_border_color);
-			sh->update();
-			GraphicsManager::getInstance().drawQuad(m_limits * 1.1f);
-		}
-
+		
 		sh->setBool("u_has_texture", m_has_texture);
 		sh->setBool("u_has_color", m_has_color);
 
@@ -113,6 +119,21 @@ namespace GUI {
 		if (m_has_texture) {
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+
+		if (m_has_border) {
+			sh->setBool("u_has_texture", false);
+			sh->setBool("u_has_color", true);
+			sh->setVec4("u_color", m_border_color);
+			sh->update();
+
+			glDepthFunc(GL_NOTEQUAL);
+
+			GraphicsManager::getInstance().drawQuad(m_limits +
+				glm::vec4(-m_border_width, -m_border_width,
+					2 * m_border_width, 2 * m_border_width));
+
+			glDepthFunc(GL_LESS);
 		}
 	}
 }

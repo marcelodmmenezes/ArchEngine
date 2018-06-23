@@ -97,7 +97,7 @@ namespace Graphics {
 
 	template<>
 	inline void Uniform<glm::vec4>::update() {
-		glUniform4f(m_location, m_value.x, m_value.y, m_value.z, m_value.z);
+		glUniform4f(m_location, m_value.x, m_value.y, m_value.z, m_value.w);
 		m_dirty = false;
 	}
 

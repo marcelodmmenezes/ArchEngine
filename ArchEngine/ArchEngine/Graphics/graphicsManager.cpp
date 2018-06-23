@@ -648,19 +648,14 @@ namespace Graphics {
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
 		}
-
-		float xpos = limits.x;
-		float ypos = limits.y;
-		float w = limits.z;
-		float h = limits.w;
 		
 		float vertices[6][4] = {
-			{ xpos,     ypos + h,   0.0f, 0.0f },
-			{ xpos,     ypos,       0.0f, 1.0f },
-			{ xpos + w, ypos,       1.0f, 1.0f },
-			{ xpos,     ypos + h,   0.0f, 0.0f },
-			{ xpos + w, ypos,       1.0f, 1.0f },
-			{ xpos + w, ypos + h,   1.0f, 0.0f }
+			{ limits.x,            limits.y + limits.w,   0.0f, 0.0f },
+			{ limits.x,            limits.y,              0.0f, 1.0f },
+			{ limits.x + limits.z, limits.y,              1.0f, 1.0f },
+			{ limits.x,            limits.y + limits.w,   0.0f, 0.0f },
+			{ limits.x + limits.z, limits.y,              1.0f, 1.0f },
+			{ limits.x + limits.z, limits.y + limits.w,   1.0f, 0.0f }
 		};
 
 		glBindVertexArray(m_quad_vao);
