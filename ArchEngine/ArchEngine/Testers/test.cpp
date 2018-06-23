@@ -22,6 +22,7 @@
 #include "../Graphics/thirdPersonCamera.hpp"
 #include "../GUI/guiManager.hpp"
 #include "../GUI/writableComponent.hpp"
+#include "../GUI/renderableComponent.hpp"
 #include "../OS/inputManager.hpp"
 #include "../Physics/physicsManager.hpp"
 #include "../Utils/serviceLocator.hpp"
@@ -73,6 +74,7 @@ DebugCamera debug_camera(
 
 DebugDrawer* dd;
 WritableComponent* wc;
+RenderableComponent* rc;
 
 
 int main(int argc, char* argv[]) {
@@ -141,6 +143,7 @@ int main(int argc, char* argv[]) {
 
 	Engine::getInstance().exit();
 
+	delete rc;
 	delete wc;
 	delete dd;
 }
@@ -394,6 +397,15 @@ void loadData() {
 	
 	wc = new WritableComponent(nullptr, glm::vec2(25.0f, 500.0f), 0, 0.5f, 50.0f,
 		glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(700.0f, 200.0f));
+
+	unsigned quad_shader = GraphicsManager::getInstance().addShader(
+		"../../ArchEngine/Shaders/quadvs.glsl",
+		"../../ArchEngine/Shaders/quadfs.glsl"
+	);
+
+	rc = new RenderableComponent(quad_shader,
+		glm::vec4(100.0f, 100.0f, 200.0f, 200.0f), "");
+	rc->setColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 }
 
 void onContextEvent(EventPtr e) {
@@ -651,9 +663,7 @@ void onLoopFinishedEvent(EventPtr e) {
 	auto xablau = g_entities[player].transforms[0];
 	tpcamera.update(glm::vec3(xablau[3][0], xablau[3][1], xablau[3][2]));
 
-	GUIManager::getInstance().renderText(2, "XABLAU", g_screen_width - 150,
-		g_screen_height - 50, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
-
+	rc->render(glm::ortho(0.0f, (float)g_screen_width, 0.0f, (float)g_screen_height));
 	wc->update();
 
 	glEnable(GL_DEPTH_TEST);

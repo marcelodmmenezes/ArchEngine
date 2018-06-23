@@ -69,7 +69,7 @@ int removeMesh(lua_State* lua) {
 
 namespace Graphics {
 	GraphicsManager::GraphicsManager() : m_state(CONSTRUCTED),
-		m_line_vao(0) {
+		m_line_vao(0), m_quad_vao(0) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"GraphicsManager constructor");
@@ -631,8 +631,47 @@ namespace Graphics {
 		glDeleteBuffers(1, &m_line_vbo);
 	}
 
-	void GraphicsManager::drawQuad(const glm::mat4& model,
-		unsigned texture_id) {
+	void GraphicsManager::drawQuad(const glm::vec4& limits) {
+		if (m_quad_vao == 0) {
+			glGenVertexArrays(1, &m_quad_vao);
+			glBindVertexArray(m_quad_vao);
+
+			glGenBuffers(1, &m_quad_vbo);
+			glBindBuffer(GL_ARRAY_BUFFER, m_quad_vbo);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4,
+				nullptr, GL_DYNAMIC_DRAW);
+
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE,
+				4 * sizeof(float), (void*)0);
+
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindVertexArray(0);
+		}
+
+		float xpos = limits.x;
+		float ypos = limits.y;
+		float w = limits.z;
+		float h = limits.w;
+		
+		float vertices[6][4] = {
+			{ xpos,     ypos + h,   0.0f, 0.0f },
+			{ xpos,     ypos,       0.0f, 1.0f },
+			{ xpos + w, ypos,       1.0f, 1.0f },
+			{ xpos,     ypos + h,   0.0f, 0.0f },
+			{ xpos + w, ypos,       1.0f, 1.0f },
+			{ xpos + w, ypos + h,   1.0f, 0.0f }
+		};
+
+		glBindVertexArray(m_quad_vao);
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_quad_vbo);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		glBindVertexArray(0);
 	}
 
 	//-------------------------------------------------------- Remove functions

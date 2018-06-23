@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 16/06/2018                                                 *
+ * Last Modified: 22/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -105,7 +105,7 @@ namespace Graphics {
 		// Drawing helpers
 		void drawLine(const glm::vec3& from, const glm::vec3& to,
 			const glm::vec3& color);
-		void drawQuad(const glm::mat4& model, unsigned texture_id);
+		void drawQuad(const glm::vec4& limits);
 
 		// Removes the component by handle
 		void removeCamera(unsigned handle);

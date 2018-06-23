@@ -10,7 +10,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 13/05/2018                                                 *
+ * Last Modified: 22/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -92,6 +92,12 @@ namespace Graphics {
 	template<>
 	inline void Uniform<glm::vec3>::update() {
 		glUniform3f(m_location, m_value.x, m_value.y, m_value.z);
+		m_dirty = false;
+	}
+
+	template<>
+	inline void Uniform<glm::vec4>::update() {
+		glUniform4f(m_location, m_value.x, m_value.y, m_value.z, m_value.z);
 		m_dirty = false;
 	}
 

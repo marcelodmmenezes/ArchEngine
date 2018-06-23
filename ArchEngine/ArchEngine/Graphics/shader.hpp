@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 01/06/2018                                                 *
+ * Last Modified: 22/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -70,6 +70,7 @@ namespace Graphics {
 		void setInt(const std::string& name, int value);
 		void setFloat(const std::string& name, float value);
 		void setVec3(const std::string& name, const glm::vec3& vec);
+		void setVec4(const std::string& name, const glm::vec4& vec);
 		void setMat3(const std::string& name, const glm::mat3& matrix);
 		void setMat4(const std::string& name, const glm::mat4& matrix);
 

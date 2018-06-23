@@ -1,13 +1,12 @@
 #version 330 core
 
-layout (location = 0) in vec3 v_position;
-layout (location = 2) in vec2 v_texture_coords;
+layout (location = 0) in vec4 v_vertex;
 
-uniform mat4 u_model_matrix;
+uniform mat4 u_projection_matrix;
 
 out vec2 f_texture_coords;
 
 void main() {
-	gl_Position = u_model_matrix * vec4(v_position, 1.0f);
-	f_texture_coords = v_texture_coords;
+	f_texture_coords = v_vertex.zw;
+	gl_Position = u_projection_matrix * vec4(v_vertex.xy, 0.0f, 1.0f);
 }

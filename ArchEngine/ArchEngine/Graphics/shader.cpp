@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 09/06/2018                                                 *
+ * Last Modified: 22/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -285,6 +285,22 @@ namespace Graphics {
 
 	void Shader::setVec3(const std::string& name, const glm::vec3& vec) {
 		auto uniform = std::dynamic_pointer_cast<Uniform<glm::vec3>>(
+			m_uniforms_by_name[name]);
+
+		if (!uniform) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Couldn't find " + name + " in shader " + m_vs_path);
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
+		if (uniform->setValue(vec))
+			m_dirty_uniforms.push_back(name);
+	}
+
+	void Shader::setVec4(const std::string& name, const glm::vec4& vec) {
+		auto uniform = std::dynamic_pointer_cast<Uniform<glm::vec4>>(
 			m_uniforms_by_name[name]);
 
 		if (!uniform) {
@@ -579,6 +595,12 @@ namespace Graphics {
 					m_uniforms_by_name.insert(std::make_pair(
 						name_str, std::make_shared<Uniform<glm::vec3>>
 							(name_str, location)));
+					break;
+
+				case GL_FLOAT_VEC4:
+					m_uniforms_by_name.insert(std::make_pair(
+						name_str, std::make_shared<Uniform<glm::vec4>>
+						(name_str, location)));
 					break;
 
 				case GL_FLOAT_MAT3:
