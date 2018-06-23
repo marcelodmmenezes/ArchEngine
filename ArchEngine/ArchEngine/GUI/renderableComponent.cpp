@@ -117,7 +117,8 @@ namespace GUI {
 
 		if (m_has_texture) {
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, m_texture_id);
+			glBindTexture(GL_TEXTURE_2D,
+				MaterialManager::getInstance().get2DTexture(m_texture_id));
 			sh->setInt("u_texture", 0);
 		}
 

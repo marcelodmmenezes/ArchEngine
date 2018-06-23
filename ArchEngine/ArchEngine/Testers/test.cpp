@@ -140,7 +140,8 @@ void loadData() {
 	wc->trackMouse();
 
 	rc = new RenderableComponent(quad_shader, glm::vec2(800, 600),
-		glm::vec4(0.0f, 0.0f, 205.0f, 600.0f), "");
+		glm::vec4(0.0f, 0.0f, 205.0f, 600.0f),
+		"../../../../GameEngineLearning/assets/miscTextures/wood_specular2.png");
 	rc->setColor(glm::vec4(0.22f, 0.22f, 0.24f, 1.0f));
 	rc->setBorderColor(glm::vec4(0.3f, 0.6f, 0.3f, 1.0f));
 	rc->setBorderWidth(2);
@@ -148,7 +149,7 @@ void loadData() {
 
 	rc2 = new RenderableComponent(quad_shader, glm::vec2(800, 600),
 		glm::vec4(20.0f, 538.0f, 165.0f, 42.0f), "");
-	rc2->setColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
+	rc2->setColor(glm::vec4(0.1f, 0.1f, 0.1f, 0.5f));
 	rc2->setBorderColor(glm::vec4(0.05f, 0.05f, 0.05f, 1.0f));
 	rc2->setBorderWidth(2);
 	rc2->trackMouse();
