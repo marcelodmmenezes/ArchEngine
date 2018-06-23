@@ -100,6 +100,10 @@ $(OBJDIR)/$(GUI)/guiComponent.o : $(GUI)/guiComponent.cpp
 	$(COMPILEOBJ)
 $(OBJDIR)/$(GUI)/guiManager.o : $(GUI)/guiManager.cpp
 	$(COMPILEOBJ)
+$(OBJDIR)/$(GUI)/pushButton.o : $(GUI)/pushButton.cpp
+	$(COMPILEOBJ)
+$(OBJDIR)/$(GUI)/renderableComponent.o : $(GUI)/renderableComponent.cpp
+	$(COMPILEOBJ)
 $(OBJDIR)/$(GUI)/writableComponent.o : $(GUI)/writableComponent.cpp
 	$(COMPILEOBJ)
 
@@ -142,6 +146,7 @@ _OBJ = $(API)/entity.o $(CORE)/engine.o $(CORE)/event.o \
 	$(GRAPHICS)/shader.o  $(GRAPHICS)/skeleton.o $(GRAPHICS)/stb_image.o \
 	$(GRAPHICS)/terrainGenerator.o $(GRAPHICS)/thirdPersonCamera.o \
 	$(GRAPHICS)/uniforms.o $(GUI)/guiComponent.o $(GUI)/guiManager.o \
+	$(GUI)/pushButton.o $(GUI)/renderableComponent.o \
 	$(GUI)/writableComponent.o $(OS)/inputContext.o $(OS)/inputManager.o \
 	$(OS)/window.o $(PHYSICS)/debugDraw.o $(PHYSICS)/physicsManager.o \
 	$(SCRIPT)/engineLuaAPI.o $(SCRIPT)/luaScript.o $(TESTERS)/test.o \

@@ -8,7 +8,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 17/06/2018                                                       *
- * Last Modified: 21/06/2018                                                 *
+ * Last Modified: 23/06/2018                                                 *
  *===========================================================================*/
 ]]
 
@@ -16,6 +16,7 @@
 fonts = {
 	"../../../../GameEngineLearning/assets/fonts/coalition/Coalition_v2.ttf", 96,
 	"../../../../GameEngineLearning/assets/fonts/monospace/nk57-monospace-ex-rg.ttf", 12,
+	"../../../../GameEngineLearning/assets/fonts/hack/Hack-Regular.ttf", 12,
 }
 
 vsshader = "../../ArchEngine/Shaders/glyphvs.glsl"

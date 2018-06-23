@@ -19,11 +19,9 @@ namespace GUI {
 	WritableComponent::WritableComponent(GUIComponent* parent,
 		const glm::vec2& screen_size, const glm::vec2& position,
 		unsigned font_id, float scale, int spacing, const glm::vec3& color,
-		const glm::vec2& maximum_size)
-		:
+		const glm::vec2& maximum_size) :
 		m_font_id(font_id), m_text_scale(scale), m_spacing(spacing),
-		m_text_color(color), m_maximum_size(maximum_size)
-	{
+		m_text_color(color), m_maximum_size(maximum_size) {
 		m_current_color = m_text_color;
 		m_hover_color = m_text_color;
 		m_parent = parent;
@@ -31,17 +29,18 @@ namespace GUI {
 
 		m_font_size = GUIManager::getInstance().getFontSize(m_font_id);
 
-		float real_start = m_position.y + m_font_size * m_text_scale;
-
 		m_limits = glm::vec4(
 			m_position.x,
-			screen_size.y - real_start,
+			screen_size.y - m_position.y,
 			m_position.x + m_maximum_size.x,
-			(screen_size.y - real_start) + m_maximum_size.y
+			screen_size.y - m_position.y + m_maximum_size.y
 		);
 
-		m_max_show_line_number = m_maximum_size.y /
-			(m_font_size * m_text_scale + m_spacing);
+		m_max_show_line_number = 1 + (int)((m_maximum_size.y -
+			m_font_size * m_text_scale) / m_spacing);
+
+		//m_max_show_line_number = m_maximum_size.y /
+		//	(m_font_size * m_text_scale + m_spacing);
 	}
 
 	WritableComponent::~WritableComponent() {}
@@ -50,8 +49,8 @@ namespace GUI {
 		if (m_text.size() == 0) {
 			TextLine tl;
 			tl.text = "";
-			tl.start_position =
-				glm::vec2(m_position.x, m_position.y - m_font_size);
+			tl.start_position = glm::vec2(m_position.x,
+				m_position.y - m_font_size * m_text_scale);
 			tl.m_width = 0;
 			m_text.push_back(tl);
 			m_current_line = 0;
@@ -108,8 +107,9 @@ namespace GUI {
 	}
 
 	void WritableComponent::update() {
-		int start = std::max(0, m_current_line - m_max_show_line_number);
-		int offset = start * m_font_size * m_text_scale + m_spacing;
+		int start = std::max(0, m_current_line - m_max_show_line_number + 1);
+		int offset = start * std::max(m_spacing,
+			(int)(m_font_size * m_text_scale));
 
 		for (unsigned i = start; i < m_text.size(); i++) {
 			GUIManager::getInstance().renderText(

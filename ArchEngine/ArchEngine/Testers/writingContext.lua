@@ -93,4 +93,9 @@ context = {
 		SDLK_y = 121,
 		SDLK_z = 122,
 	},
+
+	states = {
+		SDL_BUTTON_LEFT = 7,
+		SDL_BUTTON_RIGHT = 8,
+	},
 }
