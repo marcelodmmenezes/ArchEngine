@@ -406,6 +406,7 @@ void loadData() {
 	rc = new RenderableComponent(quad_shader,
 		glm::vec4(100.0f, 100.0f, 200.0f, 200.0f), "");
 	rc->setColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	rc->setBorderColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
 void onContextEvent(EventPtr e) {

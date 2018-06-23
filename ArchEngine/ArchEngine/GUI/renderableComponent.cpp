@@ -18,7 +18,8 @@ using namespace Graphics;
 namespace GUI {
 	RenderableComponent::RenderableComponent(unsigned shader_id,
 		const glm::vec4& limits, const std::string& texture_path) :
-		m_shader_id(shader_id), m_limits(limits), m_has_color(false) {
+		m_shader_id(shader_id), m_limits(limits), m_has_color(false),
+		m_has_border(false) {
 		if (texture_path != "") {
 			m_has_texture = true;
 			m_texture_id =
@@ -36,8 +37,25 @@ namespace GUI {
 		m_has_color = true;
 	}
 
+	void RenderableComponent::setBorderColor(const glm::vec4& color) {
+		m_border_color = color;
+		m_has_border = true;
+	}
+
 	void RenderableComponent::setLimits(const glm::vec4& limits) {
 		m_limits = limits;
+	}
+
+	void RenderableComponent::removeTexture() {
+		m_has_texture = false;
+	}
+
+	void RenderableComponent::removeColor() {
+		m_has_color = false;
+	}
+
+	void RenderableComponent::removeBorder() {
+		m_has_border = false;
 	}
 
 	unsigned RenderableComponent::getTextureId() const {
@@ -60,12 +78,22 @@ namespace GUI {
 		return m_has_color;
 	}
 
+	bool RenderableComponent::hasBorder() const {
+		return m_has_border;
+	}
+
 	void RenderableComponent::render(const glm::mat4& projection) {
 		auto sh = GraphicsManager::getInstance().getShader(m_shader_id);
 		sh->bind();
 
 		sh->setMat4("u_projection_matrix", projection);
-		//sh->setMat4("u_projection_matrix", glm::mat4(1.0f));
+
+		if (m_has_border) {
+			sh->setVec4("u_color", m_border_color);
+			sh->update();
+			GraphicsManager::getInstance().drawQuad(m_limits * 1.1f);
+		}
+
 		sh->setBool("u_has_texture", m_has_texture);
 		sh->setBool("u_has_color", m_has_color);
 
