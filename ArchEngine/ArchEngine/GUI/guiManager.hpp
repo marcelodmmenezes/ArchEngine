@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 17/06/2018                                                       *
- * Last Modified: 22/06/2018                                                 *
+ * Last Modified: 24/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -18,6 +18,7 @@
 #include "../Core/eventManager.hpp"
 #include "../Graphics/glad_3_3_core.hpp"
 #include "../Graphics/shader.hpp"
+#include "guiComponent.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -56,6 +57,8 @@ namespace GUI {
 		bool initialize(const std::vector<std::string>& fonts);
 		bool initializeFromConfigFile(const std::string& path);
 		
+		void update(float delta_time);
+
 		void destroy();
 
 		int addFont(const std::string& path, int size);
@@ -68,6 +71,12 @@ namespace GUI {
 
 		int getFontSize(unsigned font_id);
 		float getCharLength(char c, unsigned font_id, float scale) const;
+
+		//------------------------------------------------------------ CONTROLS
+		unsigned addControl(std::shared_ptr<GUIComponent> control);
+		std::shared_ptr<GUIComponent> getControl(unsigned handle);
+		void removeControl(unsigned handle);
+		//---------------------------------------------------------------------
 
 	private:
 		enum State {
@@ -93,6 +102,10 @@ namespace GUI {
 
 		unsigned m_quad_vao;
 		unsigned m_quad_vbo;
+
+		//------------------------------------------------------------ CONTROLS
+		std::vector<std::shared_ptr<GUIComponent>> m_controls;
+		//---------------------------------------------------------------------
 	};
 }
 

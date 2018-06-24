@@ -49,7 +49,7 @@ namespace GUI {
 		void write(char c);
 		void write(const std::string& text);
 
-		void update();
+		void update(float delta_time) override;
 
 		void setFont(unsigned id);
 		void setScale(float scale);

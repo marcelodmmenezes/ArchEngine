@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 21/06/2018                                                       *
- * Last Modified: 23/06/2018                                                 *
+ * Last Modified: 24/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -15,7 +15,6 @@
 
 #include "../Config/engineMacros.hpp"
 #include "../Core/eventManager.hpp"
-#include "guiManager.hpp"
 #include "../OS/inputManager.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -30,6 +29,8 @@ namespace GUI {
 	public:
 		GUIComponent();
 		virtual ~GUIComponent() = 0;
+
+		virtual void update(float delta_time) = 0;
 
 		//------------------------------------------------------ Mouse tracking
 		virtual void trackMouse();

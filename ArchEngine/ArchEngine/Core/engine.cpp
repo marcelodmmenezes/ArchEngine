@@ -178,6 +178,10 @@ namespace Core {
 			GraphicsManager::getInstance().update(
 				(float)m_timer.getDeltaTime());
 
+			//------------------------------------------------------ GUI update
+			GUIManager::getInstance().update(
+				(float)m_timer.getDeltaTime());
+
 			//----------------------------------------------------- Loop ending
 			EventPtr evnt = std::make_shared<LoopFinishedEvent>(
 				LoopFinishedEvent(m_timer.getDeltaTime(),

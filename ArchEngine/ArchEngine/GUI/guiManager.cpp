@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 17/06/2018                                                       *
- * Last Modified: 22/06/2018                                                 *
+ * Last Modified: 24/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -118,6 +118,11 @@ namespace GUI {
 		lua_context.destroy();
 
 		return success;
+	}
+
+	void GUIManager::update(float delta_time) {
+		for (auto& it : m_controls)
+			it->update(delta_time);
 	}
 
 	void GUIManager::destroy() {
@@ -305,6 +310,37 @@ namespace GUI {
 				std::pair<GLchar, Character>(c, character));
 		}
 	}
+
+	//---------------------------------------------------------------- CONTROLS
+	unsigned GUIManager::addControl(std::shared_ptr<GUIComponent> control) {
+		m_controls.push_back(control);
+		return (unsigned)m_controls.size() - 1;
+	}
+
+	std::shared_ptr<GUIComponent> GUIManager::getControl(unsigned handle) {
+		if (handle >= m_controls.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return nullptr;
+		}
+
+		return m_controls[handle];
+	}
+
+	void GUIManager::removeControl(unsigned handle) {
+		if (handle >= m_controls.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
+		m_controls.erase(m_controls.begin() + handle);
+	}
+	//-------------------------------------------------------------------------
 
 	void GUIManager::onWindowResizeEvent(EventPtr e) {
 		auto evnt = std::static_pointer_cast<WindowResizeEvent>(e);

@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 22/06/2018                                                       *
- * Last Modified: 23/06/2018                                                 *
+ * Last Modified: 24/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -34,11 +34,14 @@ namespace GUI {
 			const glm::vec2& screen_size, const glm::vec4& limits,
 			const std::string& texture_path = "");
 
+		void update(float delta_time) override;
+
 		void setColor(const glm::vec4& color);
 		void setHoverColor(const glm::vec4& color);
 		void setBorderColor(const glm::vec4& color);
 		void setBorderWidth(int width);
 		void setLimits(const glm::vec4& limits);
+		void setProjection(const glm::mat4& projection);
 		
 		void removeTexture();
 		void removeColor();
@@ -50,18 +53,18 @@ namespace GUI {
 		glm::vec4 getBorderColor() const;
 		int getBorderWidth() const;
 		glm::vec4 getLimits() const;
+		glm::mat4 getProjection() const;
 
 		bool hasTexture() const;
 		bool hasColor() const;
 		bool hasBorder() const;
-
-		void render(const glm::mat4& projection);
 
 	private:
 		void mouseHover(int x, int y) override;
 		void mouseOut() override;
 
 		glm::vec4 m_limits;
+		glm::mat4 m_projection;
 
 		unsigned m_texture_id;
 		glm::vec4 m_color;

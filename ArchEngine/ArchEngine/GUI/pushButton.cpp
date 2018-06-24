@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/06/2018                                                       *
- * Last Modified: 23/06/2018                                                 *
+ * Last Modified: 24/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -74,8 +74,8 @@ namespace GUI {
 			m_window_resize_listener, EVENT_WINDOW_RESIZE);
 	}
 
-	void PushButton::update(const glm::mat4& projection) {
-		m_renderable.render(projection);
+	void PushButton::update(float delta_time) {
+		m_renderable.update(delta_time);
 
 		bool depth_test = false;
 		if (glIsEnabled(GL_DEPTH_TEST))
@@ -169,6 +169,10 @@ namespace GUI {
 		m_renderable.setLimits(limits);
 	}
 
+	void PushButton::setRenderProjection(const glm::mat4& projection) {
+		m_renderable.setProjection(projection);
+	}
+
 	void PushButton::removeRenderTexture() {
 		m_renderable.removeTexture();
 	}
@@ -203,6 +207,10 @@ namespace GUI {
 
 	glm::vec4 PushButton::getRenderLimits() const {
 		return m_renderable.getLimits();
+	}
+
+	glm::mat4 PushButton::getRenderProjection() const {
+		return m_renderable.getProjection();
 	}
 
 	bool PushButton::hasRenderTexture() const {

@@ -415,6 +415,7 @@ void loadData() {
 	rc->setHoverColor(glm::vec4(0.5f, 0.8f, 0.5f, 1.0f));
 	rc->setBorderColor(glm::vec4(0.3f, 0.6f, 0.3f, 1.0f));
 	rc->setBorderWidth(1);
+	rc->setProjection(glm::ortho(0.0f, 800.0f, 0.0f, 600.0f));
 	rc->trackMouse();
 
 	pb = new PushButton(0, button_shader, glm::vec2(800, 600),
@@ -425,6 +426,7 @@ void loadData() {
 	pb->setRenderHoverColor(glm::vec4(0.5f, 0.8f, 0.5f, 1.0f));
 	pb->setRenderBorderColor(glm::vec4(0.3f, 0.6f, 0.3f, 1.0f));
 	pb->setRenderBorderWidth(1);
+	pb->setRenderProjection(glm::ortho(0.0f, 800.0f, 0.0f, 600.0f));
 	pb->trackMouse();
 
 	Engine::getInstance().releaseMouse();
@@ -682,6 +684,8 @@ void onWindowResizeEvent(EventPtr e) {
 	evnt->getSize(g_screen_width, g_screen_height);
 
 	rc->setLimits(glm::vec4(0.0f, 0.0f, 205.0f, g_screen_height));
+	rc->setProjection(glm::ortho(0.0f, 800.0f, 0.0f, 600.0f));
+	pb->setRenderProjection(glm::ortho(0.0f, 800.0f, 0.0f, 600.0f));
 }
 
 void onLoopFinishedEvent(EventPtr e) {
@@ -692,9 +696,9 @@ void onLoopFinishedEvent(EventPtr e) {
 
 	PhysicsManager::getInstance().pickingMotion(g_x, g_y, 1000.0f);
 
-	rc->render(glm::ortho(0.0f, (float)g_screen_width, 0.0f, (float)g_screen_height));
+	rc->update(evnt->getDeltaTime());
 	glClear(GL_DEPTH_BUFFER_BIT);
-	pb->update(glm::ortho(0.0f, (float)g_screen_width, 0.0f, (float)g_screen_height));
+	pb->update(evnt->getDeltaTime());
 
 	glDisable(GL_DEPTH_TEST);
 

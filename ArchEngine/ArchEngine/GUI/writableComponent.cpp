@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 21/06/2018                                                       *
- * Last Modified: 23/06/2018                                                 *
+ * Last Modified: 24/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -54,6 +54,23 @@ namespace GUI {
 
 		m_max_show_line_number = 1 + (int)((m_maximum_size.y -
 			m_font_size * m_text_scale) / m_spacing);
+	}
+
+	void WritableComponent::update(float delta_time) {
+		int start = std::max(0, m_current_line - m_max_show_line_number + 1);
+		int offset = start * std::max(m_spacing,
+			(int)(m_font_size * m_text_scale));
+
+		for (unsigned i = start; i < m_text.size(); i++) {
+			GUIManager::getInstance().renderText(
+				m_font_id,
+				m_text[i].text,
+				m_text[i].start_position.x,
+				m_text[i].start_position.y + offset,
+				m_text_scale,
+				m_current_color
+			);
+		}
 	}
 
 	void WritableComponent::write(char c) {
@@ -115,23 +132,6 @@ namespace GUI {
 
 		for (auto& it : text)
 			write(it);
-	}
-
-	void WritableComponent::update() {
-		int start = std::max(0, m_current_line - m_max_show_line_number + 1);
-		int offset = start * std::max(m_spacing,
-			(int)(m_font_size * m_text_scale));
-
-		for (unsigned i = start; i < m_text.size(); i++) {
-			GUIManager::getInstance().renderText(
-				m_font_id,
-				m_text[i].text,
-				m_text[i].start_position.x,
-				m_text[i].start_position.y + offset,
-				m_text_scale,
-				m_current_color
-			);
-		}
 	}
 
 	void WritableComponent::setFont(unsigned id) {
