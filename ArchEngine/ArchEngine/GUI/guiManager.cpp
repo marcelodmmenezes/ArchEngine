@@ -141,30 +141,24 @@ namespace GUI {
 		int i = 1;
 		int aux;
 		bool found;
-		std::string name;
+		std::string name, type;
 
 		try {
 			do {
 				found = false;
 
-				name = "renderableComponent" + std::to_string(i);
+				name = "component" + std::to_string(i);
 
 				if (lua_context.getToStack(name, aux)) {
-					createRenderableComponent(lua_context, name);
-					found = true;
-				}
+					type = lua_context.get<std::string>(name + ".tp");
 
-				name = "writableComponent" + std::to_string(i);
+					if (type == "renderableComponent")
+						createRenderableComponent(lua_context, name);
+					else if (type == "writableComponent")
+						createWritableComponent(lua_context, name);
+					else if (type == "pushButton")
+						createPushButton(lua_context, name);
 
-				if (lua_context.getToStack(name, aux)) {
-					createWritableComponent(lua_context, name);
-					found = true;
-				}
-
-				name = "pushButton" + std::to_string(i);
-
-				if (lua_context.getToStack(name, aux)) {
-					createPushButton(lua_context, name);
 					found = true;
 				}
 
@@ -174,7 +168,6 @@ namespace GUI {
 		catch (...) {
 			success = false;
 		}
-
 
 		lua_context.destroy();
 
@@ -211,15 +204,27 @@ namespace GUI {
 			texture
 		);
 
-		rc->setColor(glm::vec4(color[0],
-			color[1], color[2], color[3]));
-		rc->setHoverColor(glm::vec4(hover_color[0],
-			hover_color[1], hover_color[2], hover_color[3]));
-		rc->setBorderColor(glm::vec4(border_color[0],
-			border_color[1], border_color[2], border_color[3]));
-		rc->setBorderWidth(border_width);
-		rc->setProjection(glm::ortho(projection[0],
-			projection[1], projection[2], projection[3]));
+		if (color.size() == 4)
+			rc->setColor(glm::vec4(color[0],
+				color[1], color[2], color[3]));
+
+		if (hover_color.size() == 4)
+			rc->setHoverColor(glm::vec4(hover_color[0],
+				hover_color[1], hover_color[2], hover_color[3]));
+
+		if (border_color.size() == 4)
+			rc->setBorderColor(glm::vec4(border_color[0],
+				border_color[1], border_color[2], border_color[3]));
+
+		if (border_width > 0)
+			rc->setBorderWidth(border_width);
+
+		if (projection.size() == 4)
+			rc->setProjection(glm::ortho(projection[0],
+				projection[1], projection[2], projection[3]));
+		else
+			rc->setProjection(glm::ortho(0.0f,
+				(float)m_window_size.x, 0.0f, (float)m_window_size.y));
 
 		if (track_mouse)
 			rc->trackMouse();
@@ -259,8 +264,9 @@ namespace GUI {
 			glm::vec2(maximum_size[0], maximum_size[1])
 		);
 
-		wc->setHoverColor(glm::vec3(hover_color[0],
-			hover_color[1], hover_color[2]));
+		if (hover_color.size() == 4)
+			wc->setHoverColor(glm::vec3(hover_color[0],
+				hover_color[1], hover_color[2]));
 
 		if (track_mouse)
 			wc->trackMouse();
@@ -316,17 +322,30 @@ namespace GUI {
 		);
 
 		pb->setText(text);
-		pb->setRenderColor(glm::vec4(render_color[0],
-			render_color[1], render_color[2], render_color[3]));
-		pb->setRenderHoverColor(glm::vec4(render_hover_color[0],
-			render_hover_color[1], render_hover_color[2],
-			render_hover_color[3]));
-		pb->setRenderBorderColor(glm::vec4(render_border_color[0],
-			render_border_color[1], render_border_color[2],
-			render_border_color[3]));
-		pb->setRenderBorderWidth(render_border_width);
-		pb->setRenderProjection(glm::ortho(projection[0],
-			projection[1], projection[2], projection[3]));
+
+		if (render_color.size() == 4)
+			pb->setRenderColor(glm::vec4(render_color[0],
+				render_color[1], render_color[2], render_color[3]));
+
+		if (render_hover_color.size() == 4)
+			pb->setRenderHoverColor(glm::vec4(render_hover_color[0],
+				render_hover_color[1], render_hover_color[2],
+				render_hover_color[3]));
+
+		if (render_border_color.size() == 4)
+			pb->setRenderBorderColor(glm::vec4(render_border_color[0],
+				render_border_color[1], render_border_color[2],
+				render_border_color[3]));
+
+		if (render_border_width > 0)
+			pb->setRenderBorderWidth(render_border_width);
+
+		if (projection.size() == 4)
+			pb->setRenderProjection(glm::ortho(projection[0],
+				projection[1], projection[2], projection[3]));
+		else
+			pb->setRenderProjection(glm::ortho(0.0f,
+			(float)m_window_size.x, 0.0f, (float)m_window_size.y));
 
 		if (track_mouse)
 			pb->trackMouse();

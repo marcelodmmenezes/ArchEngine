@@ -13,7 +13,8 @@
 ]]
 
 
-renderableComponent1 = {
+component1 = {
+	tp = "renderableComponent",
 	id = "sidebar",
 	shader_id = 7,
 	limits = { 0.0, 0.0, 205.0, 600.0 },
@@ -26,7 +27,8 @@ renderableComponent1 = {
 	track_mouse = true,
 }
 
-writableComponent1 = {
+component2 = {
+	tp = "writableComponent",
 	id = "fpscounter",
 	position = { 50.0, 50.0 },
 	font_id = 1,
@@ -38,7 +40,8 @@ writableComponent1 = {
 	track_mouse = true,
 }
 
-pushButton1 = {
+component3 = {
+	tp = "pushButton",
 	id = "xablau",
 	button_id = 0,
 	shader_id = 8,
@@ -56,8 +59,8 @@ pushButton1 = {
 	track_mouse = true,
 }
 
-pushButton2 = {
-	id = "xablau2",
+component4 = {
+	tp = "pushButton",
 	button_id = 0,
 	shader_id = 8,
 	limits = { 20.0, 459.0, 184.0, 40.0 },
@@ -74,8 +77,8 @@ pushButton2 = {
 	track_mouse = true,
 }
 
-pushButton3 = {
-	id = "xablau3",
+component5 = {
+	tp = "pushButton",
 	button_id = 0,
 	shader_id = 8,
 	limits = { 20.0, 418.0, 184.0, 40.0 },
@@ -92,8 +95,8 @@ pushButton3 = {
 	track_mouse = true,
 }
 
-pushButton4 = {
-	id = "xablau4",
+component6 = {
+	tp = "pushButton",
 	button_id = 0,
 	shader_id = 8,
 	limits = { 20.0, 377.0, 184.0, 40.0 },
@@ -110,8 +113,8 @@ pushButton4 = {
 	track_mouse = true,
 }
 
-pushButton5 = {
-	id = "xablau5",
+component7 = {
+	tp = "pushButton",
 	button_id = 0,
 	shader_id = 8,
 	limits = { 20.0, 338.0, 184.0, 40.0 },
