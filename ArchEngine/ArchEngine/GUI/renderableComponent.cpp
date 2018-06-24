@@ -179,7 +179,7 @@ namespace GUI {
 		}
 	}
 
-	void RenderableComponent::mouseHover() {
+	void RenderableComponent::mouseHover(int x, int y) {
 		m_current_color = m_hover_color;
 	}
 

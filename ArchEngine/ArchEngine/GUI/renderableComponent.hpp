@@ -58,7 +58,7 @@ namespace GUI {
 		void render(const glm::mat4& projection);
 
 	private:
-		void mouseHover() override;
+		void mouseHover(int x, int y) override;
 		void mouseOut() override;
 
 		glm::vec4 m_limits;

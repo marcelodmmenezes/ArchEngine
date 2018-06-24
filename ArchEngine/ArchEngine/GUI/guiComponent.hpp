@@ -32,13 +32,13 @@ namespace GUI {
 		virtual ~GUIComponent() = 0;
 
 		//------------------------------------------------------ Mouse tracking
-		void trackMouse();
-		void untrackMouse();
+		virtual void trackMouse();
+		virtual void untrackMouse();
 		//---------------------------------------------------------------------
 
 	protected:
 		//------------------------------------------------------ Mouse tracking
-		virtual void mouseHover() = 0;
+		virtual void mouseHover(int x, int y) = 0;
 		virtual void mouseOut() = 0;
 
 		void onMouseMovedEvent(Core::EventPtr e);

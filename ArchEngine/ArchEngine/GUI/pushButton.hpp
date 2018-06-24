@@ -25,22 +25,22 @@ namespace GUI {
 	class PushButton : public GUIComponent {
 	public:
 		PushButton();
-		PushButton(unsigned shader_id,
+		PushButton(int button_id,
+			unsigned shader_id,
 			const glm::vec2& screen_size,
 			const glm::vec4& limits,
 			unsigned font_id,
 			float font_scale,
-			int text_spacing,
 			const glm::vec3& text_color,
 			const std::string& texture_path);
 		~PushButton();
 
-		void initialize(unsigned shader_id,
+		void initialize(int button_id,
+			unsigned shader_id,
 			const glm::vec2& screen_size,
 			const glm::vec4& limits,
 			unsigned font_id,
 			float font_scale,
-			int text_spacing,
 			const glm::vec3& text_color,
 			const std::string& texture_path);
 		
@@ -50,6 +50,15 @@ namespace GUI {
 
 		void setText(const std::string& text);
 		std::string getText() const;
+
+		void justifyLeft();
+		void centralize();
+		void justifyRight();
+
+		//----------------------------------------------------------- Overrides
+		void trackMouse() override;
+		void untrackMouse() override;
+		//---------------------------------------------------------------------
 
 		//------------------------------------------------ Renderable component
 		void setRenderColor(const glm::vec4& color);
@@ -74,30 +83,32 @@ namespace GUI {
 		bool hasRenderBorder() const;
 		//---------------------------------------------------------------------
 
-		//-------------------------------------------------- Writable component
-		void setTextFont(unsigned id);
-		void setTextScale(float scale);
-		void setTextPosition(const glm::vec2& pos);
-		void setTextColor(const glm::vec3& color);
-		void setTextHoverColor(const glm::vec3& color);
-		void setTextMaximumSize(const glm::vec2& size);
-
-		unsigned getTextFont() const;
-		float getTextScale() const;
-		glm::vec2 getTextPosition() const;
-		glm::vec3 getTextColor() const;
-		glm::vec3 getTextHoverColor() const;
-		glm::vec2 getTextMaximumSize() const;
-		//---------------------------------------------------------------------
-
 	private:
-		void mouseHover();
-		void mouseOut();
+		void mouseHover(int x, int y) override;
+		void mouseOut() override;
 
+		void onWindowResizeEvent(Core::EventPtr e);
+		Core::EventListener m_window_resize_listener;
+		
+		int m_id;
+
+		glm::vec2 m_size;
+		glm::vec2 m_screen_size;
+		glm::vec4 m_limits;
+
+		glm::vec2 m_mouse_pos;
+
+		int m_font_id;
+		float m_font_scale;
 		std::string m_text;
+		int m_text_width;
+		glm::vec2 m_text_pos;
+		glm::vec3 m_text_color;
+		int m_text_justification; // -1 left, 0 center, 1 right
+
+		glm::vec4 m_body_color;
 
 		RenderableComponent m_renderable;
-		WritableComponent m_writable;
 	};
 }
 

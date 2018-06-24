@@ -61,6 +61,7 @@ void onInputMouseMoved(EventPtr e);
 void onCollisionEvent(EventPtr e);
 void onClosestRayTestEvent(EventPtr e);
 void onAllRayTestEvent(EventPtr e);
+void onButtonClickEvent(EventPtr e);
 void onWindowResizeEvent(EventPtr e);
 void onLoopFinishedEvent(EventPtr e);
 
@@ -119,6 +120,10 @@ int main(int argc, char* argv[]) {
 		listener.bind<&onAllRayTestEvent>();
 		EventManager::getInstance().addListener(
 			listener, EVENT_RAY_TEST_ALL);
+
+		listener.bind<&onButtonClickEvent>();
+		EventManager::getInstance().addListener(
+			listener, EVENT_BUTTON_CLICKED);
 
 		listener.bind<&onWindowResizeEvent>();
 		EventManager::getInstance().addListener(
@@ -413,9 +418,15 @@ void loadData() {
 	rc->setBorderWidth(1);
 	rc->trackMouse();
 
-	pb = new PushButton(button_shader, glm::vec2(800, 600),
-		glm::vec4(20.0f, 500.0f, 165.0f, 550.0f), 1, 1.0f, 15.0f,
-		glm::vec3(0.0f, 0.0f, 0.0f), "");
+	pb = new PushButton(0, button_shader, glm::vec2(800, 600),
+		glm::vec4(20.0f, 500.0f, 165.0f, 50.0f), 1, 1.0f,
+		glm::vec3(1.0f, 1.0f, 1.0f), "");
+	pb->setText("XABLAU");
+	pb->setRenderColor(glm::vec4(0.15f, 0.15f, 0.15f, 1.0f));
+	pb->setRenderHoverColor(glm::vec4(0.5f, 0.8f, 0.5f, 1.0f));
+	pb->setRenderBorderColor(glm::vec4(0.3f, 0.6f, 0.3f, 1.0f));
+	pb->setRenderBorderWidth(1);
+	pb->trackMouse();
 
 	Engine::getInstance().releaseMouse();
 }
@@ -473,8 +484,18 @@ void onInputActionEvent(EventPtr e) {
 		EventManager::getInstance().sendEvent(evnt);
 		break;
 	}
+
+	if (context_priority == 1) {
+		if (evnt->getValue() == '1')
+			pb->justifyLeft();
+		else if (evnt->getValue() == '2')
+			pb->centralize();
+		else if (evnt->getValue() == '3')
+			pb->justifyRight();
+	}
 }
 
+bool mouse_left_released = false;
 bool mouse_left_clicked = false;
 bool mouse_right_clicked = false;
 
@@ -487,6 +508,8 @@ void onInputStateEvent(EventPtr e) {
 	auto dir = glm::vec3(trn[3][0], trn[3][1], trn[3][2]) - camera->getPosition();
 	auto up = glm::vec3(0.0f, 1.0f, 0.0f);
 	auto left = glm::cross(up, glm::vec3(dir.x, 0.0f, dir.z));
+
+	mouse_left_released = false;
 
 	switch (evnt->getValue()) {
 	case 0:
@@ -540,8 +563,10 @@ void onInputStateEvent(EventPtr e) {
 		}
 		break;
 	case 7:
-		if (evnt->isOver())
+		if (evnt->isOver()) {
+			mouse_left_released = true;
 			mouse_left_clicked = false;
+		}
 		else
 			mouse_left_clicked = true;
 		break;
@@ -641,6 +666,15 @@ void onAllRayTestEvent(EventPtr e) {
 	std::cout << std::endl;
 }
 
+void onButtonClickEvent(EventPtr e) {
+	auto evnt = std::static_pointer_cast<ButtonClickedEvent>(e);
+
+	if (evnt->getButtonId() == 0)
+		std::cout << "XABLAU" << std::endl;
+	else
+		std::cout << "NOPS" << std::endl;
+}
+
 int g_screen_width = 800;
 int g_screen_height = 600;
 
@@ -655,6 +689,7 @@ void onLoopFinishedEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<LoopFinishedEvent>(e);
 
 	//PhysicsManager::getInstance().debugDraw();
+	if (mouse_left_released) pb->click();
 
 	PhysicsManager::getInstance().pickingMotion(g_x, g_y, 1000.0f);
 

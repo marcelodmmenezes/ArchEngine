@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 06/05/2018                                                       *
- * Last Modified: 21/06/2018                                                 *
+ * Last Modified: 23/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -30,6 +30,13 @@ namespace Core {
 	EventType LoopFinishedEvent::getType() const { return m_type; }
 	double LoopFinishedEvent::getDeltaTime() const { return m_delta_time; }
 	double LoopFinishedEvent::getFrameRate() const { return m_frame_rate; }
+
+	//-------------------------------------------------------------- GUI events
+	ButtonClickedEvent::ButtonClickedEvent(int button_id) :
+		IEvent(EVENT_BUTTON_CLICKED), m_id(button_id) {}
+	ButtonClickedEvent::~ButtonClickedEvent() {}
+	EventType ButtonClickedEvent::getType() const { return m_type; }
+	int ButtonClickedEvent::getButtonId() { return m_id; }
 
 	//----------------------------------------------------------- Window events
 	WindowResizeEvent::WindowResizeEvent(int width, int height) :

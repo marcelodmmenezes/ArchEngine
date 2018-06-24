@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 21/06/2018                                                 *
+ * Last Modified: 23/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -27,6 +27,9 @@ namespace Core {
 		//--- Core events
 		EVENT_CORE_QUIT,
 		EVENT_LOOP_FINISHED,
+
+		//--- GUI events
+		EVENT_BUTTON_CLICKED,
 
 		//--- Window events
 		EVENT_WINDOW_RESIZE,
@@ -91,6 +94,23 @@ namespace Core {
 	private:
 		double m_delta_time;
 		double m_frame_rate;
+	};
+	//-------------------------------------------------------------------------
+
+
+	//------------------
+	//---- Window events
+	//------------------
+	class ButtonClickedEvent : public IEvent {
+	public:
+		ButtonClickedEvent(int button_id);
+		~ButtonClickedEvent();
+
+		EventType getType() const override;
+		int getButtonId();
+
+	private:
+		int m_id;
 	};
 	//-------------------------------------------------------------------------
 

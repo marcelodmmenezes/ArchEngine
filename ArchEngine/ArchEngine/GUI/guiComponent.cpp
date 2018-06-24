@@ -45,7 +45,7 @@ namespace GUI {
 				m_mouse_x <= m_mouse_space.z &&
 				m_mouse_y >= m_mouse_space.y &&
 				m_mouse_y <= m_mouse_space.w)
-				mouseHover();
+				mouseHover(m_mouse_x, m_mouse_y);
 			else
 				mouseOut();
 		}

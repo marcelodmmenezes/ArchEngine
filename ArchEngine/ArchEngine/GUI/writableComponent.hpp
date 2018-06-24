@@ -49,10 +49,6 @@ namespace GUI {
 		void write(char c);
 		void write(const std::string& text);
 
-		void justifyLeft();
-		void centralize();
-		void justifyRight();
-
 		void update();
 
 		void setFont(unsigned id);
@@ -70,7 +66,7 @@ namespace GUI {
 		glm::vec2 getMaximumSize() const;
 
 	private:
-		void mouseHover() override;
+		void mouseHover(int x, int y) override;
 		void mouseOut() override;
 
 		void format();

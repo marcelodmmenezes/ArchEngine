@@ -117,20 +117,6 @@ namespace GUI {
 			write(it);
 	}
 
-	void WritableComponent::justifyLeft() {
-		m_text[m_current_line].start_position.x = m_position.x;
-	}
-
-	void WritableComponent::centralize() {
-		float space = m_maximum_size.x - m_text[m_current_line].m_width;
-		m_text[m_current_line].start_position.x += space / 2.0f;
-	}
-
-	void WritableComponent::justifyRight() {
-		float space = m_maximum_size.x - m_text[m_current_line].m_width;
-		m_text[m_current_line].start_position.x += space;
-	}
-
 	void WritableComponent::update() {
 		int start = std::max(0, m_current_line - m_max_show_line_number + 1);
 		int offset = start * std::max(m_spacing,
@@ -201,7 +187,7 @@ namespace GUI {
 		return m_maximum_size;
 	}
 
-	void WritableComponent::mouseHover() {
+	void WritableComponent::mouseHover(int x, int y) {
 		m_current_color = m_hover_color;
 	}
 
