@@ -479,6 +479,7 @@
     <None Include="Testers\engineConfig.lua" />
     <None Include="Testers\graphicsConfig.lua" />
     <None Include="Testers\guiConfig.lua" />
+    <None Include="Testers\guiControls.lua" />
     <None Include="Testers\inputContexts.lua" />
     <None Include="Testers\luaAPI.lua" />
     <None Include="Testers\physicsConfig.lua" />

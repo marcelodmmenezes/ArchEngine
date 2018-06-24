@@ -60,6 +60,8 @@ namespace GUI {
 		bool initialize(const std::vector<std::string>& fonts);
 		bool initializeFromConfigFile(const std::string& path);
 		
+		bool createControlsFromFile(const std::string& path);
+
 		void update(float delta_time);
 
 		void destroy();
@@ -78,6 +80,7 @@ namespace GUI {
 		//------------------------------------------------------------ CONTROLS
 		unsigned addControl(GUIComponent* control);
 		GUIComponent* getControl(unsigned handle);
+		GUIComponent* getControl(const std::string& name);
 		void removeControl(unsigned handle);
 		//---------------------------------------------------------------------
 
@@ -110,6 +113,7 @@ namespace GUI {
 
 		//------------------------------------------------------------ CONTROLS
 		std::vector<GUIComponent*> m_controls;
+		std::map<std::string, unsigned> m_control_name_to_handle;
 		//---------------------------------------------------------------------
 	};
 }

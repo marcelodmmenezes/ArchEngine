@@ -19,6 +19,8 @@ fonts = {
 	"../../../../GameEngineLearning/assets/fonts/hack/Hack-Regular.ttf", 12,
 }
 
+controls = "../../ArchEngine/Testers/guiControls.lua"
+
 vsshader = "../../ArchEngine/Shaders/glyphvs.glsl"
 fsshader = "../../ArchEngine/Shaders/glyphfs.glsl"	
 
