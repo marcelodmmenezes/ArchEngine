@@ -194,6 +194,8 @@ namespace GUI {
 			lua_context.get<int>(name + ".border_width");
 		auto projection =
 			lua_context.getFloatVector(name + ".projection");
+		auto border_constraint =
+			lua_context.getIntVector(name + ".border_constraint");
 		auto track_mouse =
 			lua_context.get<bool>(name + ".track_mouse");
 
@@ -225,6 +227,13 @@ namespace GUI {
 		else
 			rc->setProjection(glm::ortho(0.0f,
 				(float)m_window_size.x, 0.0f, (float)m_window_size.y));
+
+		int lim = std::min(4, (int)border_constraint.size());
+		int mask = 0;
+		for (int i = 0; i < lim; i++)
+			if (border_constraint[i])
+				mask += 1 << i;
+		rc->setBorderConstraint(mask);
 
 		if (track_mouse)
 			rc->trackMouse();
@@ -621,9 +630,23 @@ namespace GUI {
 		m_projection = glm::ortho(0.0f, (float)w, 0.0f, (float)h);
 
 		for (auto& it : m_controls) {
-			if (auto ctrl = dynamic_cast<RenderableComponent*>(it)) {
+			if (auto ctrl = dynamic_cast<RenderableComponent*>(it)) {	
 				glm::vec4 lim = ctrl->getLimits();
-				lim.w = h;
+
+				int mask = ctrl->getBorderConstraint();
+
+				if (!(mask & BC_LEFT))
+					lim.x += (w - m_window_size.x);
+
+				if (!(mask & BC_BOTTOM))
+					lim.y += (h - m_window_size.y);
+
+				if (mask & BC_RIGHT)
+					lim.z += (w - m_window_size.x);
+
+				if (mask & BC_TOP)
+					lim.w += (h - m_window_size.y);
+
 				ctrl->setLimits(lim);
 				ctrl->setProjection(m_projection);
 			}

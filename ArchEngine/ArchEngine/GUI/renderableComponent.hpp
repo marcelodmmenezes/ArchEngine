@@ -22,6 +22,13 @@
 
 
 namespace GUI {
+	enum BorderConstraint {
+		BC_LEFT   = 1 << 0,
+		BC_RIGHT  = 1 << 1,
+		BC_BOTTOM = 1 << 2,
+		BC_TOP    = 1 << 3
+	};
+
 	class RenderableComponent : public GUIComponent {
 	public:
 		RenderableComponent();
@@ -42,7 +49,10 @@ namespace GUI {
 		void setBorderWidth(int width);
 		void setLimits(const glm::vec4& limits);
 		void setProjection(const glm::mat4& projection);
-		
+
+		void setBorderConstraint(int value);
+		int getBorderConstraint();
+
 		void removeTexture();
 		void removeColor();
 		void removeBorder();
@@ -72,6 +82,8 @@ namespace GUI {
 		glm::vec4 m_border_color;
 		glm::vec4 m_current_color;
 		int m_border_width;
+
+		int m_border_constraint;
 
 		bool m_has_texture;
 		bool m_has_color;

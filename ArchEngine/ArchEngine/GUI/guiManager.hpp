@@ -30,6 +30,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include <cstdlib>
 #include <map>
 #include <string>
 #include <vector>

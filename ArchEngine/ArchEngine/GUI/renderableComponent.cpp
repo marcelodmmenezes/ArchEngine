@@ -135,6 +135,14 @@ namespace GUI {
 	void RenderableComponent::setProjection(const glm::mat4& projection) {
 		m_projection = projection;
 	}
+	
+	void RenderableComponent::setBorderConstraint(int value) {
+		m_border_constraint = value;
+	}
+
+	int RenderableComponent::getBorderConstraint() {
+		return m_border_constraint;
+	}
 
 	void RenderableComponent::removeTexture() {
 		m_has_texture = false;
