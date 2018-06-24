@@ -84,6 +84,8 @@ namespace GUI {
 			}
 		}
 
+		m_state = INITIALIZED;
+
 		return true;
 	}
 
@@ -102,8 +104,10 @@ namespace GUI {
 
 		auto proj = lua_context.getFloatVector("projection");
 
-		if (proj.size() == 4)
+		if (proj.size() == 4) {
 			m_projection = glm::ortho(proj[0], proj[1], proj[2], proj[3]);
+			m_window_size = glm::vec2(proj[1], proj[3]);
+		}
 		else {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
@@ -111,6 +115,7 @@ namespace GUI {
 				"Assigning default");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			m_projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
+			m_window_size = glm::vec2(800.0f, 600.0f);
 		}
 
 		success = initialize(fonts);
@@ -121,8 +126,10 @@ namespace GUI {
 	}
 
 	void GUIManager::update(float delta_time) {
-		for (auto& it : m_controls)
+		for (auto& it : m_controls) {
 			it->update(delta_time);
+			glClear(GL_DEPTH_BUFFER_BIT);
+		}
 	}
 
 	void GUIManager::destroy() {
@@ -138,6 +145,9 @@ namespace GUI {
 			glDeleteVertexArrays(1, &m_quad_vao);
 
 		m_shader.destroy();
+
+		for (auto& it : m_controls)
+			delete it;
 
 		m_state = SAFE_TO_DESTROY;
 	}
@@ -312,12 +322,20 @@ namespace GUI {
 	}
 
 	//---------------------------------------------------------------- CONTROLS
-	unsigned GUIManager::addControl(std::shared_ptr<GUIComponent> control) {
+	unsigned GUIManager::addControl(GUIComponent* control) {
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+		assert(m_state == INITIALIZED);
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+
 		m_controls.push_back(control);
 		return (unsigned)m_controls.size() - 1;
 	}
 
-	std::shared_ptr<GUIComponent> GUIManager::getControl(unsigned handle) {
+	GUIComponent* GUIManager::getControl(unsigned handle) {
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+		assert(m_state == INITIALIZED);
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+
 		if (handle >= m_controls.size()) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
@@ -330,6 +348,10 @@ namespace GUI {
 	}
 
 	void GUIManager::removeControl(unsigned handle) {
+#ifndef ARCH_ENGINE_REMOVE_ASSERTIONS
+		assert(m_state == INITIALIZED);
+#endif	// ARCH_ENGINE_REMOVE_ASSERTIONS
+
 		if (handle >= m_controls.size()) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
 			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
@@ -338,6 +360,7 @@ namespace GUI {
 			return;
 		}
 
+		delete m_controls[handle];
 		m_controls.erase(m_controls.begin() + handle);
 	}
 	//-------------------------------------------------------------------------
@@ -349,5 +372,25 @@ namespace GUI {
 		evnt->getSize(w, h);
 
 		m_projection = glm::ortho(0.0f, (float)w, 0.0f, (float)h);
+
+		for (auto& it : m_controls) {
+			if (auto ctrl = dynamic_cast<RenderableComponent*>(it)) {
+				glm::vec4 lim = ctrl->getLimits();
+				lim.w = h;
+				ctrl->setLimits(lim);
+				ctrl->setProjection(m_projection);
+			}
+			else if (auto ctrl = dynamic_cast<WritableComponent*>(it)) {
+				glm::vec2 pos = ctrl->getPosition();
+				glm::vec2 m_size = ctrl->getMaximumSize();
+				ctrl->setPosition(glm::vec2(pos.x,
+					pos.y + (h - m_window_size.y)));
+				ctrl->setMaximumSize(glm::vec2(m_size.x, h - m_size.y));
+			}
+			else if (auto ctrl = dynamic_cast<PushButton*>(it))
+				ctrl->setRenderProjection(m_projection);
+		}
+
+		m_window_size = glm::vec2(w, h);
 	}
 }

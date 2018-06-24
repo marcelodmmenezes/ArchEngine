@@ -19,6 +19,9 @@
 #include "../Graphics/glad_3_3_core.hpp"
 #include "../Graphics/shader.hpp"
 #include "guiComponent.hpp"
+#include "pushButton.hpp"
+#include "renderableComponent.hpp"
+#include "writableComponent.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/serviceLocator.hpp"
 
@@ -73,8 +76,8 @@ namespace GUI {
 		float getCharLength(char c, unsigned font_id, float scale) const;
 
 		//------------------------------------------------------------ CONTROLS
-		unsigned addControl(std::shared_ptr<GUIComponent> control);
-		std::shared_ptr<GUIComponent> getControl(unsigned handle);
+		unsigned addControl(GUIComponent* control);
+		GUIComponent* getControl(unsigned handle);
 		void removeControl(unsigned handle);
 		//---------------------------------------------------------------------
 
@@ -92,6 +95,8 @@ namespace GUI {
 
 		Core::EventListener m_window_size_listener;
 
+		glm::vec2 m_window_size;
+
 		State m_state;
 
 		std::vector<Font> m_fonts;
@@ -104,7 +109,7 @@ namespace GUI {
 		unsigned m_quad_vbo;
 
 		//------------------------------------------------------------ CONTROLS
-		std::vector<std::shared_ptr<GUIComponent>> m_controls;
+		std::vector<GUIComponent*> m_controls;
 		//---------------------------------------------------------------------
 	};
 }

@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 23/06/2018                                                 *
+ * Last Modified: 24/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -217,9 +217,9 @@ namespace OS {
 #if defined(ARCH_ENGINE_HOT_RELOAD_ON)
 		// Changes if the file is being watched according to parameters
 		if (m_watch_file != m_file_being_watched) {
-			Core::EventPtr evnt = std::make_shared<WatchFileEvent>(WatchFileEvent(
+			EventPtr evnt = std::make_shared<WatchFileEvent>(WatchFileEvent(
 				m_config_file_path, m_watch_file));
-			Core::EventManager::getInstance().sendEvent(evnt);
+			EventManager::getInstance().sendEvent(evnt);
 			m_file_being_watched = !m_file_being_watched;
 		}
 #endif	// ARCH_ENGINE_HOT_RELOAD_ON

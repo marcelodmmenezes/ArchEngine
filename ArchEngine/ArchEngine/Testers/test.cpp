@@ -73,8 +73,7 @@ DebugCamera debug_camera(
 );
 
 DebugDrawer* dd;
-RenderableComponent* rc;
-PushButton* pb;
+WritableComponent* fps_counter;
 
 
 int main(int argc, char* argv[]) {
@@ -147,8 +146,6 @@ int main(int argc, char* argv[]) {
 
 	Engine::getInstance().exit();
 
-	delete pb;
-	delete rc;
 	delete dd;
 }
 
@@ -409,8 +406,10 @@ void loadData() {
 		"../../ArchEngine/Shaders/buttonfs.glsl"
 	);
 
-	rc = new RenderableComponent(quad_shader, glm::vec2(800, 600),
+	RenderableComponent* rc = new RenderableComponent(
+		quad_shader, glm::vec2(800, 600),
 		glm::vec4(0.0f, 0.0f, 205.0f, 600.0f), "");
+
 	rc->setColor(glm::vec4(0.22f, 0.22f, 0.24f, 1.0f));
 	rc->setHoverColor(glm::vec4(0.5f, 0.8f, 0.5f, 1.0f));
 	rc->setBorderColor(glm::vec4(0.3f, 0.6f, 0.3f, 1.0f));
@@ -418,9 +417,23 @@ void loadData() {
 	rc->setProjection(glm::ortho(0.0f, 800.0f, 0.0f, 600.0f));
 	rc->trackMouse();
 
-	pb = new PushButton(0, button_shader, glm::vec2(800, 600),
+	GUIManager::getInstance().addControl(rc);
+
+	fps_counter = new WritableComponent(
+		glm::vec2(800, 600), glm::vec2(25.0f, 300.0f),
+		1, 1.0f, 15, glm::vec3(1.0f, 1.0f, 0.0f),
+		glm::vec2(165.0f, 32.0f)
+	);
+	fps_counter->setHoverColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	fps_counter->trackMouse();
+
+	GUIManager::getInstance().addControl(fps_counter);
+
+	PushButton* pb = new PushButton(
+		0, button_shader, glm::vec2(800, 600),
 		glm::vec4(20.0f, 500.0f, 165.0f, 50.0f), 1, 1.0f,
 		glm::vec3(1.0f, 1.0f, 1.0f), "");
+
 	pb->setText("XABLAU");
 	pb->setRenderColor(glm::vec4(0.15f, 0.15f, 0.15f, 1.0f));
 	pb->setRenderHoverColor(glm::vec4(0.5f, 0.8f, 0.5f, 1.0f));
@@ -428,6 +441,8 @@ void loadData() {
 	pb->setRenderBorderWidth(1);
 	pb->setRenderProjection(glm::ortho(0.0f, 800.0f, 0.0f, 600.0f));
 	pb->trackMouse();
+
+	GUIManager::getInstance().addControl(pb);
 
 	Engine::getInstance().releaseMouse();
 }
@@ -488,11 +503,14 @@ void onInputActionEvent(EventPtr e) {
 
 	if (context_priority == 1) {
 		if (evnt->getValue() == '1')
-			pb->justifyLeft();
+			dynamic_cast<PushButton*>(
+				GUIManager::getInstance().getControl(1))->justifyLeft();
 		else if (evnt->getValue() == '2')
-			pb->centralize();
+			dynamic_cast<PushButton*>(
+				GUIManager::getInstance().getControl(1))->centralize();
 		else if (evnt->getValue() == '3')
-			pb->justifyRight();
+			dynamic_cast<PushButton*>(
+				GUIManager::getInstance().getControl(1))->justifyRight();
 	}
 }
 
@@ -682,36 +700,20 @@ int g_screen_height = 600;
 void onWindowResizeEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<WindowResizeEvent>(e);
 	evnt->getSize(g_screen_width, g_screen_height);
-
-	rc->setLimits(glm::vec4(0.0f, 0.0f, 205.0f, g_screen_height));
-	rc->setProjection(glm::ortho(0.0f, 800.0f, 0.0f, 600.0f));
-	pb->setRenderProjection(glm::ortho(0.0f, 800.0f, 0.0f, 600.0f));
 }
 
 void onLoopFinishedEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<LoopFinishedEvent>(e);
 
 	//PhysicsManager::getInstance().debugDraw();
-	if (mouse_left_released) pb->click();
-
 	PhysicsManager::getInstance().pickingMotion(g_x, g_y, 1000.0f);
-
-	rc->update(evnt->getDeltaTime());
-	glClear(GL_DEPTH_BUFFER_BIT);
-	pb->update(evnt->getDeltaTime());
-
-	glDisable(GL_DEPTH_TEST);
 
 	std::stringstream ss;
 	ss << "SBF: " <<
 		std::setprecision(6) << evnt->getDeltaTime() << "\nFPS: " <<
 		std::setprecision(3) << " " << evnt->getFrameRate();
-
-	GUIManager::getInstance().renderText(0, ss.str(), 25.0f, 25.0f,
-		0.2f, glm::vec3(0.5f, 0.8f, 0.2f));
+	fps_counter->write(ss.str());
 
 	auto xablau = g_entities[player].transforms[0];
 	tpcamera.update(glm::vec3(xablau[3][0], xablau[3][1], xablau[3][2]));
-
-	glEnable(GL_DEPTH_TEST);
 }
