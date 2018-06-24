@@ -18,15 +18,29 @@ using namespace Utils;
 
 
 namespace GUI {
-	WritableComponent::WritableComponent(GUIComponent* parent,
-		const glm::vec2& screen_size, const glm::vec2& position,
-		unsigned font_id, float scale, int spacing, const glm::vec3& color,
-		const glm::vec2& maximum_size) :
-		m_font_id(font_id), m_text_scale(scale), m_spacing(spacing),
-		m_text_color(color), m_maximum_size(maximum_size) {
+	WritableComponent::WritableComponent() {}
+
+	WritableComponent::WritableComponent(const glm::vec2& screen_size,
+		const glm::vec2& position, unsigned font_id,
+		float scale, int spacing, const glm::vec3& color,
+		const glm::vec2& maximum_size)  {
+		initialize(screen_size, position, font_id,
+			scale, spacing, color, maximum_size);
+	}
+
+	WritableComponent::~WritableComponent() {}
+
+	void WritableComponent::initialize(const glm::vec2& screen_size,
+		const glm::vec2& position, unsigned font_id,
+		float scale, int spacing, const glm::vec3& color,
+		const glm::vec2& maximum_size) {
+		m_font_id = font_id;
+		m_text_scale = scale;
+		m_spacing = spacing;
+		m_text_color = color;
+		m_maximum_size = maximum_size;
 		m_current_color = m_text_color;
 		m_hover_color = m_text_color;
-		m_parent = parent;
 		m_position = position;
 
 		m_font_size = GUIManager::getInstance().getFontSize(m_font_id);
@@ -41,8 +55,6 @@ namespace GUI {
 		m_max_show_line_number = 1 + (int)((m_maximum_size.y -
 			m_font_size * m_text_scale) / m_spacing);
 	}
-
-	WritableComponent::~WritableComponent() {}
 
 	void WritableComponent::write(char c) {
 		if (m_text.size() == 0) {
@@ -103,6 +115,20 @@ namespace GUI {
 
 		for (auto& it : text)
 			write(it);
+	}
+
+	void WritableComponent::justifyLeft() {
+		m_text[m_current_line].start_position.x = m_position.x;
+	}
+
+	void WritableComponent::centralize() {
+		float space = m_maximum_size.x - m_text[m_current_line].m_width;
+		m_text[m_current_line].start_position.x += space / 2.0f;
+	}
+
+	void WritableComponent::justifyRight() {
+		float space = m_maximum_size.x - m_text[m_current_line].m_width;
+		m_text[m_current_line].start_position.x += space;
 	}
 
 	void WritableComponent::update() {

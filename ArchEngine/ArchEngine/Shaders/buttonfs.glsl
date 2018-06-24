@@ -17,7 +17,9 @@ void main() {
 		result += texture(u_texture, f_texture_coords);
 
 	if (u_has_color)
-		result += u_color;
+		//result += u_color;
+		result += f_texture_coords.y * u_color;
+		//result += (1.0f - f_texture_coords.y) * u_color;
 
 	out_color = result;
 }

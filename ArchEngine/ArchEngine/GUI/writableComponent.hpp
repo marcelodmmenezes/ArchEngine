@@ -34,14 +34,24 @@ namespace GUI {
 
 	class WritableComponent : public GUIComponent {
 	public:
-		WritableComponent(GUIComponent* parent,
-			const glm::vec2& screen_size, const glm::vec2& position,
-			unsigned font_id, float scale, int spacing,
-			const glm::vec3& color, const glm::vec2& maximum_size);
+		WritableComponent();
+		WritableComponent(const glm::vec2& screen_size,
+			const glm::vec2& position, unsigned font_id,
+			float scale, int spacing, const glm::vec3& color,
+			const glm::vec2& maximum_size);
 		~WritableComponent();
+
+		void initialize(const glm::vec2& screen_size,
+			const glm::vec2& position, unsigned font_id,
+			float scale, int spacing, const glm::vec3& color,
+			const glm::vec2& maximum_size);
 
 		void write(char c);
 		void write(const std::string& text);
+
+		void justifyLeft();
+		void centralize();
+		void justifyRight();
 
 		void update();
 

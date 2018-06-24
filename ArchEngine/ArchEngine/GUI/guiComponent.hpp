@@ -51,9 +51,6 @@ namespace GUI {
 		//---------------------------------------------------------------------
 
 		glm::vec2 m_position;
-
-		GUIComponent* m_parent;
-		std::vector<GUIComponent*> m_children;
 	};
 }
 

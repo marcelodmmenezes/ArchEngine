@@ -24,12 +24,18 @@
 namespace GUI {
 	class RenderableComponent : public GUIComponent {
 	public:
+		RenderableComponent();
 		RenderableComponent(unsigned shader_id,
 			const glm::vec2& screen_size, const glm::vec4& limits,
 			const std::string& texture_path = "");
 		~RenderableComponent();
 
+		void initialize(unsigned shader_id,
+			const glm::vec2& screen_size, const glm::vec4& limits,
+			const std::string& texture_path = "");
+
 		void setColor(const glm::vec4& color);
+		void setHoverColor(const glm::vec4& color);
 		void setBorderColor(const glm::vec4& color);
 		void setBorderWidth(int width);
 		void setLimits(const glm::vec4& limits);
@@ -40,6 +46,7 @@ namespace GUI {
 
 		unsigned getTextureId() const;
 		glm::vec4 getColor() const;
+		glm::vec4 getHoverColor() const;
 		glm::vec4 getBorderColor() const;
 		int getBorderWidth() const;
 		glm::vec4 getLimits() const;
@@ -58,7 +65,9 @@ namespace GUI {
 
 		unsigned m_texture_id;
 		glm::vec4 m_color;
+		glm::vec4 m_hover_color;
 		glm::vec4 m_border_color;
+		glm::vec4 m_current_color;
 		int m_border_width;
 
 		bool m_has_texture;

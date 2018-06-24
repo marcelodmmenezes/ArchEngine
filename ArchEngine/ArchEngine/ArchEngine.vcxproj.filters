@@ -410,5 +410,11 @@
     <None Include="Testers\writingContext.lua">
       <Filter>Testers</Filter>
     </None>
+    <None Include="Shaders\buttonfs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\buttonvs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

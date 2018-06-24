@@ -18,11 +18,24 @@ using namespace OS;
 
 
 namespace GUI {
+	RenderableComponent::RenderableComponent() {}
+
 	RenderableComponent::RenderableComponent(unsigned shader_id,
 		const glm::vec2& screen_size, const glm::vec4& limits,
-		const std::string& texture_path) :
-		m_shader_id(shader_id), m_has_color(false),
-		m_has_border(false) {
+		const std::string& texture_path) {
+		initialize(shader_id, screen_size, limits, texture_path);
+	}
+
+	RenderableComponent::~RenderableComponent() {
+		MaterialManager::getInstance().remove2DTexture(m_texture_id);
+	}
+
+	void RenderableComponent::initialize(unsigned shader_id,
+		const glm::vec2& screen_size, const glm::vec4& limits,
+		const std::string& texture_path) {
+		m_shader_id = shader_id;
+		m_has_color = false;
+		m_has_border = false;
 		m_limits = limits;
 
 		m_mouse_space = glm::vec4(
@@ -40,13 +53,13 @@ namespace GUI {
 		else m_has_texture = false;
 	}
 
-	RenderableComponent::~RenderableComponent() {
-		MaterialManager::getInstance().remove2DTexture(m_texture_id);
-	}
-
 	void RenderableComponent::setColor(const glm::vec4& color) {
 		m_color = color;
 		m_has_color = true;
+	}
+
+	void RenderableComponent::setHoverColor(const glm::vec4& color) {
+		m_hover_color = color;
 	}
 
 	void RenderableComponent::setBorderColor(const glm::vec4& color) {
@@ -80,6 +93,10 @@ namespace GUI {
 
 	glm::vec4 RenderableComponent::getColor() const {
 		return m_color;
+	}
+
+	glm::vec4 RenderableComponent::getHoverColor() const {
+		return m_hover_color;
 	}
 
 	glm::vec4 RenderableComponent::getBorderColor() const {
@@ -137,7 +154,7 @@ namespace GUI {
 		if (m_has_border) {
 			sh->setBool("u_has_texture", false);
 			sh->setBool("u_has_color", true);
-			sh->setVec4("u_color", m_border_color);
+			sh->setVec4("u_color", m_current_color);
 			sh->update();
 
 			bool depth_test = false;
@@ -163,10 +180,10 @@ namespace GUI {
 	}
 
 	void RenderableComponent::mouseHover() {
-		m_border_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		m_current_color = m_hover_color;
 	}
 
 	void RenderableComponent::mouseOut() {
-		m_border_color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		m_current_color = m_border_color;
 	}
 }
