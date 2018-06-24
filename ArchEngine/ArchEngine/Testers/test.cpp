@@ -465,13 +465,16 @@ void onInputActionEvent(EventPtr e) {
 	if (context_priority == 1) {
 		if (evnt->getValue() == '1')
 			dynamic_cast<PushButton*>(
-				GUIManager::getInstance().getControl(1))->justifyLeft();
+				GUIManager::getInstance().getControl("xablau"))
+					->justifyLeft();
 		else if (evnt->getValue() == '2')
 			dynamic_cast<PushButton*>(
-				GUIManager::getInstance().getControl(1))->centralize();
+				GUIManager::getInstance().getControl("xablau"))
+					->centralize();
 		else if (evnt->getValue() == '3')
 			dynamic_cast<PushButton*>(
-				GUIManager::getInstance().getControl(1))->justifyRight();
+				GUIManager::getInstance().getControl("xablau"))
+					->justifyRight();
 	}
 }
 

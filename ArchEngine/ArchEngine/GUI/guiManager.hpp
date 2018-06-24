@@ -60,8 +60,6 @@ namespace GUI {
 		bool initialize(const std::vector<std::string>& fonts);
 		bool initializeFromConfigFile(const std::string& path);
 		
-		bool createControlsFromFile(const std::string& path);
-
 		void update(float delta_time);
 
 		void destroy();
@@ -94,6 +92,15 @@ namespace GUI {
 		GUIManager();
 
 		void loadCharacters(const FT_Face& face, Font& font);
+
+		bool createControlsFromFile(const std::string& path);
+		void createRenderableComponent(Script::LuaScript& lua_context,
+			const std::string& name);
+		void createWritableComponent(Script::LuaScript& lua_context,
+			const std::string& name);
+		void createPushButton(Script::LuaScript& lua_context,
+			const std::string& name);
+
 		void onWindowResizeEvent(Core::EventPtr e);
 
 		Core::EventListener m_window_size_listener;

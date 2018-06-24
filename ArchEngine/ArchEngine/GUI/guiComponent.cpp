@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 21/06/2018                                                       *
- * Last Modified: 23/06/2018                                                 *
+ * Last Modified: 24/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -22,7 +22,10 @@ namespace GUI {
 			&GUIComponent::onMouseMovedEvent>(this);
 	}
 
-	GUIComponent::~GUIComponent() {}
+	GUIComponent::~GUIComponent() {
+		EventManager::getInstance().removeListener(
+			m_mouse_moved_listener, EVENT_MOUSE_MOVED);
+	}
 
 	void GUIComponent::trackMouse() {
 		EventManager::getInstance().addListener(

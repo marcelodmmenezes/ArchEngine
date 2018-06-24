@@ -141,176 +141,30 @@ namespace GUI {
 		int i = 1;
 		int aux;
 		bool found;
+		std::string name;
 
 		try {
 			do {
 				found = false;
 
-				//----------------------------------------- RenderableComponent
-				std::string name = "renderableComponent" + std::to_string(i);
+				name = "renderableComponent" + std::to_string(i);
 
 				if (lua_context.getToStack(name, aux)) {
-					auto id =
-						lua_context.get<std::string>(name + ".id");
-					auto shader_id =
-						lua_context.get<int>(name + ".shader_id");
-					auto limits =
-						lua_context.getFloatVector(name + ".limits");
-					auto texture =
-						lua_context.get<std::string>(name + ".texture");
-					auto color =
-						lua_context.getFloatVector(name + ".color");
-					auto hover_color =
-						lua_context.getFloatVector(name + ".hover_color");
-					auto border_color =
-						lua_context.getFloatVector(name + ".border_color");
-					auto border_width =
-						lua_context.get<int>(name + ".border_width");
-					auto projection =
-						lua_context.getFloatVector(name + ".projection");
-					auto track_mouse =
-						lua_context.get<bool>(name + ".track_mouse");
-
-					auto rc = new RenderableComponent(
-						shader_id,
-						m_window_size,
-						glm::vec4(limits[0], limits[1], limits[2], limits[3]),
-						texture
-					);
-
-					rc->setColor(glm::vec4(color[0],
-						color[1], color[2], color[3]));
-					rc->setHoverColor(glm::vec4(hover_color[0],
-						hover_color[1], hover_color[2], hover_color[3]));
-					rc->setBorderColor(glm::vec4(border_color[0],
-						border_color[1], border_color[2], border_color[3]));
-					rc->setBorderWidth(border_width);
-					rc->setProjection(glm::ortho(projection[0],
-						projection[1], projection[2], projection[3]));
-
-					if (track_mouse)
-						rc->trackMouse();
-
-					m_controls.push_back(rc);
-					m_control_name_to_handle[id] = m_controls.size() - 1;
-
+					createRenderableComponent(lua_context, name);
 					found = true;
 				}
 
-				//------------------------------------------- WritableComponent
 				name = "writableComponent" + std::to_string(i);
 
 				if (lua_context.getToStack(name, aux)) {
-					auto id =
-						lua_context.get<std::string>(name + ".id");
-					auto position =
-						lua_context.getFloatVector(name + ".position");
-					auto font_id =
-						lua_context.get<int>(name + ".font_id");
-					auto font_scale =
-						lua_context.get<float>(name + ".font_scale");
-					auto text_spacing =
-						lua_context.get<int>(name + ".text_spacing");
-					auto color =
-						lua_context.getFloatVector(name + ".color");
-					auto hover_color =
-						lua_context.getFloatVector(name + ".hover_color");
-					auto maximum_size =
-						lua_context.getFloatVector(name + ".maximum_size");
-					auto track_mouse =
-						lua_context.get<bool>(name + ".track_mouse");
-
-					auto wc = new WritableComponent(
-						m_window_size,
-						glm::vec2(position[0], position[1]),
-						font_id,
-						font_scale,
-						text_spacing,
-						glm::vec3(color[0], color[1], color[2]),
-						glm::vec2(maximum_size[0], maximum_size[1])
-					);
-
-					wc->setHoverColor(glm::vec3(hover_color[0],
-						hover_color[1], hover_color[2]));
-
-					if (track_mouse)
-						wc->trackMouse();
-
-					m_controls.push_back(wc);
-					m_control_name_to_handle[id] = m_controls.size() - 1;
-
+					createWritableComponent(lua_context, name);
 					found = true;
 				}
 
-				//-------------------------------------------------- PushButton
 				name = "pushButton" + std::to_string(i);
 
 				if (lua_context.getToStack(name, aux)) {
-					auto id =
-						lua_context.get<std::string>(name + ".id");
-					auto button_id =
-						lua_context.get<int>(name + ".button_id");
-					auto shader_id =
-						lua_context.get<int>(name + ".shader_id");
-					auto position =
-						lua_context.getFloatVector(name + ".position");
-					auto limits =
-						lua_context.getFloatVector(name + ".limits");
-					auto font_id =
-						lua_context.get<int>(name + ".font_id");
-					auto font_scale =
-						lua_context.get<float>(name + ".font_scale");
-					auto text_color =
-						lua_context.getFloatVector(name + ".text_color");
-					auto texture =
-						lua_context.get<std::string>(name + ".texture");
-					auto text =
-						lua_context.get<std::string>(name + ".text");
-					auto render_color =
-						lua_context.getFloatVector(name + ".render_color");
-					auto render_hover_color =
-						lua_context.getFloatVector(
-							name + ".render_hover_color");
-					auto render_border_color =
-						lua_context.getFloatVector(
-							name + ".render_border_color");
-					auto render_border_width =
-						lua_context.get<int>(name + ".render_border_width");
-					auto projection =
-						lua_context.getFloatVector(name + ".projection");
-					auto track_mouse =
-						lua_context.get<bool>(name + ".track_mouse");
-
-					auto pb = new PushButton(
-						button_id,
-						shader_id,
-						m_window_size,
-						glm::vec4(limits[0], limits[1], limits[2], limits[3]),
-						font_id,
-						font_scale,
-						glm::vec3(text_color[0], text_color[1], text_color[2]),
-						texture
-					);
-
-					pb->setText(text);
-					pb->setRenderColor(glm::vec4(render_color[0],
-						render_color[1], render_color[2], render_color[3]));
-					pb->setRenderHoverColor(glm::vec4(render_hover_color[0],
-						render_hover_color[1], render_hover_color[2],
-						render_hover_color[3]));
-					pb->setRenderBorderColor(glm::vec4(render_border_color[0],
-						render_border_color[1], render_border_color[2],
-						render_border_color[3]));
-					pb->setRenderBorderWidth(render_border_width);
-					pb->setRenderProjection(glm::ortho(projection[0],
-						projection[1], projection[2], projection[3]));
-
-					if (track_mouse)
-						pb->trackMouse();
-
-					m_controls.push_back(pb);
-					m_control_name_to_handle[id] = m_controls.size() - 1;
-
+					createPushButton(lua_context, name);
 					found = true;
 				}
 
@@ -325,6 +179,160 @@ namespace GUI {
 		lua_context.destroy();
 
 		return success;
+	}
+
+	void GUIManager::createRenderableComponent(LuaScript& lua_context,
+		const std::string& name) {
+		auto id =
+			lua_context.get<std::string>(name + ".id");
+		auto shader_id =
+			lua_context.get<int>(name + ".shader_id");
+		auto limits =
+			lua_context.getFloatVector(name + ".limits");
+		auto texture =
+			lua_context.get<std::string>(name + ".texture");
+		auto color =
+			lua_context.getFloatVector(name + ".color");
+		auto hover_color =
+			lua_context.getFloatVector(name + ".hover_color");
+		auto border_color =
+			lua_context.getFloatVector(name + ".border_color");
+		auto border_width =
+			lua_context.get<int>(name + ".border_width");
+		auto projection =
+			lua_context.getFloatVector(name + ".projection");
+		auto track_mouse =
+			lua_context.get<bool>(name + ".track_mouse");
+
+		auto rc = new RenderableComponent(
+			shader_id,
+			m_window_size,
+			glm::vec4(limits[0], limits[1], limits[2], limits[3]),
+			texture
+		);
+
+		rc->setColor(glm::vec4(color[0],
+			color[1], color[2], color[3]));
+		rc->setHoverColor(glm::vec4(hover_color[0],
+			hover_color[1], hover_color[2], hover_color[3]));
+		rc->setBorderColor(glm::vec4(border_color[0],
+			border_color[1], border_color[2], border_color[3]));
+		rc->setBorderWidth(border_width);
+		rc->setProjection(glm::ortho(projection[0],
+			projection[1], projection[2], projection[3]));
+
+		if (track_mouse)
+			rc->trackMouse();
+
+		m_controls.push_back(rc);
+		m_control_name_to_handle[id] = m_controls.size() - 1;
+	}
+
+	void GUIManager::createWritableComponent(LuaScript& lua_context,
+		const std::string& name) {
+		auto id =
+			lua_context.get<std::string>(name + ".id");
+		auto position =
+			lua_context.getFloatVector(name + ".position");
+		auto font_id =
+			lua_context.get<int>(name + ".font_id");
+		auto font_scale =
+			lua_context.get<float>(name + ".font_scale");
+		auto text_spacing =
+			lua_context.get<int>(name + ".text_spacing");
+		auto color =
+			lua_context.getFloatVector(name + ".color");
+		auto hover_color =
+			lua_context.getFloatVector(name + ".hover_color");
+		auto maximum_size =
+			lua_context.getFloatVector(name + ".maximum_size");
+		auto track_mouse =
+			lua_context.get<bool>(name + ".track_mouse");
+
+		auto wc = new WritableComponent(
+			m_window_size,
+			glm::vec2(position[0], position[1]),
+			font_id,
+			font_scale,
+			text_spacing,
+			glm::vec3(color[0], color[1], color[2]),
+			glm::vec2(maximum_size[0], maximum_size[1])
+		);
+
+		wc->setHoverColor(glm::vec3(hover_color[0],
+			hover_color[1], hover_color[2]));
+
+		if (track_mouse)
+			wc->trackMouse();
+
+		m_controls.push_back(wc);
+		m_control_name_to_handle[id] = m_controls.size() - 1;
+	}
+
+	void GUIManager::createPushButton(LuaScript& lua_context,
+		const std::string& name) {
+		auto id =
+			lua_context.get<std::string>(name + ".id");
+		auto button_id =
+			lua_context.get<int>(name + ".button_id");
+		auto shader_id =
+			lua_context.get<int>(name + ".shader_id");
+		auto limits =
+			lua_context.getFloatVector(name + ".limits");
+		auto font_id =
+			lua_context.get<int>(name + ".font_id");
+		auto font_scale =
+			lua_context.get<float>(name + ".font_scale");
+		auto text_color =
+			lua_context.getFloatVector(name + ".text_color");
+		auto texture =
+			lua_context.get<std::string>(name + ".texture");
+		auto text =
+			lua_context.get<std::string>(name + ".text");
+		auto render_color =
+			lua_context.getFloatVector(name + ".render_color");
+		auto render_hover_color =
+			lua_context.getFloatVector(
+				name + ".render_hover_color");
+		auto render_border_color =
+			lua_context.getFloatVector(
+				name + ".render_border_color");
+		auto render_border_width =
+			lua_context.get<int>(name + ".render_border_width");
+		auto projection =
+			lua_context.getFloatVector(name + ".projection");
+		auto track_mouse =
+			lua_context.get<bool>(name + ".track_mouse");
+
+		auto pb = new PushButton(
+			button_id,
+			shader_id,
+			m_window_size,
+			glm::vec4(limits[0], limits[1], limits[2], limits[3]),
+			font_id,
+			font_scale,
+			glm::vec3(text_color[0], text_color[1], text_color[2]),
+			texture
+		);
+
+		pb->setText(text);
+		pb->setRenderColor(glm::vec4(render_color[0],
+			render_color[1], render_color[2], render_color[3]));
+		pb->setRenderHoverColor(glm::vec4(render_hover_color[0],
+			render_hover_color[1], render_hover_color[2],
+			render_hover_color[3]));
+		pb->setRenderBorderColor(glm::vec4(render_border_color[0],
+			render_border_color[1], render_border_color[2],
+			render_border_color[3]));
+		pb->setRenderBorderWidth(render_border_width);
+		pb->setRenderProjection(glm::ortho(projection[0],
+			projection[1], projection[2], projection[3]));
+
+		if (track_mouse)
+			pb->trackMouse();
+
+		m_controls.push_back(pb);
+		m_control_name_to_handle[id] = m_controls.size() - 1;
 	}
 
 	void GUIManager::update(float delta_time) {
