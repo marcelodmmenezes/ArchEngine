@@ -9,6 +9,10 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		DllDebug|x64 = DllDebug|x64
+		DllDebug|x86 = DllDebug|x86
+		DllRelease|x64 = DllRelease|x64
+		DllRelease|x86 = DllRelease|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
@@ -17,6 +21,14 @@ Global
 		{7AE0D190-4705-455B-85F7-E973534774CA}.Debug|x64.Build.0 = Debug|x64
 		{7AE0D190-4705-455B-85F7-E973534774CA}.Debug|x86.ActiveCfg = Debug|Win32
 		{7AE0D190-4705-455B-85F7-E973534774CA}.Debug|x86.Build.0 = Debug|Win32
+		{7AE0D190-4705-455B-85F7-E973534774CA}.DllDebug|x64.ActiveCfg = DllDebug|x64
+		{7AE0D190-4705-455B-85F7-E973534774CA}.DllDebug|x64.Build.0 = DllDebug|x64
+		{7AE0D190-4705-455B-85F7-E973534774CA}.DllDebug|x86.ActiveCfg = DllDebug|Win32
+		{7AE0D190-4705-455B-85F7-E973534774CA}.DllDebug|x86.Build.0 = DllDebug|Win32
+		{7AE0D190-4705-455B-85F7-E973534774CA}.DllRelease|x64.ActiveCfg = DllRelease|x64
+		{7AE0D190-4705-455B-85F7-E973534774CA}.DllRelease|x64.Build.0 = DllRelease|x64
+		{7AE0D190-4705-455B-85F7-E973534774CA}.DllRelease|x86.ActiveCfg = DllRelease|Win32
+		{7AE0D190-4705-455B-85F7-E973534774CA}.DllRelease|x86.Build.0 = DllRelease|Win32
 		{7AE0D190-4705-455B-85F7-E973534774CA}.Release|x64.ActiveCfg = Release|x64
 		{7AE0D190-4705-455B-85F7-E973534774CA}.Release|x64.Build.0 = Release|x64
 		{7AE0D190-4705-455B-85F7-E973534774CA}.Release|x86.ActiveCfg = Release|Win32

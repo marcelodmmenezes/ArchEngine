@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 10/04/2018                                                       *
- * Last Modified: 11/05/2018                                                 *
+ * Last Modified: 24/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -15,9 +15,6 @@
 
 // Debugging
 #define ARCH_ENGINE_HOT_RELOAD_ON
-
-// Testers
-#define ARCH_ENGINE_TEST
 
 // Assertion macros
 //#define ARCH_ENGINE_REMOVE_ASSERTIONS

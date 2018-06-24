@@ -13,7 +13,6 @@
 
 #include "../Config/engineMacros.hpp"
 
-#if defined(ARCH_ENGINE_TEST)
 
 #include "../Core/engine.hpp"
 #include "../Graphics/assimpLoader.hpp"
@@ -712,6 +711,3 @@ void onLoopFinishedEvent(EventPtr e) {
 
 	glEnable(GL_DEPTH_TEST);
 }
-
-
-#endif	// ARCH_ENGINE_TEST
