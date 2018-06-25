@@ -69,8 +69,12 @@ namespace GUI {
 		glm::vec2 getMaximumSize() const;
 
 	private:
+		//------------------------------------------------------ Mouse tracking
 		void mouseHover(int x, int y) override;
 		void mouseOut() override;
+		void mouseDown(int x, int y, int button) override;
+		void mouseUp(int x, int y, int button) override;
+		//---------------------------------------------------------------------
 
 		void format();
 

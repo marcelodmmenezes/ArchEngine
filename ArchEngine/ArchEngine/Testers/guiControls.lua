@@ -81,7 +81,7 @@ component5 = {
 	font_scale = 1.0,
 	text_color = { 1.0, 1.0, 1.0 },
 	texture = "",
-	text = "XABLAU1",
+	text = "Debug Draw",
 	render_color = { 0.15, 0.15, 0.15, 0.8 },
 	render_hover_color = { 0.8, 0.8, 0.5, 0.8 },
 	render_border_color = { 0.3, 0.6, 0.3, 0.8 },
@@ -92,7 +92,7 @@ component5 = {
 
 component6 = {
 	tp = "pushButton",
-	button_id = 0,
+	button_id = 1,
 	shader_id = 8,
 	limits = { 5.0, 459.0, 190.0, 40.0 },
 	font_id = 1,
@@ -110,7 +110,7 @@ component6 = {
 
 component7 = {
 	tp = "pushButton",
-	button_id = 0,
+	button_id = 2,
 	shader_id = 8,
 	limits = { 5.0, 418.0, 190.0, 40.0 },
 	font_id = 1,
@@ -128,7 +128,7 @@ component7 = {
 
 component8 = {
 	tp = "pushButton",
-	button_id = 0,
+	button_id = 3,
 	shader_id = 8,
 	limits = { 5.0, 377.0, 190.0, 40.0 },
 	font_id = 1,
@@ -146,7 +146,7 @@ component8 = {
 
 component9 = {
 	tp = "pushButton",
-	button_id = 0,
+	button_id = 4,
 	shader_id = 8,
 	limits = { 5.0, 338.0, 190.0, 40.0 },
 	font_id = 1,

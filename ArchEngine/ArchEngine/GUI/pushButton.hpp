@@ -46,8 +46,6 @@ namespace GUI {
 		
 		void update(float delta_time) override;
 
-		void click();
-
 		void setText(const std::string& text);
 		std::string getText() const;
 
@@ -86,8 +84,12 @@ namespace GUI {
 		//---------------------------------------------------------------------
 
 	private:
+		//------------------------------------------------------ Mouse tracking
 		void mouseHover(int x, int y) override;
 		void mouseOut() override;
+		void mouseDown(int x, int y, int button) override;
+		void mouseUp(int x, int y, int button) override;
+		//---------------------------------------------------------------------
 
 		void onWindowResizeEvent(Core::EventPtr e);
 		Core::EventListener m_window_resize_listener;
@@ -98,8 +100,6 @@ namespace GUI {
 		glm::vec2 m_screen_size;
 		glm::vec4 m_limits;
 
-		glm::vec2 m_mouse_pos;
-
 		int m_font_id;
 		float m_font_scale;
 		std::string m_text;
@@ -109,6 +109,8 @@ namespace GUI {
 		int m_text_justification; // -1 left, 0 center, 1 right
 
 		glm::vec4 m_body_color;
+
+		bool m_pressed;
 
 		RenderableComponent m_renderable;
 	};

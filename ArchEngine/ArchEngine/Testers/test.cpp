@@ -60,7 +60,7 @@ void onInputMouseMoved(EventPtr e);
 void onCollisionEvent(EventPtr e);
 void onClosestRayTestEvent(EventPtr e);
 void onAllRayTestEvent(EventPtr e);
-void onButtonClickEvent(EventPtr e);
+void onButtonStateEvent(EventPtr e);
 void onWindowResizeEvent(EventPtr e);
 void onLoopFinishedEvent(EventPtr e);
 
@@ -118,9 +118,9 @@ int main(int argc, char* argv[]) {
 		EventManager::getInstance().addListener(
 			listener, EVENT_RAY_TEST_ALL);
 
-		listener.bind<&onButtonClickEvent>();
+		listener.bind<&onButtonStateEvent>();
 		EventManager::getInstance().addListener(
-			listener, EVENT_BUTTON_CLICKED);
+			listener, EVENT_BUTTON_STATE);
 
 		listener.bind<&onWindowResizeEvent>();
 		EventManager::getInstance().addListener(
@@ -649,13 +649,18 @@ void onAllRayTestEvent(EventPtr e) {
 	std::cout << std::endl;
 }
 
-void onButtonClickEvent(EventPtr e) {
-	auto evnt = std::static_pointer_cast<ButtonClickedEvent>(e);
+bool g_debug_draw = false;
 
-	if (evnt->getButtonId() == 0)
-		std::cout << "XABLAU" << std::endl;
-	else
-		std::cout << "NOPS" << std::endl;
+void onButtonStateEvent(EventPtr e) {
+	auto evnt = std::static_pointer_cast<ButtonStateEvent>(e);
+
+	switch (evnt->getButtonId()) {
+	case 0:
+		if (!evnt->getState())
+			g_debug_draw = !g_debug_draw;
+		break;
+
+	}
 }
 
 int g_screen_width = 800;
@@ -669,7 +674,9 @@ void onWindowResizeEvent(EventPtr e) {
 void onLoopFinishedEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<LoopFinishedEvent>(e);
 
-	//PhysicsManager::getInstance().debugDraw();
+	if (g_debug_draw)
+		PhysicsManager::getInstance().debugDraw();
+
 	PhysicsManager::getInstance().pickingMotion(g_x, g_y, 1000.0f);
 
 	std::stringstream ss;

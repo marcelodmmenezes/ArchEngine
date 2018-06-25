@@ -70,8 +70,12 @@ namespace GUI {
 		bool hasBorder() const;
 
 	private:
+		//------------------------------------------------------ Mouse tracking
 		void mouseHover(int x, int y) override;
 		void mouseOut() override;
+		void mouseDown(int x, int y, int button) override;
+		void mouseUp(int x, int y, int button) override;
+		//---------------------------------------------------------------------
 
 		glm::vec4 m_limits;
 		glm::mat4 m_projection;

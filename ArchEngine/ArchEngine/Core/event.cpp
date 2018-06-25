@@ -32,11 +32,12 @@ namespace Core {
 	double LoopFinishedEvent::getFrameRate() const { return m_frame_rate; }
 
 	//-------------------------------------------------------------- GUI events
-	ButtonClickedEvent::ButtonClickedEvent(int button_id) :
-		IEvent(EVENT_BUTTON_CLICKED), m_id(button_id) {}
-	ButtonClickedEvent::~ButtonClickedEvent() {}
-	EventType ButtonClickedEvent::getType() const { return m_type; }
-	int ButtonClickedEvent::getButtonId() { return m_id; }
+	ButtonStateEvent::ButtonStateEvent(int button_id, bool state) :
+		IEvent(EVENT_BUTTON_STATE), m_id(button_id), m_state(state) {}
+	ButtonStateEvent::~ButtonStateEvent() {}
+	EventType ButtonStateEvent::getType() const { return m_type; }
+	int ButtonStateEvent::getButtonId() const { return m_id; }
+	bool ButtonStateEvent::getState() const { return m_state; }
 
 	//----------------------------------------------------------- Window events
 	WindowResizeEvent::WindowResizeEvent(int width, int height) :

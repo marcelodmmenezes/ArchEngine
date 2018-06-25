@@ -203,4 +203,12 @@ namespace GUI {
 	void RenderableComponent::mouseOut() {
 		m_current_color = m_border_color;
 	}
+
+	void RenderableComponent::mouseDown(int x, int y, int button) {
+		// TODO
+	}
+
+	void RenderableComponent::mouseUp(int x, int y, int button) {
+		// TODO
+	}
 }

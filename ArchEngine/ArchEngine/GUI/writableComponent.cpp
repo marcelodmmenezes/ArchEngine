@@ -203,6 +203,14 @@ namespace GUI {
 		m_current_color = m_text_color;
 	}
 
+	void WritableComponent::mouseDown(int x, int y, int button) {
+		// TODO
+	}
+
+	void WritableComponent::mouseUp(int x, int y, int button) {
+		// TODO
+	}
+
 	void WritableComponent::format() {
 		std::string text;
 

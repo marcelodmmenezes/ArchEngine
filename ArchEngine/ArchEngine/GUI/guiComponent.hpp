@@ -42,8 +42,14 @@ namespace GUI {
 		virtual void mouseHover(int x, int y) = 0;
 		virtual void mouseOut() = 0;
 
+		virtual void mouseDown(int x, int y, int button) = 0;
+		virtual void mouseUp(int x, int y, int button) = 0;
+
 		void onMouseMovedEvent(Core::EventPtr e);
+		void onMouseButtonEvent(Core::EventPtr e);
+
 		Core::EventListener m_mouse_moved_listener;
+		Core::EventListener m_mouse_button_listener;
 
 		int m_mouse_x;
 		int m_mouse_y;

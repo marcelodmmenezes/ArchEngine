@@ -29,7 +29,7 @@ namespace Core {
 		EVENT_LOOP_FINISHED,
 
 		//--- GUI events
-		EVENT_BUTTON_CLICKED,
+		EVENT_BUTTON_STATE,
 
 		//--- Window events
 		EVENT_WINDOW_RESIZE,
@@ -102,16 +102,18 @@ namespace Core {
 	//---------------
 	//---- GUI events
 	//---------------
-	class ButtonClickedEvent : public IEvent {
+	class ButtonStateEvent : public IEvent {
 	public:
-		ButtonClickedEvent(int button_id);
-		~ButtonClickedEvent();
+		ButtonStateEvent(int button_id, bool state);
+		~ButtonStateEvent();
 
 		EventType getType() const override;
-		int getButtonId();
+		int getButtonId() const;
+		bool getState() const;
 
 	private:
 		int m_id;
+		bool m_state; // true - pressed, false - released
 	};
 	//-------------------------------------------------------------------------
 

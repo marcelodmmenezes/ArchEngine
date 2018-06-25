@@ -46,8 +46,6 @@ namespace GUI {
 		m_screen_size = screen_size;
 		m_limits = limits;
 
-		m_mouse_pos = glm::vec2(-1, -1);
-
 		m_font_id = font_id;
 		m_font_scale = font_scale;
 
@@ -87,14 +85,6 @@ namespace GUI {
 
 		if (depth_test)
 			glEnable(GL_DEPTH_TEST);
-	}
-
-	void PushButton::click() {
-		if (m_mouse_pos.x >= 0 && m_mouse_pos.y >= 0) {
-			EventPtr evnt = std::make_shared<ButtonClickedEvent>(
-				ButtonClickedEvent(m_id));
-			EventManager::getInstance().sendEvent(evnt);
-		}
 	}
 
 	//-------------------------------------------------------------------- Text
@@ -137,6 +127,8 @@ namespace GUI {
 
 		EventManager::getInstance().addListener(
 			m_mouse_moved_listener, EVENT_MOUSE_MOVED);
+		EventManager::getInstance().addListener(
+			m_mouse_button_listener, EVENT_MOUSE_BUTTON);
 	}
 
 	void PushButton::untrackMouse() {
@@ -144,6 +136,8 @@ namespace GUI {
 
 		EventManager::getInstance().removeListener(
 			m_mouse_moved_listener, EVENT_MOUSE_MOVED);
+		EventManager::getInstance().removeListener(
+			m_mouse_button_listener, EVENT_MOUSE_BUTTON);
 	}
 	//-------------------------------------------------------------------------
 
@@ -227,16 +221,32 @@ namespace GUI {
 	//-------------------------------------------------------------------------
 
 	void PushButton::mouseHover(int x, int y) {
-		m_renderable.setColor(m_body_color +
-			glm::vec4(0.1f, 0.1f, 0.1f, 0.0f));
-
-		m_mouse_pos = glm::vec2(x, y);
+		if (!m_pressed)
+			m_renderable.setColor(m_body_color +
+				glm::vec4(0.1f, 0.1f, 0.1f, 0.0f));
 	}
 
 	void PushButton::mouseOut() {
 		m_renderable.setColor(m_body_color);
+		m_pressed = false;
+	}
 
-		m_mouse_pos = glm::vec2(-1, -1);
+	void PushButton::mouseDown(int x, int y, int button) {
+		m_renderable.setColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+		m_pressed = true;
+
+		EventPtr evnt = std::make_shared<ButtonStateEvent>(
+			ButtonStateEvent(m_id, true));
+		EventManager::getInstance().sendEvent(evnt);
+	}
+
+	void PushButton::mouseUp(int x, int y, int button) {
+		m_renderable.setColor(m_body_color);
+		m_pressed = false;
+
+		EventPtr evnt = std::make_shared<ButtonStateEvent>(
+			ButtonStateEvent(m_id, false));
+		EventManager::getInstance().sendEvent(evnt);
 	}
 
 	void PushButton::onWindowResizeEvent(EventPtr e) {
