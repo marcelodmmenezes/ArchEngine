@@ -11,7 +11,8 @@
 *===========================================================================*/
 
 
-#if defined (XABLAU)
+#define TEST
+#if defined (TEST)
 
 #include "../Config/engineMacros.hpp"
 
@@ -707,4 +708,4 @@ void onLoopFinishedEvent(EventPtr e) {
 }
 
 
-#endif	// XABLAU
+#endif	// TEST

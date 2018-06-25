@@ -14,6 +14,9 @@
 #include "../Config/engineMacros.hpp"
 
 
+#if defined (GUI_TEST)
+
+
 #include "../Core/engine.hpp"
 #include "../Graphics/assimpLoader.hpp"
 #include "../Graphics/graphicsManager.hpp"
@@ -326,3 +329,6 @@ void onLoopFinishedEvent(EventPtr e) {
 	dynamic_cast<WritableComponent*>
 		(GUIManager::getInstance().getControl("fpscounter"))->write(ss.str());
 }
+
+
+#endif	// GUI_TEST
