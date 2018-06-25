@@ -121,6 +121,10 @@ namespace Graphics {
 		Skybox* getSkybox();
 		void removeSkybox();
 
+		// Fog
+		void setFog(float sb_lower_limit, float sb_upper_limit);
+		void removeFog();
+
 		// Removes the component by handle
 		void removeCamera(unsigned handle);
 		void removeShader(unsigned handle);
@@ -214,6 +218,11 @@ namespace Graphics {
 		//-------------------------------------------------------------- Skybox
 		Skybox m_skybox;
 		bool m_draw_skybox;
+
+		//----------------------------------------------------------------- Fog
+		bool m_fog;
+		int m_sb_lower_limit;
+		int m_sb_upper_limit;
 	};
 }
 

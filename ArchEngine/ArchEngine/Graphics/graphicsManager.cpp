@@ -68,8 +68,10 @@ int removeMesh(lua_State* lua) {
 
 
 namespace Graphics {
-	GraphicsManager::GraphicsManager() : m_state(CONSTRUCTED),
-		m_line_vao(0), m_quad_vao(0), m_draw_skybox(false) {
+	GraphicsManager::GraphicsManager() :
+		m_state(CONSTRUCTED),
+		m_line_vao(0), m_quad_vao(0),
+		m_draw_skybox(false), m_fog(false) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"GraphicsManager constructor");
@@ -421,6 +423,17 @@ namespace Graphics {
 				getCubeTexture(m_skybox.getTextureId()));
 
 			m_shaders[shader_id].setInt("u_cube_map", 0);
+			m_shaders[shader_id].setBool("u_fog", m_fog);
+
+			if (m_fog) {
+				m_shaders[shader_id].setVec3("u_fog_color",
+					m_skybox.getFogColor());
+				m_shaders[shader_id].setFloat("u_lower_limit",
+					m_sb_lower_limit);
+				m_shaders[shader_id].setFloat("u_upper_limit",
+					m_sb_upper_limit);
+			}
+
 			m_shaders[shader_id].update();
 
 			m_skybox.draw(GL_TRIANGLES);
@@ -766,8 +779,8 @@ namespace Graphics {
 		texture[1] = aux + "left." + extension;
 		texture[2] = aux + "top." + extension;
 		texture[3] = aux + "bottom." + extension;
-		texture[4] = aux + "back." + extension;
-		texture[5] = aux + "front." + extension;
+		texture[4] = aux + "front." + extension;
+		texture[5] = aux + "back." + extension;
 
 		m_skybox.initialize(
 			GraphicsManager::getInstance().addShader(vs_path, fs_path),
@@ -788,6 +801,18 @@ namespace Graphics {
 	void GraphicsManager::removeSkybox() {
 		m_skybox.destroy();
 		m_draw_skybox = false;
+	}
+	//-------------------------------------------------------------------------
+
+	//--------------------------------------------------------------------- Fog
+	void GraphicsManager::setFog(float sb_lower_limit, float sb_upper_limit) {
+		m_fog = true;
+		m_sb_lower_limit = sb_lower_limit;
+		m_sb_upper_limit = sb_upper_limit;
+	}
+
+	void GraphicsManager::removeFog() {
+		m_fog = false;
 	}
 	//-------------------------------------------------------------------------
 

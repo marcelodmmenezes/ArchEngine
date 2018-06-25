@@ -185,8 +185,8 @@ namespace Core {
 			EventManager::getInstance().sendEvent(evnt);
 
 			//------------------------------------------------------ GUI update
-			//GUIManager::getInstance().update(
-			//	(float)m_timer.getDeltaTime());
+			GUIManager::getInstance().update(
+				(float)m_timer.getDeltaTime());
 
 			m_window.update();
 		}
