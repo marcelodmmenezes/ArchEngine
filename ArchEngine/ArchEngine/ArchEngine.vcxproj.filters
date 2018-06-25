@@ -156,6 +156,9 @@
     <ClInclude Include="GUI\pushButton.hpp">
       <Filter>GUI</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\textBox.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -267,6 +270,9 @@
       <Filter>GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\pushButton.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\textBox.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
   </ItemGroup>

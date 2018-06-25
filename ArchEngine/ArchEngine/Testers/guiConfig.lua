@@ -14,7 +14,12 @@
 
 
 fonts = {
-	"../../../../GameEngineLearning/assets/fonts/coalition/Coalition_v2.ttf", 96,
+	--"../../../../GameEngineLearning/assets/fonts/coalition/Coalition_v2.ttf", 96,
+	--"../../../../GameEngineLearning/assets/fonts/captureit/Capture it.ttf", 96,
+	--"../../../../GameEngineLearning/assets/fonts/gimmedanger/Gimme Danger.ttf", 96,
+	--"../../../../GameEngineLearning/assets/fonts/sketchgothicschool/Sketch Gothic School.ttf", 96,
+	--"../../../../GameEngineLearning/assets/fonts/stayontheground/Stay On The Ground - DEMO.ttf", 96,
+	"../../../../GameEngineLearning/assets/fonts/littlebird/LittleBird.ttf", 96,
 	"../../../../GameEngineLearning/assets/fonts/monospace/nk57-monospace-ex-rg.ttf", 12,
 	"../../../../GameEngineLearning/assets/fonts/hack/Hack-Regular.ttf", 12,
 }

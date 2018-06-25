@@ -261,7 +261,7 @@ void loadData() {
 
 
 	TerrainGenerator tg;
-	auto terrain = tg.genHeightMapTerrain(256, 256, 2.0f, 2.0f, 50.0f, 16,
+	auto terrain = tg.genHeightMapTerrain(128, 128, 4.0f, 4.0f, 100.0f, 16,
 		"../../../../GameEngineLearning/assets/miscTextures/heightMaps/height_map3.png");
 
 
