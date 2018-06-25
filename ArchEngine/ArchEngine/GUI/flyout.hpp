@@ -23,7 +23,7 @@ namespace GUI {
 	class Flyout : public GUIComponent {
 	public:
 		Flyout();
-		Flyout();
+		//Flyout();
 		~Flyout();
 
 		void open();

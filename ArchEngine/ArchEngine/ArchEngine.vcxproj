@@ -431,6 +431,7 @@
     <ClCompile Include="Physics\physicsManager.cpp" />
     <ClCompile Include="Script\engineLuaAPI.cpp" />
     <ClCompile Include="Script\luaScript.cpp" />
+    <ClCompile Include="Testers\guiTest.cpp" />
     <ClCompile Include="Testers\test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='LibraryRelease|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DllDebug|Win32'">true</ExcludedFromBuild>

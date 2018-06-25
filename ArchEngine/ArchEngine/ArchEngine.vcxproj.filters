@@ -281,6 +281,9 @@
     <ClCompile Include="GUI\flyout.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="Testers\guiTest.cpp">
+      <Filter>Testers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

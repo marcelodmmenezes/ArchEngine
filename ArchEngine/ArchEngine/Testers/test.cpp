@@ -11,6 +11,8 @@
 *===========================================================================*/
 
 
+#if defined (XABLAU)
+
 #include "../Config/engineMacros.hpp"
 
 
@@ -703,3 +705,6 @@ void onLoopFinishedEvent(EventPtr e) {
 	auto xablau = g_entities[player].transforms[0];
 	tpcamera.update(glm::vec3(xablau[3][0], xablau[3][1], xablau[3][2]));
 }
+
+
+#endif	// XABLAU
