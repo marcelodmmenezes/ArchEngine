@@ -14,12 +14,36 @@
 
 
 #include "guiComponent.hpp"
+#include "renderableComponent.hpp"
+#include "writableComponent.hpp"
 
 
 namespace GUI {
 	class TextBox : public GUIComponent {
 	public:
+		TextBox();
+		TextBox(int text_box_id,
+			unsigned shader_id,
+			const glm::vec2& screen_size,
+			const glm::vec4& limits,
+			unsigned font_id,
+			float font_scale,
+			const glm::vec3& text_color,
+			const std::string& texture_path);
+		~TextBox();
+
+		void initialize(int button_id,
+			unsigned shader_id,
+			const glm::vec2& screen_size,
+			const glm::vec4& limits,
+			unsigned font_id,
+			float font_scale,
+			const glm::vec3& text_color,
+			const std::string& texture_path);
 	private:
+
+		RenderableComponent m_renderable;
+		WritableComponent m_writable;
 	};
 }
 

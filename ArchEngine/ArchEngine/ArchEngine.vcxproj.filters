@@ -159,6 +159,9 @@
     <ClInclude Include="GUI\textBox.hpp">
       <Filter>GUI</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\flyout.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -273,6 +276,9 @@
       <Filter>GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\textBox.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\flyout.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
   </ItemGroup>

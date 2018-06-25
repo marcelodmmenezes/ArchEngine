@@ -374,6 +374,7 @@
     <ClInclude Include="Graphics\terrainGenerator.hpp" />
     <ClInclude Include="Graphics\thirdPersonCamera.hpp" />
     <ClInclude Include="Graphics\uniforms.hpp" />
+    <ClInclude Include="GUI\flyout.hpp" />
     <ClInclude Include="GUI\guiComponent.hpp" />
     <ClInclude Include="GUI\guiManager.hpp" />
     <ClInclude Include="GUI\pushButton.hpp" />
@@ -416,6 +417,7 @@
     <ClCompile Include="Graphics\terrainGenerator.cpp" />
     <ClCompile Include="Graphics\thirdPersonCamera.cpp" />
     <ClCompile Include="Graphics\uniforms.cpp" />
+    <ClCompile Include="GUI\flyout.cpp" />
     <ClCompile Include="GUI\guiComponent.cpp" />
     <ClCompile Include="GUI\guiManager.cpp" />
     <ClCompile Include="GUI\pushButton.cpp" />
