@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 19/05/2018                                                       *
- * Last Modified: 22/06/2018                                                 *
+ * Last Modified: 25/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -287,14 +287,14 @@ namespace Graphics {
 			if (image == nullptr) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 				ServiceLocator::getFileLogger()->log<LOG_ERROR>(
-					path[0] + " cube stb_image load failed!");
+					path[i] + " cube stb_image load failed!");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 				return 0;
 			}
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 			else
 				ServiceLocator::getFileLogger()->log<LOG_INFO>(
-					path[0] + " cube loaded successfully!");
+					path[i] + " cube loaded successfully!");
 #endif	// ARCH_ENGINE_LOGGER_SUPPRESS_INFO
 
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format,

@@ -155,7 +155,7 @@ void loadData() {
 	//PhysicsManager::getInstance().setGravity(glm::vec3(0.0f, 0.0f, 0.0f));
 
 	GraphicsManager::getInstance().setProjectionMatrix(
-		glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f));
+		glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000.0f));
 
 	unsigned tpcam = GraphicsManager::getInstance().addCamera(&tpcamera);
 	unsigned dbcam = GraphicsManager::getInstance().addCamera(&debug_camera);
@@ -418,6 +418,12 @@ void loadData() {
 	unsigned button_shader = GraphicsManager::getInstance().addShader(
 		"../../ArchEngine/Shaders/buttonvs.glsl",
 		"../../ArchEngine/Shaders/buttonfs.glsl"
+	);
+
+	GraphicsManager::getInstance().setSkybox(
+		"../../../../GameEngineLearning/assets/skybox", "jpg",
+		"../../ArchEngine/Shaders/skyboxvs.glsl",
+		"../../ArchEngine/Shaders/skyboxfs.glsl"
 	);
 
 	Engine::getInstance().releaseMouse();

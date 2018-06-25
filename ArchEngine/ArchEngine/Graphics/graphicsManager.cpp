@@ -69,7 +69,7 @@ int removeMesh(lua_State* lua) {
 
 namespace Graphics {
 	GraphicsManager::GraphicsManager() : m_state(CONSTRUCTED),
-		m_line_vao(0), m_quad_vao(0) {
+		m_line_vao(0), m_quad_vao(0), m_draw_skybox(false) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"GraphicsManager constructor");
@@ -156,20 +156,7 @@ namespace Graphics {
 
 		renderDepthMaps();
 		renderScene();
-
-		//---------------------------------------------------------------- TEST
-		/*
-		glDisable(GL_CULL_FACE); // TEST
-		m_shaders[6].bind();
-		m_shaders[6].setMat4("u_projection_matrix", m_projection);
-		m_shaders[6].setMat4("u_view_matrix", m_cameras[m_active_camera].getViewMatrix());
-		m_shaders[6].setMat4("u_model_matrix", glm::mat4(1.0f));
-		m_shaders[6].setFloat("u_magnitude", 1.0f);
-		m_shaders[6].update();
-		m_meshes[0].first.draw(GL_TRIANGLES);
-		glEnable(GL_CULL_FACE); // TEST
-		*/
-		//---------------------------------------------------------------------
+		renderSkybox();
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		checkOpenGLErrors("Exiting GraphicsManager::update");
@@ -410,44 +397,40 @@ namespace Graphics {
 		}
 	}
 
-	void GraphicsManager::renderSkybox() {/*
-		glUseProgram(this->m_skybox.m_program_id);
+	void GraphicsManager::renderSkybox() {
+		if (m_draw_skybox) {
+			int depth_func;
+			glGetIntegerv(GL_DEPTH_FUNC, &depth_func);
 
-		m_shaders[]
+			glDisable(GL_CULL_FACE);
+			glDepthFunc(GL_LEQUAL);
+			unsigned shader_id = m_skybox.getShaderId();
 
-		glm::mat4 aux_view;
+			m_shaders[shader_id].bind();
+			glm::mat4 view = m_cameras[m_active_camera]->getViewMatrix();
 
-		if (this->m_use_d_cam)
-			aux_view = glm::scale(this->m_debug_camera.getViewMatrix(),
-				glm::vec3(500.0f, 500.0f, 500.0f));
-		else
-			aux_view = glm::scale(this->m_camera.getViewMatrix(),
-				glm::vec3(500.0f, 500.0f, 500.0f));
+			view[3][0] = 0.0f;
+			view[3][1] = 0.0f;
+			view[3][2] = 0.0f;
 
-		aux_view = glm::rotate(aux_view, glm::radians((GLfloat)counter.getTicks() /
-			2000.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		aux_view[3][0] = 0;
-		aux_view[3][1] = 0;
-		aux_view[3][2] = 0;
+			m_shaders[shader_id].setMat4("u_projection_matrix", m_projection);
+			m_shaders[shader_id].setMat4("u_view_matrix", view);
 
-		glUniformMatrix4fv(glGetUniformLocation(this->m_skybox.m_program_id, "view"),
-			1, GL_FALSE, glm::value_ptr(aux_view));
-		glUniformMatrix4fv(glGetUniformLocation(this->m_skybox.m_program_id, "projection"),
-			1, GL_FALSE, glm::value_ptr(this->m_projection_matrix));
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, MaterialManager::getInstance().
+				getCubeTexture(m_skybox.getTextureId()));
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP,
-			TextureManager::getInstance().getCubeTextureById(this->m_skybox.m_texture).m_id);
-		glUniform1i(glGetUniformLocation(this->m_skybox.m_program_id, "cube_map"), 0);
-		glUniform3f(glGetUniformLocation(this->m_skybox.m_program_id, "fog_color"),
-			this->m_fog_color.x, this->m_fog_color.y, this->m_fog_color.z);
+			m_shaders[shader_id].setInt("u_cube_map", 0);
+			m_shaders[shader_id].update();
 
-		glBindVertexArray(this->m_skybox.m_vao_id);
+			m_skybox.draw(GL_TRIANGLES);
 
-		glDrawElements(GL_TRIANGLES, this->m_skybox.m_indices_size, GL_UNSIGNED_INT, 0);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
-		glBindVertexArray(0);
-		glUseProgram(0);*/
+			glDepthFunc(depth_func);
+			glEnable(GL_CULL_FACE);
+		}
 	}
 
 	void GraphicsManager::destroy() {
@@ -768,17 +751,23 @@ namespace Graphics {
 	//-------------------------------------------------------------------------
 
 	//------------------------------------------------------------------ Skybox
-	void GraphicsManager::setSkybox(const std::string& vs_path,
-		const std::string& fs_path, const std::string& texture_folder) {
+	void GraphicsManager::setSkybox(const std::string& texture_folder,
+		const std::string& extension, const std::string& vs_path,
+		const std::string& fs_path) {
 		m_skybox.destroy();
 
+		std::string aux = texture_folder;
+
+		if (texture_folder.back() != '/')
+			aux += "/";
+
 		std::string texture[6];
-		texture[0] = texture_folder + "right.png";
-		texture[1] = texture_folder + "left.png";
-		texture[2] = texture_folder + "top.png";
-		texture[3] = texture_folder + "bottom.png";
-		texture[4] = texture_folder + "back.png";
-		texture[5] = texture_folder + "front.png";
+		texture[0] = aux + "right." + extension;
+		texture[1] = aux + "left." + extension;
+		texture[2] = aux + "top." + extension;
+		texture[3] = aux + "bottom." + extension;
+		texture[4] = aux + "back." + extension;
+		texture[5] = aux + "front." + extension;
 
 		m_skybox.initialize(
 			GraphicsManager::getInstance().addShader(vs_path, fs_path),

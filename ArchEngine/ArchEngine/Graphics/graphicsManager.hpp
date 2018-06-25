@@ -114,6 +114,7 @@ namespace Graphics {
 
 		// Skybox
 		void setSkybox(const std::string& texture_folder,
+			const std::string& extension,
 			const std::string& vs_path,
 			const std::string& fs_path);
 		void allowSkyboxDraw(bool value);
