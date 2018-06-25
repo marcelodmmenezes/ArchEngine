@@ -20,9 +20,10 @@
 #include "debugCamera.hpp"
 #include "framebuffer.hpp"
 #include "glad_3_3_core.hpp"
+#include "materialManager.hpp"
 #include "mesh.hpp"
 #include "shader.hpp"
-#include "materialManager.hpp"
+#include "skybox.hpp"
 #include "../Script/luaScript.hpp"
 #include "../Utils/debugging.hpp"
 #include "../Utils/serviceLocator.hpp"
@@ -111,6 +112,14 @@ namespace Graphics {
 			const glm::vec3& color);
 		void drawQuad(const glm::vec4& limits);
 
+		// Skybox
+		void setSkybox(const std::string& texture_folder,
+			const std::string& vs_path,
+			const std::string& fs_path);
+		void allowSkyboxDraw(bool value);
+		Skybox* getSkybox();
+		void removeSkybox();
+
 		// Removes the component by handle
 		void removeCamera(unsigned handle);
 		void removeShader(unsigned handle);
@@ -135,6 +144,7 @@ namespace Graphics {
 		void renderScene();
 		void bindLights(Shader& shader);
 		void bind2DTextures(Shader& shader, unsigned material_id);
+		void renderSkybox();
 
 		State m_state;
 
@@ -160,7 +170,7 @@ namespace Graphics {
 		unsigned m_quad_shader;
 		unsigned m_quad_vao;
 		unsigned m_quad_vbo;
-
+		
 		//--------------------------------------------------- Projection matrix
 		float m_fov;
 		glm::mat4 m_projection;
@@ -199,6 +209,10 @@ namespace Graphics {
 		std::vector<DirectionalLight> m_directional_lights;
 		std::vector<PointLight> m_point_lights;
 		std::vector<SpotLight> m_spot_lights;
+
+		//-------------------------------------------------------------- Skybox
+		Skybox m_skybox;
+		bool m_draw_skybox;
 	};
 }
 

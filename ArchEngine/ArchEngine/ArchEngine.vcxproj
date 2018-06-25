@@ -369,6 +369,7 @@
     <ClInclude Include="Graphics\mesh.hpp" />
     <ClInclude Include="Graphics\shader.hpp" />
     <ClInclude Include="Graphics\skeleton.hpp" />
+    <ClInclude Include="Graphics\skybox.hpp" />
     <ClInclude Include="Graphics\stb_image.hpp" />
     <ClInclude Include="Graphics\materialManager.hpp" />
     <ClInclude Include="Graphics\terrainGenerator.hpp" />
@@ -412,6 +413,7 @@
     <ClCompile Include="Graphics\mesh.cpp" />
     <ClCompile Include="Graphics\shader.cpp" />
     <ClCompile Include="Graphics\skeleton.cpp" />
+    <ClCompile Include="Graphics\skybox.cpp" />
     <ClCompile Include="Graphics\stb_image.cpp" />
     <ClCompile Include="Graphics\materialManager.cpp" />
     <ClCompile Include="Graphics\terrainGenerator.cpp" />

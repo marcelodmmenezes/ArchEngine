@@ -410,6 +410,46 @@ namespace Graphics {
 		}
 	}
 
+	void GraphicsManager::renderSkybox() {/*
+		glUseProgram(this->m_skybox.m_program_id);
+
+		m_shaders[]
+
+		glm::mat4 aux_view;
+
+		if (this->m_use_d_cam)
+			aux_view = glm::scale(this->m_debug_camera.getViewMatrix(),
+				glm::vec3(500.0f, 500.0f, 500.0f));
+		else
+			aux_view = glm::scale(this->m_camera.getViewMatrix(),
+				glm::vec3(500.0f, 500.0f, 500.0f));
+
+		aux_view = glm::rotate(aux_view, glm::radians((GLfloat)counter.getTicks() /
+			2000.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		aux_view[3][0] = 0;
+		aux_view[3][1] = 0;
+		aux_view[3][2] = 0;
+
+		glUniformMatrix4fv(glGetUniformLocation(this->m_skybox.m_program_id, "view"),
+			1, GL_FALSE, glm::value_ptr(aux_view));
+		glUniformMatrix4fv(glGetUniformLocation(this->m_skybox.m_program_id, "projection"),
+			1, GL_FALSE, glm::value_ptr(this->m_projection_matrix));
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP,
+			TextureManager::getInstance().getCubeTextureById(this->m_skybox.m_texture).m_id);
+		glUniform1i(glGetUniformLocation(this->m_skybox.m_program_id, "cube_map"), 0);
+		glUniform3f(glGetUniformLocation(this->m_skybox.m_program_id, "fog_color"),
+			this->m_fog_color.x, this->m_fog_color.y, this->m_fog_color.z);
+
+		glBindVertexArray(this->m_skybox.m_vao_id);
+
+		glDrawElements(GL_TRIANGLES, this->m_skybox.m_indices_size, GL_UNSIGNED_INT, 0);
+
+		glBindVertexArray(0);
+		glUseProgram(0);*/
+	}
+
 	void GraphicsManager::destroy() {
 		// TODO
 
@@ -441,6 +481,8 @@ namespace Graphics {
 
 		for (auto& it : m_spot_lights)
 			it.depth_map.destroy();
+
+		m_skybox.destroy();
 	}
 
 	void GraphicsManager::reserveMeshes(int size) {
@@ -566,6 +608,7 @@ namespace Graphics {
 		m_spot_lights.push_back(light);
 		return (unsigned)m_spot_lights.size() - 1;
 	}
+	//-------------------------------------------------------------------------
 
 	//----------------------------------------------------------------- Helpers
 	void GraphicsManager::setProjectionMatrix(const glm::mat4& matrix) {
@@ -644,7 +687,9 @@ namespace Graphics {
 		w = m_screen_width;
 		h = m_screen_height;
 	}
+	//-------------------------------------------------------------------------
 
+	//--------------------------------------------------------- Drawing helpers
 	void GraphicsManager::drawLine(const glm::vec3& from,
 		const glm::vec3& to, const glm::vec3& color) {
 		if (m_line_vao == 0)
@@ -700,14 +745,14 @@ namespace Graphics {
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
 		}
-		
+
 		float vertices[6][4] = {
 			{ limits.x,            limits.y + limits.w,   0.0f, 0.0f },
-			{ limits.x,            limits.y,              0.0f, 1.0f },
-			{ limits.x + limits.z, limits.y,              1.0f, 1.0f },
-			{ limits.x,            limits.y + limits.w,   0.0f, 0.0f },
-			{ limits.x + limits.z, limits.y,              1.0f, 1.0f },
-			{ limits.x + limits.z, limits.y + limits.w,   1.0f, 0.0f }
+		{ limits.x,            limits.y,              0.0f, 1.0f },
+		{ limits.x + limits.z, limits.y,              1.0f, 1.0f },
+		{ limits.x,            limits.y + limits.w,   0.0f, 0.0f },
+		{ limits.x + limits.z, limits.y,              1.0f, 1.0f },
+		{ limits.x + limits.z, limits.y + limits.w,   1.0f, 0.0f }
 		};
 
 		glBindVertexArray(m_quad_vao);
@@ -720,6 +765,42 @@ namespace Graphics {
 
 		glBindVertexArray(0);
 	}
+	//-------------------------------------------------------------------------
+
+	//------------------------------------------------------------------ Skybox
+	void GraphicsManager::setSkybox(const std::string& vs_path,
+		const std::string& fs_path, const std::string& texture_folder) {
+		m_skybox.destroy();
+
+		std::string texture[6];
+		texture[0] = texture_folder + "right.png";
+		texture[1] = texture_folder + "left.png";
+		texture[2] = texture_folder + "top.png";
+		texture[3] = texture_folder + "bottom.png";
+		texture[4] = texture_folder + "back.png";
+		texture[5] = texture_folder + "front.png";
+
+		m_skybox.initialize(
+			GraphicsManager::getInstance().addShader(vs_path, fs_path),
+			MaterialManager::getInstance().addCubeTexture(texture)
+		);
+
+		m_draw_skybox = true;
+	}
+
+	void GraphicsManager::allowSkyboxDraw(bool value) {
+		m_draw_skybox = value;
+	}
+
+	Skybox* GraphicsManager::getSkybox() {
+		return &m_skybox;
+	}
+
+	void GraphicsManager::removeSkybox() {
+		m_skybox.destroy();
+		m_draw_skybox = false;
+	}
+	//-------------------------------------------------------------------------
 
 	//-------------------------------------------------------- Remove functions
 	void GraphicsManager::removeCamera(unsigned handle) {
@@ -860,4 +941,5 @@ namespace Graphics {
 
 		glViewport(0, 0, w, h);
 	}
+	//-------------------------------------------------------------------------
 }

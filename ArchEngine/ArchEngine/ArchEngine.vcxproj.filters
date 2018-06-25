@@ -162,6 +162,9 @@
     <ClInclude Include="GUI\flyout.hpp">
       <Filter>GUI</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\skybox.hpp">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utils\serviceLocator.cpp">
@@ -283,6 +286,9 @@
     </ClCompile>
     <ClCompile Include="Testers\guiTest.cpp">
       <Filter>Testers</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\skybox.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
