@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 23/06/2018                                                 *
+ * Last Modified: 24/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -94,21 +94,6 @@ namespace OS {
 
 	private:
 		RangeInfo m_value;
-	};
-
-	class InputMouseMoved : public Core::IEvent {
-	public:
-		InputMouseMoved(int x, int y, bool locked);
-		~InputMouseMoved();
-
-		Core::EventType getType() const override;
-		void getValues(int& x, int&y) const;
-		bool isLocked() const;
-
-	private:
-		int m_x;
-		int m_y;
-		bool m_locked;
 	};
 
 	class InputContextEvent : public Core::IEvent {

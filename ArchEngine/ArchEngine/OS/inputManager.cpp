@@ -94,13 +94,6 @@ namespace OS {
 	EventType InputRangeEvent::getType() const { return m_type; }
 	RangeInfo InputRangeEvent::getValue() const { return m_value; }
 
-	InputMouseMoved::InputMouseMoved(int x, int y, bool locked) :
-		IEvent(EVENT_MOUSE_MOVED), m_x(x), m_y(y), m_locked(locked) {}
-	InputMouseMoved::~InputMouseMoved() {}
-	Core::EventType InputMouseMoved::getType() const { return m_type; }
-	void InputMouseMoved::getValues(int& x, int&y) const { x = m_x; y = m_y; }
-	bool InputMouseMoved::isLocked() const { return m_locked; }
-
 	InputContextEvent::InputContextEvent() : IEvent(EVENT_INPUT_CONTEXT) {}
 	InputContextEvent::InputContextEvent(const std::string& name, bool state) :
 		IEvent(EVENT_INPUT_CONTEXT), m_name(name), m_state(state) {}
@@ -224,6 +217,11 @@ namespace OS {
 		}
 #endif	// ARCH_ENGINE_HOT_RELOAD_ON
 
+		// Helpers
+		int x, y;
+		bool locked;
+		EventPtr evnt;
+
 		while (SDL_PollEvent(&sdl_event)) {
 			switch (sdl_event.type) {
 			case SDL_QUIT:
@@ -231,8 +229,6 @@ namespace OS {
 				break;
 
 			case SDL_MOUSEMOTION:
-				int x, y;
-
 				if (SDL_GetRelativeMouseMode()) {
 					SDL_GetRelativeMouseState(&x, &y);
 
@@ -243,7 +239,7 @@ namespace OS {
 						setAxisValue(MOUSE_AXIS_Y, -y);
 					}
 
-					EventPtr evnt = std::make_shared<InputMouseMoved>(
+					evnt = std::make_shared<InputMouseMoved>(
 						InputMouseMoved(x, y, true));
 					EventManager::getInstance().sendEvent(evnt);
 				}
@@ -257,7 +253,7 @@ namespace OS {
 						setAxisValue(MOUSE_AXIS_Y, m_mouse_last_y - y);
 					}
 
-					EventPtr evnt = std::make_shared<InputMouseMoved>(
+					evnt = std::make_shared<InputMouseMoved>(
 						InputMouseMoved(x, y, false));
 					EventManager::getInstance().sendEvent(evnt);
 				}
@@ -278,6 +274,23 @@ namespace OS {
 
 				// The prev_state is now 'pressed'
 				m_mb_prev_state[sdl_event.button.button] = true;
+
+				//-------------------------------------------- EVENT_MOUSE_DOWN
+				if (SDL_GetRelativeMouseMode()) {
+					SDL_GetRelativeMouseState(&x, &y);
+					locked = true;
+				}
+				else {
+					SDL_GetMouseState(&x, &y);
+					locked = false;
+				}
+
+				evnt = std::make_shared<InputMouseButton>(
+					InputMouseButton(x, y,
+						sdl_event.button.button, true, locked));
+				EventManager::getInstance().sendEvent(evnt);
+				//-------------------------------------------------------------
+
 				break;
 
 			case SDL_MOUSEBUTTONUP:
@@ -287,6 +300,23 @@ namespace OS {
 
 				// The prev_state is now 'released'
 				m_mb_prev_state[sdl_event.button.button] = false;
+				
+				//-------------------------------------------- EVENT_MOUSE_DOWN
+				if (SDL_GetRelativeMouseMode()) {
+					SDL_GetRelativeMouseState(&x, &y);
+					locked = true;
+				}
+				else {
+					SDL_GetMouseState(&x, &y);
+					locked = false;
+				}
+
+				evnt = std::make_shared<InputMouseButton>(
+					InputMouseButton(x, y,
+						sdl_event.button.button, false, locked));
+				EventManager::getInstance().sendEvent(evnt);
+				//-------------------------------------------------------------
+
 				break;
 
 			case SDL_KEYDOWN:

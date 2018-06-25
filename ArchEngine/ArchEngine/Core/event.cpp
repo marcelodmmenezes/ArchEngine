@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 06/05/2018                                                       *
- * Last Modified: 23/06/2018                                                 *
+ * Last Modified: 24/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -47,6 +47,25 @@ namespace Core {
 		width = m_width;
 		height = m_height;
 	}
+
+	//------------------------------------------------------------ Input events
+	InputMouseMoved::InputMouseMoved(int x, int y, bool locked) :
+		IEvent(EVENT_MOUSE_MOVED), m_x(x), m_y(y), m_locked(locked) {}
+	InputMouseMoved::~InputMouseMoved() {}
+	Core::EventType InputMouseMoved::getType() const { return m_type; }
+	void InputMouseMoved::getValues(int& x, int&y) const { x = m_x; y = m_y; }
+	bool InputMouseMoved::isLocked() const { return m_locked; }
+
+	InputMouseButton::InputMouseButton(int x, int y,
+		int button, bool press, bool locked) :
+		IEvent(EVENT_MOUSE_BUTTON), m_x(x), m_y(y), m_press(press),
+		m_button(button), m_locked(locked) {}
+	InputMouseButton::~InputMouseButton() {}
+	Core::EventType InputMouseButton::getType() const { return m_type; }
+	void InputMouseButton::getValues(int& x, int&y) const { x = m_x; y = m_y; }
+	int InputMouseButton::getButton() const { return m_button; }
+	bool InputMouseButton::pressed() const { return m_press; }
+	bool InputMouseButton::isLocked() const { return m_locked; }
 
 	//-------------------------------------------------------- Collision events
 	CollisionEvent::CollisionEvent(long obj1, long obj2) :

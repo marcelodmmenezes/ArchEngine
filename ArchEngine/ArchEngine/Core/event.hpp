@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 23/06/2018                                                 *
+ * Last Modified: 24/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -39,6 +39,7 @@ namespace Core {
 		EVENT_INPUT_STATE,
 		EVENT_INPUT_RANGE,
 		EVENT_MOUSE_MOVED,
+		EVENT_MOUSE_BUTTON,
 		EVENT_INPUT_CONTEXT,
 
 		//--- Physics events
@@ -98,9 +99,9 @@ namespace Core {
 	//-------------------------------------------------------------------------
 
 
-	//------------------
-	//---- Window events
-	//------------------
+	//---------------
+	//---- GUI events
+	//---------------
 	class ButtonClickedEvent : public IEvent {
 	public:
 		ButtonClickedEvent(int button_id);
@@ -131,6 +132,43 @@ namespace Core {
 	};
 	//-------------------------------------------------------------------------
 
+	//-----------------
+	//---- Input events
+	//-----------------
+	class InputMouseMoved : public Core::IEvent {
+	public:
+		InputMouseMoved(int x, int y, bool locked);
+		~InputMouseMoved();
+
+		Core::EventType getType() const override;
+		void getValues(int& x, int&y) const;
+		bool isLocked() const;
+
+	private:
+		int m_x;
+		int m_y;
+		bool m_locked;
+	};
+
+	class InputMouseButton : public Core::IEvent {
+	public:
+		InputMouseButton(int x, int y, int button, bool press, bool locked);
+		~InputMouseButton();
+
+		Core::EventType getType() const override;
+		void getValues(int& x, int&y) const;
+		int getButton() const;
+		bool pressed() const;
+		bool isLocked() const;
+
+	private:
+		int m_x;
+		int m_y;
+		int m_button; // 1 - left, 2 - middle, 3 - right
+		bool m_press; // true - press, false - release
+		bool m_locked;
+	};
+	//-------------------------------------------------------------------------
 
 	//-------------------
 	//---- Physics events
