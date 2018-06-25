@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 22/06/2018                                                 *
+ * Last Modified: 25/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -99,6 +99,10 @@ namespace Graphics {
 		Camera* getActiveCamera();
 
 		Shader* getShader(int id);
+
+		DirectionalLight* getDirectionalLight(int id);
+		PointLight* getPointLight(int id);
+		SpotLight* getSpotLight(int id);
 
 		void getScreenSize(int& w, int&h);
 

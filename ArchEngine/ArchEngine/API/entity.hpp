@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 26/05/2018                                                       *
- * Last Modified: 07/06/2018                                                 *
+ * Last Modified: 25/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -27,6 +27,8 @@ struct Entity {
 	std::vector<unsigned> physics_objects;
 	// One for each mesh
 	std::vector<glm::mat4> transforms;
+	// If emit shadows
+	bool emit_shadows;
 };
 
 extern std::vector<Entity> g_entities;

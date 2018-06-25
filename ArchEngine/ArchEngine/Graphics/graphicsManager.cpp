@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 22/06/2018                                                 *
+ * Last Modified: 25/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -192,13 +192,17 @@ namespace Graphics {
 					it.projection * it.view);
 
 				for (auto& entity : g_entities) {
-					for (unsigned i = 0; i < entity.meshes.size(); i++) {
-						m_shaders[it.depth_shader].setMat4("u_model_matrix",
-							entity.transforms[i]);
+					if (entity.emit_shadows) {
+						for (unsigned i = 0; i < entity.meshes.size(); i++) {
+							m_shaders[it.depth_shader].setMat4(
+								"u_model_matrix",
+								entity.transforms[i]);
 
-						m_shaders[it.depth_shader].update();
+							m_shaders[it.depth_shader].update();
 
-						m_meshes[entity.meshes[i]].first.draw(GL_TRIANGLES);
+							m_meshes[entity.meshes[i]].first.draw(
+								GL_TRIANGLES);
+						}
 					}
 				}
 			}
@@ -224,13 +228,17 @@ namespace Graphics {
 					"u_far_plane", it.far_plane);
 
 				for (auto& entity : g_entities) {
-					for (unsigned i = 0; i < entity.meshes.size(); i++) {
-						m_shaders[it.depth_shader].setMat4("u_model_matrix",
-							entity.transforms[i]);
+					if (entity.emit_shadows) {
+						for (unsigned i = 0; i < entity.meshes.size(); i++) {
+							m_shaders[it.depth_shader].setMat4(
+								"u_model_matrix",
+								entity.transforms[i]);
 
-						m_shaders[it.depth_shader].update();
+							m_shaders[it.depth_shader].update();
 
-						m_meshes[entity.meshes[i]].first.draw(GL_TRIANGLES);
+							m_meshes[entity.meshes[i]].first.draw(
+								GL_TRIANGLES);
+						}
 					}
 				}
 			}
@@ -585,7 +593,51 @@ namespace Graphics {
 	}
 
 	Shader* GraphicsManager::getShader(int id) {
+		if (id >= m_shaders.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to get shader outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return nullptr;
+		}
+
 		return &m_shaders[id];
+	}
+
+	DirectionalLight* GraphicsManager::getDirectionalLight(int id) {
+		if (id >= m_directional_lights.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to get dir light outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return nullptr;
+		}
+
+		return &m_directional_lights[id];
+	}
+
+	PointLight* GraphicsManager::getPointLight(int id) {
+		if (id >= m_point_lights.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to get point light outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return nullptr;
+		}
+
+		return &m_point_lights[id];
+	}
+
+	SpotLight* GraphicsManager::getSpotLight(int id) {
+		if (id >= m_spot_lights.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to get spot light outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return nullptr;
+		}
+
+		return &m_spot_lights[id];
 	}
 
 	void GraphicsManager::getScreenSize(int& w, int&h) {
