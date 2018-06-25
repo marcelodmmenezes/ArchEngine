@@ -122,7 +122,10 @@ namespace Graphics {
 		void removeSkybox();
 
 		// Fog
-		void setFog(float sb_lower_limit, float sb_upper_limit);
+		void setFog(float density, float gradient,
+			const glm::vec3 sky_color,
+			float sb_lower_limit, float sb_upper_limit,
+			const glm::vec3& fog_color);
 		void removeFog();
 
 		// Removes the component by handle
@@ -147,9 +150,10 @@ namespace Graphics {
 
 		void renderDepthMaps();
 		void renderScene();
-		void bindLights(Shader& shader);
-		void bind2DTextures(Shader& shader, unsigned material_id);
 		void renderSkybox();
+		void bindLights(Shader& shader);
+		void bindFog(Shader& shader);
+		void bind2DTextures(Shader& shader, unsigned material_id);
 
 		State m_state;
 
@@ -221,6 +225,9 @@ namespace Graphics {
 
 		//----------------------------------------------------------------- Fog
 		bool m_fog;
+		float m_fog_density;
+		float m_fog_gradient;
+		glm::vec3 m_sky_color;
 		int m_sb_lower_limit;
 		int m_sb_upper_limit;
 	};

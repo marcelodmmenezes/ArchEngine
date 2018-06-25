@@ -52,6 +52,8 @@ in vec2 f_texture_coords;
 flat in ivec3 f_nr_of_lights;
 in vec4 f_frag_pos_dir_light_space[NR_DIR_LIGHTS];
 
+in float f_visibility; // Fog
+
 uniform vec3 u_view_pos;
 
 uniform float u_far_plane;
@@ -64,6 +66,8 @@ uniform samplerCube u_point_shadow_map[NR_POINT_LIGHTS];
 uniform DirLight u_dir_lights[NR_DIR_LIGHTS];
 uniform PointLight u_point_lights[NR_POINT_LIGHTS];
 uniform SpotLight u_spot_lights[NR_SPOT_LIGHTS];
+
+uniform vec3 u_sky_color; // Fog
 
 out vec4 out_color;
 
@@ -105,6 +109,9 @@ void main() {
 
     out_color.rgb = pow(ambient + result, vec3(1.0f / 1.2f));
 	out_color.a = 1.0f;
+
+	// Fog
+	out_color = mix(vec4(u_sky_color, 1.0f), out_color, f_visibility);
 }
 
 vec3 calcDirLight(DirLight light, vec3 normal, vec3 view_dir, vec3 diff_text, vec3 spec_text, int id) {

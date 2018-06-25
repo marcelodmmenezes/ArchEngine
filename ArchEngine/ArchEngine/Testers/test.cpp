@@ -426,6 +426,12 @@ void loadData() {
 		"../../ArchEngine/Shaders/skyboxfs.glsl"
 	);
 
+	GraphicsManager::getInstance().setFog(
+		0.007, 1.5,
+		glm::vec3(1.0f, 1.0f, 1.0f),
+		0.0f, 10.0f,
+		glm::vec3(1.0f, 1.0f, 1.0f));
+
 	Engine::getInstance().releaseMouse();
 }
 

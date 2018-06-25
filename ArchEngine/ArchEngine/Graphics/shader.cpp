@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 13/05/2018                                                       *
- * Last Modified: 22/06/2018                                                 *
+ * Last Modified: 25/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -17,8 +17,12 @@ using namespace Utils;
 
 
 namespace Graphics {
-	Shader::Shader() : m_has_normal_map(false), m_has_dir_lights(false),
-		m_has_point_lights(false), m_has_spot_lights(false) {
+	Shader::Shader() :
+		m_has_normal_map(false),
+		m_has_dir_lights(false),
+		m_has_point_lights(false),
+		m_has_spot_lights(false),
+		m_has_fog(false) {
 #if defined(ARCH_ENGINE_HOT_RELOAD_ON)
 		m_watch_file = true;
 #endif	// ARCH_ENGINE_HOT_RELOAD_ON
@@ -215,24 +219,28 @@ namespace Graphics {
 			glDeleteProgram(m_program_id);
 	}
 	
-	unsigned Shader::getProgramId() {
+	unsigned Shader::getProgramId() const {
 		return m_program_id;
 	}
 
-	bool Shader::hasNormalMap() {
+	bool Shader::hasNormalMap() const {
 		return m_has_normal_map;
 	}
 
-	bool Shader::hasDirLights() {
+	bool Shader::hasDirLights() const {
 		return m_has_dir_lights;
 	}
 
-	bool Shader::hasPointLights() {
+	bool Shader::hasPointLights() const {
 		return m_has_point_lights;
 	}
 
-	bool Shader::hasSpotLights() {
+	bool Shader::hasSpotLights() const {
 		return m_has_spot_lights;
+	}
+
+	bool Shader::hasFog() const {
+		return m_has_fog;
 	}
 	
 	void Shader::setBool(const std::string& name, bool value) {
@@ -558,6 +566,8 @@ namespace Graphics {
 				m_has_point_lights = true;
 			else if (name_str.substr(0, 13) == "u_spot_lights")
 				m_has_spot_lights = true;
+			else if (name_str == "u_fog_density")
+				m_has_fog = true;
 
 			for (unsigned i = 0; i < (unsigned)size; i++) { // for arrays
 				if (size > 1)

@@ -255,6 +255,7 @@ namespace Graphics {
 				m_cameras[m_active_camera]->getPosition());
 
 			bindLights(m_shaders[it.shader]);
+			bindFog(m_shaders[it.shader]);
 
 			for (unsigned i = 0; i < it.meshes.size(); i++) {
 				bind2DTextures(m_shaders[it.shader],
@@ -270,6 +271,53 @@ namespace Graphics {
 
 				m_meshes[it.meshes[i]].first.draw(GL_TRIANGLES);
 			}
+		}
+	}
+
+	void GraphicsManager::renderSkybox() {
+		if (m_draw_skybox) {
+			int depth_func;
+			glGetIntegerv(GL_DEPTH_FUNC, &depth_func);
+
+			glDisable(GL_CULL_FACE);
+			glDepthFunc(GL_LEQUAL);
+			unsigned shader_id = m_skybox.getShaderId();
+
+			m_shaders[shader_id].bind();
+			glm::mat4 view = m_cameras[m_active_camera]->getViewMatrix();
+
+			view[3][0] = 0.0f;
+			view[3][1] = 0.0f;
+			view[3][2] = 0.0f;
+
+			m_shaders[shader_id].setMat4("u_projection_matrix", m_projection);
+			m_shaders[shader_id].setMat4("u_view_matrix", view);
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, MaterialManager::getInstance().
+				getCubeTexture(m_skybox.getTextureId()));
+
+			m_shaders[shader_id].setInt("u_cube_map", 0);
+			m_shaders[shader_id].setBool("u_fog", m_fog);
+
+			if (m_fog) {
+				m_shaders[shader_id].setVec3("u_fog_color",
+					m_skybox.getFogColor());
+				m_shaders[shader_id].setFloat("u_lower_limit",
+					m_sb_lower_limit);
+				m_shaders[shader_id].setFloat("u_upper_limit",
+					m_sb_upper_limit);
+			}
+
+			m_shaders[shader_id].update();
+
+			m_skybox.draw(GL_TRIANGLES);
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+			glDepthFunc(depth_func);
+			glEnable(GL_CULL_FACE);
 		}
 	}
 
@@ -376,6 +424,14 @@ namespace Graphics {
 			}
 		}
 	}
+	
+	void GraphicsManager::bindFog(Shader& shader) {
+		if (shader.hasFog()) {
+			shader.setFloat("u_fog_density", m_fog_density);
+			shader.setFloat("u_gradient", m_fog_gradient);
+			shader.setVec3("u_sky_color", m_sky_color);
+		}
+	}
 
 	void GraphicsManager::bind2DTextures(Shader& shader, unsigned material_id) {
 		for (unsigned i = 0; i < NUMBER_OF_TEXTURE_TYPES; i++) {
@@ -396,53 +452,6 @@ namespace Graphics {
 			}
 			else
 				glBindTexture(GL_TEXTURE_2D, 0);
-		}
-	}
-
-	void GraphicsManager::renderSkybox() {
-		if (m_draw_skybox) {
-			int depth_func;
-			glGetIntegerv(GL_DEPTH_FUNC, &depth_func);
-
-			glDisable(GL_CULL_FACE);
-			glDepthFunc(GL_LEQUAL);
-			unsigned shader_id = m_skybox.getShaderId();
-
-			m_shaders[shader_id].bind();
-			glm::mat4 view = m_cameras[m_active_camera]->getViewMatrix();
-
-			view[3][0] = 0.0f;
-			view[3][1] = 0.0f;
-			view[3][2] = 0.0f;
-
-			m_shaders[shader_id].setMat4("u_projection_matrix", m_projection);
-			m_shaders[shader_id].setMat4("u_view_matrix", view);
-
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, MaterialManager::getInstance().
-				getCubeTexture(m_skybox.getTextureId()));
-
-			m_shaders[shader_id].setInt("u_cube_map", 0);
-			m_shaders[shader_id].setBool("u_fog", m_fog);
-
-			if (m_fog) {
-				m_shaders[shader_id].setVec3("u_fog_color",
-					m_skybox.getFogColor());
-				m_shaders[shader_id].setFloat("u_lower_limit",
-					m_sb_lower_limit);
-				m_shaders[shader_id].setFloat("u_upper_limit",
-					m_sb_upper_limit);
-			}
-
-			m_shaders[shader_id].update();
-
-			m_skybox.draw(GL_TRIANGLES);
-
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-
-			glDepthFunc(depth_func);
-			glEnable(GL_CULL_FACE);
 		}
 	}
 
@@ -805,10 +814,16 @@ namespace Graphics {
 	//-------------------------------------------------------------------------
 
 	//--------------------------------------------------------------------- Fog
-	void GraphicsManager::setFog(float sb_lower_limit, float sb_upper_limit) {
+	void GraphicsManager::setFog(float density, float gradient,
+		const glm::vec3 sky_color, float sb_lower_limit,
+		float sb_upper_limit, const glm::vec3& fog_color) {
 		m_fog = true;
+		m_fog_density = density;
+		m_fog_gradient = gradient;
+		m_sky_color = sky_color;
 		m_sb_lower_limit = sb_lower_limit;
 		m_sb_upper_limit = sb_upper_limit;
+		m_skybox.setFogColor(fog_color);
 	}
 
 	void GraphicsManager::removeFog() {
