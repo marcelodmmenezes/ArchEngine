@@ -58,6 +58,9 @@ namespace GUI {
 		void setHoverColor(const glm::vec3& color);
 		void setMaximumSize(const glm::vec2& size);
 
+		void anchor(bool value);
+		bool isAnchored();
+
 		unsigned getFont() const;
 		float getScale() const;
 		glm::vec2 getPosition() const;
@@ -78,6 +81,8 @@ namespace GUI {
 		glm::vec3 m_hover_color;
 		glm::vec3 m_current_color;
 		glm::vec2 m_maximum_size;
+
+		bool m_anchored;
 
 		int m_font_size;
 		int m_current_line;

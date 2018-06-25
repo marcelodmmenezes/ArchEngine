@@ -246,6 +246,8 @@ namespace GUI {
 		const std::string& name) {
 		auto id =
 			lua_context.get<std::string>(name + ".id");
+		auto text =
+			lua_context.get<std::string>(name + ".text");
 		auto position =
 			lua_context.getFloatVector(name + ".position");
 		auto font_id =
@@ -260,6 +262,8 @@ namespace GUI {
 			lua_context.getFloatVector(name + ".hover_color");
 		auto maximum_size =
 			lua_context.getFloatVector(name + ".maximum_size");
+		auto anchored =
+			lua_context.get<bool>(name + ".anchored");
 		auto track_mouse =
 			lua_context.get<bool>(name + ".track_mouse");
 
@@ -273,9 +277,13 @@ namespace GUI {
 			glm::vec2(maximum_size[0], maximum_size[1])
 		);
 
+		wc->write(text);
+
 		if (hover_color.size() == 4)
 			wc->setHoverColor(glm::vec3(hover_color[0],
 				hover_color[1], hover_color[2]));
+
+		wc->anchor(anchored);
 
 		if (track_mouse)
 			wc->trackMouse();
@@ -653,8 +661,11 @@ namespace GUI {
 			else if (auto ctrl = dynamic_cast<WritableComponent*>(it)) {
 				glm::vec2 pos = ctrl->getPosition();
 				glm::vec2 m_size = ctrl->getMaximumSize();
-				ctrl->setPosition(glm::vec2(pos.x,
-					pos.y + (h - m_window_size.y)));
+
+				if (!ctrl->isAnchored())
+					ctrl->setPosition(glm::vec2(pos.x,
+						pos.y + (h - m_window_size.y)));
+
 				ctrl->setMaximumSize(glm::vec2(m_size.x, h - m_size.y));
 			}
 			else if (auto ctrl = dynamic_cast<PushButton*>(it))

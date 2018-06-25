@@ -163,6 +163,14 @@ namespace GUI {
 		format();
 	}
 
+	void WritableComponent::anchor(bool value) {
+		m_anchored = value;
+	}
+
+	bool WritableComponent::isAnchored() {
+		return m_anchored;
+	}
+
 	unsigned WritableComponent::getFont() const {
 		return m_font_id;
 	}
