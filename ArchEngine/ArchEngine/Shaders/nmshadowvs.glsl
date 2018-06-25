@@ -20,13 +20,35 @@ uniform mat4 u_model_matrix;
 uniform mat3 u_trn_inv_up_model;
 uniform mat4 u_dir_light_space_matrix[NR_DIR_LIGHTS];
 
+//--- Fog
+uniform bool u_fog;
+uniform float u_fog_density;
+uniform float u_gradient;
+//-------
+
 out mat3 f_tbn;
 out vec3 f_frag_pos;
 out vec2 f_texture_coords;
 flat out ivec3 f_nr_of_lights;
 out vec4 f_frag_pos_dir_light_space[NR_DIR_LIGHTS];
 
+//--- Fog
+flat out int f_fog;
+out float f_visibility;
+//-------
+
 void main() {
+	//--- Fog
+	if (u_fog) {
+		f_fog = 1;
+		float dist = length((u_view_matrix * u_model_matrix * vec4(v_position, 1.0f)).xyz);
+		f_visibility = exp(-pow((dist * u_fog_density), u_gradient));
+		f_visibility = clamp(f_visibility, 0.0f, 1.0f);
+	}
+	else
+		f_fog = 0;
+	//-------
+
 	vec3 t = normalize(u_trn_inv_up_model * v_tangent);
 	vec3 n = normalize(u_trn_inv_up_model * v_normal);
 	vec3 b = normalize(u_trn_inv_up_model * v_bitangent);
