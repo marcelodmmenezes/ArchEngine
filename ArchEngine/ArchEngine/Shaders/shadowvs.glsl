@@ -18,8 +18,11 @@ uniform mat4 u_model_matrix;
 uniform mat3 u_trn_inv_up_model;
 uniform mat4 u_dir_light_space_matrix[NR_DIR_LIGHTS];
 
-uniform float u_fog_density; // Fog
-uniform float u_gradient; // Fog
+//--- Fog
+uniform bool u_fog;
+uniform float u_fog_density;
+uniform float u_gradient;
+//-------
 
 out vec3 f_normal;
 out vec3 f_frag_pos;
@@ -27,15 +30,24 @@ out vec2 f_texture_coords;
 flat out ivec3 f_nr_of_lights;
 out vec4 f_frag_pos_dir_light_space[NR_DIR_LIGHTS];
 
-out float f_visibility; // Fog
+//--- Fog
+flat out int f_fog;
+out float f_visibility;
+//-------
 
 void main() {
-	// Fog
 	vec4 position_relative_to_camera = u_view_matrix * u_model_matrix * vec4(v_position, 1.0f);
-	float dist = length(position_relative_to_camera.xyz);
-	f_visibility = exp(-pow((dist * u_fog_density), u_gradient));
-	f_visibility = clamp(f_visibility, 0.0f, 1.0f);
-	//----
+
+	//--- Fog
+	if (u_fog) {
+		f_fog = 1;
+		float dist = length(position_relative_to_camera.xyz);
+		f_visibility = exp(-pow((dist * u_fog_density), u_gradient));
+		f_visibility = clamp(f_visibility, 0.0f, 1.0f);
+	}
+	else
+		f_fog = 0;
+	//-------
 
 	f_normal = u_trn_inv_up_model * v_normal;
     f_frag_pos = vec3(u_model_matrix * vec4(v_position, 1.0f));   

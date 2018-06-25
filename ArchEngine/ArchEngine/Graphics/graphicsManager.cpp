@@ -427,6 +427,7 @@ namespace Graphics {
 	
 	void GraphicsManager::bindFog(Shader& shader) {
 		if (shader.hasFog()) {
+			shader.setBool("u_fog", m_fog);
 			shader.setFloat("u_fog_density", m_fog_density);
 			shader.setFloat("u_gradient", m_fog_gradient);
 			shader.setVec3("u_sky_color", m_sky_color);
