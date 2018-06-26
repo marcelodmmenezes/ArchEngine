@@ -373,8 +373,8 @@ namespace GUI {
 
 	void GUIManager::update(float delta_time) {
 		for (auto& it : m_controls) {
-			it->update(delta_time);
 			glClear(GL_DEPTH_BUFFER_BIT);
+			it->update(delta_time);
 		}
 	}
 

@@ -472,6 +472,8 @@
     <None Include="Shaders\cubedepthmapfs.glsl" />
     <None Include="Shaders\cubedepthmapgs.glsl" />
     <None Include="Shaders\cubedepthmapvs.glsl" />
+    <None Include="Shaders\postprocessingfs.glsl" />
+    <None Include="Shaders\postprocessingvs.glsl" />
     <None Include="Shaders\quadfs.glsl" />
     <None Include="Shaders\quadvs.glsl" />
     <None Include="Shaders\nmshadowfs.glsl" />

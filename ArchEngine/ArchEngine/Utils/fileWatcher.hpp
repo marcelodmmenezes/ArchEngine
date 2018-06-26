@@ -8,7 +8,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 06/05/2018                                                       *
- * Last Modified: 07/05/2018                                                 *
+ * Last Modified: 25/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -43,7 +43,6 @@ namespace Utils {
 		FileModifiedEvent(const std::string& path);
 		~FileModifiedEvent();
 
-		Core::EventType getType() const override;
 		std::string getPath() const;
 
 	private:
@@ -55,7 +54,6 @@ namespace Utils {
 		WatchFileEvent(const std::string& path, bool add);
 		~WatchFileEvent();
 
-		Core::EventType getType() const override;
 		bool add() const;
 		std::string getPath() const;
 

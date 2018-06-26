@@ -151,6 +151,8 @@ namespace Graphics {
 		void renderDepthMaps();
 		void renderScene();
 		void renderSkybox();
+		void postProcess();
+
 		void bindLights(Shader& shader);
 		void bindFog(Shader& shader);
 		void bind2DTextures(Shader& shader, unsigned material_id);

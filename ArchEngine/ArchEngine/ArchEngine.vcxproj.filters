@@ -440,5 +440,11 @@
     <None Include="Testers\guiControls.lua">
       <Filter>Testers</Filter>
     </None>
+    <None Include="Shaders\postprocessingfs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\postprocessingvs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

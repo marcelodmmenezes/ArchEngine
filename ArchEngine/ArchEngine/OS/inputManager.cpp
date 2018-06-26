@@ -76,14 +76,12 @@ namespace OS {
 	InputActionEvent::InputActionEvent(InputAction value) :
 		IEvent(EVENT_INPUT_ACTION), m_value(value) {}
 	InputActionEvent::~InputActionEvent() {}
-	EventType InputActionEvent::getType() const { return m_type; }
 	InputAction InputActionEvent::getValue() const { return m_value; }
 
 	InputStateEvent::InputStateEvent() : IEvent(EVENT_INPUT_STATE) {}
 	InputStateEvent::InputStateEvent(InputState value, bool over) :
 		IEvent(EVENT_INPUT_STATE), m_value(value), m_over(over) {}
 	InputStateEvent::~InputStateEvent() {}
-	EventType InputStateEvent::getType() const { return m_type; }
 	InputState InputStateEvent::getValue() const { return m_value; }
 	bool InputStateEvent::isOver() const { return m_over; }
 
@@ -91,14 +89,12 @@ namespace OS {
 	InputRangeEvent::InputRangeEvent(const RangeInfo& value) :
 		IEvent(EVENT_INPUT_RANGE), m_value(value) {}
 	InputRangeEvent::~InputRangeEvent() {}
-	EventType InputRangeEvent::getType() const { return m_type; }
 	RangeInfo InputRangeEvent::getValue() const { return m_value; }
 
 	InputContextEvent::InputContextEvent() : IEvent(EVENT_INPUT_CONTEXT) {}
 	InputContextEvent::InputContextEvent(const std::string& name, bool state) :
 		IEvent(EVENT_INPUT_CONTEXT), m_name(name), m_state(state) {}
 	InputContextEvent::~InputContextEvent() {}
-	Core::EventType InputContextEvent::getType() const { return m_type; }
 	std::string InputContextEvent::getName() const { return m_name; }
 	void InputContextEvent::setName(const std::string& name) { m_name = name; }
 	bool InputContextEvent::getState() const { return m_state; }

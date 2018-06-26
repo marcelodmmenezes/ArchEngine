@@ -8,7 +8,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 07/05/2018                                                       *
- * Last Modified: 07/05/2018                                                 *
+ * Last Modified: 25/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -23,13 +23,11 @@ namespace Utils {
 	FileModifiedEvent::FileModifiedEvent(const std::string& path) :
 		IEvent(EVENT_FILE_MODIFIED), m_path(path) {}
 	FileModifiedEvent::~FileModifiedEvent() {}
-	EventType FileModifiedEvent::getType() const { return m_type; }
 	std::string FileModifiedEvent::getPath() const { return m_path; }
 
 	WatchFileEvent::WatchFileEvent(const std::string& path, bool add) :
 		IEvent(EVENT_WATCH_FILE), m_path(path), m_add(add) {}
 	WatchFileEvent::~WatchFileEvent() {}
-	EventType WatchFileEvent::getType() const { return m_type; }
 	bool WatchFileEvent::add() const { return m_add; }
 	std::string WatchFileEvent::getPath() const { return m_path; }
 

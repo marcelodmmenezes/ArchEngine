@@ -13,7 +13,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 23/04/2018                                                       *
- * Last Modified: 24/06/2018                                                 *
+ * Last Modified: 25/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -61,7 +61,6 @@ namespace OS {
 		InputActionEvent(OS::InputAction value);
 		~InputActionEvent();
 
-		Core::EventType getType() const override;
 		InputAction getValue() const;
 
 	private:
@@ -74,7 +73,6 @@ namespace OS {
 		InputStateEvent(InputState value, bool over = false);
 		~InputStateEvent();
 
-		Core::EventType getType() const override;
 		InputState getValue() const;
 		bool isOver() const;
 
@@ -89,7 +87,6 @@ namespace OS {
 		InputRangeEvent(const RangeInfo& value);
 		~InputRangeEvent();
 
-		Core::EventType getType() const override;
 		RangeInfo getValue() const;
 
 	private:
@@ -101,8 +98,6 @@ namespace OS {
 		InputContextEvent();
 		InputContextEvent(const std::string& name, bool state);
 		~InputContextEvent();
-
-		Core::EventType getType() const override;
 
 		std::string getName() const;
 		void setName(const std::string& name);

@@ -6,7 +6,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 01/05/2018                                                       *
- * Last Modified: 24/06/2018                                                 *
+ * Last Modified: 25/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -42,6 +42,9 @@ namespace Core {
 		EVENT_MOUSE_BUTTON,
 		EVENT_INPUT_CONTEXT,
 
+		//--- Graphics events
+		EVENT_BEFORE_POST_PROCESS,
+
 		//--- Physics events
 		EVENT_COLLISION,
 		EVENT_RAY_TEST_CLOSEST,
@@ -61,7 +64,7 @@ namespace Core {
 		IEvent(EventType type);
 		virtual ~IEvent() = 0;
 		
-		virtual EventType getType() const = 0;
+		EventType getType() const;
 		
 	protected:
 		EventType m_type;
@@ -79,8 +82,6 @@ namespace Core {
 	public:
 		CoreQuitEvent();
 		~CoreQuitEvent();
-
-		EventType getType() const override;
 	};
 
 	class LoopFinishedEvent : public IEvent {
@@ -88,7 +89,6 @@ namespace Core {
 		LoopFinishedEvent(double delta_time, double frame_rate);
 		~LoopFinishedEvent();
 
-		EventType getType() const override;
 		double getDeltaTime() const;
 		double getFrameRate() const;
 
@@ -107,7 +107,6 @@ namespace Core {
 		ButtonStateEvent(int button_id, bool state);
 		~ButtonStateEvent();
 
-		EventType getType() const override;
 		int getButtonId() const;
 		bool getState() const;
 
@@ -125,7 +124,6 @@ namespace Core {
 		WindowResizeEvent(int width, int height);
 		~WindowResizeEvent();
 
-		EventType getType() const override;
 		void getSize(int& width, int& height);
 
 	private:
@@ -142,7 +140,6 @@ namespace Core {
 		InputMouseMoved(int x, int y, bool locked);
 		~InputMouseMoved();
 
-		Core::EventType getType() const override;
 		void getValues(int& x, int&y) const;
 		bool isLocked() const;
 
@@ -157,7 +154,6 @@ namespace Core {
 		InputMouseButton(int x, int y, int button, bool press, bool locked);
 		~InputMouseButton();
 
-		Core::EventType getType() const override;
 		void getValues(int& x, int&y) const;
 		int getButton() const;
 		bool pressed() const;
@@ -172,6 +168,16 @@ namespace Core {
 	};
 	//-------------------------------------------------------------------------
 
+	//--------------------
+	//---- Graphics events
+	//--------------------
+	class PrePostProcessEvent : public IEvent {
+	public:
+		PrePostProcessEvent();
+		~PrePostProcessEvent();
+	};
+	//-------------------------------------------------------------------------
+
 	//-------------------
 	//---- Physics events
 	//-------------------
@@ -180,7 +186,6 @@ namespace Core {
 		CollisionEvent(long obj1, long obj2);
 		~CollisionEvent();
 
-		EventType getType() const override;
 		void getObjectIds(long& obj1, long& obj2);
 
 	private:
@@ -193,7 +198,6 @@ namespace Core {
 		ClosestRayTestEvent(long obj);
 		~ClosestRayTestEvent();
 
-		EventType getType() const override;
 		long getObjectId();
 
 	private:
@@ -204,8 +208,6 @@ namespace Core {
 	public:
 		AllRayTestEvent(std::vector<long>&& objs);
 		~AllRayTestEvent();
-
-		EventType getType() const override;
 
 		std::vector<long> m_obj_ids;
 	};

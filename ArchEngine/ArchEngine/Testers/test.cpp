@@ -60,6 +60,7 @@ void onInputActionEvent(EventPtr e);
 void onInputStateEvent(EventPtr e);
 void onInputRangeEvent(EventPtr e);
 void onInputMouseMoved(EventPtr e);
+void onPrePostProcessEvent(EventPtr e);
 void onCollisionEvent(EventPtr e);
 void onClosestRayTestEvent(EventPtr e);
 void onAllRayTestEvent(EventPtr e);
@@ -71,7 +72,7 @@ void onLoopFinishedEvent(EventPtr e);
 ThirdPersonCamera tpcamera(15.0f);
 
 DebugCamera debug_camera(
-	glm::vec3(0.0f, 15.0f, 15.0f),
+	glm::vec3(0.0f, 50.0f, 15.0f),
 	glm::vec3(0.0f, 0.0f, -1.0f)
 );
 
@@ -108,6 +109,10 @@ int main(int argc, char* argv[]) {
 		listener.bind<&onInputMouseMoved>();
 		EventManager::getInstance().addListener(
 			listener, EVENT_MOUSE_MOVED);
+
+		listener.bind<&onPrePostProcessEvent>();
+		EventManager::getInstance().addListener(
+			listener, EVENT_BEFORE_POST_PROCESS);
 
 		listener.bind<&onCollisionEvent>();
 		EventManager::getInstance().addListener(
@@ -273,7 +278,7 @@ void loadData() {
 	AssimpLoader loader;
 
 	TerrainGenerator tg;
-	auto terrain = tg.genHeightMapTerrain(128, 128, 4.0f, 4.0f, 100.0f, 16,
+	auto terrain = tg.genHeightMapTerrain(128, 128, 8.0f, 8.0f, 150.0f, 16,
 		"../../../../GameEngineLearning/assets/miscTextures/heightMaps/height_map3.png");
 
 	loader.importScene(
@@ -421,15 +426,15 @@ void loadData() {
 	);
 
 	GraphicsManager::getInstance().setSkybox(
-		"../../../../GameEngineLearning/assets/skybox", "jpg",
+		"../../../../GameEngineLearning/assets/skybox/", "jpg",
 		"../../ArchEngine/Shaders/skyboxvs.glsl",
 		"../../ArchEngine/Shaders/skyboxfs.glsl"
 	);
 
 	GraphicsManager::getInstance().setFog(
-		0.007, 1.5,
+		0.0035, 5.0,
 		glm::vec3(1.0f, 1.0f, 1.0f),
-		0.0f, 10.0f,
+		0.0f, 30.0f,
 		glm::vec3(1.0f, 1.0f, 1.0f));
 
 	Engine::getInstance().releaseMouse();
@@ -652,6 +657,13 @@ void onInputMouseMoved(EventPtr e) {
 	}
 }
 
+bool g_debug_draw = false;
+
+void onPrePostProcessEvent(EventPtr e) {
+	if (g_debug_draw)
+		PhysicsManager::getInstance().debugDraw();
+}
+
 void onCollisionEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<CollisionEvent>(e);
 
@@ -677,8 +689,6 @@ void onAllRayTestEvent(EventPtr e) {
 	std::cout << std::endl;
 }
 
-bool g_debug_draw = false;
-
 void onButtonStateEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<ButtonStateEvent>(e);
 
@@ -701,9 +711,6 @@ void onWindowResizeEvent(EventPtr e) {
 
 void onLoopFinishedEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<LoopFinishedEvent>(e);
-
-	if (g_debug_draw)
-		PhysicsManager::getInstance().debugDraw();
 
 	PhysicsManager::getInstance().pickingMotion(g_x, g_y, 1000.0f);
 

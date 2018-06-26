@@ -117,8 +117,8 @@ namespace Graphics {
 		m_projection = glm::perspective(glm::radians(m_fov),
 			(float)m_screen_width / (float)m_screen_height, 0.1f, 1000.0f);
 
-		//m_pp_framebuffer.initialize(FB_COLOR_BUFFER,
-		//	m_screen_width, m_screen_height);
+		m_pp_framebuffer.initialize(FB_COLOR_BUFFER,
+			m_screen_width, m_screen_height);
 
 		glViewport(view_port[0], view_port[1], view_port[2], view_port[3]);
 		glClearColor(color.r, color.g, color.b, color.a);
@@ -140,6 +140,15 @@ namespace Graphics {
 		float fov = lua_context.get<float>("fov");
 		int active_camera = lua_context.get<int>("active_camera");
 
+		auto vs = lua_context.get<std::string>("quadvs");
+		auto gs = lua_context.get<std::string>("quadgs");
+		auto fs = lua_context.get<std::string>("quadfs");
+
+		if (gs.size() > 0)
+			m_quad_shader = addShader(vs, gs, fs);
+		else
+			m_quad_shader = addShader(vs, fs);
+
 		lua_context.destroy();
 
 		return initialize(depth_test, face_culling, blending,
@@ -157,8 +166,19 @@ namespace Graphics {
 			it->m_delta_time = delta_time;
 
 		renderDepthMaps();
+
+		m_pp_framebuffer.bind();
+
 		renderScene();
 		renderSkybox();
+
+		EventPtr e =
+			std::make_shared<PrePostProcessEvent>(PrePostProcessEvent());
+		EventManager::getInstance().sendEvent(e);
+
+		Framebuffer::defaultFramebuffer();
+
+		postProcess();
 
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_ERROR
 		checkOpenGLErrors("Exiting GraphicsManager::update");
@@ -237,8 +257,6 @@ namespace Graphics {
 	}
 
 	void GraphicsManager::renderScene() {
-		Framebuffer::defaultFramebuffer();
-
 		glViewport(0, 0, m_screen_width, m_screen_height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -319,6 +337,12 @@ namespace Graphics {
 			glDepthFunc(depth_func);
 			glEnable(GL_CULL_FACE);
 		}
+	}
+
+	void GraphicsManager::postProcess() {
+		m_shaders[m_quad_shader].bind();
+		m_shaders[m_quad_shader].update();
+		drawQuad(glm::vec4(-0.8f, -0.8f, 1.6f, 1.6f));
 	}
 
 	void GraphicsManager::bindLights(Shader& shader) {
@@ -487,6 +511,8 @@ namespace Graphics {
 
 		for (auto& it : m_spot_lights)
 			it.depth_map.destroy();
+
+		m_pp_framebuffer.destroy();
 
 		m_skybox.destroy();
 	}
