@@ -450,10 +450,12 @@
     <None Include="Shaders\acubedepthmapvs.glsl" />
     <None Include="Shaders\ashadowfs.glsl" />
     <None Include="Shaders\ashadowvs.glsl" />
+    <None Include="Shaders\brightFilterfs.glsl" />
     <None Include="Shaders\buttonfs.glsl" />
     <None Include="Shaders\buttonvs.glsl" />
     <None Include="Shaders\colorfs.glsl" />
     <None Include="Shaders\colorvs.glsl" />
+    <None Include="Shaders\combinefs.glsl" />
     <None Include="Shaders\cubemapfs.glsl" />
     <None Include="Shaders\cubemapvs.glsl" />
     <None Include="Shaders\debugdrawfs.glsl" />

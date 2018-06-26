@@ -455,5 +455,11 @@
     <None Include="Shaders\gaussianBlurfs.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\brightFilterfs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\combinefs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

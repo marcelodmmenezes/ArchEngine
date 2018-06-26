@@ -251,6 +251,14 @@ namespace Graphics {
 		Framebuffer m_vertical_gb_framebuffer2;
 		//--------------
 
+		// Bloom
+		unsigned m_bright_shader;
+		Framebuffer m_bright_framebuffer;
+
+		unsigned m_combine_shader;
+		Framebuffer m_combine_framebuffer;
+		//------
+
 		// Per pixel effects
 		float m_contrast_factor;
 

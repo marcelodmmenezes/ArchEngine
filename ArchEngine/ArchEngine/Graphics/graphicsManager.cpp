@@ -137,6 +137,15 @@ namespace Graphics {
 		m_vertical_gb_framebuffer2.setProportion(8);
 		//--------------
 
+		// Bloom
+		m_bright_framebuffer.initialize(FB_COLOR_BUFFER,
+			m_screen_width / 2, m_screen_height / 2);
+		m_bright_framebuffer.setProportion(2);
+		m_combine_framebuffer.initialize(FB_COLOR_BUFFER,
+			m_screen_width / 8, m_screen_height / 8);
+		m_combine_framebuffer.setProportion(8);
+		//------
+
 		m_pp_framebuffer.initialize(FB_COLOR_BUFFER,
 			m_screen_width, m_screen_height);
 		//---------------------------------------------------------------------
@@ -170,9 +179,19 @@ namespace Graphics {
 		auto vs = lua_context.get<std::string>("m_horizontal_gb_shadervs");
 		auto fs = lua_context.get<std::string>("m_horizontal_gb_shaderfs");
 		m_horizontal_gb_shader = addShader(vs, fs);
+
 		vs = lua_context.get<std::string>("m_vertical_gb_shadervs");
 		fs = lua_context.get<std::string>("m_vertical_gb_shaderfs");
 		m_vertical_gb_shader = addShader(vs, fs);
+
+		vs = lua_context.get<std::string>("m_bright_shadervs");
+		fs = lua_context.get<std::string>("m_bright_shaderfs");
+		m_bright_shader = addShader(vs, fs);
+
+		vs = lua_context.get<std::string>("m_combine_shadervs");
+		fs = lua_context.get<std::string>("m_combine_shaderfs");
+		m_combine_shader = addShader(vs, fs);
+
 		vs = lua_context.get<std::string>("m_pp_shadervs");
 		fs = lua_context.get<std::string>("m_pp_shaderfs");
 		m_pp_shader = addShader(vs, fs);
@@ -375,7 +394,7 @@ namespace Graphics {
 		glDisable(GL_DEPTH_TEST);
 
 		unsigned texture_id = m_pp_framebuffer.getTextureId();
-
+		
 		if (m_blur_level > 0) {
 			// Horizontal blur
 			m_horizontal_gb_framebuffer.bind();
@@ -458,6 +477,23 @@ namespace Graphics {
 			texture_id = m_vertical_gb_framebuffer2.getTextureId();
 		}
 
+		m_bright_framebuffer.bind();
+
+		glViewport(0, 0, m_bright_framebuffer.getWidth(),
+			m_bright_framebuffer.getHeight());
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		m_shaders[m_bright_shader].bind();
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture_id);
+		m_shaders[m_bright_shader].setInt("u_texture", 0);
+		m_shaders[m_bright_shader].update();
+
+		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+
+		texture_id = m_bright_framebuffer.getTextureId();
+		
 		Framebuffer::defaultFramebuffer();
 
 		glViewport(0, 0, m_screen_width, m_screen_height);
@@ -650,6 +686,10 @@ namespace Graphics {
 		m_horizontal_gb_framebuffer2.destroy();
 		m_vertical_gb_framebuffer.destroy();
 		m_vertical_gb_framebuffer2.destroy();
+
+		m_bright_framebuffer.destroy();
+		m_combine_framebuffer.destroy();
+
 		m_pp_framebuffer.destroy();
 
 		m_skybox.destroy();

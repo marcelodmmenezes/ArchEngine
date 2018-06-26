@@ -24,6 +24,12 @@ m_horizontal_gb_shaderfs = "../../ArchEngine/Shaders/gaussianBlurfs.glsl"
 m_vertical_gb_shadervs = "../../ArchEngine/Shaders/verticalBlurvs.glsl"
 m_vertical_gb_shaderfs = "../../ArchEngine/Shaders/gaussianBlurfs.glsl"
 
+m_bright_shadervs = "../../ArchEngine/Shaders/postprocessingvs.glsl"
+m_bright_shaderfs = "../../ArchEngine/Shaders/brightFilterfs.glsl"
+
+m_combine_shadervs = "../../ArchEngine/Shaders/postprocessingvs.glsl"
+m_combine_shaderfs = "../../ArchEngine/Shaders/combinefs.glsl"
+
 m_pp_shadervs = "../../ArchEngine/Shaders/postprocessingvs.glsl"
 m_pp_shaderfs = "../../ArchEngine/Shaders/postprocessingfs.glsl"
 -------------------------
