@@ -446,5 +446,14 @@
     <None Include="Shaders\postprocessingvs.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\horizontalBlurvs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\verticalBlurvs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\gaussianBlurfs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

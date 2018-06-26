@@ -178,7 +178,6 @@ namespace Graphics {
 		unsigned m_line_vao;
 		unsigned m_line_vbo;
 
-		unsigned m_quad_shader;
 		unsigned m_quad_vao;
 		unsigned m_quad_vbo;
 		
@@ -186,8 +185,15 @@ namespace Graphics {
 		float m_fov;
 		glm::mat4 m_projection;
 
-		//--------------------------------- Post processing effects framebuffer
-		Framebuffer m_pp_framebuffer;
+		//-------------------------------- Post processing effects framebuffers
+		unsigned m_horizontal_gb_shader;
+		Framebuffer m_horizontal_gb_framebuffer; // Gaussian blur
+
+		unsigned m_vertical_gb_shader;
+		Framebuffer m_vertical_gb_framebuffer; // Gaussian blur
+
+		unsigned m_pp_shader;
+		Framebuffer m_pp_framebuffer; // Per pixel effects
 
 		//------------------------------------------------------------- Cameras
 		int m_active_camera;

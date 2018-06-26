@@ -117,8 +117,14 @@ namespace Graphics {
 		m_projection = glm::perspective(glm::radians(m_fov),
 			(float)m_screen_width / (float)m_screen_height, 0.1f, 1000.0f);
 
+		//---------------------------------------- Post Processing Framebuffers
+		m_horizontal_gb_framebuffer.initialize(FB_COLOR_BUFFER,
+			m_screen_width, m_screen_height);
+		m_vertical_gb_framebuffer.initialize(FB_COLOR_BUFFER,
+			m_screen_width, m_screen_height);
 		m_pp_framebuffer.initialize(FB_COLOR_BUFFER,
 			m_screen_width, m_screen_height);
+		//---------------------------------------------------------------------
 
 		glViewport(view_port[0], view_port[1], view_port[2], view_port[3]);
 		glClearColor(color.r, color.g, color.b, color.a);
@@ -146,14 +152,15 @@ namespace Graphics {
 		int active_camera = lua_context.get<int>("active_camera");
 
 		//---------------------------------------------- Post Processing Shader
-		auto vs = lua_context.get<std::string>("quadvs");
-		auto gs = lua_context.get<std::string>("quadgs");
-		auto fs = lua_context.get<std::string>("quadfs");
-
-		if (gs.size() > 0)
-			m_quad_shader = addShader(vs, gs, fs);
-		else
-			m_quad_shader = addShader(vs, fs);
+		auto vs = lua_context.get<std::string>("m_horizontal_gb_shadervs");
+		auto fs = lua_context.get<std::string>("m_horizontal_gb_shaderfs");
+		m_horizontal_gb_shader = addShader(vs, fs);
+		vs = lua_context.get<std::string>("m_vertical_gb_shadervs");
+		fs = lua_context.get<std::string>("m_vertical_gb_shaderfs");
+		m_vertical_gb_shader = addShader(vs, fs);
+		vs = lua_context.get<std::string>("m_pp_shadervs");
+		fs = lua_context.get<std::string>("m_pp_shaderfs");
+		m_pp_shader = addShader(vs, fs);
 		//---------------------------------------------------------------------
 
 		lua_context.destroy();
@@ -174,7 +181,7 @@ namespace Graphics {
 
 		renderDepthMaps();
 
-		m_pp_framebuffer.bind();
+		m_horizontal_gb_framebuffer.bind();
 
 		renderScene();
 		renderSkybox();
@@ -182,8 +189,6 @@ namespace Graphics {
 		EventPtr e =
 			std::make_shared<PrePostProcessEvent>(PrePostProcessEvent());
 		EventManager::getInstance().sendEvent(e);
-
-		Framebuffer::defaultFramebuffer();
 
 		postProcess();
 
@@ -347,18 +352,61 @@ namespace Graphics {
 	}
 
 	void GraphicsManager::postProcess() {
-		m_shaders[m_quad_shader].bind();
+		bool depth_test = false;
 
+		if (glIsEnabled(GL_DEPTH_TEST))
+			depth_test = true;
+
+		glDisable(GL_DEPTH_TEST);
+		/*
+		m_vertical_gb_framebuffer.bind();
+
+		// Horizontal blur
+		m_shaders[m_pp_shader].bind();
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, m_pp_framebuffer.getTextureId());
-		m_shaders[m_quad_shader].setInt("u_texture", 0);
-
-		m_shaders[m_quad_shader].update();
-
+		glBindTexture(GL_TEXTURE_2D,
+			m_horizontal_gb_framebuffer.getTextureId());
+		m_shaders[m_pp_shader].setInt("u_texture", 0);
+		m_shaders[m_pp_shader].update();
 		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
-
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, 0);
+		//----------------
+		*/
+		m_pp_framebuffer.bind();
+		//Framebuffer::defaultFramebuffer();
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		// Vertical blur
+		m_shaders[m_horizontal_gb_shader].bind();
+		glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_2D, m_vertical_gb_framebuffer.getTextureId());
+		glBindTexture(GL_TEXTURE_2D, m_horizontal_gb_framebuffer.getTextureId());
+		m_shaders[m_horizontal_gb_shader].setInt("u_texture", 0);
+		m_shaders[m_horizontal_gb_shader].setFloat("u_target_width",
+			m_horizontal_gb_framebuffer.getWidth());
+		m_shaders[m_horizontal_gb_shader].update();
+		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		//----------------
+		
+		Framebuffer::defaultFramebuffer();
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		// Per pixel effects
+		m_shaders[m_pp_shader].bind();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_pp_framebuffer.getTextureId());
+		m_shaders[m_pp_shader].setInt("u_texture", 0);
+		m_shaders[m_pp_shader].update();
+		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		//----------------
+
+		if (depth_test)
+			glEnable(GL_DEPTH_TEST);
 	}
 
 	void GraphicsManager::bindLights(Shader& shader) {
@@ -528,6 +576,8 @@ namespace Graphics {
 		for (auto& it : m_spot_lights)
 			it.depth_map.destroy();
 
+		m_horizontal_gb_framebuffer.destroy();
+		m_vertical_gb_framebuffer.destroy();
 		m_pp_framebuffer.destroy();
 
 		m_skybox.destroy();

@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/05/2018                                                       *
- * Last Modified: 21/06/2018                                                 *
+ * Last Modified: 25/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -40,6 +40,9 @@ namespace Graphics {
 		void bind();
 		unsigned getTextureId() const;
 		static void defaultFramebuffer();
+
+		int getWidth() const;
+		int getHeight() const;
 
 	private:
 		bool initializeColorBuffer();

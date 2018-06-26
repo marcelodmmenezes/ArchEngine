@@ -17,12 +17,19 @@ depth_test = true
 face_culling = true
 blending = true
 
-quadvs = "../../ArchEngine/Shaders/postprocessingvs.glsl"
-quadgs = ""
-quadfs = "../../ArchEngine/Shaders/postprocessingfs.glsl"
+-- Post processing shaders
+m_horizontal_gb_shadervs = "../../ArchEngine/Shaders/horizontalBlurvs.glsl"
+m_horizontal_gb_shaderfs = "../../ArchEngine/Shaders/gaussianBlurfs.glsl"
+
+m_vertical_gb_shadervs = "../../ArchEngine/Shaders/verticalBlurvs.glsl"
+m_vertical_gb_shaderfs = "../../ArchEngine/Shaders/gaussianBlurfs.glsl"
+
+m_pp_shadervs = "../../ArchEngine/Shaders/postprocessingvs.glsl"
+m_pp_shaderfs = "../../ArchEngine/Shaders/postprocessingfs.glsl"
+-------------------------
 
 -- Allocation hint
-n_shaders = 20
+n_shaders = 25
 ------------------
 
 --clear_color = { 0.05, 0.08, 0.07, 1.0 }

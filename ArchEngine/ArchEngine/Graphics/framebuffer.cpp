@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 25/05/2018                                                       *
- * Last Modified: 21/06/2018                                                 *
+ * Last Modified: 25/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -81,6 +81,14 @@ namespace Graphics {
 
 	void Framebuffer::defaultFramebuffer() {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	int Framebuffer::getWidth() const {
+		return m_width;
+	}
+
+	int Framebuffer::getHeight() const {
+		return m_height;
 	}
 
 	bool Framebuffer::initializeColorBuffer() {
