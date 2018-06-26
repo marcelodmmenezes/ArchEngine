@@ -426,7 +426,7 @@ void loadData() {
 	);
 
 	GraphicsManager::getInstance().setSkybox(
-		"../../../../GameEngineLearning/assets/skybox/", "jpg",
+		"../../../../GameEngineLearning/assets/skybox/day", "jpg",
 		"../../ArchEngine/Shaders/skyboxvs.glsl",
 		"../../ArchEngine/Shaders/skyboxfs.glsl"
 	);

@@ -341,8 +341,17 @@ namespace Graphics {
 
 	void GraphicsManager::postProcess() {
 		m_shaders[m_quad_shader].bind();
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_pp_framebuffer.getTextureId());
+		m_shaders[m_quad_shader].setInt("u_texture", 0);
+
 		m_shaders[m_quad_shader].update();
+
 		drawQuad(glm::vec4(-0.8f, -0.8f, 1.6f, 1.6f));
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void GraphicsManager::bindLights(Shader& shader) {
