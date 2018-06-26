@@ -186,6 +186,7 @@ namespace Graphics {
 		glm::mat4 m_projection;
 
 		//-------------------------------- Post processing effects framebuffers
+		// TODO: vector of framebuffers
 		unsigned m_horizontal_gb_shader;
 		Framebuffer m_horizontal_gb_framebuffer; // Gaussian blur
 

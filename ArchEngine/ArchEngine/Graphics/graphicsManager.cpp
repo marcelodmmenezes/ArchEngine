@@ -181,7 +181,10 @@ namespace Graphics {
 
 		renderDepthMaps();
 
-		m_horizontal_gb_framebuffer.bind();
+		m_pp_framebuffer.bind();
+		glViewport(0, 0, m_pp_framebuffer.getWidth(),
+			m_pp_framebuffer.getHeight());
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		renderScene();
 		renderSkybox();
@@ -269,9 +272,6 @@ namespace Graphics {
 	}
 
 	void GraphicsManager::renderScene() {
-		glViewport(0, 0, m_screen_width, m_screen_height);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		for (auto& it : g_entities) {
 			m_shaders[it.shader].bind();
 
@@ -358,46 +358,51 @@ namespace Graphics {
 			depth_test = true;
 
 		glDisable(GL_DEPTH_TEST);
-		/*
-		m_vertical_gb_framebuffer.bind();
 
 		// Horizontal blur
-		m_shaders[m_pp_shader].bind();
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D,
-			m_horizontal_gb_framebuffer.getTextureId());
-		m_shaders[m_pp_shader].setInt("u_texture", 0);
-		m_shaders[m_pp_shader].update();
-		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		//----------------
-		*/
-		m_pp_framebuffer.bind();
-		//Framebuffer::defaultFramebuffer();
+		m_horizontal_gb_framebuffer.bind();
+		glViewport(0, 0, m_horizontal_gb_framebuffer.getWidth(),
+			m_horizontal_gb_framebuffer.getHeight());
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// Vertical blur
 		m_shaders[m_horizontal_gb_shader].bind();
+
 		glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D, m_vertical_gb_framebuffer.getTextureId());
-		glBindTexture(GL_TEXTURE_2D, m_horizontal_gb_framebuffer.getTextureId());
+		glBindTexture(GL_TEXTURE_2D, m_pp_framebuffer.getTextureId());
 		m_shaders[m_horizontal_gb_shader].setInt("u_texture", 0);
 		m_shaders[m_horizontal_gb_shader].setFloat("u_target_width",
 			m_horizontal_gb_framebuffer.getWidth());
 		m_shaders[m_horizontal_gb_shader].update();
+
 		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+		//----------------
+		
+		m_vertical_gb_framebuffer.bind();
+		glViewport(0, 0, m_horizontal_gb_framebuffer.getWidth(),
+			m_horizontal_gb_framebuffer.getHeight());
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		// Vertical blur
+		m_shaders[m_vertical_gb_shader].bind();
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D,
+			m_horizontal_gb_framebuffer.getTextureId());
+		m_shaders[m_vertical_gb_shader].setInt("u_texture", 0);
+		m_shaders[m_vertical_gb_shader].setFloat("u_target_height",
+			m_vertical_gb_framebuffer.getHeight());
+		m_shaders[m_vertical_gb_shader].update();
+		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
 		//----------------
 		
 		Framebuffer::defaultFramebuffer();
+		glViewport(0, 0, m_screen_width, m_screen_height);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Per pixel effects
 		m_shaders[m_pp_shader].bind();
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, m_pp_framebuffer.getTextureId());
+		glBindTexture(GL_TEXTURE_2D,
+			m_vertical_gb_framebuffer.getTextureId());
 		m_shaders[m_pp_shader].setInt("u_texture", 0);
 		m_shaders[m_pp_shader].update();
 		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
