@@ -5,7 +5,7 @@
  *                                                                           *
  * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
  * Created: 12/05/2018                                                       *
- * Last Modified: 25/06/2018                                                 *
+ * Last Modified: 26/06/2018                                                 *
  *===========================================================================*/
 
 
@@ -70,8 +70,12 @@ int removeMesh(lua_State* lua) {
 namespace Graphics {
 	GraphicsManager::GraphicsManager() :
 		m_state(CONSTRUCTED),
-		m_line_vao(0), m_quad_vao(0),
-		m_draw_skybox(false), m_fog(false) {
+		m_line_vao(0),
+		m_quad_vao(0),
+		m_draw_skybox(false),
+		m_fog(false),
+		m_blur_level(0),
+		m_contrast_factor(0.0f) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"GraphicsManager constructor");
@@ -370,87 +374,101 @@ namespace Graphics {
 
 		glDisable(GL_DEPTH_TEST);
 
-		// Horizontal blur
-		m_horizontal_gb_framebuffer.bind();
-		glViewport(0, 0, m_horizontal_gb_framebuffer.getWidth(),
-			m_horizontal_gb_framebuffer.getHeight());
-		glClear(GL_COLOR_BUFFER_BIT);
+		unsigned texture_id = m_pp_framebuffer.getTextureId();
 
-		m_shaders[m_horizontal_gb_shader].bind();
+		if (m_blur_level > 0) {
+			// Horizontal blur
+			m_horizontal_gb_framebuffer.bind();
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, m_pp_framebuffer.getTextureId());
-		m_shaders[m_horizontal_gb_shader].setInt("u_texture", 0);
-		m_shaders[m_horizontal_gb_shader].setFloat("u_target_width",
-			m_horizontal_gb_framebuffer.getWidth());
-		m_shaders[m_horizontal_gb_shader].update();
+			glViewport(0, 0, m_horizontal_gb_framebuffer.getWidth(),
+				m_horizontal_gb_framebuffer.getHeight());
+			glClear(GL_COLOR_BUFFER_BIT);
 
-		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
-		//----------------
+			m_shaders[m_horizontal_gb_shader].bind();
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, texture_id);
+			m_shaders[m_horizontal_gb_shader].setInt("u_texture", 0);
+			m_shaders[m_horizontal_gb_shader].setFloat("u_target_width",
+				m_horizontal_gb_framebuffer.getWidth());
+			m_shaders[m_horizontal_gb_shader].update();
+
+			drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+			//----------------
+
+			m_vertical_gb_framebuffer.bind();
+
+			glViewport(0, 0, m_horizontal_gb_framebuffer.getWidth(),
+				m_horizontal_gb_framebuffer.getHeight());
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			// Vertical blur
+			m_shaders[m_vertical_gb_shader].bind();
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D,
+				m_horizontal_gb_framebuffer.getTextureId());
+			m_shaders[m_vertical_gb_shader].setInt("u_texture", 0);
+			m_shaders[m_vertical_gb_shader].setFloat("u_target_height",
+				m_vertical_gb_framebuffer.getHeight());
+			m_shaders[m_vertical_gb_shader].update();
+			drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+			//----------------
+
+			texture_id = m_vertical_gb_framebuffer.getTextureId();
+		}
 		
-		m_vertical_gb_framebuffer.bind();
-		glViewport(0, 0, m_horizontal_gb_framebuffer.getWidth(),
-			m_horizontal_gb_framebuffer.getHeight());
-		glClear(GL_COLOR_BUFFER_BIT);
+		if (m_blur_level > 1) {
+			// Horizontal blur
+			m_horizontal_gb_framebuffer2.bind();
 
-		// Vertical blur
-		m_shaders[m_vertical_gb_shader].bind();
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D,
-			m_horizontal_gb_framebuffer.getTextureId());
-		m_shaders[m_vertical_gb_shader].setInt("u_texture", 0);
-		m_shaders[m_vertical_gb_shader].setFloat("u_target_height",
-			m_vertical_gb_framebuffer.getHeight());
-		m_shaders[m_vertical_gb_shader].update();
-		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
-		//----------------
-		
-		// Horizontal blur
-		m_horizontal_gb_framebuffer2.bind();
-		glViewport(0, 0, m_horizontal_gb_framebuffer2.getWidth(),
-			m_horizontal_gb_framebuffer2.getHeight());
-		glClear(GL_COLOR_BUFFER_BIT);
+			glViewport(0, 0, m_horizontal_gb_framebuffer2.getWidth(),
+				m_horizontal_gb_framebuffer2.getHeight());
+			glClear(GL_COLOR_BUFFER_BIT);
 
-		m_shaders[m_horizontal_gb_shader].bind();
+			m_shaders[m_horizontal_gb_shader].bind();
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D,
-			m_vertical_gb_framebuffer.getTextureId());
-		m_shaders[m_horizontal_gb_shader].setInt("u_texture", 0);
-		m_shaders[m_horizontal_gb_shader].setFloat("u_target_width",
-			m_horizontal_gb_framebuffer2.getWidth());
-		m_shaders[m_horizontal_gb_shader].update();
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, texture_id);
+			m_shaders[m_horizontal_gb_shader].setInt("u_texture", 0);
+			m_shaders[m_horizontal_gb_shader].setFloat("u_target_width",
+				m_horizontal_gb_framebuffer2.getWidth());
+			m_shaders[m_horizontal_gb_shader].update();
 
-		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
-		//----------------
+			drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+			//----------------
 
-		m_vertical_gb_framebuffer2.bind();
-		glViewport(0, 0, m_horizontal_gb_framebuffer2.getWidth(),
-			m_horizontal_gb_framebuffer2.getHeight());
-		glClear(GL_COLOR_BUFFER_BIT);
+			m_vertical_gb_framebuffer2.bind();
 
-		// Vertical blur
-		m_shaders[m_vertical_gb_shader].bind();
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D,
-			m_horizontal_gb_framebuffer2.getTextureId());
-		m_shaders[m_vertical_gb_shader].setInt("u_texture", 0);
-		m_shaders[m_vertical_gb_shader].setFloat("u_target_height",
-			m_vertical_gb_framebuffer2.getHeight());
-		m_shaders[m_vertical_gb_shader].update();
-		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
-		//----------------
+			glViewport(0, 0, m_horizontal_gb_framebuffer2.getWidth(),
+				m_horizontal_gb_framebuffer2.getHeight());
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			// Vertical blur
+			m_shaders[m_vertical_gb_shader].bind();
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D,
+				m_horizontal_gb_framebuffer2.getTextureId());
+			m_shaders[m_vertical_gb_shader].setInt("u_texture", 0);
+			m_shaders[m_vertical_gb_shader].setFloat("u_target_height",
+				m_vertical_gb_framebuffer2.getHeight());
+			m_shaders[m_vertical_gb_shader].update();
+			drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+			//----------------
+
+			texture_id = m_vertical_gb_framebuffer2.getTextureId();
+		}
 
 		Framebuffer::defaultFramebuffer();
+
 		glViewport(0, 0, m_screen_width, m_screen_height);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Per pixel effects
 		m_shaders[m_pp_shader].bind();
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D,
-			m_vertical_gb_framebuffer2.getTextureId());
+		glBindTexture(GL_TEXTURE_2D, texture_id);
 		m_shaders[m_pp_shader].setInt("u_texture", 0);
+		m_shaders[m_pp_shader].setFloat("u_contrast", m_contrast_factor);
 		m_shaders[m_pp_shader].update();
 		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
 		glActiveTexture(GL_TEXTURE0);

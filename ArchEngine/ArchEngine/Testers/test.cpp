@@ -7,7 +7,7 @@
 *                                                                           *
 * Marcelo de Matos Menezes - marcelodmmenezes@gmail.com                     *
 * Created: 30/04/2018                                                       *
-* Last Modified: 21/06/2018                                                 *
+* Last Modified: 26/06/2018                                                 *
 *===========================================================================*/
 
 
@@ -689,6 +689,9 @@ void onAllRayTestEvent(EventPtr e) {
 	std::cout << std::endl;
 }
 
+int g_blur_level = 0;
+float g_contrast = 0.0f;
+
 void onButtonStateEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<ButtonStateEvent>(e);
 
@@ -698,6 +701,41 @@ void onButtonStateEvent(EventPtr e) {
 			g_debug_draw = !g_debug_draw;
 		break;
 
+	case 1:
+		if (!evnt->getState()) {
+			g_blur_level++;
+			g_blur_level = std::min(g_blur_level, 2);
+			GraphicsManager::getInstance().
+				setGaussianBlurLevel(g_blur_level);
+		}
+		break;
+
+	case 2:
+		if (!evnt->getState()) {
+			g_blur_level--;
+			g_blur_level = std::max(g_blur_level, 0);
+			GraphicsManager::getInstance().
+				setGaussianBlurLevel(g_blur_level);
+		}
+		break;
+
+	case 3:
+		if (!evnt->getState()) {
+			g_contrast += 0.1f;
+			g_contrast = std::min(g_contrast, 1.0f);
+			GraphicsManager::getInstance().
+				setContrastFactor(g_contrast);
+		}
+		break;
+
+	case 4:
+		if (!evnt->getState()) {
+			g_contrast -= 0.1f;
+			g_contrast = std::max(g_contrast, -1.0f);
+			GraphicsManager::getInstance().
+				setContrastFactor(g_contrast);
+		}
+		break;
 	}
 }
 
