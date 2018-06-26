@@ -21,6 +21,10 @@ quadvs = "../../ArchEngine/Shaders/postprocessingvs.glsl"
 quadgs = ""
 quadfs = "../../ArchEngine/Shaders/postprocessingfs.glsl"
 
+-- Allocation hint
+n_shaders = 20
+------------------
+
 --clear_color = { 0.05, 0.08, 0.07, 1.0 }
 clear_color = { 1.0, 1.0, 1.0, 1.0 }
 --clear_color = { 0.0, 0.0, 0.0, 1.0 }

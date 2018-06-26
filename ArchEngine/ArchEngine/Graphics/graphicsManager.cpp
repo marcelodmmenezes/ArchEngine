@@ -132,6 +132,11 @@ namespace Graphics {
 		LuaScript lua_context;
 		lua_context.initialize(path);
 
+		// TODO: allocation hints for all containers
+		int n_shaders = lua_context.get<int>("n_shaders");
+
+		m_shaders.reserve(n_shaders);
+
 		bool depth_test = lua_context.get<bool>("depth_test");
 		bool face_culling = lua_context.get<bool>("face_culling");
 		bool blending = lua_context.get<bool>("blending");
@@ -140,6 +145,7 @@ namespace Graphics {
 		float fov = lua_context.get<float>("fov");
 		int active_camera = lua_context.get<int>("active_camera");
 
+		//---------------------------------------------- Post Processing Shader
 		auto vs = lua_context.get<std::string>("quadvs");
 		auto gs = lua_context.get<std::string>("quadgs");
 		auto fs = lua_context.get<std::string>("quadfs");
@@ -148,6 +154,7 @@ namespace Graphics {
 			m_quad_shader = addShader(vs, gs, fs);
 		else
 			m_quad_shader = addShader(vs, fs);
+		//---------------------------------------------------------------------
 
 		lua_context.destroy();
 
@@ -348,7 +355,7 @@ namespace Graphics {
 
 		m_shaders[m_quad_shader].update();
 
-		drawQuad(glm::vec4(-0.8f, -0.8f, 1.6f, 1.6f));
+		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, 0);
