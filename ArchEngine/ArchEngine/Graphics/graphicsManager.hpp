@@ -92,6 +92,16 @@ namespace Graphics {
 		unsigned addPointLight(const PointLight& light);
 		unsigned addSpotLight(const SpotLight& light);
 
+		// Removes the component by handle
+		void removeCamera(unsigned handle);
+		void removeShader(unsigned handle);
+		void removeMesh(unsigned handle);
+		void removeAnimation(unsigned handle);
+		void removeMaterial(unsigned handle);
+		void removeDirectionalLight(unsigned handle);
+		void removePointLight(unsigned handle);
+		void removeSpotLight(unsigned handle);
+
 		// Helpers
 		void setProjectionMatrix(const glm::mat4& matrix);
 		glm::mat4 getProjectionMatrix();
@@ -128,15 +138,12 @@ namespace Graphics {
 			const glm::vec3& fog_color);
 		void removeFog();
 
-		// Removes the component by handle
-		void removeCamera(unsigned handle);
-		void removeShader(unsigned handle);
-		void removeMesh(unsigned handle);
-		void removeAnimation(unsigned handle);
-		void removeMaterial(unsigned handle);
-		void removeDirectionalLight(unsigned handle);
-		void removePointLight(unsigned handle);
-		void removeSpotLight(unsigned handle);
+		// Post Processing
+		void setGaussianBlurLevel(int level);
+		int getGaussianBlurLevel() const;
+
+		void setContrastFactor(float factor);
+		float getContrastFactor() const;
 
 	private:
 		enum State {
@@ -185,17 +192,6 @@ namespace Graphics {
 		float m_fov;
 		glm::mat4 m_projection;
 
-		//-------------------------------- Post processing effects framebuffers
-		// TODO: vector of framebuffers
-		unsigned m_horizontal_gb_shader;
-		Framebuffer m_horizontal_gb_framebuffer; // Gaussian blur
-
-		unsigned m_vertical_gb_shader;
-		Framebuffer m_vertical_gb_framebuffer; // Gaussian blur
-
-		unsigned m_pp_shader;
-		Framebuffer m_pp_framebuffer; // Per pixel effects
-
 		//------------------------------------------------------------- Cameras
 		int m_active_camera;
 		std::vector<Camera*> m_cameras;
@@ -239,6 +235,28 @@ namespace Graphics {
 		glm::vec3 m_sky_color;
 		int m_sb_lower_limit;
 		int m_sb_upper_limit;
+
+		//--------------------------------------------- Post processing effects
+		// TODO: vector of framebuffers
+
+		// Gaussian blur
+		int m_blur_level;
+
+		unsigned m_horizontal_gb_shader;
+		Framebuffer m_horizontal_gb_framebuffer;
+		Framebuffer m_horizontal_gb_framebuffer2;
+
+		unsigned m_vertical_gb_shader;
+		Framebuffer m_vertical_gb_framebuffer;
+		Framebuffer m_vertical_gb_framebuffer2;
+		//--------------
+
+		// Per pixel effects
+		float m_contrast_factor;
+
+		unsigned m_pp_shader;
+		Framebuffer m_pp_framebuffer;
+		//------------------
 	};
 }
 

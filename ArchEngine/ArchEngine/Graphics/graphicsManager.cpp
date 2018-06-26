@@ -118,10 +118,21 @@ namespace Graphics {
 			(float)m_screen_width / (float)m_screen_height, 0.1f, 1000.0f);
 
 		//---------------------------------------- Post Processing Framebuffers
+		// Gaussian blur
 		m_horizontal_gb_framebuffer.initialize(FB_COLOR_BUFFER,
-			m_screen_width, m_screen_height);
+			m_screen_width / 2, m_screen_height / 2);
+		m_horizontal_gb_framebuffer.setProportion(2);
+		m_horizontal_gb_framebuffer2.initialize(FB_COLOR_BUFFER,
+			m_screen_width / 8, m_screen_height / 8);
+		m_horizontal_gb_framebuffer2.setProportion(8);
 		m_vertical_gb_framebuffer.initialize(FB_COLOR_BUFFER,
-			m_screen_width, m_screen_height);
+			m_screen_width / 2, m_screen_height / 2);
+		m_vertical_gb_framebuffer.setProportion(2);
+		m_vertical_gb_framebuffer2.initialize(FB_COLOR_BUFFER,
+			m_screen_width / 8, m_screen_height / 8);
+		m_vertical_gb_framebuffer2.setProportion(8);
+		//--------------
+
 		m_pp_framebuffer.initialize(FB_COLOR_BUFFER,
 			m_screen_width, m_screen_height);
 		//---------------------------------------------------------------------
@@ -394,6 +405,42 @@ namespace Graphics {
 		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
 		//----------------
 		
+		// Horizontal blur
+		m_horizontal_gb_framebuffer2.bind();
+		glViewport(0, 0, m_horizontal_gb_framebuffer2.getWidth(),
+			m_horizontal_gb_framebuffer2.getHeight());
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		m_shaders[m_horizontal_gb_shader].bind();
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D,
+			m_vertical_gb_framebuffer.getTextureId());
+		m_shaders[m_horizontal_gb_shader].setInt("u_texture", 0);
+		m_shaders[m_horizontal_gb_shader].setFloat("u_target_width",
+			m_horizontal_gb_framebuffer2.getWidth());
+		m_shaders[m_horizontal_gb_shader].update();
+
+		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+		//----------------
+
+		m_vertical_gb_framebuffer2.bind();
+		glViewport(0, 0, m_horizontal_gb_framebuffer2.getWidth(),
+			m_horizontal_gb_framebuffer2.getHeight());
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		// Vertical blur
+		m_shaders[m_vertical_gb_shader].bind();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D,
+			m_horizontal_gb_framebuffer2.getTextureId());
+		m_shaders[m_vertical_gb_shader].setInt("u_texture", 0);
+		m_shaders[m_vertical_gb_shader].setFloat("u_target_height",
+			m_vertical_gb_framebuffer2.getHeight());
+		m_shaders[m_vertical_gb_shader].update();
+		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+		//----------------
+
 		Framebuffer::defaultFramebuffer();
 		glViewport(0, 0, m_screen_width, m_screen_height);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -402,7 +449,7 @@ namespace Graphics {
 		m_shaders[m_pp_shader].bind();
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D,
-			m_vertical_gb_framebuffer.getTextureId());
+			m_vertical_gb_framebuffer2.getTextureId());
 		m_shaders[m_pp_shader].setInt("u_texture", 0);
 		m_shaders[m_pp_shader].update();
 		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
@@ -582,7 +629,9 @@ namespace Graphics {
 			it.depth_map.destroy();
 
 		m_horizontal_gb_framebuffer.destroy();
+		m_horizontal_gb_framebuffer2.destroy();
 		m_vertical_gb_framebuffer.destroy();
+		m_vertical_gb_framebuffer2.destroy();
 		m_pp_framebuffer.destroy();
 
 		m_skybox.destroy();
@@ -710,6 +759,147 @@ namespace Graphics {
 		const SpotLight& light) {
 		m_spot_lights.push_back(light);
 		return (unsigned)m_spot_lights.size() - 1;
+	}
+	//-------------------------------------------------------------------------
+
+	//-------------------------------------------------------- Remove functions
+	void GraphicsManager::removeCamera(unsigned handle) {
+		if (handle >= m_cameras.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
+		m_cameras.erase(m_cameras.begin() + handle);
+	}
+
+	void GraphicsManager::removeShader(unsigned handle) {
+		if (handle >= m_shaders.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
+		m_shaders[handle].destroy();
+		m_shaders.erase(m_shaders.begin() + handle);
+	}
+
+	void GraphicsManager::removeMesh(unsigned handle) {
+		if (handle >= m_meshes.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
+		if (m_meshes[handle].second > 0)
+			m_meshes[handle].second--;
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+		else
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh with 0 references");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+
+		// If no one references the mesh anymore
+		if (m_meshes[handle].second == 0) {
+			m_meshes[handle].first.destroy();
+
+			// Remove reference from map
+			for (auto it = m_mesh_name_to_handle.begin();
+				it != m_mesh_name_to_handle.end(); ++it) {
+				if (it->second == handle) {
+					m_mesh_name_to_handle.erase(it);
+					break;
+				}
+			}
+
+			m_meshes_unused_spaces.push(handle);
+		}
+	}
+
+	void GraphicsManager::removeAnimation(unsigned handle) {
+		if (handle >= m_animations.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Animation outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
+		m_animations.erase(m_animations.begin() + handle);
+	}
+
+	void GraphicsManager::removeMaterial(unsigned handle) {
+		if (handle >= m_materials.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Material outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
+		m_materials.erase(m_materials.begin() + handle);
+	}
+
+	void GraphicsManager::removeDirectionalLight(unsigned handle) {
+		if (handle >= m_directional_lights.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
+		m_directional_lights.erase(m_directional_lights.begin() + handle);
+	}
+
+	void GraphicsManager::removePointLight(unsigned handle) {
+		if (handle >= m_point_lights.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
+		m_point_lights.erase(m_point_lights.begin() + handle);
+	}
+
+	void GraphicsManager::removeSpotLight(unsigned handle) {
+		if (handle >= m_spot_lights.size()) {
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
+				"Attempt to remove Mesh outside boundaries");
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
+			return;
+		}
+
+		m_spot_lights.erase(m_spot_lights.begin() + handle);
+	}
+
+	void GraphicsManager::onWindowResizeEvent(EventPtr e) {
+		auto evnt = std::static_pointer_cast<WindowResizeEvent>(e);
+
+		int w, h;
+		evnt->getSize(w, h);
+
+#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
+			"Window size: " + std::to_string(w) + " " + std::to_string(h));
+#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
+
+		m_screen_width = w;
+		m_screen_height = h;
+
+		m_projection = glm::perspective(glm::radians(m_fov),
+			(float)w / (float)h, 0.1f, 1000.0f);
+
+		glViewport(0, 0, w, h);
 	}
 	//-------------------------------------------------------------------------
 
@@ -929,144 +1119,21 @@ namespace Graphics {
 	}
 	//-------------------------------------------------------------------------
 
-	//-------------------------------------------------------- Remove functions
-	void GraphicsManager::removeCamera(unsigned handle) {
-		if (handle >= m_cameras.size()) {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Attempt to remove Mesh outside boundaries");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			return;
-		}
-
-		m_cameras.erase(m_cameras.begin() + handle);
+	//--------------------------------------------------------- Post Processing
+	void GraphicsManager::setGaussianBlurLevel(int level) {
+		m_blur_level = std::min(std::max(level, 0), 2);
 	}
 
-	void GraphicsManager::removeShader(unsigned handle) {
-		if (handle >= m_shaders.size()) {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Attempt to remove Mesh outside boundaries");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			return;
-		}
-
-		m_shaders[handle].destroy();
-		m_shaders.erase(m_shaders.begin() + handle);
+	int GraphicsManager::getGaussianBlurLevel() const {
+		return m_blur_level;
 	}
 
-	void GraphicsManager::removeMesh(unsigned handle) {
-		if (handle >= m_meshes.size()) {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Attempt to remove Mesh outside boundaries");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			return;
-		}
-
-		if (m_meshes[handle].second > 0)
-			m_meshes[handle].second--;
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-		else
-			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Attempt to remove Mesh with 0 references");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-
-		// If no one references the mesh anymore
-		if (m_meshes[handle].second == 0) {
-			m_meshes[handle].first.destroy();
-
-			// Remove reference from map
-			for (auto it = m_mesh_name_to_handle.begin();
-				it != m_mesh_name_to_handle.end(); ++it) {
-				if (it->second == handle) {
-					m_mesh_name_to_handle.erase(it);
-					break;
-				}
-			}
-
-			m_meshes_unused_spaces.push(handle);
-		}
+	void GraphicsManager::setContrastFactor(float factor) {
+		m_contrast_factor = factor;
 	}
 
-	void GraphicsManager::removeAnimation(unsigned handle) {
-		if (handle >= m_animations.size()) {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Attempt to remove Animation outside boundaries");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			return;
-		}
-
-		m_animations.erase(m_animations.begin() + handle);
-	}
-
-	void GraphicsManager::removeMaterial(unsigned handle) {
-		if (handle >= m_materials.size()) {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Attempt to remove Material outside boundaries");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			return;
-		}
-
-		m_materials.erase(m_materials.begin() + handle);
-	}
-
-	void GraphicsManager::removeDirectionalLight(unsigned handle) {
-		if (handle >= m_directional_lights.size()) {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Attempt to remove Mesh outside boundaries");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			return;
-		}
-
-		m_directional_lights.erase(m_directional_lights.begin() + handle);
-	}
-
-	void GraphicsManager::removePointLight(unsigned handle) {
-		if (handle >= m_point_lights.size()) {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Attempt to remove Mesh outside boundaries");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			return;
-		}
-
-		m_point_lights.erase(m_point_lights.begin() + handle);
-	}
-
-	void GraphicsManager::removeSpotLight(unsigned handle) {
-		if (handle >= m_spot_lights.size()) {
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			ServiceLocator::getFileLogger()->log<LOG_WARNING>(
-				"Attempt to remove Mesh outside boundaries");
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_WARNING
-			return;
-		}
-
-		m_spot_lights.erase(m_spot_lights.begin() + handle);
-	}
-
-	void GraphicsManager::onWindowResizeEvent(EventPtr e) {
-		auto evnt = std::static_pointer_cast<WindowResizeEvent>(e);
-
-		int w, h;
-		evnt->getSize(w, h);
-
-#ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
-		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
-			"Window size: " + std::to_string(w) + " " + std::to_string(h));
-#endif	// ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
-
-		m_screen_width = w;
-		m_screen_height = h;
-
-		m_projection = glm::perspective(glm::radians(m_fov),
-			(float)w / (float)h, 0.1f, 1000.0f);
-
-		glViewport(0, 0, w, h);
+	float GraphicsManager::getContrastFactor() const {
+		return m_contrast_factor;
 	}
 	//-------------------------------------------------------------------------
 }

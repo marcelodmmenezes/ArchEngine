@@ -17,7 +17,7 @@ using namespace Utils;
 
 
 namespace Graphics {
-	Framebuffer::Framebuffer() {
+	Framebuffer::Framebuffer() : m_resize_proportion(1) {
 #ifndef ARCH_ENGINE_LOGGER_SUPPRESS_DEBUG
 		ServiceLocator::getFileLogger()->log<LOG_DEBUG>(
 			"Framebuffer constructor");
@@ -35,8 +35,8 @@ namespace Graphics {
 		bool success = false;
 
 		m_type = type;
-		m_width = width;
-		m_height = height;
+		m_width = width / m_resize_proportion;
+		m_height = height / m_resize_proportion;
 
 		switch (type) {
 		case FB_COLOR_BUFFER:
@@ -89,6 +89,10 @@ namespace Graphics {
 
 	int Framebuffer::getHeight() const {
 		return m_height;
+	}
+
+	void Framebuffer::setProportion(int value) {
+		m_resize_proportion = value;
 	}
 
 	bool Framebuffer::initializeColorBuffer() {

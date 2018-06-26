@@ -44,6 +44,10 @@ namespace Graphics {
 		int getWidth() const;
 		int getHeight() const;
 
+		// Sets the width and height proportion with which a
+		// resize event will reconstruct the fbo
+		void setProportion(int value);
+
 	private:
 		bool initializeColorBuffer();
 		bool initializeDepthMap();
@@ -56,6 +60,8 @@ namespace Graphics {
 
 		int m_width;
 		int m_height;
+
+		int m_resize_proportion;
 
 		// OpenGL handles
 		unsigned m_fbo; // Framebuffer
