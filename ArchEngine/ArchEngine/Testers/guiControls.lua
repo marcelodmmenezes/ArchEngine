@@ -161,3 +161,39 @@ component9 = {
 	projection = { 0.0, 800.0, 0.0, 600.0 },
 	track_mouse = true,
 }
+
+component10 = {
+	tp = "pushButton",
+	button_id = 5,
+	shader_id = 9 + 4,
+	limits = { 5.0, 299.0, 190.0, 40.0 },
+	font_id = 1,
+	font_scale = 1.0,
+	text_color = { 1.0, 1.0, 1.0 },
+	texture = "",
+	text = "Increase Bloom",
+	render_color = { 0.15, 0.15, 0.15, 1.0 },
+	render_hover_color = { 0.8, 0.8, 0.5, 1.0 },
+	render_border_color = { 0.3, 0.6, 0.3, 1.0 },
+	render_border_width = 1,
+	projection = { 0.0, 800.0, 0.0, 600.0 },
+	track_mouse = true,
+}
+
+component11 = {
+	tp = "pushButton",
+	button_id = 6,
+	shader_id = 9 + 4,
+	limits = { 5.0, 260.0, 190.0, 40.0 },
+	font_id = 1,
+	font_scale = 1.0,
+	text_color = { 1.0, 1.0, 1.0 },
+	texture = "",
+	text = "Decrease Bloom",
+	render_color = { 0.15, 0.15, 0.15, 1.0 },
+	render_hover_color = { 0.8, 0.8, 0.5, 1.0 },
+	render_border_color = { 0.3, 0.6, 0.3, 1.0 },
+	render_border_width = 1,
+	projection = { 0.0, 800.0, 0.0, 600.0 },
+	track_mouse = true,
+}

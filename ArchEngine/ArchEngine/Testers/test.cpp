@@ -691,6 +691,7 @@ void onAllRayTestEvent(EventPtr e) {
 
 int g_blur_level = 0;
 float g_contrast = 0.0f;
+float g_bloom = 0.0f;
 
 void onButtonStateEvent(EventPtr e) {
 	auto evnt = std::static_pointer_cast<ButtonStateEvent>(e);
@@ -734,6 +735,24 @@ void onButtonStateEvent(EventPtr e) {
 			g_contrast = std::max(g_contrast, -1.0f);
 			GraphicsManager::getInstance().
 				setContrastFactor(g_contrast);
+		}
+		break;
+
+	case 5:
+		if (!evnt->getState()) {
+			g_bloom += 0.1f;
+			g_bloom = std::min(g_bloom, 1.0f);
+			GraphicsManager::getInstance().
+				setBloomLevel(g_bloom);
+		}
+		break;
+
+	case 6:
+		if (!evnt->getState()) {
+			g_bloom -= 0.1f;
+			g_bloom = std::max(g_bloom, -1.0f);
+			GraphicsManager::getInstance().
+				setBloomLevel(g_bloom);
 		}
 		break;
 	}

@@ -142,6 +142,9 @@ namespace Graphics {
 		void setGaussianBlurLevel(int level);
 		int getGaussianBlurLevel() const;
 
+		void setBloomLevel(float level);
+		float getBloomLevel() const;
+
 		void setContrastFactor(float factor);
 		float getContrastFactor() const;
 
@@ -252,6 +255,8 @@ namespace Graphics {
 		//--------------
 
 		// Bloom
+		float m_bloom_level;
+
 		unsigned m_bright_shader;
 		Framebuffer m_bright_framebuffer;
 

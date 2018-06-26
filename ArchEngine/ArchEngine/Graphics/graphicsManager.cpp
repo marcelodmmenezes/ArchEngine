@@ -142,8 +142,7 @@ namespace Graphics {
 			m_screen_width / 2, m_screen_height / 2);
 		m_bright_framebuffer.setProportion(2);
 		m_combine_framebuffer.initialize(FB_COLOR_BUFFER,
-			m_screen_width / 8, m_screen_height / 8);
-		m_combine_framebuffer.setProportion(8);
+			m_screen_width, m_screen_height);
 		//------
 
 		m_pp_framebuffer.initialize(FB_COLOR_BUFFER,
@@ -394,7 +393,26 @@ namespace Graphics {
 		glDisable(GL_DEPTH_TEST);
 
 		unsigned texture_id = m_pp_framebuffer.getTextureId();
-		
+
+		if (m_bloom_level > 0.0f) {
+			m_bright_framebuffer.bind();
+
+			glViewport(0, 0, m_bright_framebuffer.getWidth(),
+				m_bright_framebuffer.getHeight());
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			m_shaders[m_bright_shader].bind();
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, texture_id);
+			m_shaders[m_bright_shader].setInt("u_texture", 0);
+			m_shaders[m_bright_shader].update();
+
+			drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+
+			texture_id = m_bright_framebuffer.getTextureId();
+		}
+
 		if (m_blur_level > 0) {
 			// Horizontal blur
 			m_horizontal_gb_framebuffer.bind();
@@ -476,24 +494,36 @@ namespace Graphics {
 
 			texture_id = m_vertical_gb_framebuffer2.getTextureId();
 		}
-
-		m_bright_framebuffer.bind();
-
-		glViewport(0, 0, m_bright_framebuffer.getWidth(),
-			m_bright_framebuffer.getHeight());
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		m_shaders[m_bright_shader].bind();
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture_id);
-		m_shaders[m_bright_shader].setInt("u_texture", 0);
-		m_shaders[m_bright_shader].update();
-
-		drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
-
-		texture_id = m_bright_framebuffer.getTextureId();
 		
+		if (m_bloom_level > 0.0f) {
+			m_combine_framebuffer.bind();
+
+			glViewport(0, 0, m_combine_framebuffer.getWidth(),
+				m_combine_framebuffer.getHeight());
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			m_shaders[m_combine_shader].bind();
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, m_pp_framebuffer.getTextureId());
+			m_shaders[m_combine_shader].setInt("u_color_texture", 0);
+
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, texture_id);
+			m_shaders[m_combine_shader].setInt("u_highlight_texture", 1);
+
+			m_shaders[m_combine_shader].setFloat("u_glow_factor", m_bloom_level);
+
+			m_shaders[m_combine_shader].update();
+
+			drawQuad(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, 0);
+
+			texture_id = m_combine_framebuffer.getTextureId();
+		}
+
 		Framebuffer::defaultFramebuffer();
 
 		glViewport(0, 0, m_screen_width, m_screen_height);
@@ -1184,6 +1214,14 @@ namespace Graphics {
 
 	int GraphicsManager::getGaussianBlurLevel() const {
 		return m_blur_level;
+	}
+
+	void GraphicsManager::setBloomLevel(float level) {
+		m_bloom_level = level;
+	}
+
+	float GraphicsManager::getBloomLevel() const {
+		return m_bloom_level;
 	}
 
 	void GraphicsManager::setContrastFactor(float factor) {
