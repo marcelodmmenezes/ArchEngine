@@ -16,7 +16,7 @@ Download and build the library at the desired folder.
     * Linker -> General -> Additional Library Directories
 * On Ubuntu just change the provided Makefile's CPLUS_INCLUDE_PATH and LIBRARY_PATH variables.
 
-## Some examples:
+## Some examples (the images are links to YouTube videos):
 
 Hot reloading example:
 
