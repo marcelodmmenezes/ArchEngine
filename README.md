@@ -1,5 +1,8 @@
 # ArchEngine
 
+ ![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
+ `This project is for learning purposes only. I haven't updated it in a while.`
+
 ## Developing a minimalist game engine for learning purposes
 
 Tested compilation:
@@ -12,3 +15,13 @@ Download and build the library at the desired folder.
     * C/C++ -> General -> Additional Include Directories
     * Linker -> General -> Additional Library Directories
 * On Ubuntu just change the provided Makefile's CPLUS_INCLUDE_PATH and LIBRARY_PATH variables.
+
+## Some examples:
+
+Hot reloading example:
+
+[![](http://img.youtube.com/vi/0EscTpyiYJE/0.jpg)](http://www.youtube.com/watch?v=0EscTpyiYJE "")
+
+Text, physics debugger and post processing effects:
+
+[![](http://img.youtube.com/vi/f8-GaWbCbtk/0.jpg)](http://www.youtube.com/watch?v=f8-GaWbCbtk "")
